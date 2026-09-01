@@ -1,20 +1,10 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
-
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+context: |
+  Tech stack: Deno 2 workspace (TypeScript), zod v4, ajv for JSON Schema validation.
+  Repo produces two released artifacts: the generic connector engine (engine/) and the
+  compiled connector bundle (.output/catalog.json, built by CI).
+  Conventions mirror monid-services: top-level deployables, internal libs under shared/*
+  with @shared/<name> import aliases, fmt.indentWidth 4.
+  Domain: declarative API connector standard (EndpointDef -> EndpointDoc compilation,
+  content-addressed fn table, semver-gated engine compatibility).
