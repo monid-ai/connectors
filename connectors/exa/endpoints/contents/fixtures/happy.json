@@ -1,0 +1,33 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.exa.ai/contents",
+                "body": {
+                    "urls": ["https://example.com/solid-state-2026"],
+                    "text": true
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "requestId": "77aa1044c4b78efa9552430b7ca5aa01",
+                    "results": [
+                        {
+                            "id": "https://example.com/solid-state-2026",
+                            "url": "https://example.com/solid-state-2026",
+                            "title": "Solid-state batteries reach 500 Wh/kg",
+                            "text": "Researchers demonstrated a 500 Wh/kg solid-state cell..."
+                        }
+                    ],
+                    "costDollars": {
+                        "total": 0.001,
+                        "contents": { "text": 0.001 }
+                    }
+                }
+            }
+        }
+    ]
+}

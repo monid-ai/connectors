@@ -1,0 +1,50 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.exa.ai/search",
+                "body": {
+                    "query": "latest advances in solid-state batteries",
+                    "numResults": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "requestId": "b5947044c4b78efa9552430b7ca5cf94",
+                    "resolvedSearchType": "neural",
+                    "results": [
+                        {
+                            "id": "https://example.com/solid-state-2026",
+                            "title": "Solid-state batteries reach 500 Wh/kg",
+                            "url": "https://example.com/solid-state-2026",
+                            "publishedDate": "2026-05-11T00:00:00.000Z",
+                            "author": "J. Chen"
+                        },
+                        {
+                            "id": "https://example.org/electrolyte-breakthrough",
+                            "title": "Sulfide electrolyte breakthrough",
+                            "url": "https://example.org/electrolyte-breakthrough",
+                            "publishedDate": "2026-04-02T00:00:00.000Z",
+                            "author": "M. Okafor"
+                        },
+                        {
+                            "id": "https://example.net/battery-manufacturing",
+                            "title": "Scaling solid-state manufacturing",
+                            "url": "https://example.net/battery-manufacturing",
+                            "publishedDate": "2026-03-19T00:00:00.000Z",
+                            "author": "S. Ryu"
+                        }
+                    ],
+                    "searchTime": 312.4,
+                    "costDollars": {
+                        "total": 0.005,
+                        "search": { "neural": 0.005 }
+                    }
+                }
+            }
+        }
+    ]
+}

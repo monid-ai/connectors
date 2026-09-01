@@ -1,0 +1,78 @@
+name: ci
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+    schedule:
+        - cron: "17 6 * * *" # nightly live matrix
+    workflow_dispatch:
+
+jobs:
+    verify:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+
+            - name: Type check
+              run: deno task check
+
+            - name: Lint
+              run: deno lint
+
+            - name: Version contract guard
+              run: deno task version:check --base origin/main
+              if: github.event_name == 'pull_request'
+
+            - name: Compile (determinism — double compile, byte-compare)
+              run: |
+                  deno task compiler:compile --frozen-meta --force
+                  cp .output/catalog.json /tmp/bundle-a.json
+                  deno task compiler:compile --frozen-meta --force
+                  cmp /tmp/bundle-a.json .output/catalog.json
+
+            - name: Tests (replay — zero network)
+              run: deno task test
+
+            - name: Compat goldens (prior bundles on HEAD engine)
+              run: |
+                  if compgen -G "shared/testing/goldens/*.json" > /dev/null; then
+                    deno task test shared/testing/
+                  else
+                    echo "no goldens yet (first golden lands with the 0.1.0 release)"
+                  fi
+
+            - name: Build release bundle
+              run: deno task compiler:compile --force
+
+            - name: Upload bundle artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: catalog
+                  path: .output/catalog.json
+
+            - name: OpenSpec validate
+              run: npx --yes openspec@1 validate --all
+
+    live:
+        # nightly + manual only; one job per provider; skipped when the secret is absent
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                provider: [exa]
+        steps:
+            - uses: actions/checkout@v4
+            - uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+            - name: Live tests (auto-skip without key)
+              env:
+                  EXA_API_KEY: ${{ secrets.EXA_API_KEY }}
+              run: deno task test:live connectors/${{ matrix.provider }}/

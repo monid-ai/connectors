@@ -1,0 +1,21 @@
+{
+    "name": "provider-error",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.exa.ai/contents",
+                "body": {
+                    "urls": ["https://example.com/x"]
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "x-api-key header is invalid",
+                    "tag": "UNAUTHORIZED"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+{
+    "name": "@shared/app-config",
+    "version": "0.1.0",
+    "exports": {
+        ".": "./mod.ts"
+    }
+}

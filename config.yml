@@ -1,0 +1,41 @@
+# monid-connectors configuration — top-level sections per component.
+#
+# RULE: schema.* and compiler.* are CONTRACT — loaded override-free by
+# shared/core/config.ts (which never touches Deno.env; test-guarded), because
+# bundle bytes must be a pure function of repo content — EXCEPT any `logging:`
+# subtree, which — like engine.* and scripts.* — is TOOLING and uses the
+# @shared/app-config precedence (env > stage > general).
+#
+# There is no engine contract section by design: the engine's contract is
+# ENGINE_VERSION (engine/deno.json) plus the hook ABI in code, never a YAML knob.
+
+schema:
+    spec_version: "1.0.0" # doc FORMAT version (semver, like every version here)
+    json_schema_dialect: "2020-12" # the ONE versioned JSON-standard pick (zod + ajv agree)
+    fn_src_max_bytes: 32768 # lint bound for one fn's normalized source
+    # The two "since" facts live HERE because they describe the FORMAT/ABI,
+    # not compiler behavior. They are declared, not computed: each answers
+    # "what is the OLDEST engine that understands X?" — a historical fact set
+    # when a change ships (deriving from the current engine version would
+    # over-pin every doc to the newest engine).
+    doc_format_since: "0.1.0" # oldest engine understanding the doc format (minEngineVersion floor)
+    fn_abi_since: "0.1.0" # engine release of the current hook ABI; stamped as fn entries' `api`
+
+compiler:
+    doc_size_warn_bytes: 65536
+    doc_size_fail_bytes: 262144
+    defaults:
+        request_timeout_ms: 30000
+        run_timeout_ms: 60000
+    logging:
+        level: "info"
+
+engine:
+    logging:
+        level: "info"
+
+# Settings for the repo's own command scripts (compile / run / catalog / record).
+scripts:
+    output_dir: ".output" # gitignored compile cache; CI uploads catalog.json from here
+    logging:
+        level: "info"
