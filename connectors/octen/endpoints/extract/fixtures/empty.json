@@ -1,0 +1,41 @@
+{
+    "name": "empty",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.octen.ai/extract",
+                "body": {
+                    "urls": [
+                        "notaurl"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "results": [
+                            {
+                                "url": "notaurl",
+                                "status": "failed",
+                                "error_message": "Failed to fetch the URL"
+                            }
+                        ]
+                    },
+                    "request_id": "20260902061922181PYAXOQ80UC",
+                    "meta": {
+                        "usage": {
+                            "total_urls": 1,
+                            "successful_urls": 0
+                        },
+                        "latency": 232,
+                        "warning": "1 URL(s) failed and were not billed"
+                    },
+                    "code": 0,
+                    "msg": "success"
+                }
+            }
+        }
+    ]
+}

@@ -192,6 +192,29 @@ Deno.test("INVALID_INPUT: body fails the compiled JSON Schema", async () => {
     await expectCode(loaded.start({}), EngineErrorCode.INVALID_INPUT);
 });
 
+Deno.test("INVALID_INPUT: RunInput shape enforced before doc schemas", async () => {
+    const engine = new Engine({
+        transport: jsonTransport(200, { results: [] }),
+    });
+    const loaded = await engine.load(await demoUnit());
+    // non-object trios and unknown keys never reach buildRequest
+    const bad: unknown[] = [
+        null,
+        [1, 2],
+        "q=hi",
+        { queryParams: [1, 2] },
+        { queryParams: "a=b" },
+        { pathParams: { id: 7 } }, // pathParams values must be strings
+        { body: {}, extra: true }, // .strict(): unknown keys rejected
+    ];
+    for (const input of bad) {
+        await expectCode(
+            loaded.start(input as Parameters<typeof loaded.start>[0]),
+            EngineErrorCode.INVALID_INPUT,
+        );
+    }
+});
+
 Deno.test("MISSING_CREDENTIAL: fail-closed before any network call", async () => {
     let fetched = false;
     const engine = new Engine({

@@ -1,0 +1,17 @@
+{
+    "name": "provider-error",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/news/?company=https%3A%2F%2Fcanva.com"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "detail": "Invalid API key"
+                }
+            }
+        }
+    ]
+}

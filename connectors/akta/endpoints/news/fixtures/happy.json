@@ -1,0 +1,217 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/news/?company=https%3A%2F%2Fcanva.com&sentiment_list=positive%2Cneutral&limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "total": 317,
+                    "limit": 2,
+                    "offset": 0,
+                    "count": 2,
+                    "data": [
+                        {
+                            "id": 33665067,
+                            "title": "Fable 5.1来了，Anthropic再秀肌肉",
+                            "url": "https://news.pedaily.cn/202609/568403.shtml",
+                            "publisher": "Pedaily",
+                            "published_date": "2026-09-01T23:46:00",
+                            "sentiment": "Neutral",
+                            "sentiment_score": 0.5896,
+                            "ai_summary": "Anthropic launched Fable 5.1 and Mythos 5.1, with Fable 5.1 targeting general users and Mythos 5.1 for verified security and life sciences institutions. Cache read prices dropped 75% to $0.25 per million tokens, and benchmark scores like Terminal-Bench-Science doubled to 52.6%. The release comes before Anthropic's planned IPO, with investors expecting a valuation over $2 trillion.",
+                            "word_count": 180,
+                            "original_language": "ZH",
+                            "author": "",
+                            "countries": [
+                                "USA"
+                            ],
+                            "industries": [
+                                {
+                                    "name": "Catastrophic Plans (Under-30/Hardship)",
+                                    "code": "HLAEABAC",
+                                    "is_primary": true
+                                },
+                                {
+                                    "name": "Glass Processing & Beneficiation Facilities",
+                                    "code": "EUAIADAF",
+                                    "is_primary": false
+                                }
+                            ],
+                            "tags": [
+                                {
+                                    "name": "Product Launches & Enhancements",
+                                    "code": "SD01",
+                                    "is_primary": true
+                                },
+                                {
+                                    "name": "IPOs & Follow-on Offerings",
+                                    "code": "CM05",
+                                    "is_primary": false
+                                },
+                                {
+                                    "name": "Pricing & Commercial Strategy",
+                                    "code": "SD10",
+                                    "is_primary": false
+                                }
+                            ],
+                            "company_mentions": [
+                                {
+                                    "uuid": "000000b",
+                                    "name": "Nscale",
+                                    "website": "https://www.nscale.com",
+                                    "is_primary": false
+                                },
+                                {
+                                    "uuid": "0000002",
+                                    "name": "Anthropic",
+                                    "website": "https://www.anthropic.com",
+                                    "is_primary": true
+                                },
+                                {
+                                    "uuid": "00000l1",
+                                    "name": "Canva",
+                                    "website": "http://www.canva.com",
+                                    "is_primary": false
+                                },
+                                {
+                                    "uuid": "000007j",
+                                    "name": "Lambda",
+                                    "website": "https://lambda.ai",
+                                    "is_primary": false
+                                }
+                            ],
+                            "article_type": {
+                                "code": "explainer",
+                                "label": "Explainer"
+                            },
+                            "is_press_release": true,
+                            "is_opinion": true,
+                            "is_breaking": true,
+                            "iptc_codes": [
+                                {
+                                    "code": "20000756",
+                                    "name": "technology and engineering"
+                                }
+                            ],
+                            "iab_categories": [],
+                            "naics_codes": [],
+                            "sic_codes": [],
+                            "entities": {
+                                "person": [],
+                                "location": [],
+                                "product": [
+                                    "fable 5.1"
+                                ],
+                                "event": []
+                            },
+                            "newsworthiness_score": 0.8599,
+                            "group_id": 10195155,
+                            "full_text": "Fable 5.1和Mythos 5.1，凌晨突然上线。 上一代Fable 5几乎成了SOTA模型的代名词，光环未退，Anthropic已经开始自己卷自己了。 两款模型同时发布，Fable 5.1面向普通用户和企业，Mythos 5.1则把同一套前沿能力开放给“经过验证的网络安全和生命科学机构”。 定价上，基础价格不变，Fable 5.1依然是10美元/百万输入Token、50美元/百万输出Token。但缓存读取价格砍掉了75%，从1美元/百万Token降到0.25美元/百万Token。 性能提升则明显集中在长时间、多步骤的Agent任务上。Terminal-Bench-Science从24.7%涨到52.6%，AutomationBench从17.1%涨到31.4%。 比起模型本身，或许更值得注意的是模型发布的时间节点——这很可能是Anthropic公开递表前，最后一次重量级模型发布。 几天之后就是9月7日，美国劳动节，按照The Information此前披露的计划，已经秘密提交IPO文件的Anthropic可能在劳动节之后正式公开招股书，并在9月中旬举行投资者日，最快于9月底至10月初上市。 而Anthropic此前“明升实降”改额度的余波，也出现在了新模型发布的评论区里。8月29日，Anthropic宣布9月14日起将“标准周额度”提高25%，但这个数字是相对于5月以前的旧标准计算；与用户目前正在使用的临时额度相比，实际反而下降了17%。 Fable 5.1刚刚上线，就有用户追问Anthropic，能不能同时给出“更透明、更慷慨”的会话和每周额度。 Fable 5.1：把Agent推向更长任务 如果只看规格，Fable 5.1并不是一次幅度很大的升级。 它延续了Fable 5的100万Token上下文窗口和128K*输出，基础价格也没有变化：每百万输入Token 10美元，每百万输出Token 50美元。 放到当前的旗舰模型阵容里，Fable 5.1依然属于明显更贵的一档：同样按100万输入+100万输出来算，Fable 5.1是GPT-5.6 Sol当前价格的2.5倍，GLM-5.3的10倍以上。 Anthropic官方甚至仍然建议，大多数任务优先从价格只有一半的Opus 5开始，只有面对高难度推理、长时间Agent任务，或者Opus 5在高effort下依然不够用时，再上Fable 5.1。 值得关注的变化发生在Agent持续运行的成本上。 Fable 5.1的5分钟和1小时缓存写入价格仍然分别是12.5美元和20美元/百万Token，但缓存读取从Fable 5的1美元/百万Token降到了0.25美元，相当于直接砍掉75%。 缓存读取（cache read）可以理解为：一段上下文已经被模型处理过之后，后面的请求不需要每次重新按完整输入价格读取。对于一次普通问答，这部分未必重要；但一个连续运行几个小时的Agent，会反复读取系统提示词、代码库、工具定义以及此前已经处理过的上下文，任务越长、工具调用越多，缓存读取占到的成本就越高。 Anthropic用今年8月四周的实际使用数据做过测算。在按Token计费的场景下，相同任务从Fable 5换到Fable 5.1，典型工作负载的整体成本预计下降约25%；对于上下文更重、工具调用更多的复杂Coding和高度Agent化任务，降幅最高可以达到约45%。 也就是说，虽然Anthropic没有把Fable 5.1本身卖得更便宜，但专门把“让它长时间工作”这件事做得更便宜了。 不过，便宜也只是相对于过去，基础价格摆在那里。有开发者就在发布评论区提醒，即使缓存命中率很高，成本依然可能迅速累积，一次真实的复杂Coding任务，就可能花掉20到50美元。 另外，这种降价主要发生在API和其他按Token结算的场景。对于直接订阅Claude Code的用户，另一套“额度账”刚刚引发争议。 8月29日，Claude Developers官方账号宣布，从9月14日起，Pro、Max、Team和按席位收费的Enterprise套餐，Claude Code的“标准周额度”将*提高25%。但问题在于，此前Anthropic已经临时把这套额度提高了50%，而且这套临时额度会一直维持到9月14日。 也就是说，如果把原始额度记作100，现在用户实际拿到的是150；9月14日以后则会变成125。名义上相对旧标准“*提高25%”，相较用户现在实际能够使用的额度，却减少了约17%。Anthropic随后也专门补充说明，确认了这一计算。 在Fable 5.1发布后的评论区里，也有用户继续追问Anthropic，能不能给出“更透明、更慷慨”的会话和每周额度。别再玩类似的文字游戏了。 不过，从性能变化来看，Fable 5.1也确实越来越像一个专为长时间任务准备的模型。 在Anthropic公布的Benchmark里，提升最夸张的是Terminal-Bench-Science 0.1。Fable 5从24.7%提高到了52.6%，直接翻倍。测试终端环境Agent能力的Terminal-Bench 4.0从42.0%提高到55.8%，面向复杂商业工作流的AutomationBench则从17.1%提高到31.4%。 但如果换到更传统的推理和Coding Benchmark，提升幅度就没有那么夸张。 Humanity's Last Exam不使用工具时，从57.8%提高到60.9%；使用工具后，从63.8%提高到65.0%。CursorBench 3.2.0从70.5%提高到73.4%，知识工作Benchmark GDPval-AA v2则从1723提高到1853。 总体来看，Fable 5.1的提升明显集中在需要模型连续调用工具、处理多个步骤、检查中间结果，再决定下一步行动的任务，而不是在所有能力“均匀分布”。 早期企业测试也在重复这个趋势。 Browserbase在其最难的浏览器Agent Benchmark中，让Fable 5.1完成了82%的任务，Opus 5为74%，Fable 5只有57%。 Ramp的一次测试里，Fable 5.1在无人干预的情况下连续运行了38个小时。它先发现此前一个机器学习实验的结果其实受到了标签伪影的影响，随后自行修正问题，同时启动6组并行实验跑了一整夜，最后带着新的实验结果和下一步建议回来。在另一次开放式任务中，Ramp只让它寻找“没人负责、但最值得解决的问题”，它自己找到了一个与生产事故有关、尚未有人处理的告警，调取日志并给出了修复方案。 Canva给出的反馈则更偏向生成质量。其测试认为，Fable 5.1的文字表达更容易理解，也更能遵循写作规范；在与Fable 5的盲测中，Canva更偏好5.1的输出。并且，在Canva Code里，Fable 5.1直接做出了一个节奏游戏：不仅生成了关卡和真实音乐，还让玩法节奏与音乐拍点对应。Canva称，这是他们测试过的其他模型都没有做到的。 从Benchmark到企业测试，Fable 5.1这次最明显的提升在于，它开始更稳定地把复杂任务完整做完：既能在几十个小时的任务里持续判断、纠错和推进，也能在一次生成里把文字、代码、音乐和交互组织得更完整。 Claude进入实验室 Fable 5.1和Mythos 5.1看起来像是两款模型，但Anthropic在官方文档里说得很明确： Mythos 5.1与Fable 5.1“identical”，区别只是为经过审核的用户提供了“more permissive safeguards”。 也就是说，两者仅在安全限制上有差别：Fable 5.1面向普通用户和企业开放，涉及网络安全和生命科学里的部分高风险能力时，会受到额外限制；Mythos 5.1则通过受信任访问计划，把限制更少的同一套前沿能力开放给经过验证的网络安全和生命科学机构。 同一个Benchmark里两者有时会跑出不同的成绩，主要原因也在于此。比如在测试Agent终端操作和复杂任务执行能力的Terminal-Bench 4.0上，Fable 5.1是55.8%，Mythos 5.1则达到60.9%。Anthropic的解释是，这并不是因为Mythos底层能力更强，而是部分网络安全任务触发了Fable的安全限制；当这些限制减少以后，两者的差距也应该随之缩小。 这次发布里，Anthropic把相当大的篇幅留给了科研能力，而这部分也主要由Mythos 5.1展示。 其中最抢眼的一个实验，是让Mythos 5.1直接设计蛋白质binder。 很多现代药物需要通过与人体内特定靶点结合，完成阻断、激活或者递送。Anthropic给Mythos 5.1接入了开源的蛋白质设计和折叠工具，让它自行设计binder，再把结果送到两家外部机构进行真实实验验证。 结果是，在12个靶点上，Mythos 5.1设计的binder命中率接近50%。Anthropic称，目前蛋白质设计中常见的命中率大约只有10%到15%；其中三个靶点上，模型设计出的binder结合亲和力，比Adaptyv Bio蛋白质设计比赛里的*方案高出约10倍。 这里值得注意的并不是Claude又会了一道生物题，它真正做的是一段更完整的科研流程：调用专业工具进行分子设计，再把设计送进真实实验环境验证。 类似的事情也发生在计算科学里。 Fable 5.1利用NASA三十多年前Magellan任务留下的雷达数据，自己训练了一个神经网络，为大约三分之一的金星表面重新生成高分辨率高程地图。 过去的地图能够分辨的地形细节大约在10到20公里尺度，新地图则缩小到2到3公里；Anthropic称，高度数据的准确度最高提高了约25%。这份地图随后被以Creative Commons许可公开，希望能为NASA的VERITAS和欧洲航天局的EnVision金星探测任务提供参考。 此外，Mythos 5.1还做了一件更加工程化的事情。 生物学研究经常需要反复运行蛋白质和基因组深度学习模型，GPU速度直接决定很多实验要花多少时间和钱。Mythos 5.1针对7个开源模型自行编写定制GPU Kernel，并缓存中间计算结果，最终在保持输出完全一致的情况下，把推理速度最高提高了2.5倍。 Anthropic估算，在一些全基因组分析任务里，这些优化可以把GPU成本降低30%到60%。类似工作通常需要性能工程师团队花几周完成，而Mythos 5.1只用了几天，Anthropic还计划把这些优化开源。 把这些案例放在一起，Anthropic对Claude科研能力的定义已经发生了变化。 过去谈AI for Science，很多时候还是让模型读论文、检索资料、写代码或者解释结果。到了Fable 5.1和Mythos 5.1，Claude开始进入更长的科研流程。 这条路甚至已经开始从软件走向真实实验设备——就在Fable 5.1发布前一周，Anthropic开放了Model Hardware Standard（MHS）的研究预览，希望让AI Agent能够直接操作显微镜、液体处理设备和机械臂等实验室硬件。 随着能力往科研和高价值任务里走，Anthropic不仅需要面对“该向谁开放”的安全问题，也越来越在意另一件事：怎么防止最核心的模型能力被别人“搬走”。 Fable 5.1这次加入了更强的反蒸馏机制。Anthropic在官方公告里直接点名了一种做法：过去，API用户可以修改多轮对话里的历史上下文，同时保留Claude此前生成的thinking记录。这样一来，外部模型就有机会批量收集Claude的推理轨迹，用来训练和蒸馏自己的模型。 从Fable 5.1发布当天开始，新创建的API账号已经不能再这样操作。只要修改此前的对话上下文，之前保存的thinking transcript就不能继续保留。Anthropic明确表示，这项改动就是为了封堵一种“已经公开记录的蒸馏技术”；现有账号暂时不受影响，但未来模型发布时，这一变化会逐步覆盖所有用户。 企业端的安全体系也在同时补齐。Anthropic同时推出的Enterprise Frontier Safeguards（EFS），就在试图解决Fable级模型过去一个很现实的矛盾：公司既希望保留足够的数据来检测模型滥用，金融、医疗、法律等企业又不愿意把敏感数据交给模型公司长期保存。 EFS的办法，是把监控所需要的数据直接存在客户自己控制的云基础设施里，而并非Anthropic的服务器。默认情况下，人工审查也由客户自己完成。Anthropic称，这套机制与超过100家来自金融、医疗、制造、电信、法律等行业的客户共同开发，将从今年秋季开始分阶段上线。 从蛋白质设计、金星地图到漏洞发现，再到反蒸馏和企业安全，Fable 5.1展示的不仅仅是一个模型。 Anthropic正在模型之外，补上一整套让前沿能力进入科研和企业世界的权限、安全与基础设施。 Fable 5.1之后，Anthropic就要去华尔街了 如果目前的计划没有变化，再过几天，Anthropic可能就要正式把自己的账本摆到华尔街面前。 The Information最新报道称，Anthropic计划在9月7日美国劳动节之后公开IPO招股书，并在9月中旬举行投资者日，最快可能在9月底至10月初上市。公司已经在6月秘密提交了IPO文件。 放在这个时间窗口里，Fable 5.1很自然地成为了Anthropic公开递表前的一次能力展示。 毕竟，等招股书真正公开之后，华尔街需要判断的可不是Claude能不能再在几个Benchmark里拿到高分，而是Anthropic究竟值多少钱。 今年5月，Anthropic最近一轮私募估值达到9650亿美元。到了8月，《金融时报》采访的多名投资者已经预计，Anthropic上市时的估值可能达到2万亿美元以上。投资者预计其年化收入年底可能达到1000亿至1200亿美元，其中一名投资者甚至按照公司的增长速度和30倍收入倍数，算出了3万亿美元。当然，这些目前都只是投资者自己的估值模型，最终发行价格还没有确定，而且计划随时可能调整。 如此高的估值，已经很难只靠Anthropic今天赚多少钱来解释。我们在之前的文章里对此有过更为详细的讨论。 路透社8月获得的内部财务预测显示，Anthropic预计2028年收入达到1900亿到2000亿美元。而公司的年化收入run rate，也已经从2025年底的约90亿美元，增长到今年5月的470亿美元，并在7月底进一步超过650亿美元。彭博社获得的文件还显示，公司二季度初步收入超过115亿美元，是去年同期的14倍以上，并首次录得正的调整后营业利润。 而华尔街已经开始按照未来几年的价值给它算钱了。路透社称，投行和投资者正在使用2028年的收入预测给Anthropic计算企业价值/收入倍数，并把Palantir、Cloudflare和SpaceX作为不同维度的参考对象。 就在即将上市的时间点上，Anthropic仍在花大量的钱买GPU、训练模型、做推理和扩张团队。 Fable 5.1发布前一周，Anthropic被曝与Nscale签下一份为期六年、价值450亿美元的算力合同，租用西弗吉尼亚州约460MW的数据中心容量。几天后，路透社又披露，Anthropic与英伟达支持的Lambda签下约350亿美元云计算合同，对应得州Nueces县约350MW的数据中心。 仅这两笔新近曝光的算力承诺，就已经达到800亿美元（折合人民币约5377亿元）。 这也让Fable 5.1前面那些看似分散的变化，有了另一层意义。 一方面，它当然需要继续证明Claude处在前沿。Terminal-Bench-Science翻倍、长时间Agent能够无人值守运行几十个小时，至少说明Anthropic还在不断把模型能力往前推。 另一方面，只证明“模型更聪明”显然已经不够。 蛋白质设计、科研计算、企业Agent、网络安全，以及第二部分提到的Enterprise Frontier Safeguards，都在把Claude推向一个方向：进入那些企业本来就愿意花很多钱解决的问题。 Fable 5.1降低缓存读取价格也是同样的逻辑。Anthropic没有参加基础Token的低价竞争，而是针对长时间Agent，把典型工作负载的实际成本降低约25%，高度Agent化任务最高降低约45%。 模型更强，Agent可以工作得更久；工作时间越长，又必须把单位任务的算力成本压下来。 这可能正是Anthropic上市以后最需要证明的一道算术题。增长已经足够快，问题是，在算力承诺也以数百亿美元的速度膨胀时，收入最终能不能跑得比成本更快。 Fable 5.1的价值，不只是让Anthropic在递表前再拿下一张漂亮的Benchmark成绩单。从更长时间的Agent，到科研和高价值企业任务，再到缓存降价、安全、权限和基础设施，Anthropic正在试图证明一条更完整的链路： 模型能力可以变成工作，工作可以变成收入，而收入最终可以跑赢算力。 几天之后，等Anthropic公开招股书，这条链路就不再只是模型公司的产品故事。 它还会变成华尔街给Anthropic定价的依据。 【本文由投资界合作伙伴字母榜授权发布，本平台仅提供信息存储服务。】\n\n【免责声明】：本文不构成任何投资建议。市场有风险，投资需谨慎。\n\n如有任何疑问，请联系（editor@zero2ipo.com.cn）投资界处理。"
+                        },
+                        {
+                            "id": 33418826,
+                            "title": "Wollongong Is Going For Goals",
+                            "url": "https://www.miragenews.com/wollongong-is-going-for-goals-1736276/",
+                            "publisher": "Mirage News",
+                            "published_date": "2026-08-31T23:44:00",
+                            "sentiment": "Positive",
+                            "sentiment_score": 1,
+                            "ai_summary": "Thousands of residents have submitted personal goals through the Wollongong Goals pilot, a non-commercial partnership between Wollongong City Council and Canva. Early data indicates that suburbs like Wollongong, Wombarra, and Dapto are leading in participation, with top themes including peace, safety, and sustainability. The initiative aims to test new methods of community engagement by leveraging Canva's technology alongside the council's existing outreach strategies.",
+                            "word_count": 380,
+                            "original_language": "EN",
+                            "author": "Mirage News",
+                            "countries": [
+                                "AUS"
+                            ],
+                            "industries": [
+                                {
+                                    "name": "Community Engagement & Participatory Planning",
+                                    "code": "BPAHAKAO",
+                                    "is_primary": true
+                                }
+                            ],
+                            "tags": [
+                                {
+                                    "name": "Others",
+                                    "code": "OT01",
+                                    "is_primary": true
+                                }
+                            ],
+                            "company_mentions": [
+                                {
+                                    "uuid": "00000l1",
+                                    "name": "Canva",
+                                    "website": "http://www.canva.com",
+                                    "is_primary": true
+                                },
+                                {
+                                    "uuid": "00h7yjv",
+                                    "name": "Wollongong City Council",
+                                    "website": "https://www.wollongong.nsw.gov.au",
+                                    "is_primary": true
+                                }
+                            ],
+                            "article_type": {
+                                "code": "explainer",
+                                "label": "Explainer"
+                            },
+                            "is_press_release": true,
+                            "is_opinion": false,
+                            "is_breaking": false,
+                            "iptc_codes": [
+                                {
+                                    "code": "20001374",
+                                    "name": "sustainability"
+                                },
+                                {
+                                    "code": "20000802",
+                                    "name": "social problem"
+                                }
+                            ],
+                            "iab_categories": [],
+                            "naics_codes": [
+                                {
+                                    "code": "813312",
+                                    "name": "Other Services (except Public Administration)"
+                                },
+                                {
+                                    "code": "81331",
+                                    "name": "Other Services (except Public Administration)"
+                                }
+                            ],
+                            "sic_codes": [],
+                            "entities": {
+                                "person": [
+                                    "ben",
+                                    "tania brown",
+                                    "sam",
+                                    "meg"
+                                ],
+                                "location": [
+                                    "wombarra",
+                                    "wollongong",
+                                    "dapto",
+                                    "us",
+                                    "maccabe park",
+                                    "2502",
+                                    "2500",
+                                    "suburbs"
+                                ],
+                                "product": [],
+                                "event": []
+                            },
+                            "newsworthiness_score": 0.7492,
+                            "group_id": 10003311,
+                            "full_text": "Wollongong – when it comes to suburbs getting onboard goal setting, you're on top!\n\nKey points: Thousands of goals have been collected to date in the Wollongong Goals pilot.\n\nPeople can share their goal & see what's coming in so far at the website: wollongonggoals.org\n\nThe initiative is part of the Wollongong Goals pilot project, a non-commercial partnership between Wollongong City Council and Canva.\n\nOf all our suburbs, Wollongong has contributed the most goals followed by Wombarra and Dapto.\n\nA few weeks into the Wollongong Goals campaign, and already thousands of goals for have been shared with Wollongong, followed by Wombarra and Dapto some of the top ranked suburbs for community involvement.\n\n\"We're seeing some very early data coming in and it makes for fascinating reading,'' Lord Mayor of Wollongong Councillor Tania Brown said.\n\n\"I've been on the Wollongonggoals.org website and we're seeing strong themes around peace and safety, basic needs, sustainability and education as the front runners for what people are telling us they want for Wollongong.\n\n\"I love reading the specific goals that have been submitted on the website like the one from Meg from 2502 who wants \"communities that build each other up\". Then there's Ben from 2500 who wants \"more parks and outdoorsy activities promoted with less concrete jungle\". This one really makes me very happy as it's so timely – we're right in the middle of conversations about the next steps on the rejuvenation of a portion of our city's central park with a brand-new skate park and plans to work through a master planning process for MacCabe Park that will look at how to best use this valued greenspace in the city.''\n\nWollongong Goals is a non-commercial partnership between Wollongong City Council and Canva. Wollongong is one of two pilots Canva is running globally, alongside a research pilot in the US. In Wollongong, the concept is being tested at a community level.\n\n\"Easier and safer to walk and cycle around the whole local government area.'' Sam, 2517\n\nTogether we're looking at new ways of community engagement, bringing together Canva's technology and creativity with Council's well-established ways of connecting to our community. The organisations are aligned though Canva's Step Two philosophy and philanthropy, and Council's commitment to listening to as many diverse community voices as possible to ensure we're prioritising the things people need and want."
+                        }
+                    ],
+                    "credits_consumed": 0.12
+                }
+            }
+        }
+    ]
+}

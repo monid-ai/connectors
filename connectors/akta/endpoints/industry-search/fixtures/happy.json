@@ -1,0 +1,170 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/industry/search/?query=design+software"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "code": "EDABAFAA",
+                            "industry_name": "Software Development (Programming, Frameworks, Dev Tools)",
+                            "similarity": 0.6469
+                        },
+                        {
+                            "code": "HDAHAFAE",
+                            "industry_name": "Embedded Software & Firmware Tools (Compilers, Debug, RTOS tooling)",
+                            "similarity": 0.6231
+                        },
+                        {
+                            "code": "EDAHAJAB",
+                            "industry_name": "Design Colleges (Graphic, Industrial, UX/UI, Interior)",
+                            "similarity": 0.6229
+                        },
+                        {
+                            "code": "HDAEAKAA",
+                            "industry_name": "Low-Code/No-Code Application Platforms",
+                            "similarity": 0.6142
+                        },
+                        {
+                            "code": "IMAAACAJ",
+                            "industry_name": "Support Generation & Lattice/Structure Design Tools",
+                            "similarity": 0.6141
+                        },
+                        {
+                            "code": "BPAEAFAA",
+                            "industry_name": "Custom Application Development (Web/Mobile/Desktop)",
+                            "similarity": 0.6109
+                        },
+                        {
+                            "code": "IMAAACAA",
+                            "industry_name": "3D Design & CAD for Additive Manufacturing",
+                            "similarity": 0.6108
+                        },
+                        {
+                            "code": "HDAEAKAE",
+                            "industry_name": "Process & Case Management Low-Code Platforms",
+                            "similarity": 0.6095
+                        },
+                        {
+                            "code": "BPAHAKAK",
+                            "industry_name": "Building Information Modeling (BIM) & Digital Design Services",
+                            "similarity": 0.6051
+                        },
+                        {
+                            "code": "HDAHAFAJ",
+                            "industry_name": "EDA Cloud/SaaS, Design Data Management & Collaboration",
+                            "similarity": 0.6006
+                        },
+                        {
+                            "code": "IMAAACAI",
+                            "industry_name": "Generative Design & Topology Optimization for AM",
+                            "similarity": 0.5999
+                        },
+                        {
+                            "code": "HDAEAKAI",
+                            "industry_name": "Developer Experience Platforms for Enterprise (IDEs, CI/CD, Dev Portals)",
+                            "similarity": 0.5998
+                        },
+                        {
+                            "code": "MPAIAHAM",
+                            "industry_name": "Sample Library & Sound Design Creation (for production use)",
+                            "similarity": 0.5977
+                        },
+                        {
+                            "code": "IMAAACAC",
+                            "industry_name": "Slicing & Build Preparation Software",
+                            "similarity": 0.5967
+                        },
+                        {
+                            "code": "HDAHAFAA",
+                            "industry_name": "EDA Software Platforms (Digital Implementation, Verification & Signoff)",
+                            "similarity": 0.5966
+                        },
+                        {
+                            "code": "EDAMAAAB",
+                            "industry_name": "Digital Arts & Design (Graphic Design, Illustration, Animation)",
+                            "similarity": 0.596
+                        },
+                        {
+                            "code": "BPAHAKAB",
+                            "industry_name": "Interior Design Services",
+                            "similarity": 0.5929
+                        },
+                        {
+                            "code": "MPAAAAAD",
+                            "industry_name": "Digital Creative & Experience Design Agencies (Web/App/UX)",
+                            "similarity": 0.5913
+                        },
+                        {
+                            "code": "HLAGAJAI",
+                            "industry_name": "Quality, Compliance & Validation Software for Labs (GxP/CSV, eQMS for QC Labs)",
+                            "similarity": 0.591
+                        },
+                        {
+                            "code": "EDAFAKAG",
+                            "industry_name": "Executive Functioning & Behavioral Support Tools (ADHD, SEL/Behavior Tracking, Routines)",
+                            "similarity": 0.5894
+                        },
+                        {
+                            "code": "MPAFAFAK",
+                            "industry_name": "Game UI/UX, Scripting & Visual Authoring Tools",
+                            "similarity": 0.589
+                        },
+                        {
+                            "code": "BPAEANAI",
+                            "industry_name": "Software Engineering & Application Development Training (Languages, Frameworks, Testing)",
+                            "similarity": 0.5873
+                        },
+                        {
+                            "code": "EDAIADAO",
+                            "industry_name": "Immigration Compliance Software & Case Management Tools (Student Visa Focus)",
+                            "similarity": 0.5864
+                        },
+                        {
+                            "code": "HDAHAFAD",
+                            "industry_name": "System-Level, Multi-Physics & Package/PCB Co-Design (EDA)",
+                            "similarity": 0.5864
+                        },
+                        {
+                            "code": "IMAAACAH",
+                            "industry_name": "Digital Inventory, Part Libraries & Secure File Management",
+                            "similarity": 0.5857
+                        },
+                        {
+                            "code": "EDABAFAK",
+                            "industry_name": "IT Architecture & Solutions Design (Enterprise/Cloud Architecture, Integration)",
+                            "similarity": 0.5807
+                        },
+                        {
+                            "code": "BPAHAKAA",
+                            "industry_name": "Architectural Design Services",
+                            "similarity": 0.5805
+                        },
+                        {
+                            "code": "BPAEAKAM",
+                            "industry_name": "Developer Experience (DevEx) Tooling & Productivity Engineering",
+                            "similarity": 0.5804
+                        },
+                        {
+                            "code": "IMAAACAG",
+                            "industry_name": "Quality Assurance, Inspection & Traceability Software (AM)",
+                            "similarity": 0.5793
+                        },
+                        {
+                            "code": "IMAAACAL",
+                            "industry_name": "Post-Processing Planning & Automation Software (AM)",
+                            "similarity": 0.5788
+                        }
+                    ],
+                    "count": 30,
+                    "credits_consumed": 0
+                }
+            }
+        }
+    ]
+}

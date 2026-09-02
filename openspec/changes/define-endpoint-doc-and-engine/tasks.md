@@ -170,8 +170,8 @@
 - [x] 11.7 zJson = z.json() (zod v4 built-in; finite numbers hold); determinism
       sort comment at the compiler sort site
 - [x] 11.8 CLI: deno task catalog (providers | endpoints --provider/--category
-      | categories | inspect); engine:run --body/--query/--path-params
-      (+ --input escape hatch)
+      | categories | inspect); engine:run --body/--query-params/--path-params
+      (--input escape hatch later removed — see 18.x)
 - [x] 11.9 Meta trim: deprecated + tags removed; description roles defined
       (summary = one line, description = full text, string[] → string)
 - [x] 11.10 exa: flat provider; stream unexposed (schema comment + defensive
@@ -303,3 +303,14 @@
       sensitivity makes it structurally unsound)
 - [x] 17.4 Tests: compact shape, CRLF/tab/layout twins, template-\n + regex
       verbatim, division-vs-regex; D18 amendment + glossary + compiler spec
+
+## 18. Refinement: CLI one-encoding + README split
+
+- [x] 18.1 engine:run/record input flags = zRunInput fields in kebab
+      (--body/--query-params/--path-params); --input escape hatch removed
+      (dual-encoding smell); record gains query/path params (was a live gap
+      for GET endpoints)
+- [x] 18.2 README split: short README (what Monid is + repo purpose +
+      examples + connectors table) linking to DEVELOPMENT.md (component-
+      organized deep guide: concepts, defs, compiler, engine, usage,
+      config, versioning, CLI reference, authoring, layout)

@@ -29,7 +29,10 @@ sandbox) and wrapped in their hook contract's `.implement()`.
 - **THEN** load fails with `UNSUPPORTED_DOC`
 
 ### Requirement: Execution pipeline order
-`start(runInput)` SHALL execute: validate the input trio against
+`start(runInput)` SHALL execute: parse the input against the `RunInput`
+shape itself (`INVALID_INPUT` — the boundary trusts no host; non-object
+trios, wrong-typed params, and unknown keys are rejected before request
+construction) → validate the trio against
 `input.schema` (`INVALID_INPUT`) → `input.toRequest` (if present) → build
 `PreparedRequest` (pathParams `{placeholder}` substitution, queryParams →
 URL query, body → JSON, static headers; auth unexecuted) →
@@ -150,12 +153,13 @@ typed flags, generated --help). `deno task engine:run <provider>#<endpoint>`
 SHALL compile the whole repo (or reuse the `.output/` cache), pick the
 endpoint FROM THE BUNDLE (`sealUnit`), execute it with `directTransport`,
 and print the result including usage;
-input SHALL be composable via `--body`, `--query`, and `--path-params` (each
-JSON), with `--input` as the full-RunInput escape hatch. `deno task catalog
+input SHALL be composable via `--body`, `--query-params`, and
+`--path-params` (each JSON) — exactly `RunInput`'s fields in flag form, ONE
+encoding, no full-RunInput escape hatch. `deno task catalog
 providers | endpoints [--provider <name>] [--category <id>] | categories |
 inspect <id>` SHALL surface `@shared/core`'s catalog readers over the same
 cache. `deno task record <id> <scenario>` SHALL capture a live exchange as a
-replay fixture (headers never recorded).
+replay fixture (headers never recorded), taking the same three input flags.
 
 #### Scenario: Cache hit
 - **WHEN** engine:run is invoked twice with unchanged sources

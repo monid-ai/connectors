@@ -1,5 +1,6 @@
 /**
- * deno task record <provider>#<endpoint> <scenario> --body '<json>'
+ * deno task record <provider>#<endpoint> <scenario> [--body '<json>']
+ *                  [--query-params '<json>'] [--path-params '<json>']
  *
  * The fixture RECORDER: replay tests need real {req, res} exchanges, so this
  * runs the endpoint LIVE once (env <NAME>_API_KEY) through the engine with a
@@ -8,6 +9,8 @@
  * connectors/<provider>/endpoints/<endpoint>/fixtures/<scenario>.json.
  * From then on `deno task test` replays that byte-real vendor shape with
  * zero network and zero keys.
+ *
+ * Input flags mirror engine:run: zRunInput's fields in CLI kebab-case.
  */
 import { join } from "@std/path";
 import { Command } from "@cliffy/command";
@@ -27,24 +30,38 @@ const { options, args } = await new Command()
     .name("record")
     .description("Record a live call as a replay fixture.")
     .arguments("<endpoint:string> <scenario:string>")
-    .option("--body <json:string>", "Request body (JSON).")
-    .option("--input <json:string>", "Full RunInput (escape hatch).")
+    .option("--body <json:string>", "RunInput.body (JSON).")
+    .option(
+        "--query-params <json:string>",
+        "RunInput.queryParams (JSON object).",
+    )
+    .option("--path-params <json:string>", "RunInput.pathParams (JSON object).")
     .parse(Deno.args);
 
 const [endpointId, scenario] = args;
 const selector = parseEndpointId(endpointId); // split needed only for the fixture path
 
-let input: RunInput = {};
-if (options.input !== undefined) {
-    const full = parseJson("--input", options.input);
-    input = full !== null && typeof full === "object" && !Array.isArray(full) &&
-            ("body" in full || "queryParams" in full || "pathParams" in full)
-        ? full as RunInput
-        : { body: full };
-}
-if (options.body !== undefined) {
-    input = { ...input, body: parseJson("--body", options.body) };
-}
+const input: RunInput = {
+    ...(options.body !== undefined
+        ? { body: parseJson("--body", options.body) }
+        : {}),
+    ...(options.queryParams !== undefined
+        ? {
+            queryParams: parseJson(
+                "--query-params",
+                options.queryParams,
+            ) as RunInput["queryParams"],
+        }
+        : {}),
+    ...(options.pathParams !== undefined
+        ? {
+            pathParams: parseJson(
+                "--path-params",
+                options.pathParams,
+            ) as RunInput["pathParams"],
+        }
+        : {}),
+};
 
 const { bundle } = await compileToOutput();
 const unit = sealUnit(bundle, endpointId);
@@ -62,6 +79,7 @@ const fixturePath = join(
     `${scenario}.json`,
 );
 const fixture = zFixture.parse({ name: scenario, calls: sink });
+await Deno.mkdir(join(fixturePath, ".."), { recursive: true });
 await Deno.writeTextFile(fixturePath, JSON.stringify(fixture, null, 4) + "\n");
 
 console.log(`recorded ${sink.length} call(s) → ${fixturePath}`);

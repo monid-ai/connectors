@@ -1,15 +1,29 @@
-import type {
-    EndpointDoc,
-    FnEntry,
-    JsonSchemaDoc,
-    RunInput,
+import {
+    type EndpointDoc,
+    type FnEntry,
+    formatZodError,
+    type JsonSchemaDoc,
+    type RunInput,
+    zRunInput,
 } from "@shared/core";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import type { PreparedRequest } from "./interfaces/mod.ts";
 import { validateAgainst } from "./validate.ts";
 
-/** Validate the caller's RunInput against the doc's input schemas. */
-export function validateInput(doc: EndpointDoc, runInput: RunInput): RunInput {
+/**
+ * Validate the caller's input: first the RunInput shape itself (the engine
+ * boundary trusts no host — CLI, tests, hosted workers all pass through here),
+ * then the doc's input schemas.
+ */
+export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
+    const shape = zRunInput.safeParse(rawInput);
+    if (!shape.success) {
+        throw new EngineError(
+            EngineErrorCode.INVALID_INPUT,
+            `${doc.id}: input ${formatZodError(shape.error)}`,
+        );
+    }
+    const runInput = shape.data;
     const schemas = doc.input.schema;
     const checks: [string, JsonSchemaDoc | undefined, unknown][] = [
         ["body", schemas.body, runInput.body],

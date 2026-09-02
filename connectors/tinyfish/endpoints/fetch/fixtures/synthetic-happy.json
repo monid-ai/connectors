@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.fetch.tinyfish.ai/",
+                "body": {
+                    "urls": ["https://example.com/pricing"],
+                    "format": "markdown"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "url": "https://example.com/pricing",
+                            "text": "# Pricing\n\nStarter — $9/mo...",
+                            "format": "markdown"
+                        }
+                    ],
+                    "errors": []
+                }
+            }
+        }
+    ]
+}

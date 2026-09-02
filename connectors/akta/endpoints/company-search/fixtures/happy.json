@@ -1,0 +1,195 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/company/search/?query=canva"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "uuid": "00000l1",
+                            "name": "Canva",
+                            "website": "http://www.canva.com",
+                            "product_category": "Graphic Design Software",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "00026g7",
+                            "name": "GoCanvas",
+                            "website": "https://www.gocanvas.com",
+                            "product_category": "Mobile Workflow Automation Software",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000eb3n",
+                            "name": "Canvas Credit Union",
+                            "website": "https://www.canvas.org/",
+                            "product_category": "",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "00061ap",
+                            "name": "Canvas Worldwide",
+                            "website": "https://www.canvasworldwide.com/",
+                            "product_category": "Media And Advertising Agency",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000083d",
+                            "name": "Canvas Prime",
+                            "website": "http://www.canvas.vc",
+                            "product_category": "Venture Capital Investment Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "005nxf9",
+                            "name": "canva.in",
+                            "website": "https://canva.in",
+                            "product_category": "Graphic Design Software",
+                            "company_status": ""
+                        },
+                        {
+                            "uuid": "028r2lh",
+                            "name": "Canva painting and wallpaper installation Ltd.",
+                            "website": "https://canvapainting.com",
+                            "product_category": "Painting and Surface Preparation Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "002tlie",
+                            "name": "Canva & Decor",
+                            "website": "https://canvaanddecor.com",
+                            "product_category": "",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0007tjf",
+                            "name": "Canvas LMS",
+                            "website": "https://canvas.com",
+                            "product_category": "Learning Management System",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000d2ln",
+                            "name": "Canva Mod Hub",
+                            "website": "https://canvamodhub.com/",
+                            "product_category": "Graphic Design Software",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "003kduq",
+                            "name": "Canva logo",
+                            "website": "https://www.canvalogo.com/",
+                            "product_category": "Content Aggregation",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0000j7q",
+                            "name": "Canvas Medical",
+                            "website": "https://canvasmedical.com/",
+                            "product_category": "Healthcare Emr Software Platform",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0004b75",
+                            "name": "Canvas Energy",
+                            "website": "https://canvasenergy.com",
+                            "product_category": "Oil And Gas Production",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0000f2d",
+                            "name": "Canvas",
+                            "website": "http://www.canvas.build",
+                            "product_category": "Construction Robotics",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0000c5q",
+                            "name": "Canvas Envision",
+                            "website": "https://www.canvasenvision.com/",
+                            "product_category": "Manufacturing Training Documentation Software",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0000of8",
+                            "name": "Canvass AI",
+                            "website": "http://canvass.io",
+                            "product_category": "Industrial Analytics Platform",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "00061si",
+                            "name": "BELLA+CANVAS",
+                            "website": "https://www.bellacanvas.com/",
+                            "product_category": "Wholesale Blank Apparel Manufacturer",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "00064mh",
+                            "name": "Under Canvas",
+                            "website": "https://www.undercanvas.com/",
+                            "product_category": "Luxury Outdoor Hospitality (Glamping)",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000ez7r",
+                            "name": "Calvary Community Care",
+                            "website": "https://www.calvarycare.org.au",
+                            "product_category": "Community Healthcare Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000umhc",
+                            "name": "Canvas Wealth Advisors",
+                            "website": "https://canvaswealthadvisors.com",
+                            "product_category": "Wealth Management Advisory Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0006abd",
+                            "name": "Canvas",
+                            "website": "https://www.canvas-inc.com/",
+                            "product_category": "Defense Engineering Test Training Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000dz57",
+                            "name": "Canvas Health",
+                            "website": "https://www.canvashealth.org",
+                            "product_category": "Behavioral Health Services",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "000zqhj",
+                            "name": "Canvas Property Group",
+                            "website": "https://www.canvaspg.com",
+                            "product_category": "",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "0003vge",
+                            "name": "Canvas Offices",
+                            "website": "https://canvasoffices.co.uk",
+                            "product_category": "Office Space Provider",
+                            "company_status": "private"
+                        },
+                        {
+                            "uuid": "00059rs",
+                            "name": "Canvas Prime",
+                            "website": "https://www.canvas.vc/",
+                            "product_category": "",
+                            "company_status": "private"
+                        }
+                    ],
+                    "count": 25,
+                    "credits_consumed": 0
+                }
+            }
+        }
+    ]
+}
