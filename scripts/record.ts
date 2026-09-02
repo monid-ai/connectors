@@ -79,6 +79,7 @@ const fixturePath = join(
     `${scenario}.json`,
 );
 const fixture = zFixture.parse({ name: scenario, calls: sink });
+await Deno.mkdir(join(fixturePath, ".."), { recursive: true });
 await Deno.writeTextFile(fixturePath, JSON.stringify(fixture, null, 4) + "\n");
 
 console.log(`recorded ${sink.length} call(s) → ${fixturePath}`);

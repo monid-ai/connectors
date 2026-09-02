@@ -26,6 +26,6 @@ export default defineEndpoint({
         docsUrl: "https://docs.akta.pro/api-reference/news-signals",
         categories: ["company-news", "news-search", "funding-data"],
     },
-    request: { method: "GET", path: "/v1/news" },
+    request: { method: "GET", path: "/v1/news/" },
     input: { schema: { queryParams: zNewsQueryParams } },
 });

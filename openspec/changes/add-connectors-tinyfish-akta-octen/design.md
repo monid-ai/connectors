@@ -104,6 +104,26 @@ tests gate on `TINYFISH_API_KEY`/`AKTA_API_KEY`/`OCTEN_API_KEY` via
 own change). When keys arrive, `deno task record` replaces the
 synthetic fixtures — an open task, not a blocker.
 
+AMENDED: akta + octen keys arrived; all their fixtures are now RECORDED
+(happy + real-401 provider-error + empty/zero-usage scenarios) and the
+live suites pass. Real traffic surfaced two port corrections the
+synthetics had masked:
+
+- akta 307-redirects bare paths to trailing-slash form; the engine's
+  transport is `redirect: "manual"` (auth headers never silently travel
+  across redirects), so the defs carry the slash (`/v1/news/`).
+- octen nests payloads under a `data` envelope (`{data, request_id, meta,
+  code, msg}`); the synthetic fixtures had results at top level. Settle
+  fns were already correct (`$.meta.usage.*` anchors to the real shape).
+- octen's server-side default embedding model (4b) was observed to 500
+  while 0.6b/8b work — the live test and fixture pin an explicit model;
+  the schema keeps the published enum + default.
+
+Live probes also confirmed the schema tightening: octen requires a
+timezone on `start_time`/`end_time` (date-only and offset-less forms are
+400s; Z and ±hh:mm are accepted) — exactly `z.iso.datetime({offset:
+true})`. tinyfish stays synthetic (no key yet).
+
 ## D9 — Category leaves
 
 New closed-vocabulary leaves (same-PR rule): `news-search`,

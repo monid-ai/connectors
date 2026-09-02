@@ -44,5 +44,10 @@
 - [x] 5.2 README connector list
 - [x] 5.3 Verify: fmt · lint · check · full suite · determinism · catalog
       smoke · version:check · openspec validate
-- [ ] 5.4 Replace synthetic fixtures via `deno task record` when vendor keys
-      exist (not blocking)
+- [x] 5.4 Replace synthetic fixtures via `deno task record` when vendor keys
+      exist — DONE for akta (all 6 + real 401 + empty) and octen (all 4 +
+      real 401 + zero-successful-urls empty); live suite green for both.
+      Port fixes surfaced by real traffic: akta paths need a TRAILING SLASH
+      (vendor 307-redirects the bare form; the engine transport is
+      redirect: "manual"), and octen nests payloads under a `data` envelope.
+      tinyfish stays synthetic (no key yet)

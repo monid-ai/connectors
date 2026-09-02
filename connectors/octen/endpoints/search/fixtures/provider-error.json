@@ -1,0 +1,22 @@
+{
+    "name": "provider-error",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.octen.ai/search",
+                "body": {
+                    "query": "deno"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "code": 401,
+                    "msg": "Invalid API Key.",
+                    "request_id": "20260902061944549OENTV0TKT0"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/company/enrichment/?company=https%3A%2F%2Fcanva.com&sections=firmographic"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "uuid": "00000l1",
+                        "firmographic": {
+                            "name": "Canva",
+                            "legal_name": "Canva",
+                            "website": "canva.com",
+                            "company_type": {
+                                "code": "private",
+                                "label": "Private"
+                            },
+                            "founded_year": 2013,
+                            "company_description": "Canva is an online visual communication and design platform founded in 2013 and headquartered in Sydney, Australia. Its core product is the Canva Visual Suite, a horizontal workspace combining design, documents (Docs), spreadsheets (Sheets), whiteboards, presentations, video, photo editing, websites, and print on a single cloud-based platform with web, mobile, and desktop clients. The platform is anchored by Magic Studio — a suite of generative AI features including Magic Write, Magic Media, Magic Eraser, Magic Layers, Magic Resize, Magic Charts, and Magic Insights — and was extended in May 2026 with Canva AI 2.0, which introduced Conversational Design, Agentic Orchestration, Object-Based Intelligence, and Living Memory powered by proprietary in-house models.\n\nCanva monetizes through a freemium-to-paid subscription funnel: a free tier, Pro at $120/year (~$15/month), per-seat Teams, and custom-priced Enterprise with SSO and compliance controls. Free tiers also serve Education (including a statewide Andhra Pradesh rollout) and verified Nonprofits. The company has expanded aggressively through acquisitions — Flourish (data visualization, 2022), Kaleido AI (2021), Affinity / Serif (professional design tools, 2024, made free), Leonardo.Ai (AI image generation, 2024), Doohly (digital out-of-home, 2026, $30M), and Ortto, SimTheory, MangoAI, and MagicBrief (marketing automation and AI, 2025–2026) — and through a Connected App strategy that embeds Canva inside ChatGPT, Claude, Gemini, Copilot, and Perplexity. Canva also operates an Apps Marketplace, Templates Marketplace, and developer platform with API and Model Context Protocol (MCP) availability.\n\nAt the most recent reporting, Canva had 265 million monthly active users and 31 million paying subscribers across 190+ countries, served 95%+ of Fortune 500, and reported annualized revenue of approximately $4B for 2025 with eight consecutive years of profitability. The company is privately held, valued at up to $65B following a mid-2025 secondary share sale, and is reportedly considering a US IPO in late 2026.",
+                            "company_description_short": "Canva is a cloud-based visual communication platform serving individuals, SMBs, enterprises, educators, and nonprofits with an integrated design, document, video, and AI workspace used by 265 million people monthly.",
+                            "operating_status": {
+                                "code": "operating",
+                                "label": "Operating"
+                            },
+                            "ownership_category": {
+                                "code": "venture_growth_investor_backed",
+                                "label": "Venture Growth Investor Backed"
+                            },
+                            "headcount_range": "1001-5000"
+                        }
+                    },
+                    "credits_consumed": 2
+                }
+            }
+        }
+    ]
+}

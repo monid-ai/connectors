@@ -17,6 +17,6 @@ export default defineEndpoint({
             "https://docs.akta.pro/api-reference/alternative-data/employee-reviews",
         categories: ["company-reviews"],
     },
-    request: { method: "GET", path: "/v1/company/employee-reviews" },
+    request: { method: "GET", path: "/v1/company/employee-reviews/" },
     input: { schema: { queryParams: zEmployeeReviewsQueryParams } },
 });

@@ -30,6 +30,9 @@ export default defineProvider({
         categories: ["company-enrichment"],
     },
     auth: { inject: presets.auth.header("x-api-key") },
+    // Endpoint paths carry a TRAILING SLASH: akta 307-redirects the bare
+    // form to it, and the engine's transport is redirect: "manual" (auth
+    // headers must never silently travel across redirects).
     request: { baseUrl: "https://api.akta.pro/api" },
     input: {
         toRequest: ({ data }) => ({

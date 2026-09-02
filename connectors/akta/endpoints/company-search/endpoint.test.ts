@@ -9,9 +9,9 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("akta#company-search happy (synthetic): free lookup — 0 credits, $0", async () => {
+Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0", async () => {
     const unit = await testSealedUnit("akta#company-search");
-    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
         unit,
         input: { queryParams: { query: "canva" } },

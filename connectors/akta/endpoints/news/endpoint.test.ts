@@ -32,9 +32,9 @@ Deno.test("akta: provider-level hooks interned ONCE across all six endpoints", a
     }
 });
 
-Deno.test("akta#news happy (synthetic): credits are the native unit; arrays go comma-separated", async () => {
+Deno.test("akta#news happy (recorded): credits are the native unit; arrays go comma-separated", async () => {
     const unit = await testSealedUnit("akta#news");
-    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
         unit,
         input: {
@@ -51,22 +51,38 @@ Deno.test("akta#news happy (synthetic): credits are the native unit; arrays go c
     });
     assertEquals(result.httpStatus, 200);
     // native unit = credits; vendor cost derived ($1 = 20 credits)
-    assertEquals(result.usage.units, [{ amount: 2.5, unit: "credit" }]);
+    assertEquals(result.usage.units, [{ amount: 0.12, unit: "credit" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
-        value: 125_000, // 2.5 / 20 dollars = $0.125 = 125k micro-dollars
+        value: 6_000, // 0.12 / 20 dollars = $0.006 = 6k micro-dollars
         unit: "MICRO_DOLLAR",
     });
-    assertEquals(result.usage.evidence?.credits_consumed, 2.5);
+    assertEquals(result.usage.evidence?.credits_consumed, 0.12);
     // billing field absorbed into usage — one shape, not two
     const output = result.output as Record<string, unknown>;
     assertEquals("credits_consumed" in output, false);
     assertEquals((output.data as unknown[]).length, 2);
 });
 
+Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits", async () => {
+    const unit = await testSealedUnit("akta#news");
+    const fixture = await loadFixture(`${fixturesDir}empty.json`);
+    const result = await runEndpoint({
+        unit,
+        input: { queryParams: { company: "nope" } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    // money follows evidence: no credits consumed, $0
+    assertEquals(result.usage.units, [{ amount: 0, unit: "credit" }]);
+    assertEquals((result.output as Record<string, unknown>).count, 0);
+});
+
 Deno.test("akta#news: impossible calendar dates rejected by the compiled schema", async () => {
     const unit = await testSealedUnit("akta#news");
-    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
     // z.iso.date() compiles calendar-aware: month/day bounds + leap years
     for (
         const start_date of [
@@ -111,17 +127,16 @@ Deno.test("akta#news: impossible calendar dates rejected by the compiled schema"
     assertEquals(String(error).includes("INVALID_INPUT"), false, String(error));
 });
 
-Deno.test("akta#news provider error (synthetic): zero usage", async () => {
+Deno.test("akta#news provider error (recorded 401): zero usage", async () => {
     const unit = await testSealedUnit("akta#news");
-    const fixture = await loadFixture(
-        `${fixturesDir}synthetic-provider-error.json`,
-    );
+    const fixture = await loadFixture(`${fixturesDir}provider-error.json`);
     const result = await runEndpoint({
         unit,
-        input: { queryParams: { company: "nope" } },
+        input: { queryParams: { company: "https://canva.com" } },
         mode: "replay",
         fixture,
     });
+    assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
     assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
 });

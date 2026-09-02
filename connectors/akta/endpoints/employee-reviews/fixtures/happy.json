@@ -1,0 +1,127 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/company/employee-reviews/?company=https%3A%2F%2Fcanva.com&limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "uuid": "00000l1",
+                        "employee_reviews": {
+                            "overall_rating": {
+                                "glassdoor": 3.9
+                            },
+                            "other_ratings": [
+                                {
+                                    "type": "business_outlook",
+                                    "provider": "glassdoor",
+                                    "value": 0.66
+                                },
+                                {
+                                    "type": "ceo",
+                                    "provider": "glassdoor",
+                                    "value": 0.86
+                                },
+                                {
+                                    "type": "recommend_to_friend",
+                                    "provider": "glassdoor",
+                                    "value": 0.71
+                                },
+                                {
+                                    "type": "compensation_and_benefits",
+                                    "provider": "glassdoor",
+                                    "value": 3.9
+                                },
+                                {
+                                    "type": "culture_and_values",
+                                    "provider": "glassdoor",
+                                    "value": 3.8
+                                },
+                                {
+                                    "type": "diversity_and_inclusion",
+                                    "provider": "glassdoor",
+                                    "value": 4.1
+                                },
+                                {
+                                    "type": "senior_management",
+                                    "provider": "glassdoor",
+                                    "value": 3.1
+                                },
+                                {
+                                    "type": "work_life_balance",
+                                    "provider": "glassdoor",
+                                    "value": 3.6
+                                }
+                            ],
+                            "reviews": {
+                                "data": [
+                                    {
+                                        "id": 105383460,
+                                        "summary": "Great culture but lack of visibility for contractors",
+                                        "pros": "Great culture and great product",
+                                        "cons": "Lack of visibility and last minute decisions when it comes to contractors, no prospect of contract turning into full time permanent employment.",
+                                        "rating": 5,
+                                        "review_link": "https://www.glassdoor.com/Reviews/Employee-Review--RVW105383460.htm",
+                                        "job_title": "Social Media Manager",
+                                        "review_date": "2026-08-30T02:29:01.103000+00:00",
+                                        "employment_status": "CONTRACT",
+                                        "is_current_employee": true,
+                                        "years_of_employment": 1,
+                                        "location": "London, England",
+                                        "helpful_count": 0,
+                                        "not_helpful_count": 0,
+                                        "career_opportunities_rating": 3,
+                                        "ceo_rating": "APPROVE",
+                                        "compensation_and_benefits_rating": 3,
+                                        "culture_and_values_rating": 4,
+                                        "diversity_and_inclusion_rating": 4,
+                                        "senior_management_rating": 4,
+                                        "work_life_balance_rating": 5,
+                                        "language": "eng",
+                                        "provider": "glassdoor"
+                                    },
+                                    {
+                                        "id": 105363604,
+                                        "summary": "Great office culture but frequent team changes",
+                                        "pros": "- many club events \n- people are friendly\n- office is good with free food, lots of utilities and new office coming in 2027\n- access to all the AI tools you can think of\n- contributing to an impactful product gives me lots of sense of achievement",
+                                        "cons": "- team changes frequently\n- pay is good within Australia, but can't compare with other tech giants.",
+                                        "rating": 4,
+                                        "review_link": "https://www.glassdoor.com/Reviews/Employee-Review--RVW105363604.htm",
+                                        "job_title": "Frontend Software Engineer",
+                                        "review_date": "2026-08-27T22:59:44.010000+00:00",
+                                        "employment_status": "REGULAR",
+                                        "is_current_employee": true,
+                                        "years_of_employment": 4,
+                                        "location": "Sydney",
+                                        "helpful_count": 0,
+                                        "not_helpful_count": 0,
+                                        "career_opportunities_rating": 4,
+                                        "ceo_rating": "APPROVE",
+                                        "compensation_and_benefits_rating": 4,
+                                        "culture_and_values_rating": 4,
+                                        "diversity_and_inclusion_rating": 5,
+                                        "senior_management_rating": 4,
+                                        "work_life_balance_rating": 5,
+                                        "language": "eng",
+                                        "provider": "glassdoor"
+                                    }
+                                ],
+                                "total": 1110,
+                                "total_by_provider": {
+                                    "glassdoor": 1110
+                                }
+                            }
+                        }
+                    },
+                    "limit": 2,
+                    "offset": 0,
+                    "credits_consumed": 1.5
+                }
+            }
+        }
+    ]
+}

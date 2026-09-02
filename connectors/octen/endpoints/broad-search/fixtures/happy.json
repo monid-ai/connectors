@@ -1,0 +1,251 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.octen.ai/broad-search",
+                "body": {
+                    "query": "deno 2 release notes",
+                    "max_queries": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "query": "deno 2 release notes",
+                        "queries": [
+                            "Deno 2 release notes",
+                            "Deno version 2 changelog"
+                        ],
+                        "search_results": [
+                            {
+                                "query": "Deno 2 release notes",
+                                "results": [
+                                    {
+                                        "title": "Announcing Deno 2 | Deno",
+                                        "url": "https://deno.com/blog/v2.0",
+                                        "highlight": "Announcing Deno 2\n\n@\n\nWatch our video announcement. Announcing Deno 2\n\nThe web is humanity’s largest software platform—building for it means potentially reaching over 5 billion people. \n\nToday,we’re thrilled to announce Deno 2,which includes:\n\nBackwards compatibility with Node. deno task can now run package. Backwards-compatible,forward-thinking\n\nDeno 2 is backwards compatible with Node and npm. \n\nDeno 2’s compatibility with Node and npm is robust.Deno 2 understands package. (in blue)\n\nWith the ability to import npm packages via the npm:specifier,you can access over 2 million npm modules in Deno.This even includes complex packages such as gRPC,ssh2,Prisma,temporal. \n\nFinally,you can use Deno 2 with your favorite JavaScript framework.Deno 2 supports Next. Deno is now a package manager with deno install\n\nNot only does Deno 2 support package. The Standard Library is now stable\n\nWhile there are over 2 million modules available on npm,the process of searching,evaluating,and using a new module can be time consuming. Private npm registries\n\nPrivate npm registries in Deno 2 work the same way they do in Node and npm,with an. Workspaces and monorepos\n\nDeno 2 also supports workspaces,which is a robust solution to manage monorepos. To make it easier for these teams,we’re introducing a Long Term Support(LTS)release channel.\n\nStarting with Deno 2. \n\n@\n\nStarting with Deno 2. Deno is fast!\n\nWe’ve put tremendous effort into making Deno fast across a wide range of real-world scenarios. 45,not Deno 2.0.In reality,Deno 2. With Deno 2.0,we decided it was time for a refresh. I loved Deno because it didn’t need any config files,but with the new package manager additions,is Deno 2 becoming more like Node,where you need a package. Are there breaking changes if I upgrade to Deno 2? Your Fresh project should work out of the box with Deno 2—no changes needed. When should I expect Deno 2 to land on Deno Deploy? What’s next\n\nDeno 2 takes all of the features developers love about Deno 1. \n\n@\n\nWe invite you to try Deno 2 today and experience the future of JavaScript and TypeScript development.Get started with Deno 2 now:\n\nGetting Started with Deno(docs)\n1.x ⇒ 2 Migration Guide\n Watch the Deno 2 Announcement Keynote\n\nJoin our community and let’s shape the future of JavaScript together!",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2024-10-09T09:00:00Z",
+                                        "time_last_crawled": "2026-08-18T02:58:52Z",
+                                        "favicon": "https://deno.com/favicon.ico?__frsh_c=b136973e4e310316272c8b2322ef947250c2beb0"
+                                    },
+                                    {
+                                        "title": "Releases · denoland/deno · GitHub",
+                                        "url": "https://github.com/denoland/deno/releases",
+                                        "highlight": "Releases:denoland/deno\nReleases · denoland/deno\nv2.7.11\n release.Only release title and notes can be modified. v2.7.10\n release.Only release title and notes can be modified. 2.7.10/2026.03.31\n v2.7.9\n release.Only release title and notes can be modified. 2.7.9/2026.03.27\n v2.7.8\n release.Only release title and notes can be modified. 2.7.8/2026.03.25\n fix(cli):parse-frozen flag for deno update and deno outdated(#32975)\nfix(compile):skip Node-to-Deno arg translation in standalone binaries\n (#32874)-fix(ext/node):don't fire upgrade event for h2c requests(#32866)\n invalidation(#32756)-fix(ext/node):support http2 createConnection sockets(#32733)\n 15.2(#32949)\n fix:include Temporal types in deno types output(#32952)\n v2.7.7\n release.Only release title and notes can be modified. 2.7.7/2026.03.19\n v2.7.6\n release.Only release title and notes can be modified. 2.7.6/2026.03.18\n deno compile\n v2.7.5\n release.Only release title and notes can be modified. 2.7.5/2026.03.11\n deno doc\n (#32559)-fix(ext/node):add missing http2 header constants(#32611)\n fix(ext/node):handle generateKeyPair 2-arg call and enable PQC tests(#32619)\n fix(ext/node):rewrite http2 implementation(#32418)\n (#32581)-fix:flush CPU profile and coverage data on Deno. v2.7.4\n release.Only release title and notes can be modified. 2.7.4/2026.03.05\n v2.7.3\n release.Only release title and notes can be modified. 2.7.3/2026.03.04\n v2.7.2\n release.Only release title and notes can be modified. 2.7.2/2026.03.03\n",
+                                        "full_content": "",
+                                        "authors": "Denoland",
+                                        "time_published": "2026-04-01T00:00:00Z",
+                                        "time_last_crawled": "2026-04-09T01:35:02Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 1.33: Deno 2 is coming | Deno",
+                                        "url": "https://deno.com/blog/v1.33",
+                                        "highlight": "Deno 1.33:Deno 2 is coming\n  Bartek Iwańczuk Bartek Iwańczuk\n  David Sherret David Sherret\n  Yoshiya Hinosawa Yoshiya Hinosawa\nAs mentioned in the recent“Forced Optimization”presentation at Node Congress 2023,we’re working diligently towards a major release of Deno 2 in the coming months.Though our vision for Deno 2 is ambitious,our goals haven’t changed since we started the project:\nEffortless Coding:Whether that’s removing config,boilerplate code,or build steps,we’ve continued to make it easy for you to dive into code and be productive immediately.This release made our LSP more robust,allowing any code editor with LSP support to work great with Deno projects.\nBest-in-Class Performance:Speed and efficiency is important for developers and users.This release improved the performance of HTTP\t \tand\t \tWebSocket\t \tservers,as well as set the foundation for further performance work.\nUncompromising Security.Security was built into Deno with an opt-in permission model so you always know what your code has access to.In the coming months,we’ll be introducing new features to Deno’s permission system,making it easier and more flexible to work with.\nDeno 1.33 is a step further towards these ideals.With this release:\nBuilt-in KV database\nFlatter deno.jsonconfiguration\nFewer permission checks for dynamic imports\nImprovements to npm and Node compatibility\nPerformance improvements\nImprovements to CLI\nLSP document preloading\nChanges to DenoAPIs\nChanges to the standard library\nV8 11.4\nAs we approach Deno 2,the next minor releases will focus on improving performance,creating a best-in-class developer experience,enhancing security,and more robust Node/npm compatibility.",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2023-04-28T18:00:00Z",
+                                        "time_last_crawled": "2026-08-02T07:34:32Z",
+                                        "favicon": "https://deno.com/favicon.ico?__frsh_c=4a6963ab696b3860b35f96895cf88182e0095bd5"
+                                    },
+                                    {
+                                        "title": "Release v2.1.2 · denoland/deno · GitHub",
+                                        "url": "https://github.com/denoland/deno/releases/tag/v2.1.2",
+                                        "highlight": "v2.1.2\n2.1.2/2024.11.28\nfeat(unstable):Instrument Deno.serve(#26964)\nfeat(unstable):Instrument fetch(#27057)\nfeat(unstable):repurpose\nunstable-detect-cjs\nto attempt loading more\nmodules as cjs(#27094)-fix(check):support jsdoc\nimport\ntag(#26991)-fix(compile):correct buffered reading of assets and files(#27008)\nfix(compile):do not error embedding same symlink via multiple methods\n(#27015)-fix(compile):handle TypeScript file included as asset(#27032)\nfix(ext/fetch):don't throw when\nbodyUsed\ninspect after upgrade(#27088)-fix(ext/node):\ntls.connect\nsocket upgrades(#27125)-fix(ext/node):add\nfs.promises.fstat\nandFileHandle#stat\n(#26719)-fix(ext/webgpu):normalize limits to number(#27072)\nfix(ext/webgpu):use correct variable name(#27108)\nfix(ext/websocket):don't throw exception when sending to closed socket\n(#26932)-fix(fmt):return\nNone\nif sql fmt result is the same(#27014)-fix(info):resolve bare specifier pointing to workspace member(#27020)\nfix(init):always force managed node modules(#27047)\nfix(init):support scoped npm packages(#27128)\nfix(install):don't re-set up node_modules if running lifecycle script\n(#26984)-fix(lsp):remove stray debug output(#27010)\nfix(lsp):support task object notation for tasks request(#27076)\nfix(lsp):wasm file import completions(#27018)\nfix(node):correct resolution of dynamic import of esm from cjs(#27071)\n",
+                                        "full_content": "",
+                                        "authors": "Denoland",
+                                        "time_published": "2024-11-28T00:00:00Z",
+                                        "time_last_crawled": "2026-04-01T08:19:59Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 2 Release Candidate Ready",
+                                        "url": "https://www.i-programmer.info/news/167-javascript/17505-deno-2-release-candidate-ready.html",
+                                        "highlight": "Deno 2 Release Candidate Ready|\nWritten by Ian Elliot|\nThursday,26 September 2024|\nThe Deno team has released the release candidate for Deno 2.0,which includes everything expected in the final release.This is the largest update since 1.0 back in May 2020,with major changes like the introduction of Node's process global.Deno is built in Rust,and is described as secure by default as it has no file,network,or environment access,unless explicitly enabled.Deno is targeted to be an alternative to Node.js,but so far isn't as widely adopted,despite offering native support for TypeScript and ECMAScript modules.One major change to Deno 2 is in the handling of global variables.The window global has been removed,and Node's process is now available.Deno added the window global in Deno v1.0,with the aim of making Deno as browser-compatible as possible.This backfired,as many libraries check if they are executed in the browser by probing for a window global variable instead of checking for the existence of DOM.This led to a class of bugs in libraries that would otherwise work in Deno,due to window being globally available.While window has been removed,the process global has been added as per user requests.The Deno developers say that while it has been possible to use process by importing it from node:process module for a long time,many popular frameworks rely on its presence in the global scope.The addition should mean that more code written originally for Node.",
+                                        "full_content": "",
+                                        "authors": "Ian Elliot",
+                                        "time_published": "2024-09-26T00:00:00Z",
+                                        "time_last_crawled": "2026-01-20T10:32:51Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Druckversion - Deno 2.0 is in the starting blocks: Release Candidate published | heise online",
+                                        "url": "http://www.heise.de/en/news/Deno-2-0-is-in-the-starting-blocks-Release-Candidate-published-9937127.html?view=print",
+                                        "highlight": "https\t:\t/\t/deno.\tcom\t/\tblog\t/\tv2.\t0\t-release-\tcandidate\nmailto:mai@heise.de\nhttps\t:\t/\t/\twww\t.\tfacebook\t.\tcom\t/\theise\tonline\tEnglish\nhttps\t:\t/\t/\twww\t.\tlinkedin\t.\tcom\t/\tcompany\t/\t10\t469\t1972\nhttps\t:\t/\t/\tsocial\t.\theise\t.\tde\t/\t@\theise\tonline\tenglish\nhttps\t:\t/\t/\twww\t.\theise\t.\tde\t/\tnews\t/Deno-2-\t0\t-\tsteht\t-\tin\t-\tden\t-\tStart\tloe\tchern\t-Release-\tCandidate\t-\terschienen\t-\t99\t323\t20\t.\thtml\nCopyright © 2024 Heise Medien",
+                                        "full_content": "",
+                                        "authors": "Heise Online; Maika Möbus",
+                                        "time_published": "2024-09-20T20:37:00Z",
+                                        "time_last_crawled": "2026-05-19T23:52:16Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "denoland/deno v2.7.12 on GitHub",
+                                        "url": "https://newreleases.io/project/github/denoland/deno/release/v2.7.12",
+                                        "highlight": "fix(ext/node):throw on cipher update with input>=2^31-1 bytes(#33201)\nfix(ext/webgpu):accept\nArrayBuffer\ninGPUQueue.writeBuffer()\nas data\nsource(#33152)-fix(io):remove global stdio statics,handle non-blocking stdin(#33219)\nfix(node):validate resolved main path stays within package directory(#33170)\nfix(otel):add timeout to OTEL HTTP\t \texporter\t \tto\t \tprevent\t \thangs\t (#33159)\nfix(permissions):check deny rules against resolved IPs to prevent numeric\nhostname bypass(#33203)-fix(permissions):normalize IPv4-mapped IPv6 addresses in net\t \tpermission\nchecks(#33223)-fix(repl):surface CDP protocol errors and fix race in wait_for_response\n(#33190)-fix(runtime):cache canonicalized watch paths,fix spurious events(#33123)\nfix(schema):fix the\npublish:false\nof deno.json schema(#33196)-fix:linked packages with peer deps failing to cache from lockfile(#33143)\nfix:update release template workflow URLs to.generated.yml(#33116)\nperf(ext/node):use aws-lc-sys EVP API for chacha20-poly1305(#33110)",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2026-04-09T20:35:29Z",
+                                        "time_last_crawled": "2026-04-15T14:10:21Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "The Future of JavaScript Runtime: Deno 2.0 Release Candidate Arrives",
+                                        "url": "https://medium.com/majordigest/the-future-of-javascript-runtime-deno-2-0-release-candidate-arrives-300d7c89c251",
+                                        "highlight": "\nDeno,created by Denoland,is an open-source JavaScript runtime that competes with Node.js in the development community.The Deno 2.0 release candidate aims to address several issues that have been plaguing developers and introduces new functionalities to enhance productivity.\nThe two significant changes introduced in the Deno 2.0 release candidate are the removal of the window global variable and the addition of Node.js’s process.These changes aim to improve compatibility with Node.js code and streamline dependency management.\nThe window global was initially introduced in Deno 1.0 to enhance browser compatibility.However,it turned out to be a source of bugs in libraries that were otherwise compatible with Deno.The removal of this variable will likely reduce the number of errors developers encounter when using Deno.\nThe addition of Node.js’s process global is a significant improvement for developers who prefer to work with code originally written for Node.js.This change will allow them to execute their code in Deno without making any modifications,thanks to the increased compatibility.\nThe Deno permission system has been updated in the release candidate,introducing several improvements that aim to make it easier for developers to manage permissions and detect errors.The changes include raising the Deno.errors.Notcapable error instead of Deno.errors.PermissionDenied when a lack of Deno permissions is detected.\nThe Deno 2.0 release candidate comes with TypeScript 5.6,which is an improvement for developers who work with TypeScript code.\nThe Deno 2.0 release candidate promises to be a significant upgrade for the Deno runtime and its community of developers.",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2024-09-20T20:52:35Z",
+                                        "time_last_crawled": "2025-11-10T01:22:41Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "What is Deno 2? Everything You Need to Know",
+                                        "url": "https://medium.com/towards-agi/what-is-deno-2-everything-you-need-to-know-65f1c7d45b14",
+                                        "highlight": "If you’ve been following the latest trends in the JavaScript ecosystem,you’ve probably heard of Deno.When it first arrived on the scene,it was hailed as the successor to Node.js,promising a fresh take on how we build backends,handle modules,and write server-side JavaScript(and TypeScript).And now,with the release of Deno 2,the platform is making an even bigger splash.\nBut what exactly is Deno 2?What makes it stand out from previous versions,and how does it compare to the tools we’re already familiar with,like Node.js?In this blog post,we’re diving into all things Deno 2.Plus,we’ll take a quick look at Apidog,an incredibly handy tool that works seamlessly with Deno 2 and can level up your API development experience.So,let’s jump right in!Pro Tip:Before we get started,if you’re working on APIs with Deno 2 or even other frameworks,you’ll love Apidog.It’s a powerful,free tool designed to help you design,test,and document APIs effortlessly.Download f=\"https\t:\t/\t/\tbit\t.\tly\t/\t4\teb\tMD\tGm\t\"\t>\tApido\tg\t \tfor\t \tfree\t \ttoday\t \tand\t \tsupercharge\t \tyour\t \tworkflow!First,let’s briefly talk about Deno itself.Deno is a secure runtime for JavaScript and TypeScript,built on V8(the same engine that powers Chrome)and Rust.It was created by Ryan Dahl,the original creator of Node.js.The reason for Deno’s creation was quite simple—Ryan saw several design flaws in Node.js that,over time,became deeply ingrained in the ecosystem.\nThe idea behind Deno was to fix these problems by offering a secure-by-default,modern,and simpler runtime for JavaScript.",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2024-10-11T05:40:58Z",
+                                        "time_last_crawled": "2025-11-10T06:45:43Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 2.0 is in the starting blocks: Release Candidate published | heise online",
+                                        "url": "http://www.heise.de/en/news/Deno-2-0-is-in-the-starting-blocks-Release-Candidate-published-9937127.html",
+                                        "highlight": "Deno 2.0 is in the starting blocks:Release Candidate published\nThe release candidate for Deno 2.0 should contain everything that the final release will offer. The development team behind the JavaScript and TypeScript runtime Deno has published the release candidate for version 2. All expected features of the final version are already included in the current release candidate. has been on board since Deno 1.0 and was intended to make Deno as browser-compatible as possible.However,this variable posed some difficulties for users,so the Deno team decided to fall back on the alternative use of globalThis\n will now be dropped in version 2. Deno v1.x\n Deno v2.x\n variable instead of a DOM – which led to a number of bugs in libraries that would have otherwise worked in Deno. is available in the release candidate,which according to the development team was frequently requested by users. js should now also run in Deno without any changes. However,the Deno team still recommends preferring explicit imports. Deno 2.0 comes with some new functions for managing dependencies.Among other things,the deno add\nsubcommand now handles specifiers with a subpath,as the Deno team demonstrates in comparison with the current version 1. Zuvor in Deno v1.46\ndeno add jsr:@std/testing/snapshot\n Deno v2.0\ndeno add jsr:@std/testing/snapshot\n 0.2\nDeno v1.46\ndeno add npm:preact/hooks\n Deno v2.0\ndeno add npm:preact/hooks\n Deno.dlopen()\nand Deno.createHttpClient()\n These include Deno.Buffer\nDeno.close()\nand Deno.copy()\n – useDeno.serve()\ninsteadDeno.run()\n– use the newDeno.Command()\ninsteadDeno.isatty(Deno. – useDeno.stdin.isTerminal()\ninsteadDeno.isatty(Deno. – useDeno.stdout.isTerminal()\ninsteadDeno.isatty(Deno. – useDeno.stderr.isTerminal()\n Feedback desired before the final release\nThe release candidate is intended to help uncover possible difficulties before the major release,Deno 2.0 appears.The Deno team is therefore actively looking for feedback from developers,either by creating an issue on GitHub or by contacting us in the#deno-2-help Discord channel. All further details on the release candidate can be found on the Deno blog.",
+                                        "full_content": "",
+                                        "authors": "Heise Online; Maika Möbus",
+                                        "time_published": "2024-09-20T20:37:00Z",
+                                        "time_last_crawled": "2026-05-19T23:15:49Z",
+                                        "favicon": ""
+                                    }
+                                ],
+                                "latency": 0
+                            },
+                            {
+                                "query": "Deno version 2 changelog",
+                                "results": [
+                                    {
+                                        "title": "Announcing Deno 2 | Deno",
+                                        "url": "https://deno.com/blog/v2.0",
+                                        "highlight": "Announcing Deno 2\n\n@\n\nWatch our video announcement. Announcing Deno 2\n\nThe web is humanity’s largest software platform—building for it means potentially reaching over 5 billion people. \n\nWhile we’ve accomplished a ton in Deno 1,the next major version is focused on using Deno at scale. \n\nToday,we’re thrilled to announce Deno 2,which includes:\n\nBackwards compatibility with Node. Backwards-compatible,forward-thinking\n\nDeno 2 is backwards compatible with Node and npm. \n\nDeno 2’s compatibility with Node and npm is robust.Deno 2 understands package. (in blue)\n\nWith the ability to import npm packages via the npm:specifier,you can access over 2 million npm modules in Deno.This even includes complex packages such as gRPC,ssh2,Prisma,temporal. \n\nFinally,you can use Deno 2 with your favorite JavaScript framework.Deno 2 supports Next. \n\n@\n\nRunning create-next-app with Deno. Deno is now a package manager with deno install\n\nNot only does Deno 2 support package. The Standard Library is now stable\n\nWhile there are over 2 million modules available on npm,the process of searching,evaluating,and using a new module can be time consuming. Private npm registries\n\nPrivate npm registries in Deno 2 work the same way they do in Node and npm,with an. Workspaces and monorepos\n\nDeno 2 also supports workspaces,which is a robust solution to manage monorepos. \n\nStarting with Deno 2. After six months,a new LTS branch will be created based on the latest stable version. \n\n@\n\nStarting with Deno 2. 45,not Deno 2.0.In reality,Deno 2. With Deno 2.0,we decided it was time for a refresh. I loved Deno because it didn’t need any config files,but with the new package manager additions,is Deno 2 becoming more like Node,where you need a package. Are there breaking changes if I upgrade to Deno 2? Your Fresh project should work out of the box with Deno 2—no changes needed. When should I expect Deno 2 to land on Deno Deploy? What’s next\n\nDeno 2 takes all of the features developers love about Deno 1. \n\n@\n\nWe invite you to try Deno 2 today and experience the future of JavaScript and TypeScript development.Get started with Deno 2 now:\n\nGetting Started with Deno(docs)\n1.x ⇒ 2 Migration Guide\n Watch the Deno 2 Announcement Keynote\n\nJoin our community and let’s shape the future of JavaScript together!",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2024-10-09T09:00:00Z",
+                                        "time_last_crawled": "2026-08-18T02:58:52Z",
+                                        "favicon": "https://deno.com/favicon.ico?__frsh_c=b136973e4e310316272c8b2322ef947250c2beb0"
+                                    },
+                                    {
+                                        "title": "Releases · denoland/deno · GitHub",
+                                        "url": "https://github.com/denoland/deno/releases",
+                                        "highlight": "Releases:denoland/deno\nReleases · denoland/deno\nv2.7.11\nImmutable\n v2.7.10\n 2.7.10/2026.03.31\n v2.7.9\n 2.7.9/2026.03.27\n v2.7.8\n 2.7.8/2026.03.25\n fix(cli):parse-frozen flag for deno update and deno outdated(#32975)\nfix(compile):skip Node-to-Deno arg translation in standalone binaries\n (#32874)-fix(ext/node):don't fire upgrade event for h2c requests(#32866)\n invalidation(#32756)-fix(ext/node):support http2 createConnection sockets(#32733)\n 15.2(#32949)\n fix(resolver):fall through to.deno/when BYONM node_modules version\nmismatches(#32981)-fix(resolver):prefer exact version match in BYONM npm resolution(#32977)\nfix:handle inner quotes in double-quoted env values in. fix:include Temporal types in deno types output(#32952)\n v2.7.7\n 2.7.7/2026.03.19\n v2.7.6\n 2.7.6/2026.03.18\n feat(eval):auto-detect CJS vs ESM in deno eval(#32472)\n deno compile\n v2.7.5\n 2.7.5/2026.03.11\n deno doc\n (#32559)-fix(ext/node):add missing http2 header constants(#32611)\n fix(ext/node):handle generateKeyPair 2-arg call and enable PQC tests(#32619)\n fix(ext/node):rewrite http2 implementation(#32418)\n deno/.\n (#32581)-fix:flush CPU profile and coverage data on Deno. v2.7.4\n 2.7.4/2026.03.05\n fix(deploy):correctly handle version lookup(#32489)\n npm install-g deno\n v2.7.3\n 2.7.3/2026.03.04\n npm install deno\n v2.7.2\nImmutable\n \n2.7.2/2026.03.03\n",
+                                        "full_content": "",
+                                        "authors": "Denoland",
+                                        "time_published": "2026-04-01T00:00:00Z",
+                                        "time_last_crawled": "2026-04-09T01:35:02Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 2.0 Release Candidate | Deno",
+                                        "url": "https://deno.com/blog/v2.0-release-candidate",
+                                        "highlight": "UPDATE 2024/10/04:We’ve released several updates to the Deno 2.0 Release Candidate.\nWe’ve been planning a new major version of Deno for years.Many times,it seemed\nimminent,but we realized the features we wanted required more work.Now,it’s\nfinally happening.Last month,we released the final 1.x version with\n1.46,and today,we’re cutting the release candidate for Deno\n2.0,which includes everything we expect in the final release.This is the\nlargest update since 1.0,with major changes like the introduction of Node’s\nprocess global.We’ve also made some philosophical shifts,like preferring\ndeno install over the now-deprecated deno cache.Read on for the full list\nof changes and\nshare your feedback!To try out the release candidate,run these instructions in your terminal:\ndeno upgrade\ndeno upgrade rcℹ️ If you are using alternative distribution method like Homebrew,\ndeno upgrademight not be available.Follow the installation instructions at https\t:\t/\t/deno.\tcom,then run the aforementioned commands.\nWhat’s new in Deno 2.0 Release Candidate\nChanges to global variables windowandprocess\nDependency management\nPermission system changes\nAPI changes\nCLI changes\nImport assertions are dead,long live import attributes\nNode.js and npm compatibility\nDoc tests with deno test-doc\nTypeScript changes\nAcknowledgements\nWhat’s next?🚨️ We’re actively seeking feedback 🚨️\nThis release candidate helps us identify issues prior to the final 2 release.If you encounter any issues or need extra guidance,please create an issue in GitHub or ask in our Discord’s\n",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2024-09-19T00:00:00Z",
+                                        "time_last_crawled": "2026-07-23T09:09:01Z",
+                                        "favicon": "https://deno.com/favicon.ico?__frsh_c=d1e33ff566a8f84b1a554cfcd94be06d0418aadf"
+                                    },
+                                    {
+                                        "title": "Release v2.1.2 · denoland/deno · GitHub",
+                                        "url": "https://github.com/denoland/deno/releases/tag/v2.1.2",
+                                        "highlight": "v2.1.2\n2.1.2/2024.11.28\nfeat(unstable):Instrument Deno.serve(#26964)\nfeat(unstable):Instrument fetch(#27057)\nfeat(unstable):repurpose\nunstable-detect-cjs\nto attempt loading more\nmodules as cjs(#27094)-fix(check):support jsdoc\nimport\ntag(#26991)-fix(compile):correct buffered reading of assets and files(#27008)\nfix(compile):do not error embedding same symlink via multiple methods\n(#27015)-fix(compile):handle TypeScript file included as asset(#27032)\nfix(ext/fetch):don't throw when\nbodyUsed\ninspect after upgrade(#27088)-fix(ext/node):\ntls.connect\nsocket upgrades(#27125)-fix(ext/node):add\nfs.promises.fstat\nandFileHandle#stat\n(#26719)-fix(ext/webgpu):normalize limits to number(#27072)\nfix(ext/webgpu):use correct variable name(#27108)\nfix(ext/websocket):don't throw exception when sending to closed socket\n(#26932)-fix(fmt):return\nNone\nif sql fmt result is the same(#27014)-fix(info):resolve bare specifier pointing to workspace member(#27020)\nfix(init):always force managed node modules(#27047)\nfix(init):support scoped npm packages(#27128)\nfix(install):don't re-set up node_modules if running lifecycle script\n(#26984)-fix(lsp):remove stray debug output(#27010)\nfix(lsp):support task object notation for tasks request(#27076)\nfix(lsp):wasm file import completions(#27018)\nfix(node):correct resolution of dynamic import of esm from cjs(#27071)\n",
+                                        "full_content": "",
+                                        "authors": "Denoland",
+                                        "time_published": "2024-11-28T00:00:00Z",
+                                        "time_last_crawled": "2026-04-01T08:19:59Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno version 2.0 is nearly done – but after over 4 years, the project's big bets have yet to pay off • DEVCLASS",
+                                        "url": "https://devclass.com/2024/09/23/deno-version-2-0-is-nearly-done-but-after-over-4-years-the-projects-big-bets-have-yet-to-pay-off/",
+                                        "highlight": "Version 2.0 of Deno,a JavaScript and TypeScript runtime,is now feature complete and a release candidate is available,four and half years after the release of Deno 1.0 in May 2020;but the project’s limited adoption versus Node.js suggests that its big bets,on TypeScript and ECMAScript modules,have yet to pay off.\nIn Deno version 2.0,some key APIs are no longer flagged unstable.These include WebGPU,FFI(foreign function interface)functions for calling native code,and createHttpClient for using the Fetch API with custom certificates or a proxy connection.\nA major new version is an opportunity for breaking changes,and in Deno 2.0 the global window variable,designed to improve compatibility with code running in the browser,has been removed.It caused problems with libraries which check for this variable specifically to discover if the code is running in a browser.\nThere is also a list of removed APIs in the Release Candidate blog post which will require attention when migrating from 1.0 to 2.0;a migration guide is available.\nDeno 2.0 improves Node.js compatibility by supporting the process global variable,used by Node,which means more libraries written for Node will run seamlessly.There is also better support for CommonJS,particularly when used in the developer’s own code rather than in libraries.More Node.js APIs are now supported,further improvement compatibility with Node.js libraries.\nDependency management has been revised,and the permission system has changed to distinguish between operating system and Deno permissions.",
+                                        "full_content": "",
+                                        "authors": "Tim Anderson",
+                                        "time_published": "2024-09-23T00:00:00Z",
+                                        "time_last_crawled": "2024-10-06T07:05:07Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 2 Release Candidate Ready",
+                                        "url": "https://www.i-programmer.info/news/167-javascript/17505-deno-2-release-candidate-ready.html",
+                                        "highlight": "Deno 2 Release Candidate Ready|\nWritten by Ian Elliot|\nThursday,26 September 2024|\nThe Deno team has released the release candidate for Deno 2.0,which includes everything expected in the final release.This is the largest update since 1.0 back in May 2020,with major changes like the introduction of Node's process global.Deno is built in Rust,and is described as secure by default as it has no file,network,or environment access,unless explicitly enabled.Deno is targeted to be an alternative to Node.js,but so far isn't as widely adopted,despite offering native support for TypeScript and ECMAScript modules.One major change to Deno 2 is in the handling of global variables.The window global has been removed,and Node's process is now available.Deno added the window global in Deno v1.0,with the aim of making Deno as browser-compatible as possible.This backfired,as many libraries check if they are executed in the browser by probing for a window global variable instead of checking for the existence of DOM.This led to a class of bugs in libraries that would otherwise work in Deno,due to window being globally available.While window has been removed,the process global has been added as per user requests.The Deno developers say that while it has been possible to use process by importing it from node:process module for a long time,many popular frameworks rely on its presence in the global scope.The addition should mean that more code written originally for Node.",
+                                        "full_content": "",
+                                        "authors": "Ian Elliot",
+                                        "time_published": "2024-09-26T00:00:00Z",
+                                        "time_last_crawled": "2026-01-20T10:32:51Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Druckversion - Deno 2.0 is in the starting blocks: Release Candidate published | heise online",
+                                        "url": "http://www.heise.de/en/news/Deno-2-0-is-in-the-starting-blocks-Release-Candidate-published-9937127.html?view=print",
+                                        "highlight": "Deno 2.0 is in the starting blocks:Release Candidate published\nThe release candidate for Deno 2.0 should contain everything that the final release will offer.This includes API updates and the new process variable.\nThe development team behind the JavaScript and TypeScript runtime Deno has published the release candidate for version 2.0.The biggest update since version 1.0 will bring important new functions to the Node.js alternative,such as the introduction of the global Node.js variable process\nAll expected features of the final version are already included in the current release candidate.\nGlobal variables:window goes,process comes\nThe global variable window\nhas been on board since Deno 1.0 and was intended to make Deno as browser-compatible as possible.However,this variable posed some difficulties for users,so the Deno team decided to fall back on the alternative use of globalThis\nor self\nsince version 1.40.window\nwill now be dropped in version 2.0:\nDeno v1.x\nwindow.addEventListener(\"load\",()=>{\nconsole.log(\"loaded\");});Deno v2.x\nglobalThis.addEventListener(\"load\",()=>{\nconsole.log(\"loaded\");});The difficulty with the global availability of window\nwas that many libraries check to see if they are running in the browser by looking for a window\nvariable instead of a DOM – which led to a number of bugs in libraries that would have otherwise worked in Deno.\nThe new global variable process\nis available in the release candidate,which according to the development team was frequently requested by users.",
+                                        "full_content": "",
+                                        "authors": "Heise Online; Maika Möbus",
+                                        "time_published": "2024-09-20T20:37:00Z",
+                                        "time_last_crawled": "2026-05-19T23:52:16Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno 2.0 is in the starting blocks: Release Candidate published | heise online",
+                                        "url": "http://www.heise.de/en/news/Deno-2-0-is-in-the-starting-blocks-Release-Candidate-published-9937127.html",
+                                        "highlight": "Deno 2.0 is in the starting blocks:Release Candidate published\nThe release candidate for Deno 2. The development team behind the JavaScript and TypeScript runtime Deno has published the release candidate for version 2.0.The biggest update since version 1. All expected features of the final version are already included in the current release candidate. has been on board since Deno 1.0 and was intended to make Deno as browser-compatible as possible.However,this variable posed some difficulties for users,so the Deno team decided to fall back on the alternative use of globalThis\n since version 1.40.window\nwill now be dropped in version 2. Deno v1.x\n Deno v2.x\n variable instead of a DOM – which led to a number of bugs in libraries that would have otherwise worked in Deno. js should now also run in Deno without any changes. However,the Deno team still recommends preferring explicit imports. Deno 2.0 comes with some new functions for managing dependencies.Among other things,the deno add\nsubcommand now handles specifiers with a subpath,as the Deno team demonstrates in comparison with the current version 1. Zuvor in Deno v1.46\ndeno add jsr:@std/testing/snapshot\n Invalid version requirement. Deno v2.0\ndeno add jsr:@std/testing/snapshot\n 0.2\nDeno v1.46\ndeno add npm:preact/hooks\n Deno v2.0\ndeno add npm:preact/hooks\n Deno.dlopen()\nand Deno.createHttpClient()\n These include Deno.Buffer\nDeno.close()\nand Deno.copy()\n The Deno team therefore recommends migrating to their stable equivalents:\nDeno.serveHttp()\n– useDeno.serve()\ninsteadDeno.run()\n– use the newDeno.Command()\ninsteadDeno.isatty(Deno. – useDeno.stdin.isTerminal()\ninsteadDeno.isatty(Deno. – useDeno.stdout.isTerminal()\ninsteadDeno.isatty(Deno. – useDeno.stderr.isTerminal()\n The release candidate is intended to help uncover possible difficulties before the major release,Deno 2.0 appears.The Deno team is therefore actively looking for feedback from developers,either by creating an issue on GitHub or by contacting us in the#deno-2-help Discord channel. All further details on the release candidate can be found on the Deno blog.",
+                                        "full_content": "",
+                                        "authors": "Heise Online; Maika Möbus",
+                                        "time_published": "2024-09-20T20:37:00Z",
+                                        "time_last_crawled": "2026-05-19T23:15:49Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "Deno version 2.0 is nearly done – but after over 4 years, the project's big bets have yet to pay off",
+                                        "url": "https://devclass.com/development/2024/09/23/deno-version-20-is-nearly-done-but-after-over-4-years-the-projects-big-bets-have-yet-to-pay-off/1620293",
+                                        "highlight": "Deno version 2.0 is nearly done – but after over 4 years,the project's big bets have yet to pay off\nVersion 2.0 of Deno,a JavaScript and TypeScript runtime,is now feature complete and a release candidate is available,four and half years after the release of Deno 1.0 in May 2020;but the project’s limited adoption versus Node.js suggests that its big bets,on TypeScript and ECMAScript modules,have yet to pay off.\nIn Deno version 2.0,some key APIs are no longer flagged unstable.These include WebGPU,FFI(foreign function interface)functions for calling native code,and createHttpClient for using the Fetch API with custom certificates or a proxy connection.\nA major new version is an opportunity for breaking changes,and in Deno 2.0 the global window variable,designed to improve compatibility with code running in the browser,has been removed.It caused problems with libraries which check for this variable specifically to discover if the code is running in a browser.\nThere is also a list of removed APIs in the Release Candidate blog post which will require attention when migrating from 1.0 to 2.0;a migration guide is available.\nDeno 2.0 improves Node.js compatibility by supporting the process global variable,used by Node,which means more libraries written for Node will run seamlessly.There is also better support for CommonJS,particularly when used in the developer’s own code rather than in libraries.More Node.js APIs are now supported,further improvement compatibility with Node.",
+                                        "full_content": "",
+                                        "authors": "Tim Anderson",
+                                        "time_published": "2024-09-23T18:38:00Z",
+                                        "time_last_crawled": "2026-05-04T01:51:28Z",
+                                        "favicon": ""
+                                    },
+                                    {
+                                        "title": "denoland/deno v2.7.5 on GitHub",
+                                        "url": "https://newreleases.io/project/github/denoland/deno/release/v2.7.5",
+                                        "highlight": "2.7.5/2026.03.11\nfeat(coverage):add function coverage to summary and HTML\t \treports\t (#32507)\nfeat(doc):support npm packages in\ndeno doc\n(#32435)-feat(ext/node):add\nnode_api_create_object_with_properties\nAPI(#31443)-feat(ext/node):implement KeyObject.toCryptoKey()and\nKeyObject.from(CryptoKey)(#32523)-feat(otel):allow feeding permission audit data into OTEL(#32501)\nfeat:cpu-prof flags for CPU profiles(#31909)\nfix(console):prevent multi-line object values in console.table(#32604)\nfix(core):switch to V8 Explicit microtask policy for correct nextTick\nordering(#32466)-fix(ext/http):allow rejecting HTTP\t \tupgrades\t \twith\t \tnon\t-\t101\t \tstatus\t \tcodes\n(#32615)-fix(ext/napi):run async work execute callback on a worker thread(#32560)\nfix(ext/node):add\nnode_api_create_property_key_(latin1/utf8)\n(#32559)-fix(ext/node):add missing http2 header constants(#32611)\nfix(ext/node):emit DEP0198 warning for SHAKE digests without outputLength\n(#32521)-fix(ext/node):emit correct error codes for unsupported PQC key types(#32533)\nfix(ext/node):fix multiple DiffieHellman crypto bugs(#32531)\nfix(ext/node):fix multiple node:dgram compatibility issues(#32520)\nfix(ext/node):handle generateKeyPair 2-arg call and enable PQC tests(#32619)\nfix(ext/node):implement ECDH.convertKey and fix related ECDH bugs(#32532)\nfix(ext/node):implement\nnode:v8\n",
+                                        "full_content": "",
+                                        "authors": "",
+                                        "time_published": "2026-03-11T12:40:10Z",
+                                        "time_last_crawled": "2026-03-25T10:13:25Z",
+                                        "favicon": ""
+                                    }
+                                ],
+                                "latency": 0
+                            }
+                        ]
+                    },
+                    "request_id": "2026090206182201946KD5VSRPY",
+                    "meta": {
+                        "usage": {
+                            "num_search_queries": 2,
+                            "full_content_tokens": 0,
+                            "full_content_extra_count": 0
+                        },
+                        "latency": 1034
+                    },
+                    "code": 0
+                }
+            }
+        }
+    ]
+}

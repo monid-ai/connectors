@@ -22,6 +22,6 @@ export default defineEndpoint({
         docsUrl: "https://docs.akta.pro/api-reference/company-data",
         categories: ["company-enrichment", "funding-data"],
     },
-    request: { method: "GET", path: "/v1/company/enrichment" },
+    request: { method: "GET", path: "/v1/company/enrichment/" },
     input: { schema: { queryParams: zEnrichmentQueryParams } },
 });

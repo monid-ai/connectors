@@ -1,0 +1,92 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/company/product-reviews/?company=https%3A%2F%2Fcanva.com&limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "uuid": "00000l1",
+                        "product": [
+                            {
+                                "id": "89224",
+                                "product_name": "Canva",
+                                "main_category": "Display Ad Design Software",
+                                "categories": [
+                                    "AI Writing Assistant",
+                                    "Collaborative Whiteboard",
+                                    "Presentation",
+                                    "Website Builder",
+                                    "Content Creation",
+                                    "Photo Editing",
+                                    "AI Video Generators",
+                                    "Video Content Creation",
+                                    "AI Content Creation Platforms",
+                                    "Data Visualization",
+                                    "Display Ad Design",
+                                    "Desktop Publishing",
+                                    "AI Image Generators",
+                                    "Brand Asset Management",
+                                    "Print Fulfillment Services",
+                                    "Design Systems",
+                                    "Logo Design Tools"
+                                ],
+                                "description": "Canva is an end-to-end AI-powered visual communication and collaboration platform empowering everyone in the world to design everything from presentations to infographics, videos, documents, websites, social media graphics and more. With pre-templated designs and thousands of stock images, videos, soundtracks, and fonts, Canva is a simple way to create visual content at scale. Canva is available on the web, iOS and Android."
+                            },
+                            {
+                                "id": "40370",
+                                "product_name": "Canva",
+                                "main_category": "Display Ad Design Software",
+                                "categories": [
+                                    "AI Writing Assistant",
+                                    "Collaborative Whiteboard",
+                                    "Website Builder",
+                                    "Presentation",
+                                    "Content Creation",
+                                    "Photo Editing",
+                                    "AI Video Generators",
+                                    "Video Content Creation",
+                                    "Data Visualization",
+                                    "Display Ad Design",
+                                    "AI Content Creation Platforms",
+                                    "Desktop Publishing",
+                                    "AI Image Generators",
+                                    "Brand Asset Management",
+                                    "Print Fulfillment Services",
+                                    "Design Systems",
+                                    "Logo Design Tools"
+                                ],
+                                "description": "Canva is an online design and publishing platform that provides user friendly design tools for non-designers."
+                            },
+                            {
+                                "id": "51349",
+                                "product_name": "remove.bg",
+                                "main_category": "Other Design Software",
+                                "categories": [
+                                    "Other Design"
+                                ],
+                                "description": "remove.bg is the industry-leading solution for fast, high-quality image background removal, trusted by millions of users worldwide. Built with advanced visual AI technology, remove.bg is designed to help e-commerce brands, photographers, online car dealers, marketplaces, and creatives of every kind produce clean, professional visuals that boost engagement and drive conversions. Designed for speed and simplicity, remove.bg eliminates the need for manual editing, saving valuable time and ensuring consistent image quality across all channels. Whether working with a single image or processing hundreds of thousands, remove.bg scales to your needs to build a seamless workflow. Users can quickly remove backgrounds using the drag-and-drop desktop application, which supports batch processing for high-volume tasks. Images can also be edited directly on the website, providing flexibility for businesses and individuals alike. For organizations with custom workflows, remove.bg offers a robust API that integrates easily into internal systems, enabling automated background removal at scale. remove.bg is also available as a plugin for widely-used design tools like Photoshop, Figma, PowerPoint and more, making it simple to work within existing creative environments. The remove.bg AI is trained to handle even the most complex visual details, including hair, fine edges, and challenging color contrasts, with remarkable accuracy. This ensures high-quality cutouts every time, no matter the subject or background. remove.bg is accessible via desktop, web, mobile, and plugin integrations, making it a versatile tool for professionals and teams looking to elevate their visual content without compromising speed or quality."
+                            },
+                            {
+                                "id": "148891",
+                                "product_name": "Designify Pro",
+                                "main_category": "Photography Software",
+                                "categories": [
+                                    "Photo Editing"
+                                ],
+                                "description": "Editing product photos can be a chore. Countless hours are required to learn complex software, manually pick pixels, remove backgrounds and match colors – for photo after photo, thousands of times. Today all that is over: with Designify Pro, we’re starting a new era of bulk-editing amazing product photos with a single click. Bulk-edit any number of product photos, get high-res downloads, save your designs and integrate the Designify Pro API into your website, app, or workflow. Let our visual AI handle your product photos - automatically and in seconds!"
+                            }
+                        ]
+                    },
+                    "limit": 2,
+                    "offset": 0,
+                    "credits_consumed": 0.5
+                }
+            }
+        }
+    ]
+}

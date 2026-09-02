@@ -18,7 +18,7 @@ export default defineEndpoint({
             "https://docs.akta.pro/api-reference/supporting-apis/company-search",
         categories: ["company-enrichment"],
     },
-    request: { method: "GET", path: "/v1/company/search" },
+    request: { method: "GET", path: "/v1/company/search/" },
     input: { schema: { queryParams: zCompanySearchQueryParams } },
     // auth, toRequest (array→CSV), and usage (credits) inherit from the provider
 });

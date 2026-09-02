@@ -9,20 +9,20 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("octen#embedding happy (synthetic): input tokens are the native unit", async () => {
+Deno.test("octen#embedding happy (recorded): input tokens are the native unit", async () => {
     const unit = await testSealedUnit("octen#embedding");
-    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
         unit,
         input: {
-            body: { input: ["hello world"], model: "octen-embedding-4b" },
+            body: { input: ["hello world"], model: "octen-embedding-0.6b" },
         },
         mode: "replay",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 2, unit: "token" }]);
-    assertEquals(result.usage.evidence?.usage, { input_tokens: 2 });
+    assertEquals(result.usage.units, [{ amount: 3, unit: "token" }]);
+    assertEquals(result.usage.evidence?.usage, { input_tokens: 3 });
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);
 });
@@ -34,7 +34,14 @@ Deno.test({
         const unit = await testSealedUnit("octen#embedding");
         const result = await runEndpoint({
             unit,
-            input: { body: { input: ["hello world"] } },
+            // pin a model: the vendor's server-side default (4b) has been
+            // observed to 500 while 0.6b/8b work
+            input: {
+                body: {
+                    input: ["hello world"],
+                    model: "octen-embedding-0.6b",
+                },
+            },
             mode: "live",
         });
         assertEquals(
