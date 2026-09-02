@@ -62,11 +62,13 @@ export const webSearchOptionFields = {
         "Relative time window counting back from now. Mutually exclusive " +
             "with start_time/end_time (which take precedence).",
     ),
-    start_time: z.string().optional().describe(
-        "Start time for filtering results. ISO 8601 format.",
+    start_time: z.iso.datetime({ offset: true }).optional().describe(
+        "Start time for filtering results. ISO 8601 date-time, e.g. " +
+            "'2025-01-01T00:00:00Z'.",
     ),
-    end_time: z.string().optional().describe(
-        "End time for filtering results. ISO 8601 format.",
+    end_time: z.iso.datetime({ offset: true }).optional().describe(
+        "End time for filtering results. ISO 8601 date-time, e.g. " +
+            "'2025-01-01T00:00:00Z'.",
     ),
     country: z.string().optional().describe(
         "ISO 3166 country to prioritize results from; default 'auto' " +

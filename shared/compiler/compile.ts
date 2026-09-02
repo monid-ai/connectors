@@ -170,7 +170,20 @@ export async function compileBundle(
             // would DROP the base's `/api` path prefix (absolute paths replace
             // the whole base path — akta's baseUrl exposed this). Concatenation
             // preserves the prefix; the URL constructor still validates.
-            const url = new URL(baseUrl.replace(/\/+$/, "") + def.request.path)
+            // A query string or fragment in the base would swallow the path
+            // (`…?tenant=x` + `/v1` ⇒ path inside the query) — reject it; a
+            // fixed query param belongs in the endpoint def, not the baseUrl.
+            const parsedBase = new URL(baseUrl);
+            if (parsedBase.search !== "" || parsedBase.hash !== "") {
+                throw new Error(
+                    `${where}: baseUrl must not contain a query string or ` +
+                        `fragment (got ${baseUrl})`,
+                );
+            }
+            const url = new URL(
+                baseUrl.replace(/[?#]*$/, "").replace(/\/+$/, "") +
+                    def.request.path,
+            )
                 .toString();
             const headers = {
                 ...provider.request?.headers,

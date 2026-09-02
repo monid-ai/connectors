@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
     liveSkip,
@@ -38,6 +38,28 @@ Deno.test("octen#search happy (synthetic): call + gated token tier, meter absorb
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);
     assertEquals((output.results as unknown as unknown[]).length, 2);
+});
+
+Deno.test("octen#search: non-ISO start_time/end_time rejected before the wire", async () => {
+    const unit = await testSealedUnit("octen#search");
+    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    // z.iso.datetime({offset:true}) compiles to a date-time pattern — bad
+    // values become INVALID_INPUT instead of a provider-side failure
+    for (
+        const start_time of ["last week", "2025-01-01", "2025-02-30T00:00:00Z"]
+    ) {
+        await assertRejects(
+            () =>
+                runEndpoint({
+                    unit,
+                    input: { body: { query: "deno", start_time } },
+                    mode: "replay",
+                    fixture,
+                }),
+            Error,
+            "INVALID_INPUT",
+        );
+    }
 });
 
 Deno.test({

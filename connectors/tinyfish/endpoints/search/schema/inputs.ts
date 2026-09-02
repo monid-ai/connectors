@@ -16,10 +16,9 @@ const DOMAIN_TYPES = ["web", "news", "research_paper"] as const;
 /** Ten years in minutes — TinyFish's documented `recency_minutes` ceiling. */
 const MAX_RECENCY_MINUTES = 5_256_000;
 
-const zIsoDate = z.string().regex(
-    /^\d{4}-\d{2}-\d{2}$/,
-    "Must be a calendar date in YYYY-MM-DD format",
-);
+// z.iso.date() compiles to a calendar-aware pattern (month/day bounds, leap
+// years) — real validation survives into the compiled doc, unlike a .refine.
+const zIsoDate = z.iso.date("Must be a calendar date in YYYY-MM-DD format");
 
 export const zTinyfishSearchQueryParams = z.object({
     query: z.string().min(1).describe(

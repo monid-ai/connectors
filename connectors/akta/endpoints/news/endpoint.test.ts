@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
     liveSkip,
@@ -62,6 +62,53 @@ Deno.test("akta#news happy (synthetic): credits are the native unit; arrays go c
     const output = result.output as Record<string, unknown>;
     assertEquals("credits_consumed" in output, false);
     assertEquals((output.data as unknown[]).length, 2);
+});
+
+Deno.test("akta#news: impossible calendar dates rejected by the compiled schema", async () => {
+    const unit = await testSealedUnit("akta#news");
+    const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
+    // z.iso.date() compiles calendar-aware: month/day bounds + leap years
+    for (
+        const start_date of [
+            "2024-02-30",
+            "2023-02-29",
+            "2024-13-01",
+            "24-01-01",
+        ]
+    ) {
+        await assertRejects(
+            () =>
+                runEndpoint({
+                    unit,
+                    input: {
+                        queryParams: {
+                            company: "https://canva.com",
+                            start_date,
+                        },
+                    },
+                    mode: "replay",
+                    fixture,
+                }),
+            Error,
+            "INVALID_INPUT",
+        );
+    }
+    // leap day on a real leap year passes validation (it fails later, at
+    // replay URL matching — proving the schema let it through)
+    const error = await assertRejects(() =>
+        runEndpoint({
+            unit,
+            input: {
+                queryParams: {
+                    company: "https://canva.com",
+                    start_date: "2024-02-29",
+                },
+            },
+            mode: "replay",
+            fixture,
+        })
+    );
+    assertEquals(String(error).includes("INVALID_INPUT"), false, String(error));
 });
 
 Deno.test("akta#news provider error (synthetic): zero usage", async () => {

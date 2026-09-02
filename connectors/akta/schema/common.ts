@@ -8,7 +8,9 @@ export const zCompany = z.string().min(1).describe(
         "is NOT accepted here — resolve it via company-search first.",
 );
 
-export const zDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe(
+// z.iso.date() compiles to a calendar-aware pattern (month/day bounds, leap
+// years) — real validation survives into the compiled doc, unlike a .refine.
+export const zDate = z.iso.date().describe(
     "Date formatted as YYYY-MM-DD.",
 );
 

@@ -68,6 +68,23 @@ in the describes; the vendors reject invalid combinations with a 400
 `.strict()` compiles to `additionalProperties: false`, so unknown keys fail
 input validation — no defensive toRequest strip needed.
 
+AMENDED (post-review). Two boundary cases refined:
+
+- Single-FIELD format rules DO survive when zod compiles them: `z.iso.date()`
+  emits a calendar-aware pattern (month/day bounds, leap years) plus
+  `format: date`, and `z.iso.datetime({offset})` likewise — and the engine's
+  ajv loads ajv-formats, so both halves are enforced at runtime. Akta's
+  `zDate`, tinyfish's `zIsoDate`, and octen's `start_time`/`end_time`
+  therefore use the `z.iso.*` validators instead of loose strings; "cannot
+  be represented" applies to CROSS-FIELD rules, not per-field formats.
+- Tinyfish fetch's single-URL conditional rule (`if_none_match`/
+  `if_modified_since` only with one URL) IS technically expressible as a
+  compiled `anyOf` of two near-identical object variants. REJECTED: the
+  cost is wholesale duplication of a ~12-field schema in the def and an
+  unreadable compiled doc, to pre-empt a vendor 400 that already flows back
+  cleanly as error-as-data. The describes carry the rule; the D6 line
+  (cross-field rules stay prose) holds.
+
 ## D7 — Meter blocks absorb; receipts stay
 
 Octen keeps `meta.usage` in v1 output as "the billing receipt". Under v2's

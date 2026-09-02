@@ -345,6 +345,35 @@ Deno.test("baseUrl path prefixes survive resolution (concatenation, not URL-reso
     );
 });
 
+Deno.test("baseUrl with a query string or fragment fails compilation", async () => {
+    // concatenation would place the endpoint path INSIDE the query/fragment
+    // (`…?tenant=x` + `/v1/search` ⇒ `…?tenant=x/v1/search`) — reject instead
+    for (
+        const baseUrl of [
+            "https://h.test/api?tenant=x",
+            "https://h.test/api#frag",
+        ]
+    ) {
+        await assertRejects(
+            () =>
+                compileBundle(
+                    source(
+                        [{
+                            name: "search",
+                            def: makeEndpoint({
+                                request: { method: "GET", path: "/v1/search" },
+                            }),
+                        }],
+                        makeProvider({ request: { baseUrl } }),
+                    ),
+                    OPTS,
+                ),
+            Error,
+            "must not contain a query string or fragment",
+        );
+    }
+});
+
 Deno.test("no baseUrl anywhere fails compilation", async () => {
     await assertRejects(
         () =>

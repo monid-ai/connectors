@@ -17,9 +17,11 @@ pricing pass.
 
 ### Requirement: Receipt-driven native metering
 Each endpoint's `usage.consolidate` SHALL read the `meta.usage.*` receipt:
-search = 1 call + `full_content_tokens` tokens when present; broad-search =
-`num_search_queries` result units (?? the requested `max_queries` ?? 5) +
-the token tier; extract = `successful_urls` result units (missing receipt →
+search = 1 call + `full_content_tokens` tokens when present; broad-search
+SHALL settle on the receipt's `num_search_queries` as result units — only
+when the receipt omits it SHALL it fall back to the request's
+`max_queries`, and only when that is also absent to 5 (the vendor default)
+— plus the token tier; extract = `successful_urls` result units (missing receipt →
 0 — money follows evidence); embedding = `input_tokens` token units.
 `evidence` SHALL keep the receipt verbatim and the meter block SHALL be
 absorbed from the output.

@@ -170,8 +170,8 @@
 - [x] 11.7 zJson = z.json() (zod v4 built-in; finite numbers hold); determinism
       sort comment at the compiler sort site
 - [x] 11.8 CLI: deno task catalog (providers | endpoints --provider/--category
-      | categories | inspect); engine:run --body/--query/--path-params
-      (+ --input escape hatch)
+      | categories | inspect); engine:run --body/--query-params/--path-params
+      (--input escape hatch later removed — see 18.x)
 - [x] 11.9 Meta trim: deprecated + tags removed; description roles defined
       (summary = one line, description = full text, string[] → string)
 - [x] 11.10 exa: flat provider; stream unexposed (schema comment + defensive

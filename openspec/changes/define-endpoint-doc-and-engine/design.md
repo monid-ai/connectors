@@ -164,7 +164,8 @@ This file is the canonical home of the design decisions converged during plan re
   CI builds and uploads `.output/catalog.json` as the release artifact (determinism =
   compile twice, byte-compare). Only compat goldens (`shared/testing/goldens/`) are
   checked-in compiled artifacts. Tasks: `compiler:compile [--provider|--endpoint]`,
-  `engine:run <id> --input '…'` (JIT compile through the cache), `check`, `test`,
+  `engine:run <id> --body/--query-params/--path-params` (JIT compile through
+  the cache), `check`, `test`,
   `test:live`, `record`, `version:check`.
 
 ## D13 — Doc field decisions (review-resolved)
