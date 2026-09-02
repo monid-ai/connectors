@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-happy",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/company/search?query=canva"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "uuid": "a1b2c3d4-0000-1111-2222-333344445555",
+                            "name": "Canva",
+                            "website": "https://canva.com",
+                            "product_category": "Design software",
+                            "company_status": "active"
+                        }
+                    ],
+                    "credits_consumed": 0
+                }
+            }
+        }
+    ]
+}

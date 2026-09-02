@@ -496,11 +496,15 @@ its version) and naive whitespace stripping (ASI-unsafe, string-blind).
   - CLI surface: `deno task catalog providers | endpoints [--provider]
     [--category] | categories | inspect <id>` (thin wrapper over core's
     catalog readers + the `.output/` cache); `deno task engine:run <id>
-    --body/--query/--path-params` (composing a RunInput; `--input` stays as
-    the full-form escape hatch); `deno task record <id> <scenario>` = the
-    fixture recorder (live call through the engine with a wrapped fetch,
-    {req,res} pairs captured with headers DROPPED, written to
-    endpoints/<name>/fixtures/ for replay tests).
+    --body/--query-params/--path-params` and `deno task record <id>
+    <scenario>` with the same three flags (the fixture recorder: live call
+    through the engine with a wrapped fetch, {req,res} pairs captured with
+    headers DROPPED). AMENDED (post-review): the `--input` full-RunInput
+    escape hatch was REMOVED — a second encoding plus a precedence rule is
+    the same dual-encoding smell LoadFilter shed (D28-era round 7); flags
+    are exactly zRunInput's fields in CLI kebab-case (cliffy maps
+    --query-params → options.queryParams verbatim; kebab is the universal
+    CLI convention, so a literal --queryParams flag was rejected).
 - Consequences: the def surface carries nothing unconsumed; every field's
   reader is nameable.
 

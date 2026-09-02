@@ -1,12 +1,14 @@
 /**
- * deno task engine:run <provider>#<endpoint> --body '<json>' [--query '<json>']
- *                      [--path-params '<json>'] [--input '<json RunInput>']
+ * deno task engine:run <provider>#<endpoint> [--body '<json>']
+ *                      [--query-params '<json>'] [--path-params '<json>']
  *
- * JIT: compile (or reuse the .output/ cache), build the sealed unit, execute
- * it through Engine.load with directTransport (credentials from env
- * <NAME>_API_KEY), print the result including usage. `--input` is the
- * full-RunInput escape hatch; the named flags compose one.
- * (Catalog listing/inspection lives in `deno task catalog`.)
+ * JIT: compile (or reuse the .output/ cache), pick the endpoint from the
+ * bundle (sealUnit), execute it through Engine.load with directTransport
+ * (credentials from env <NAME>_API_KEY), print the result including usage.
+ *
+ * ONE encoding: the flags ARE zRunInput's fields in CLI kebab-case
+ * (cliffy maps --query-params → options.queryParams etc. — verbatim field
+ * match, no escape hatch, no precedence rules).
  */
 import { Command } from "@cliffy/command";
 import { type Json, type RunInput, sealUnit } from "@shared/core";
@@ -27,47 +29,37 @@ const { options, args } = await new Command()
         "Compile (cached) and execute one endpoint with env credentials.",
     )
     .arguments("<endpoint:string>")
-    .option("--body <json:string>", "Request body (JSON).")
-    .option("--query <json:string>", "Query params (JSON object).")
-    .option("--path-params <json:string>", "Path params (JSON object).")
+    .option("--body <json:string>", "RunInput.body (JSON).")
     .option(
-        "--input <json:string>",
-        "Full RunInput (escape hatch; named flags override).",
+        "--query-params <json:string>",
+        "RunInput.queryParams (JSON object).",
     )
+    .option("--path-params <json:string>", "RunInput.pathParams (JSON object).")
     .parse(Deno.args);
 
 const endpointId = args[0];
 
-let input: RunInput = {};
-if (options.input !== undefined) {
-    const full = parseJson("--input", options.input);
-    // a bare object without the trio keys is treated as the body
-    input = full !== null && typeof full === "object" && !Array.isArray(full) &&
-            ("body" in full || "queryParams" in full || "pathParams" in full)
-        ? full as RunInput
-        : { body: full };
-}
-if (options.body !== undefined) {
-    input = { ...input, body: parseJson("--body", options.body) };
-}
-if (options.query !== undefined) {
-    input = {
-        ...input,
-        queryParams: parseJson(
-            "--query",
-            options.query,
-        ) as RunInput["queryParams"],
-    };
-}
-if (options.pathParams !== undefined) {
-    input = {
-        ...input,
-        pathParams: parseJson(
-            "--path-params",
-            options.pathParams,
-        ) as RunInput["pathParams"],
-    };
-}
+const input: RunInput = {
+    ...(options.body !== undefined
+        ? { body: parseJson("--body", options.body) }
+        : {}),
+    ...(options.queryParams !== undefined
+        ? {
+            queryParams: parseJson(
+                "--query-params",
+                options.queryParams,
+            ) as RunInput["queryParams"],
+        }
+        : {}),
+    ...(options.pathParams !== undefined
+        ? {
+            pathParams: parseJson(
+                "--path-params",
+                options.pathParams,
+            ) as RunInput["pathParams"],
+        }
+        : {}),
+};
 
 const { bundle, cacheHit } = await compileToOutput();
 console.error(

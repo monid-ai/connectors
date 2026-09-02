@@ -36,6 +36,6 @@ engine:
 
 # Settings for the repo's own command scripts (compile / run / catalog / record).
 scripts:
-    output_dir: ".output" # gitignored compile cache; CI uploads catalog.json from here
+    output_dir: ".output" # gitignored compile cache; catalog.json is the release artifact
     logging:
         level: "info"

@@ -155,7 +155,7 @@ JSON), with `--input` as the full-RunInput escape hatch. `deno task catalog
 providers | endpoints [--provider <name>] [--category <id>] | categories |
 inspect <id>` SHALL surface `@shared/core`'s catalog readers over the same
 cache. `deno task record <id> <scenario>` SHALL capture a live exchange as a
-replay fixture (headers never recorded).
+replay fixture (headers never recorded), taking the same three input flags.
 
 #### Scenario: Cache hit
 - **WHEN** engine:run is invoked twice with unchanged sources

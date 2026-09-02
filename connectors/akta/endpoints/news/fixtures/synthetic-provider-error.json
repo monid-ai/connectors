@@ -1,0 +1,15 @@
+{
+    "name": "synthetic-provider-error",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.akta.pro/api/v1/news?company=nope"
+            },
+            "res": {
+                "status": 401,
+                "body": { "detail": "Invalid API key" }
+            }
+        }
+    ]
+}

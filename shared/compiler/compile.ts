@@ -166,7 +166,12 @@ export async function compileBundle(
                         `or request.baseUrl on the provider`,
                 );
             }
-            const url = new URL(def.request.path, baseUrl).toString();
+            // CONCATENATE, don't URL-resolve: `new URL("/v1/x", "https://h/api")`
+            // would DROP the base's `/api` path prefix (absolute paths replace
+            // the whole base path — akta's baseUrl exposed this). Concatenation
+            // preserves the prefix; the URL constructor still validates.
+            const url = new URL(baseUrl.replace(/\/+$/, "") + def.request.path)
+                .toString();
             const headers = {
                 ...provider.request?.headers,
                 ...def.request.headers,

@@ -303,3 +303,14 @@
       sensitivity makes it structurally unsound)
 - [x] 17.4 Tests: compact shape, CRLF/tab/layout twins, template-\n + regex
       verbatim, division-vs-regex; D18 amendment + glossary + compiler spec
+
+## 18. Refinement: CLI one-encoding + README split
+
+- [x] 18.1 engine:run/record input flags = zRunInput fields in kebab
+      (--body/--query-params/--path-params); --input escape hatch removed
+      (dual-encoding smell); record gains query/path params (was a live gap
+      for GET endpoints)
+- [x] 18.2 README split: short README (what Monid is + repo purpose +
+      examples + connectors table) linking to DEVELOPMENT.md (component-
+      organized deep guide: concepts, defs, compiler, engine, usage,
+      config, versioning, CLI reference, authoring, layout)

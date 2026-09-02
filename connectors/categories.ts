@@ -23,4 +23,36 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         displayName: "Web Scraping",
         description: "Fetch and extract clean content from known URLs.",
     },
+    {
+        id: "news-search",
+        displayName: "News Search",
+        description: "Search and monitor news coverage.",
+    },
+    {
+        id: "company-enrichment",
+        displayName: "Company Enrichment",
+        description:
+            "Company data: identity resolution, firmographics, and enrichment.",
+    },
+    {
+        id: "company-news",
+        displayName: "Company News",
+        description:
+            "Company event signals — funding, M&A, leadership, products.",
+    },
+    {
+        id: "company-reviews",
+        displayName: "Company Reviews",
+        description: "Employee and product review data for companies.",
+    },
+    {
+        id: "funding-data",
+        displayName: "Funding Data",
+        description: "Fundraising, investors, valuations, and deal activity.",
+    },
+    {
+        id: "embeddings",
+        displayName: "Embeddings",
+        description: "Convert text and media into vector representations.",
+    },
 ]);

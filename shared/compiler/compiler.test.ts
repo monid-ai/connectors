@@ -324,6 +324,27 @@ Deno.test("credentials fallback: endpoint overriding only inject inherits the PR
     );
 });
 
+Deno.test("baseUrl path prefixes survive resolution (concatenation, not URL-resolve)", async () => {
+    // new URL("/v1/x", "https://h/api") would DROP /api — the compiler must
+    // concatenate (akta's baseUrl exposed this)
+    const bundle = await compileBundle(
+        source(
+            [{
+                name: "search",
+                def: makeEndpoint({
+                    request: { method: "GET", path: "/v1/search" },
+                }),
+            }],
+            makeProvider({ request: { baseUrl: "https://api.demo.test/api" } }),
+        ),
+        OPTS,
+    );
+    assertEquals(
+        bundle.endpoints["demo#search"].request.url,
+        "https://api.demo.test/api/v1/search",
+    );
+});
+
 Deno.test("no baseUrl anywhere fails compilation", async () => {
     await assertRejects(
         () =>
@@ -524,7 +545,8 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     );
     assertEquals(contents.auth.inject.$fn.key, doc.auth.inject.$fn.key);
 
-    // taxonomy membership from the real registry
-    assertEquals(bundle.taxonomy.membership["web-search"], ["exa#search"]);
-    assertEquals(bundle.taxonomy.membership["web-scraping"], ["exa#contents"]);
+    // taxonomy membership from the real registry (whole-repo compile —
+    // other connectors share these leaves, so assert inclusion, not equality)
+    assert(bundle.taxonomy.membership["web-search"].includes("exa#search"));
+    assert(bundle.taxonomy.membership["web-scraping"].includes("exa#contents"));
 });
