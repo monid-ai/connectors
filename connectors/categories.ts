@@ -55,4 +55,37 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         displayName: "Embeddings",
         description: "Convert text and media into vector representations.",
     },
+    {
+        id: "people-enrichment",
+        displayName: "People Enrichment",
+        description:
+            "Person data: profiles, contact discovery, and enrichment.",
+    },
+    {
+        id: "linkedin",
+        displayName: "LinkedIn",
+        description: "LinkedIn data: profiles, jobs, posts, and companies.",
+    },
+    {
+        id: "instagram",
+        displayName: "Instagram",
+        description: "Instagram data: profiles, posts, and hashtags.",
+    },
+    {
+        id: "twitter",
+        displayName: "X (Twitter)",
+        description: "X (Twitter) data: tweets, profiles, and searches.",
+    },
+    {
+        id: "youtube",
+        displayName: "YouTube",
+        description:
+            "YouTube data: videos, transcripts, comments, and channels.",
+    },
+    {
+        id: "maps",
+        displayName: "Maps & Local",
+        description:
+            "Maps and local-places data: businesses, reviews, and points of interest.",
+    },
 ]);

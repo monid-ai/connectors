@@ -189,12 +189,77 @@ export async function compileBundle(
                 ...provider.request?.headers,
                 ...def.request.headers,
             };
+
+            // ---- lifecycle: leaf-wise phase fallback + completeness -------
+            const lifecycleStart = resolve(
+                def.lifecycle?.start,
+                `${endpointFile}#lifecycle.start`,
+                provider.lifecycle?.start,
+                `${providerFile}#lifecycle.start`,
+            );
+            const lifecyclePoll = resolve(
+                def.lifecycle?.poll,
+                `${endpointFile}#lifecycle.poll`,
+                provider.lifecycle?.poll,
+                `${providerFile}#lifecycle.poll`,
+            );
+            const lifecycleStop = resolve(
+                def.lifecycle?.stop,
+                `${endpointFile}#lifecycle.stop`,
+                provider.lifecycle?.stop,
+                `${providerFile}#lifecycle.stop`,
+            );
+            if ((lifecyclePoll || lifecycleStop) && !lifecycleStart) {
+                throw new Error(
+                    `${where}: lifecycle.poll/stop without lifecycle.start — ` +
+                        `start must resolve (endpoint ?? provider) whenever any ` +
+                        `lifecycle phase does`,
+                );
+            }
+            // Lifecycle fns are the ASYNC hook family — stamped with
+            // schema.async_since, which floors minEngineVersion for the doc.
+            const lifecycleStartRef = lifecycleStart
+                ? await interner.intern(
+                    lifecycleStart.value,
+                    lifecycleStart.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+            const lifecyclePollRef = lifecyclePoll
+                ? await interner.intern(
+                    lifecyclePoll.value,
+                    lifecyclePoll.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+            const lifecycleStopRef = lifecycleStop
+                ? await interner.intern(
+                    lifecycleStop.value,
+                    lifecycleStop.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+
+            // pollMs is meaningful only for pollable docs: an ENDPOINT-level
+            // pollMs on a doc without a resolved poll is dead config (a
+            // provider-level pollMs is a legitimate default over a mixed
+            // sync/async endpoint set and is simply not emitted).
+            if (def.timeouts?.pollMs !== undefined && !lifecyclePoll) {
+                throw new Error(
+                    `${where}: timeouts.pollMs is dead config — the endpoint ` +
+                        `has no resolved lifecycle.poll`,
+                );
+            }
             const timeouts = {
                 requestMs: def.timeouts?.requestMs ??
                     provider.timeouts?.requestMs ??
                     CC.defaultTimeouts.requestMs,
                 runMs: def.timeouts?.runMs ?? provider.timeouts?.runMs ??
                     CC.defaultTimeouts.runMs,
+                pollMs: lifecyclePoll
+                    ? def.timeouts?.pollMs ?? provider.timeouts?.pollMs ??
+                        CC.defaultTimeouts.pollMs
+                    : undefined,
             };
 
             // ---- auth: inject REQUIRED; credentials ?? default ------------
@@ -285,6 +350,9 @@ export async function compileBundle(
                 toRequestRef,
                 fromResponseRef,
                 consolidateRef,
+                lifecycleStartRef,
+                lifecyclePollRef,
+                lifecycleStopRef,
             ]
                 .filter((ref): ref is FnRef => ref !== undefined);
             const minEngineVersion = semverMax(
@@ -340,6 +408,13 @@ export async function compileBundle(
                 usage: {
                     consolidate: consolidateRef as unknown as Json,
                 },
+                lifecycle: lifecycleStartRef
+                    ? {
+                        start: lifecycleStartRef as unknown as Json,
+                        poll: lifecyclePollRef as unknown as Json,
+                        stop: lifecycleStopRef as unknown as Json,
+                    }
+                    : undefined,
                 timeouts,
             }) as Record<string, Json>;
 

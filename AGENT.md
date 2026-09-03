@@ -43,6 +43,7 @@ deno task catalog providers|endpoints|inspect <id>
 deno task record <id> ...            # record real fixtures (headers dropped)
 deno task compiler:compile           # full-repo deterministic compile
 deno task version:check              # semver gate for ABI/format changes
+deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffold
 ```
 
 ## Core invariants (do not regress)
@@ -51,14 +52,28 @@ deno task version:check              # semver gate for ABI/format changes
   `schema.*`/`compiler.*` config loads override-free; compile iterates sorted;
   hashing is RFC 8785. Double-compile must be byte-identical.
 - **Closed-term fns**: hook functions have no imports/captures (TS-AST linted;
-  whitelisted pure globals only). All IO happens in the engine, never in fns.
-  Cosmetic edits must not change a fn hash (normalization guarantees this).
-- **Hooks (exactly four today)**: `auth.inject`, `input.toRequest`,
-  `usage.consolidate`, `output.fromResponse`. One fallback rule: endpoint ??
-  provider ?? config default, leaf-wise, closest wins.
+  whitelisted pure globals only). All IO flows through the engine's ONE
+  transport port — the four pure hooks do no IO at all; the three lifecycle
+  hooks are effectful-by-capability via `utils.http` (auth injected at egress,
+  fns never see credentials). Cosmetic edits must not change a fn hash
+  (normalization guarantees this).
+- **Hooks (seven)**: four PURE — `auth.inject`, `input.toRequest`,
+  `usage.consolidate`, `output.fromResponse` — plus the EFFECTFUL lifecycle
+  family — `lifecycle.start`/`poll`/`stop` (async run protocol; monid-services
+  `runLifecycle`-shaped, `utils.http`/`log` in ctx). One fallback rule: endpoint
+  ?? provider ?? config default, leaf-wise, closest wins.
+- **Async protocol**: `request` stays REQUIRED and is DATA into the lifecycle
+  (`ctx.data.request`); `lifecycle.start` (when present) replaces the engine's
+  declarative execution and returns `running{state}` |
+  `completed{httpStatus, output, state?}`. State is ids + billing signals only
+  (engine-capped, `schema.state_max_bytes`); `timeouts.pollMs` is the cadence
+  default, per-tick `pollAfterMs` overrides. Docs with a lifecycle floor at
+  `schema.async_since`; sync docs are never over-pinned.
 - **Billing before presentation**: `usage.consolidate` is REQUIRED and runs on
   the RAW response envelope BEFORE `fromResponse` — presentation changes can
-  never change a bill. Vendor non-2xx is DATA (zero usage), not an exception.
+  never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;
+  lifecycle fns synthesize error statuses for in-body failures and the engine
+  zero-bills every non-2xx envelope (a fn cannot bill an error).
 - **Versioning**: every doc carries compiler-derived `minEngineVersion`.
   Connector-only changes never bump the engine. Any hook-ABI or doc-format
   change requires an `ENGINE_VERSION` minor bump + `doc_format_since`/
@@ -77,10 +92,10 @@ The decision record (D-numbered) lives in `design.md` — read
 `openspec/changes/define-endpoint-doc-and-engine/design.md` (D1–D29) before
 extending the schema or engine. `openspec/specs/` is populated on archive.
 
-Reserved-but-unimplemented surfaces (extend these rather than inventing new
-ones): async run protocol (`zRunRunning`, `poll`/`stop`, `NOT_ASYNC` — D10/
-D29), resources (removed in D19, "return with a concrete need, as their own
-change").
+The async run protocol (D10/D29's reserved surface) is IMPLEMENTED — see
+`openspec/changes/add-async-run-protocol/design.md`. Still reserved: resources
+(removed in D19), metered/accruing endpoints, declarative poll/stop phase arms,
+`stop` result reporting — "return with a concrete need, as their own change".
 
 ## Conventions
 

@@ -5,18 +5,19 @@ import { type MoneyUtil } from "../usage/monetary.ts";
 
 /**
  * WHAT A HOOK IS (see the design.md/README primer): a doc is a recipe card of
- * pure data; the five fn-bearing doc fields are the HOOKS — the only places
- * code may appear (`input.toRequest`, `usage.compute`, `usage.consolidate`,
- * `output.fromResponse`, `auth.inject`). Each hook has ONE definition: its
- * CONTRACT — the zod `z.function({input, output})` factory in its own file
- * here, beside its ctx data shape. Every hook fn takes ONE
- * `ctx = { data, utils }`:
- *   - `ctx.data`  — pure JSON, hook-specific, validated by the contract on
- *     every call (FN_CONTRACT). The validated/unvalidatable boundary is
- *     structural, not a naming convention.
+ * pure data; the seven fn-bearing doc fields are the HOOKS — the only places
+ * code may appear. Four are PURE (`input.toRequest`, `usage.consolidate`,
+ * `output.fromResponse`, `auth.inject`); three are the EFFECTFUL lifecycle
+ * family (`lifecycle.start` / `poll` / `stop` — hooks/lifecycle.ts). Each
+ * hook has ONE definition: its CONTRACT — defined in its own file here,
+ * beside its ctx data shape. Every hook fn takes ONE `ctx = { data, utils }`:
+ *   - `ctx.data`  — pure JSON, hook-specific, validated on every call
+ *     (FN_CONTRACT). The validated/unvalidatable boundary is structural,
+ *     not a naming convention.
  *   - `ctx.utils` — host capabilities (engine code, not data): `utils.json`
- *     (JsonUtil) and `utils.money` (MoneyUtil), both implemented in
- *     engine/fn-utils.ts.
+ *     (JsonUtil) and `utils.money` (MoneyUtil) for every hook; lifecycle
+ *     hooks additionally get `utils.http` + `utils.log` (LifecycleUtils).
+ *     All implemented in engine/fn-utils.ts.
  */
 export interface FnUtils {
     json: JsonUtil;

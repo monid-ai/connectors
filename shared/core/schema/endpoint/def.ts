@@ -4,6 +4,7 @@ import {
     zAuthSection,
     zEndpointRequest,
     zInputSection,
+    zLifecycleSection,
     zOutputSection,
     zTimeoutsSection,
     zUsageSection,
@@ -30,6 +31,10 @@ export const zEndpointDef = z.strictObject({
     usage: zUsageSection.optional(),
     auth: zAuthSection.optional(),
     timeouts: zTimeoutsSection.optional(),
+    /** Async run protocol — when `start` resolves (endpoint ?? provider) the
+     *  engine runs it INSTEAD of executing `request` itself; `request` stays
+     *  required and travels into the fns as ctx.data.request. */
+    lifecycle: zLifecycleSection.optional(),
 });
 
 export type EndpointDefSeed = z.input<typeof zEndpointDef>;

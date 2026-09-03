@@ -1,11 +1,21 @@
 import {
     type Currency,
+    type EndpointDoc,
+    type FnEntry,
+    formatZodError,
     getPath,
     type Json,
     type JsonUtil,
+    type LifecycleUtils,
+    type LogUtil,
     type MoneyUtil,
     PATH_PATTERN,
+    zHttpCall,
 } from "@shared/core";
+import type { Logger } from "@shared/logging";
+import { EngineError, EngineErrorCode } from "./errors.ts";
+import type { PreparedRequest, Transport } from "./interfaces/mod.ts";
+import { sniffDecode } from "./transport.ts";
 
 function lastSegment(path: string): string {
     const match = path.match(/\.([A-Za-z_][A-Za-z0-9_-]*)(\[\d+\])*$/);
@@ -155,3 +165,69 @@ export const moneyUtil: MoneyUtil = {
 /** The ctx.utils namespace assembled by the engine (ALL of the hook ABI's
  *  host half lives in THIS file; the interfaces live in @shared/core). */
 export const fnUtils = Object.freeze({ json: jsonUtil, money: moneyUtil });
+
+/**
+ * `ctx.utils` for the LIFECYCLE hook family — the pure ABI plus the effect
+ * capabilities. `http` is the v2 provider runtime (v1 `ProviderRuntime`):
+ * CONSTRUCTED FROM the doc's request + auth, per-call overridable on every
+ * field EXCEPT auth (injected by the transport at egress — fns never see
+ * credentials):
+ *   - `path` resolves against the doc request URL's ORIGIN (v1 apiPath
+ *     semantics); an absolute `url` may target any host.
+ *   - `headers` merge OVER the doc's request headers; `requestMs` overrides
+ *     the doc's per-request timeout.
+ *   - responses come back sniff-decoded `{status, body}`; vendor non-2xx is
+ *     DATA (returned), transport failures throw EXECUTION_FAILED (retriable)
+ *     through the fn unless it catches.
+ * A malformed call shape is a fn bug → FN_CONTRACT, fail-closed.
+ */
+export function makeLifecycleUtils(opts: {
+    doc: EndpointDoc;
+    injectEntry: FnEntry;
+    transport: Transport;
+    logger: Logger;
+}): LifecycleUtils {
+    const { doc, injectEntry, transport, logger } = opts;
+    const origin = new URL(doc.request.url).origin;
+    const log: LogUtil = {
+        debug: (message, fields) => logger.debug(message, fields),
+        info: (message, fields) => logger.info(message, fields),
+        warn: (message, fields) => logger.warn(message, fields),
+        error: (message, fields) => logger.error(message, fields),
+    };
+    const utils: LifecycleUtils = {
+        json: jsonUtil,
+        money: moneyUtil,
+        log,
+        http: async (call) => {
+            const parsed = zHttpCall.safeParse(call);
+            if (!parsed.success) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${doc.id}: utils.http call invalid: ${
+                        formatZodError(parsed.error)
+                    }`,
+                );
+            }
+            const c = parsed.data;
+            const prepared: PreparedRequest = {
+                method: c.method,
+                url: c.url ?? origin + c.path,
+                headers: { ...doc.request.headers, ...c.headers },
+                query: { ...c.queryParams },
+                body: c.body,
+                auth: {
+                    inject: { ref: doc.auth.inject, entry: injectEntry },
+                    credentials: doc.auth.credentials,
+                },
+                provider: doc.provider,
+                timeouts: {
+                    requestMs: c.requestMs ?? doc.timeouts.requestMs,
+                },
+            };
+            const response = await transport.execute(prepared);
+            return { status: response.status, body: sniffDecode(response) };
+        },
+    };
+    return Object.freeze(utils);
+}

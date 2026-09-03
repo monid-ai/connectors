@@ -12,10 +12,14 @@ import { fnCarrier, zFnUtils, zOutputByConstruction } from "./ctx.ts";
  * (all three read {input, output}).
  */
 
-/** ctx.data for post-response hooks — the validated input + decoded output. */
+/** ctx.data for post-response hooks — the validated input + decoded output.
+ *  `state` is present only for lifecycle (async) runs: the final threaded
+ *  state, so settle fns can read billing signals stashed during polling
+ *  (e.g. Apify's pricing fields ride the poll response, not the dataset). */
 export const zEnvelopeData = z.strictObject({
     input: zRunInput,
     output: zOutputByConstruction,
+    state: zJson.optional(),
 });
 export type EnvelopeData = z.infer<typeof zEnvelopeData>;
 

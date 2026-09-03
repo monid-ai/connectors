@@ -59,6 +59,17 @@ export const zEndpointDoc = z.strictObject({
          *  resolved endpoint ?? provider at compile. */
         consolidate: zFnRef,
     }),
+    /**
+     * Async run protocol (engine ≥ config schema.async_since). When present
+     * the engine calls `start` INSTEAD of executing `request` itself —
+     * `request` stays required and rides into the fns as ctx.data.request.
+     * `poll` absent ⇒ not pollable; `stop` absent ⇒ stop is a no-op.
+     */
+    lifecycle: z.strictObject({
+        start: zFnRef,
+        poll: zFnRef.optional(),
+        stop: zFnRef.optional(),
+    }).optional(),
     timeouts: zTimeouts,
     /** Hash of the stable serialization (minus this field) — covers $fn ids. */
     hash: zDocHash,
@@ -71,5 +82,10 @@ export function fnKeysOf(doc: EndpointDoc): string[] {
     if (doc.input.toRequest) keys.push(doc.input.toRequest.$fn.key);
     if (doc.output.fromResponse) keys.push(doc.output.fromResponse.$fn.key);
     keys.push(doc.usage.consolidate.$fn.key);
+    if (doc.lifecycle) {
+        keys.push(doc.lifecycle.start.$fn.key);
+        if (doc.lifecycle.poll) keys.push(doc.lifecycle.poll.$fn.key);
+        if (doc.lifecycle.stop) keys.push(doc.lifecycle.stop.$fn.key);
+    }
     return [...new Set(keys)];
 }

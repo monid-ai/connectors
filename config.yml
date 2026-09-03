@@ -20,6 +20,8 @@ schema:
     # over-pin every doc to the newest engine).
     doc_format_since: "0.1.0" # oldest engine understanding the doc format (minEngineVersion floor)
     fn_abi_since: "0.1.0" # engine release of the current hook ABI; stamped as fn entries' `api`
+    async_since: "0.2.0" # engine release of the lifecycle (async) hook family; stamped as lifecycle fn entries' `api`
+    state_max_bytes: 65536 # hard engine cap on serialized lifecycle state (ids + billing signals, never payloads)
 
 compiler:
     doc_size_warn_bytes: 65536
@@ -27,6 +29,7 @@ compiler:
     defaults:
         request_timeout_ms: 30000
         run_timeout_ms: 60000
+        poll_interval_ms: 2000
     logging:
         level: "info"
 

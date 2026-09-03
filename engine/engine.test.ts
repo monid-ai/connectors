@@ -335,7 +335,10 @@ Deno.test("NOT_ASYNC: poll on a sync endpoint", async () => {
         transport: jsonTransport(200, { results: [] }),
     });
     const loaded = await engine.load(await demoUnit());
-    await expectCode(loaded.poll(null), EngineErrorCode.NOT_ASYNC);
+    await expectCode(
+        loaded.poll({ body: { q: "x" } }, null),
+        EngineErrorCode.NOT_ASYNC,
+    );
 });
 
 // ---------------------------------------------------------------------------
@@ -553,4 +556,498 @@ Deno.test("jsonUtil: transformers stay shape-tolerant (merge deep-appends, pick 
         ]),
         { costDollars: { total: 5 }, requestId: "r" },
     );
+});
+
+// ---------------------------------------------------------------------------
+// lifecycle (async run protocol) — start → poll* → settle, stop, state rules
+// ---------------------------------------------------------------------------
+
+/** Serve a scripted response sequence; capture what the engine sent. */
+function scriptTransport(
+    responses: Array<{ status: number; body: unknown }>,
+    seen?: Array<{ method: string; url: string }>,
+): Transport {
+    let index = 0;
+    return directTransport({
+        params: () => Promise.resolve({ apiKey: "k" }),
+        fetch: (input, init) => {
+            seen?.push({
+                method: (init as RequestInit | undefined)?.method ?? "GET",
+                url: String(input),
+            });
+            const scripted = responses[index++];
+            if (!scripted) {
+                return Promise.reject(new Error("script exhausted"));
+            }
+            const text = typeof scripted.body === "string"
+                ? scripted.body
+                : JSON.stringify(scripted.body);
+            return Promise.resolve(
+                new Response(text, {
+                    status: scripted.status,
+                }),
+            );
+        },
+    });
+}
+
+/**
+ * An async demo connector: the WHOLE lifecycle at provider level (the
+ * actorRunLifecycle pattern) — start POSTs the endpoint's request, polls
+ * /jobs/{id}, fetches /jobs/{id}/items on success, aborts on stop; billing
+ * signals stashed in state at completion; consolidate reads them back.
+ */
+function asyncConnector(): ConnectorSource[] {
+    return [{
+        provider: defineProvider({
+            name: "asyncdemo",
+            meta: { displayName: "Async Demo", summary: "Async demo." },
+            auth: { inject: presets.auth.header("x-demo-key") },
+            request: { baseUrl: "https://api.asyncdemo.test" },
+            timeouts: { requestMs: 1_000, runMs: 5_000, pollMs: 5 },
+            lifecycle: {
+                start: async ({ data, utils }) => {
+                    const res = await utils.http({
+                        method: data.request.method,
+                        url: data.request.url,
+                        body: data.input.body ?? {},
+                    });
+                    if (res.status < 200 || res.status >= 300) {
+                        return {
+                            kind: "completed",
+                            httpStatus: res.status,
+                            output: res.body,
+                        };
+                    }
+                    const jobId = utils.json.get(res.body, "$.jobId");
+                    return {
+                        kind: "running",
+                        state: { jobId },
+                        providerRunId: String(jobId),
+                    };
+                },
+                poll: async ({ data, utils }) => {
+                    const jobId = String(
+                        utils.json.get(data.state, "$.jobId"),
+                    );
+                    const res = await utils.http({
+                        method: "GET",
+                        path: "/jobs/" + encodeURIComponent(jobId),
+                    });
+                    if (res.status < 200 || res.status >= 300) {
+                        return {
+                            kind: "completed",
+                            httpStatus: res.status,
+                            output: res.body,
+                        };
+                    }
+                    const status = utils.json.get(res.body, "$.status");
+                    if (status === "running") {
+                        return { kind: "running", state: data.state };
+                    }
+                    if (status === "failed") {
+                        // in-body vendor failure → synthesized 500 (error-as-data)
+                        return {
+                            kind: "completed",
+                            httpStatus: 500,
+                            output: { message: "job failed" },
+                        };
+                    }
+                    const items = await utils.http({
+                        method: "GET",
+                        path: "/jobs/" + encodeURIComponent(jobId) + "/items",
+                    });
+                    if (items.status < 200 || items.status >= 300) {
+                        return {
+                            kind: "completed",
+                            httpStatus: items.status,
+                            output: items.body,
+                        };
+                    }
+                    const usd = utils.json.optionalNum(res.body, "$.usd");
+                    return {
+                        kind: "completed",
+                        httpStatus: 200,
+                        output: items.body,
+                        state: {
+                            jobId,
+                            ...(usd !== undefined ? { usd } : {}),
+                        },
+                    };
+                },
+                stop: async ({ data, utils }) => {
+                    const jobId = String(
+                        utils.json.get(data.state, "$.jobId"),
+                    );
+                    await utils.http({
+                        method: "POST",
+                        path: "/jobs/" + encodeURIComponent(jobId) + "/abort",
+                    });
+                },
+            },
+            usage: {
+                consolidate: ({ data, utils }) => {
+                    const usd = utils.json.optionalNum(
+                        data.state ?? null,
+                        "$.usd",
+                    );
+                    return {
+                        usage: {
+                            units: [{
+                                amount: Array.isArray(data.output)
+                                    ? data.output.length
+                                    : 0,
+                                unit: "result",
+                            }],
+                            ...(usd !== undefined
+                                ? { cost: utils.money.fromDollars(usd) }
+                                : {}),
+                        },
+                    };
+                },
+            },
+        }),
+        endpoints: [{
+            name: "job",
+            def: defineEndpoint({
+                meta: {
+                    displayName: "Job",
+                    summary: "Runs a job.",
+                    categories: ["demo-search"],
+                },
+                request: { method: "POST", path: "/jobs" },
+                input: { schema: { body: z.object({ q: z.string() }) } },
+            }),
+        }],
+    }];
+}
+
+async function asyncUnit(
+    mutate?: (connectors: ConnectorSource[]) => void,
+): Promise<SealedUnit> {
+    const connectors = asyncConnector();
+    mutate?.(connectors);
+    const bundle = await compileBundle(connectors, COMPILE_OPTS);
+    return sealUnit(bundle, "asyncdemo#job");
+}
+
+const INSTANT_SLEEP = { sleep: () => Promise.resolve() };
+
+Deno.test("lifecycle: compiled doc carries lifecycle refs, pollMs, and the 0.2.0 floor", async () => {
+    const unit = await asyncUnit();
+    assert(unit.doc.lifecycle);
+    assertEquals(unit.doc.timeouts.pollMs, 5);
+    assertEquals(unit.doc.minEngineVersion, "0.2.0");
+    // the sealed unit closes over all three lifecycle fns
+    assert(unit.fns[unit.doc.lifecycle.start.$fn.key]);
+    assert(unit.fns[unit.doc.lifecycle.poll!.$fn.key]);
+    assert(unit.fns[unit.doc.lifecycle.stop!.$fn.key]);
+});
+
+Deno.test("lifecycle happy path: start → poll(running) → poll(done) → result fetch → settle", async () => {
+    const seen: Array<{ method: string; url: string }> = [];
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "done", usd: 0.5 } },
+            { status: 200, body: [{ id: "a" }, { id: "b" }, { id: "c" }] },
+        ], seen),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const result = await loaded.run({ body: { q: "hi" } });
+    assertEquals(result.kind, "completed");
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
+    // cost came from STATE stashed at the poll tick (settle reads the state)
+    assertEquals(result.usage.cost, {
+        currency: "USD",
+        value: 500_000,
+        unit: "MICRO_DOLLAR",
+    });
+    assertEquals(result.output, [{ id: "a" }, { id: "b" }, { id: "c" }]);
+    // wire sequence: start request (the doc's request), poll, poll, items
+    assertEquals(seen.map((call) => `${call.method} ${call.url}`), [
+        "POST https://api.asyncdemo.test/jobs",
+        "GET https://api.asyncdemo.test/jobs/j1",
+        "GET https://api.asyncdemo.test/jobs/j1",
+        "GET https://api.asyncdemo.test/jobs/j1/items",
+    ]);
+});
+
+Deno.test("lifecycle: start returns running with state + providerRunId + doc pollMs", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 201, body: { jobId: "j9" } }]),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const tick = await loaded.start({ body: { q: "x" } });
+    assertEquals(tick, {
+        kind: "running",
+        state: { jobId: "j9" },
+        pollAfterMs: 5,
+        providerRunId: "j9",
+    });
+});
+
+Deno.test("lifecycle: vendor non-2xx at start is DATA — zero usage, no throw", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 429, body: { error: "slow down" } },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.httpStatus, 429);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.output, { error: "slow down" });
+});
+
+Deno.test("lifecycle: in-body vendor failure → fn-synthesized 500, zero usage", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "failed" } },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.httpStatus, 500);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.output, { message: "job failed" });
+});
+
+Deno.test("lifecycle: per-tick pollAfterMs override wins over the doc default", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 200, body: { jobId: "j1" } }]),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = async (
+                { data, utils },
+            ) => {
+                const res = await utils.http({
+                    method: data.request.method,
+                    url: data.request.url,
+                });
+                return {
+                    kind: "running",
+                    state: { jobId: utils.json.get(res.body, "$.jobId") },
+                    pollAfterMs: 7,
+                };
+            };
+        }),
+    );
+    const tick = await loaded.start({ body: { q: "x" } });
+    assert(tick.kind === "running");
+    assertEquals(tick.pollAfterMs, 7);
+});
+
+Deno.test("lifecycle: running without a resolved poll fails closed (CONTRACT_VIOLATION)", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 201, body: { jobId: "j1" } }]),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            delete connectors[0].provider.lifecycle!.poll;
+            delete connectors[0].provider.lifecycle!.stop;
+        }),
+    );
+    await expectCode(
+        loaded.start({ body: { q: "x" } }),
+        EngineErrorCode.CONTRACT_VIOLATION,
+    );
+});
+
+Deno.test("lifecycle: oversized state fails closed (FN_CONTRACT, state_max_bytes)", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 201, body: { jobId: "j1" } }]),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = async (
+                { data, utils },
+            ) => {
+                await utils.http({
+                    method: data.request.method,
+                    url: data.request.url,
+                });
+                return { kind: "running", state: { blob: "x".repeat(70_000) } };
+            };
+        }),
+    );
+    const error = await assertRejects(() => loaded.start({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.FN_CONTRACT);
+    assert(String(error.message).includes("state"));
+});
+
+Deno.test("lifecycle: uncaught fn throw → EXECUTION_FAILED (retriable), not FN_CONTRACT", async () => {
+    // start reads $.jobId strictly; a 2xx body without it throws inside the fn
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 200, body: { nope: true } }]),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const error = await assertRejects(() => loaded.start({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.EXECUTION_FAILED);
+    assertEquals(error.retriable, true);
+});
+
+Deno.test("lifecycle: junk outcome → FN_CONTRACT", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 200, body: {} }]),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = ((_ctx: never) =>
+                Promise.resolve(42)) as never;
+        }),
+    );
+    await expectCode(
+        loaded.start({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => {
+    const seen: Array<{ method: string; url: string }> = [];
+    const engine = new Engine({
+        // abort returns 409 (already finished) — swallowed
+        transport: scriptTransport([{ status: 409, body: {} }], seen),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    await loaded.stop({ body: { q: "x" } }, { jobId: "j1" });
+    assertEquals(seen, [{
+        method: "POST",
+        url: "https://api.asyncdemo.test/jobs/j1/abort",
+    }]);
+    // transport-level failure is swallowed too
+    const engine2 = new Engine({ transport: scriptTransport([]) });
+    const loaded2 = await engine2.load(await asyncUnit());
+    await loaded2.stop({ body: { q: "x" } }, { jobId: "j1" });
+});
+
+Deno.test("lifecycle: run() timeout stops the vendor job then throws TIMEOUT", async () => {
+    const seen: Array<{ method: string; url: string }> = [];
+    // deterministic clock: each read advances 1s — runMs 3500 expires after
+    // start + three polls, independent of wall time
+    let fakeMs = 0;
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: {} }, // the abort
+        ], seen),
+        ...INSTANT_SLEEP,
+        now: () => new Date(fakeMs += 1_000),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.timeouts = {
+                requestMs: 1_000,
+                runMs: 3_500,
+                pollMs: 5,
+            };
+        }),
+    );
+    const error = await assertRejects(() => loaded.run({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.TIMEOUT);
+    // the LAST wire call is the best-effort abort
+    assertEquals(seen[seen.length - 1], {
+        method: "POST",
+        url: "https://api.asyncdemo.test/jobs/j1/abort",
+    });
+});
+
+Deno.test("lifecycle: utils.http per-call header/query overrides + auth still injected", async () => {
+    const headersSeen: Array<Record<string, string>> = [];
+    const transport = directTransport({
+        params: () => Promise.resolve({ apiKey: "k" }),
+        fetch: (input, init) => {
+            headersSeen.push({
+                ...((init as RequestInit | undefined)?.headers as Record<
+                    string,
+                    string
+                > ?? {}),
+            });
+            const url = String(input);
+            if (url.endsWith("/jobs")) {
+                return Promise.resolve(
+                    new Response(JSON.stringify({ jobId: "j1" }), {
+                        status: 200,
+                    }),
+                );
+            }
+            return Promise.resolve(
+                new Response(JSON.stringify({ status: "running" }), {
+                    status: 200,
+                }),
+            );
+        },
+    });
+    const engine = new Engine({ transport });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = async (
+                { data, utils },
+            ) => {
+                const res = await utils.http({
+                    method: data.request.method,
+                    url: data.request.url,
+                    headers: { "x-extra": "yes" },
+                    body: data.input.body ?? {},
+                });
+                return {
+                    kind: "running",
+                    state: { jobId: utils.json.get(res.body, "$.jobId") },
+                };
+            };
+        }),
+    );
+    const tick = await loaded.start({ body: { q: "x" } });
+    assert(tick.kind === "running");
+    assertEquals(headersSeen[0]["x-extra"], "yes");
+    assertEquals(headersSeen[0]["x-demo-key"], "k"); // auth injected by the transport
+});
+
+Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead config", async () => {
+    // poll/stop without start
+    {
+        const connectors = asyncConnector();
+        delete connectors[0].provider.lifecycle!.start;
+        await assertRejects(
+            () => compileBundle(connectors, COMPILE_OPTS),
+            Error,
+            "lifecycle.poll/stop without lifecycle.start",
+        );
+    }
+    // endpoint-level pollMs on a doc with no resolved poll
+    {
+        const connectors = demoConnector();
+        connectors[0].endpoints[0].def.timeouts = { pollMs: 1_000 };
+        await assertRejects(
+            () => compileBundle(connectors, COMPILE_OPTS),
+            Error,
+            "dead config",
+        );
+    }
+});
+
+Deno.test("lifecycle: sync docs stay at 0.1.0 (never over-pinned)", async () => {
+    const bundle = await compileBundle(demoConnector(), COMPILE_OPTS);
+    assertEquals(
+        bundle.endpoints["demo#search"].minEngineVersion,
+        "0.1.0",
+    );
+    assertEquals(bundle.endpoints["demo#search"].lifecycle, undefined);
+    assertEquals(bundle.endpoints["demo#search"].timeouts.pollMs, undefined);
 });

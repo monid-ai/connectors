@@ -1,0 +1,45 @@
+{
+    "name": "synthetic-actor-failed",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/dev_fusion~linkedin-profile-scraper/runs",
+                "body": {
+                    "profileUrls": ["https://www.linkedin.com/in/nobody"]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "FAILRUN1",
+                        "actId": "ACT1",
+                        "status": "READY",
+                        "defaultDatasetId": "FAILDS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/FAILRUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "FAILRUN1",
+                        "actId": "ACT1",
+                        "status": "FAILED",
+                        "statusMessage": "Actor run failed: browser could not start",
+                        "exitCode": 1,
+                        "defaultDatasetId": "FAILDS1",
+                        "usageTotalUsd": 0.004
+                    }
+                }
+            }
+        }
+    ]
+}

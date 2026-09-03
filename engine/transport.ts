@@ -1,3 +1,4 @@
+import type { Json } from "@shared/core";
 import { applyAuth, envVarFor } from "./auth.ts";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import type {
@@ -6,6 +7,22 @@ import type {
     Transport,
     TransportResponse,
 } from "./interfaces/mod.ts";
+
+/**
+ * Sniffing decode — the universal body rule (no per-endpoint flag): JSON if
+ * it parses, else the COMPLETE raw body as a faithful string (a string IS
+ * Json). Shared by the pipeline and utils.http; vendor error pages are
+ * already flagged by the HTTP status (isProviderError / the fn's choice).
+ */
+export function sniffDecode(response: TransportResponse): Json {
+    const text = response.body;
+    if (text.trim() === "") return null;
+    try {
+        return JSON.parse(text) as Json;
+    } catch {
+        return text;
+    }
+}
 
 /** Default resolver: env `<NAME>_API_KEY` → { apiKey } (v1 convention). */
 export const envParamsResolver: ParamsResolver = (provider) => {

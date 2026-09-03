@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-abort",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/actor-runs/STOPRUN1/abort"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "STOPRUN1",
+                        "status": "ABORTING"
+                    }
+                }
+            }
+        }
+    ]
+}
