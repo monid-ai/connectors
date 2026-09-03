@@ -22,7 +22,8 @@ Deno.test("apify#google-maps-scraper happy (recorded): listings scraped through 
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     // recorded reality: the actor returned 20 listings despite max_results 3
-    // — dataset items are the billing basis, so 20 results are billed
-    assertEquals(result.usage.units, [{ amount: 20, unit: "result" }]);
-    assertEquals((result.output as unknown[]).length, 20);
+    // (dataset items are the billing basis); the FIXTURE is trimmed to the
+    // first 2 (fixture-diet, design D11) — replay bills the trimmed reality
+    assertEquals(result.usage.units, [{ amount: 2, unit: "result" }]);
+    assertEquals((result.output as unknown[]).length, 2);
 });

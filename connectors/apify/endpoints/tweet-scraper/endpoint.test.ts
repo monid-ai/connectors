@@ -21,6 +21,7 @@ Deno.test("apify#tweet-scraper happy (recorded): tweets scraped through the asyn
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
-    assertEquals((result.output as unknown[]).length, 3);
+    // recorded 3 tweets; fixture trimmed to the first 2 (fixture-diet D11)
+    assertEquals(result.usage.units, [{ amount: 2, unit: "result" }]);
+    assertEquals((result.output as unknown[]).length, 2);
 });

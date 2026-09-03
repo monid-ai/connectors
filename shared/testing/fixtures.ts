@@ -4,6 +4,15 @@ import { type Json, zJson } from "@shared/core";
 /**
  * HTTP fixture: recorded {req, res} pairs served in order during replay.
  * Headers are NEVER recorded — credentials cannot leak into fixtures.
+ *
+ * FIXTURES ARE TRIMMED RECORDINGS (fixture-diet policy, design D11 of
+ * add-async-run-protocol): the wire CHAIN is byte-real — requests, order,
+ * urls, statuses untouched (replay matches REQUESTS only, so trimming can
+ * never cause a replay mismatch) — but RESPONSE bodies are shrunk at record
+ * time by the deterministic `trimJson` pass (arrays capped, long strings
+ * truncated). ~99% of raw recorded bytes are repeated payload no test
+ * asserts on; the real shapes and vendor quirks survive. `record --no-trim`
+ * opts out; the fixture-size lint (fixture-size.test.ts) bounds files.
  */
 export const zRecordedCall = z.object({
     req: z.object({
@@ -26,6 +35,45 @@ export type Fixture = z.infer<typeof zFixture>;
 
 export async function loadFixture(path: string): Promise<Fixture> {
     return zFixture.parse(JSON.parse(await Deno.readTextFile(path)));
+}
+
+/** Trim bounds — tunable beside the pass, mirrored by the size lint. */
+export const TRIM_ARRAY_CAP = 2;
+export const TRIM_STRING_CAP = 500;
+
+/**
+ * The deterministic trim pass: cap every array to its first
+ * TRIM_ARRAY_CAP elements and truncate string leaves beyond
+ * TRIM_STRING_CAP chars — recursively, keys and structure untouched.
+ * Applied ONLY to recorded RESPONSE bodies (never requests/urls/statuses),
+ * so the replayed wire contract is unchanged; only what the engine
+ * CONSUMES shrinks (count assertions reflect the trimmed reality).
+ */
+export function trimJson(value: Json): Json {
+    if (typeof value === "string") {
+        return value.length > TRIM_STRING_CAP
+            ? value.slice(0, TRIM_STRING_CAP)
+            : value;
+    }
+    if (Array.isArray(value)) {
+        return value.slice(0, TRIM_ARRAY_CAP).map(trimJson);
+    }
+    if (value !== null && typeof value === "object") {
+        const out: Record<string, Json> = {};
+        for (const [key, item] of Object.entries(value)) {
+            out[key] = trimJson(item);
+        }
+        return out;
+    }
+    return value;
+}
+
+/** Apply the trim pass to a recorded call chain (response bodies only). */
+export function trimCalls(calls: RecordedCall[]): RecordedCall[] {
+    return calls.map((call) => ({
+        req: call.req,
+        res: { status: call.res.status, body: trimJson(call.res.body) },
+    }));
 }
 
 /** Serve recorded calls in order; fail loudly on mismatch or exhaustion. */

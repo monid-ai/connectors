@@ -51,6 +51,12 @@
 ## 5. Testing plumbing
 
 - [x] 5.1 runner.ts: instant sleep injected in replay mode
+- [x] 5.2 Fixture diet (D11): trimJson/trimCalls pass (arrays→2, strings→
+      500 chars, responses only) applied by `record` by default
+      (`--no-trim` opts out); fixture-size lint (warn 32 KiB / fail
+      128 KiB); fat apify recordings re-trimmed (instagram 176→41 KB,
+      gmaps 86→23 KB, tweets 55→35 KB) with assertions updated to the
+      trimmed reality
 
 ## 6. Apify connector (tranche 1)
 

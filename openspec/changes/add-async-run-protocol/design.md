@@ -187,6 +187,31 @@ its Temporal `endpointExecution` workflow.
   (D25), catalog `visibility` (hosted policy — tweet-scraper's v1
   private-catalog flag is not doc identity).
 
+## D11 — Fixture diet: fixtures are TRIMMED recordings
+
+- Context: raw async recordings carry whole vendor payloads (instagram's
+  happy chain recorded at 176 KB, gmaps 86 KB) of which ~99% is repeated
+  content no test asserts on; tranche 2 would multiply that ×55 into
+  permanent git history. Review asked what fixtures buy at all: almost
+  entirely the replay substrate (offline/keyless/free verification of
+  billing math + wire sequences — the repo's core testing invariant), plus
+  the only checked-in record of real vendor quirks. Deleting them would
+  make endpoint tests live-only (no CI coverage, per-run vendor fees);
+  synthetic-only would revert the deliberate recorded-reality upgrade.
+- Decision: keep the recordings, drop the bulk. `record` applies a
+  deterministic TRIM pass by default (`--no-trim` opts out): every array in
+  a RESPONSE body capped to its first 2 elements, string leaves truncated
+  at 500 chars — requests, urls, statuses, order, and object keys untouched
+  (`trimJson`/`trimCalls`, shared/testing/fixtures.ts). Replay matches
+  REQUESTS only, so trimming can never cause a replay mismatch; only what
+  the engine CONSUMES shrinks, and count assertions state the trimmed
+  reality (gmaps 20→2 items, tweets 3→2). A fixture-size lint bounds the
+  files (warn 32 KiB, fail 128 KiB — warns are non-blocking nudges;
+  pre-policy fixtures like octen's ride the warn lane until re-recorded).
+- Consequences: instagram 176→41 KB, gmaps 86→23 KB, tweets 55→35 KB; real
+  wire chains and vendor shapes survive; tranche 2 inherits the diet by
+  default.
+
 ## Concepts delta
 
 | Term | Definition |

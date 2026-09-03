@@ -81,7 +81,10 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
 - **Tests run the artifact**: `testSealedUnit(id)` compiles the whole repo and
   tests the sealed unit (doc + its fn entries), replaying `fixtures/*.json`.
   Live tests gate on `<PROVIDER>_API_KEY`; synthetic fixtures carry a
-  `synthetic-` filename prefix until real recordings exist.
+  `synthetic-` filename prefix until real recordings exist. Fixtures are TRIMMED
+  recordings (D11): `record` caps response arrays/strings by default (wire chain
+  untouched — replay matches requests only); the fixture-size lint bounds files
+  (warn 32 KiB / fail 128 KiB).
 
 ## OpenSpec workflow
 

@@ -7,15 +7,28 @@
  * wrapped fetch, captures the request/response pairs (headers NEVER recorded
  * — credentials cannot leak), and writes
  * connectors/<provider>/endpoints/<endpoint>/fixtures/<scenario>.json.
- * From then on `deno task test` replays that byte-real vendor shape with
- * zero network and zero keys.
+ * From then on `deno task test` replays that vendor shape with zero network
+ * and zero keys.
+ *
+ * FIXTURE DIET (default ON, `--no-trim` opts out): recorded RESPONSE bodies
+ * pass through the deterministic trim (arrays capped, long strings
+ * truncated — see shared/testing/fixtures.ts) BEFORE writing. The wire
+ * chain (requests/urls/statuses) is untouched, so replay matching is
+ * unaffected; only the consumed payload bulk shrinks. NOTE: the printed
+ * usage below reflects the LIVE (untrimmed) responses — replay assertions
+ * must count the trimmed fixture's reality.
  *
  * Input flags mirror engine:run: zRunInput's fields in CLI kebab-case.
  */
 import { join } from "@std/path";
 import { Command } from "@cliffy/command";
 import { type Json, type RunInput, sealUnit } from "@shared/core";
-import { type RecordedCall, runEndpoint, zFixture } from "@shared/testing";
+import {
+    type RecordedCall,
+    runEndpoint,
+    trimCalls,
+    zFixture,
+} from "@shared/testing";
 import { compileToOutput, parseEndpointId, REPO_ROOT } from "./lib.ts";
 
 function parseJson(flag: string, raw: string): Json {
@@ -36,6 +49,10 @@ const { options, args } = await new Command()
         "RunInput.queryParams (JSON object).",
     )
     .option("--path-params <json:string>", "RunInput.pathParams (JSON object).")
+    .option(
+        "--no-trim",
+        "Keep full recorded response bodies (skip the fixture-diet trim).",
+    )
     .parse(Deno.args);
 
 const [endpointId, scenario] = args;
@@ -78,7 +95,10 @@ const fixturePath = join(
     "fixtures",
     `${scenario}.json`,
 );
-const fixture = zFixture.parse({ name: scenario, calls: sink });
+const fixture = zFixture.parse({
+    name: scenario,
+    calls: options.trim === false ? sink : trimCalls(sink),
+});
 await Deno.mkdir(join(fixturePath, ".."), { recursive: true });
 await Deno.writeTextFile(fixturePath, JSON.stringify(fixture, null, 4) + "\n");
 
