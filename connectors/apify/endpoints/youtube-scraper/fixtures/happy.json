@@ -1,0 +1,1041 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/streamers~youtube-scraper/runs",
+                "body": {
+                    "searchQueries": [
+                        "deno tutorial"
+                    ],
+                    "maxResults": 2,
+                    "maxResultsShorts": 0,
+                    "maxResultStreams": 0
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/zOmeiKWxJBIcM4S2b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 363,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.363,
+                            "metamorph": 0,
+                            "computeUnits": 0.00010083333333333334,
+                            "memAvgBytes": 12967936,
+                            "memMaxBytes": 12967936,
+                            "memCurrentBytes": 12967936,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 334,
+                            "netTxBytes": 568
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/zOmeiKWxJBIcM4S2b",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/zOmeiKWxJBIcM4S2b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 363,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.363,
+                            "metamorph": 0,
+                            "computeUnits": 0.00010083333333333334,
+                            "memAvgBytes": 12967936,
+                            "memMaxBytes": 12967936,
+                            "memCurrentBytes": 12967936,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 334,
+                            "netTxBytes": 568
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/zOmeiKWxJBIcM4S2b",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/zOmeiKWxJBIcM4S2b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4382,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.382,
+                            "metamorph": 0,
+                            "computeUnits": 0.0012172222222222222,
+                            "memAvgBytes": 118726976.61341853,
+                            "memMaxBytes": 165314560,
+                            "memCurrentBytes": 165314560,
+                            "cpuAvgUsage": 51.20319471391739,
+                            "cpuMaxUsage": 68.91870967741936,
+                            "cpuCurrentUsage": 22.764015247776364,
+                            "netRxBytes": 175896,
+                            "netTxBytes": 20566
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/zOmeiKWxJBIcM4S2b",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/zOmeiKWxJBIcM4S2b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Finished! Total 3 requests: 3 succeeded, 0 failed.",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4382,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.382,
+                            "metamorph": 0,
+                            "computeUnits": 0.0012172222222222222,
+                            "memAvgBytes": 118726976.61341853,
+                            "memMaxBytes": 165314560,
+                            "memCurrentBytes": 165314560,
+                            "cpuAvgUsage": 51.20319471391739,
+                            "cpuMaxUsage": 68.91870967741936,
+                            "cpuCurrentUsage": 22.764015247776364,
+                            "netRxBytes": 175896,
+                            "netTxBytes": 20566
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/zOmeiKWxJBIcM4S2b",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/zOmeiKWxJBIcM4S2b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "zOmeiKWxJBIcM4S2b",
+                        "actId": "h7sDV53CddomktSi5",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.507Z",
+                        "finishedAt": "2026-09-05T01:41:23.172Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "Finished! Total 3 requests: 3 succeeded, 0 failed.",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 206,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 8503,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 8.503,
+                            "metamorph": 0,
+                            "computeUnits": 0.0023619444444444443,
+                            "memAvgBytes": 128381058.80070964,
+                            "memMaxBytes": 184324096,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 34.624497791366004,
+                            "cpuMaxUsage": 68.91870967741936,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 658223,
+                            "netTxBytes": 96025
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 604800,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "K0yteifWQiY8weDzu",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "Wc2IcedhqOD44ucjf",
+                        "defaultDatasetId": "F0TA7SWfWBlgQ2GrO",
+                        "defaultRequestQueueId": "HZgCNqYHkeXTcu9qp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Wc2IcedhqOD44ucjf"
+                            },
+                            "datasets": {
+                                "default": "F0TA7SWfWBlgQ2GrO"
+                            },
+                            "requestQueues": {
+                                "default": "HZgCNqYHkeXTcu9qp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-09-02T13:52:04.236Z",
+                            "startedAt": "2026-09-02T13:52:04.236Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Video",
+                                        "eventDescription": "Each video written to the dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0024
+                                    },
+                                    "date-filter": {
+                                        "eventTitle": "Add-on: Date range for channels",
+                                        "eventDescription": "Extra cost when date filtering is used on channels.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0006
+                                    },
+                                    "ai-video-description": {
+                                        "eventTitle": "Add-on: AI description",
+                                        "eventDescription": "Extra cost for timestamped AI description of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "ai-video-summary": {
+                                        "eventTitle": "Add-on: AI summary",
+                                        "eventDescription": "Extra cost for AI summary of a video per minute.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.007
+                                    },
+                                    "transcribeMinute": {
+                                        "eventTitle": "Add-on: Transcript minute",
+                                        "eventDescription": "Extra cost charged per started minute per video",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.027
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "date-filter": 0,
+                            "ai-video-description": 0,
+                            "ai-video-summary": 0,
+                            "transcribeMinute": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.290",
+                        "containerUrl": "https://zc0uitknhbqe.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/zOmeiKWxJBIcM4S2b",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Video",
+                                "eventTotalUsd": 0
+                            },
+                            "date-filter": {
+                                "eventTitle": "Add-on: Date range for channels",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-description": {
+                                "eventTitle": "Add-on: AI description",
+                                "eventTotalUsd": 0
+                            },
+                            "ai-video-summary": {
+                                "eventTitle": "Add-on: AI summary",
+                                "eventTotalUsd": 0
+                            },
+                            "transcribeMinute": {
+                                "eventTitle": "Add-on: Transcript minute",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/F0TA7SWfWBlgQ2GrO/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "title": "Forget Everything you Thought you Knew about Deno | Deno 2 0 Crash Course",
+                        "translatedTitle": null,
+                        "type": "video",
+                        "id": "7Yo3eO-jitQ",
+                        "url": "https://www.youtube.com/watch?v=7Yo3eO-jitQ",
+                        "thumbnailUrl": "https://i.ytimg.com/vi/7Yo3eO-jitQ/maxresdefault.jpg",
+                        "viewCount": 33582,
+                        "date": "2024-10-09T15:00:07.000Z",
+                        "likes": 1000,
+                        "location": null,
+                        "channelName": "codeSTACKr",
+                        "channelUrl": "https://www.youtube.com/@codeSTACKr",
+                        "channelUsername": "codeSTACKr",
+                        "collaborators": null,
+                        "channelId": "UCDCHcqyeQgJ-jVSd6VJkbCw",
+                        "numberOfSubscribers": 292000,
+                        "duration": "00:29:35",
+                        "commentsCount": 55,
+                        "text": "🦸 Become A VS Code SuperHero Today: https://vsCodeHero.com\n\nIn this crash course, we explore why Deno 2.0 (@deno_land) is a game-changer for JavaScript and TypeScript developers. Whether you're brand new to Deno or a seasoned developer, this course will show you how to take full advantage of the latest features that make Deno a strong alternative to Node.js.\n\n🔑 Key Takeaways:\n- npm compatibility in Deno 2.0\n- Seamless Next.js integration\n- Improved performance and built-in TypeScript support\n-",
+                        "translatedText": "🦸 Become A VS Code SuperHero Today: https://vsCodeHero.com\n\nIn this crash course, we explore why Deno 2.0 (‪@deno_land‬) is a game-changer for JavaScript and TypeScript developers. Whether you're brand new to Deno or a seasoned developer, this course will show you how to take full advantage of the latest features that make Deno a strong alternative to Node.js.\n\n🔑 Key Takeaways:\nnpm compatibility in Deno 2.0\nSeamless Next.js integration\nImproved performance and built-in TypeScript support\nEnhan",
+                        "descriptionLinks": [
+                            {
+                                "url": "https://vsCodeHero.com/",
+                                "text": "https://vsCodeHero.com"
+                            },
+                            {
+                                "url": "https://www.youtube.com/@deno_land",
+                                "text": "‪@deno_land‬"
+                            }
+                        ],
+                        "subtitles": null,
+                        "aiVideoDescription": null,
+                        "aiVideoSummary": null,
+                        "order": 0,
+                        "commentsTurnedOff": false,
+                        "fromYTUrl": "https://www.youtube.com/results?search_query=deno+tutorial&sp=EgIQAQ%3D%3D",
+                        "isMonetized": null,
+                        "hashtags": [
+                            "#nodejs",
+                            "#deno2"
+                        ],
+                        "isMembersOnly": false,
+                        "input": "deno tutorial",
+                        "isPaidContent": false
+                    },
+                    {
+                        "title": "Deno 2 is here… will it actually kill Node.js this time?",
+                        "translatedTitle": null,
+                        "type": "video",
+                        "id": "pcC4Dr6Wj2Q",
+                        "url": "https://www.youtube.com/watch?v=pcC4Dr6Wj2Q",
+                        "thumbnailUrl": "https://i.ytimg.com/vi/pcC4Dr6Wj2Q/maxresdefault.jpg",
+                        "viewCount": 690763,
+                        "date": "2024-09-24T18:00:25.000Z",
+                        "likes": 37000,
+                        "location": null,
+                        "channelName": "Fireship",
+                        "channelUrl": "https://www.youtube.com/@Fireship",
+                        "channelUsername": "Fireship",
+                        "collaborators": null,
+                        "channelId": "UCsBjURrPoezykLs9EqgamOA",
+                        "numberOfSubscribers": 4260000,
+                        "duration": "00:04:16",
+                        "commentsCount": 1267,
+                        "text": "Take a first look at Deno 2.0 - a JavaScript runtime with first-class TypeScript support, and now full compatibility with Node.js\n\n#javascript #tech #thecodereport \n\n💬 Chat with Me on Discord\n\nhttps://discord.gg/fireship\n\n🔗 Resources\n\nDeno on GitHub https://github.com/denoland/deno\nBun.js Code Report https://youtu.be/dWqNgzZwVJQ\nJavaScript for the Haters https://youtu.be/aXOChLn5ZdQ\n\n🔥 Get More Content - Upgrade to PRO\n\nUpgrade at https://fireship.io/pro\nUse code YT25 for 25% off PRO access \n",
+                        "translatedText": "Take a first look at Deno 2.0 - a JavaScript runtime with first-class TypeScript support, and now full compatibility with Node.js\n\n#javascript #tech #thecodereport \n\n💬 Chat with Me on Discord\n\n  / discord  \n\n🔗 Resources\n\nDeno on GitHub https://github.com/denoland/deno\nBun.js Code Report    • Bun is disrupting JavaScript land  \nJavaScript for the Haters    • JavaScript for the Haters  \n\n🔥 Get More Content - Upgrade to PRO\n\nUpgrade at https://fireship.io/pro\nUse code YT25 for 25% off PRO access",
+                        "descriptionLinks": [
+                            {
+                                "url": "https://www.youtube.com/hashtag/javascript",
+                                "text": "#javascript"
+                            },
+                            {
+                                "url": "https://www.youtube.com/hashtag/tech",
+                                "text": "#tech"
+                            }
+                        ],
+                        "subtitles": null,
+                        "aiVideoDescription": null,
+                        "aiVideoSummary": null,
+                        "order": 1,
+                        "commentsTurnedOff": false,
+                        "fromYTUrl": "https://www.youtube.com/results?search_query=deno+tutorial&sp=EgIQAQ%3D%3D",
+                        "isMonetized": null,
+                        "hashtags": [
+                            "#javascript",
+                            "#tech"
+                        ],
+                        "isMembersOnly": false,
+                        "input": "deno tutorial",
+                        "isPaidContent": false
+                    }
+                ]
+            }
+        }
+    ]
+}

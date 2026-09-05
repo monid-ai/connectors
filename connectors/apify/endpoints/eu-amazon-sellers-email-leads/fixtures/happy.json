@@ -1,0 +1,913 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/xmiso_scrapers~eu-amazon-sellers-email-leads/runs",
+                "body": {
+                    "max_results": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 1598,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 1.598,
+                            "metamorph": 0,
+                            "computeUnits": 0.0004438888888888889,
+                            "memAvgBytes": 4194304,
+                            "memMaxBytes": 4194304,
+                            "memCurrentBytes": 4194304,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 296,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 1598,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 1.598,
+                            "metamorph": 0,
+                            "computeUnits": 0.0004438888888888889,
+                            "memAvgBytes": 4194304,
+                            "memMaxBytes": 4194304,
+                            "memCurrentBytes": 4194304,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 296,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 1598,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 1.598,
+                            "metamorph": 0,
+                            "computeUnits": 0.0004438888888888889,
+                            "memAvgBytes": 4194304,
+                            "memMaxBytes": 4194304,
+                            "memCurrentBytes": 4194304,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 296,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 5605,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 5.605,
+                            "metamorph": 0,
+                            "computeUnits": 0.0015569444444444443,
+                            "memAvgBytes": 36957363.95361285,
+                            "memMaxBytes": 57241600,
+                            "memCurrentBytes": 56901632,
+                            "cpuAvgUsage": 28.672327865397623,
+                            "cpuMaxUsage": 86.86325935320228,
+                            "cpuCurrentUsage": 0.03169620253164557,
+                            "netRxBytes": 7579,
+                            "netTxBytes": 3852
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 5605,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 5.605,
+                            "metamorph": 0,
+                            "computeUnits": 0.0015569444444444443,
+                            "memAvgBytes": 36957363.95361285,
+                            "memMaxBytes": 57241600,
+                            "memCurrentBytes": 56901632,
+                            "cpuAvgUsage": 28.672327865397623,
+                            "cpuMaxUsage": 86.86325935320228,
+                            "cpuCurrentUsage": 0.03169620253164557,
+                            "netRxBytes": 7579,
+                            "netTxBytes": 3852
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 10618,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 10.618,
+                            "metamorph": 0,
+                            "computeUnits": 0.0029494444444444446,
+                            "memAvgBytes": 46376988.54624223,
+                            "memMaxBytes": 57241600,
+                            "memCurrentBytes": 56909824,
+                            "cpuAvgUsage": 15.151938521966095,
+                            "cpuMaxUsage": 86.86325935320228,
+                            "cpuCurrentUsage": 0.036962348436502875,
+                            "netRxBytes": 10979,
+                            "netTxBytes": 5052
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SAUsRHw9mytm29Np7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SAUsRHw9mytm29Np7",
+                        "actId": "EZyLx7CSAtWHTAbd8",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.006Z",
+                        "finishedAt": "2026-09-05T01:41:27.309Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 28,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 13098,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 13.098,
+                            "metamorph": 0,
+                            "computeUnits": 0.0036383333333333333,
+                            "memAvgBytes": 48232871.802162625,
+                            "memMaxBytes": 58159104,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 13.950689605608359,
+                            "cpuMaxUsage": 86.86325935320228,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 21014,
+                            "netTxBytes": 9700
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 1024,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 262558,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "C0Pga94NkBbUFCCcK",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "00taSzXok0qWjfR3q",
+                        "defaultDatasetId": "FznuxfKEfWwF5VCz1",
+                        "defaultRequestQueueId": "rKW7tKlT8tvYXztXE",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "00taSzXok0qWjfR3q"
+                            },
+                            "datasets": {
+                                "default": "FznuxfKEfWwF5VCz1"
+                            },
+                            "requestQueues": {
+                                "default": "rKW7tKlT8tvYXztXE"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-02T09:05:27.651Z",
+                            "startedAt": "2026-02-02T09:05:27.651Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.006900000000000001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.44",
+                        "containerUrl": "https://wux1uja95fgi.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/SAUsRHw9mytm29Np7",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/FznuxfKEfWwF5VCz1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "seller_id": "A01471922DMQGCUDUPZV9",
+                        "seller_page_url": "https://www.amazon.de/sp?ie=UTF8&seller=A01471922DMQGCUDUPZV9",
+                        "business_name": "Shenzhen huakai weishi keji youxian gongsi",
+                        "business_type": "Privately-owned business",
+                        "registration_number": "914403005930239520",
+                        "vat_number": "DE335583855",
+                        "phone_number": "+86 136 6182 9053",
+                        "email": "zhenghongwei@gmail.com",
+                        "business_address": "4 Floor, No.938, Meilong Avenue,, Longhua New Area., Shenzhen, Guangdong, 508109, CN, pingshan jiedao liulian shequ, pingshan dadao 2009hao zhongtian meijing dasha1511, Shenzhenshi, pingshan qu, China, 518000",
+                        "country_code": "CN",
+                        "rating_lifetime": 4.9,
+                        "reviews_lifetime": 993,
+                        "rating_1_year": 4.9,
+                        "reviews_1_year": 14,
+                        "rating_3_months": 4.8,
+                        "reviews_3_months": 4,
+                        "asin": "B0CHRXQW27",
+                        "product_name": "HUACAM Einzelnes Karaoke-Funkmikrofon, professionelles wiederaufladbares Funkmikrofon, kabelloses Handmikrofon, Party-System, DJ-Gesang, Rede, Kirche, Party, Hochzeit",
+                        "category": "Musical Instruments & DJ",
+                        "about_seller": null,
+                        "multiple_sellers_for_asin": null,
+                        "discovery_date": "2025-07-09T08:36:21",
+                        "amazon_market": "amazon.de"
+                    },
+                    {
+                        "seller_id": "A05185833DDQ75JNFCZGV",
+                        "seller_page_url": "https://www.amazon.de/sp?ie=UTF8&seller=A05185833DDQ75JNFCZGV",
+                        "business_name": "Versand-Fuxx UG (haftungsbeschränkt)",
+                        "business_type": "Privately-owned business",
+                        "registration_number": "HRB19399 KI",
+                        "vat_number": "DE285078384",
+                        "phone_number": "+49 4106 6385689",
+                        "email": "office@versandfuxx24.de",
+                        "business_address": "Butenring 22, Butenring 22, Ellerau, Ellerau, Deutschland, Deutschland, 25479, 25479, DE, DE, Butenring 22, Butenring 22, Ellerau, Ellerau, Deutschland, Deutschland, 25479, 25479, DE, DE",
+                        "country_code": "DE",
+                        "rating_lifetime": 4.9,
+                        "reviews_lifetime": 6018,
+                        "rating_1_year": 4.9,
+                        "reviews_1_year": 92,
+                        "rating_3_months": 4.9,
+                        "reviews_3_months": 31,
+                        "asin": "B0B888KQXD",
+                        "product_name": "Devitre 2 x Glass Oil Bottles 1000 ml with Integrated Plastic Pourer and Labels",
+                        "category": "Home & Kitchen",
+                        "about_seller": null,
+                        "multiple_sellers_for_asin": null,
+                        "discovery_date": "2025-07-09T08:36:21",
+                        "amazon_market": "amazon.de"
+                    }
+                ]
+            }
+        }
+    ]
+}

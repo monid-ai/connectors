@@ -1,0 +1,730 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/compass~google-maps-reviews-scraper/runs",
+                "body": {
+                    "placeIds": [
+                        "ChIJj61dQgK6j4AR4GeTYWZsKWw"
+                    ],
+                    "maxReviews": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "aBj47PxfqlmB0qCuh",
+                        "actId": "Xb8osYTtOjlsgI6k9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.131Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 165,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 36000,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "VNUCF0ThtIvpiPiR3",
+                        "defaultKeyValueStoreId": "QWULDI6ec9u6prBWf",
+                        "defaultDatasetId": "RcVN0h3BUIk6rSHVs",
+                        "defaultRequestQueueId": "9iZppFkS3iWmz3bIo",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "QWULDI6ec9u6prBWf"
+                            },
+                            "datasets": {
+                                "default": "RcVN0h3BUIk6rSHVs"
+                            },
+                            "requestQueues": {
+                                "default": "9iZppFkS3iWmz3bIo"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-03-13T12:57:35.676Z",
+                            "startedAt": "2026-03-13T12:57:35.676Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "review-scraped": {
+                                        "eventTitle": "Scraped review",
+                                        "eventDescription": "Cost per individual review scraped.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0003
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.517",
+                        "containerUrl": "https://vfxsbr5nqw2f.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "review-scraped": {
+                                "eventTitle": "Scraped review",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/aBj47PxfqlmB0qCuh"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "aBj47PxfqlmB0qCuh",
+                        "actId": "Xb8osYTtOjlsgI6k9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.131Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 165,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 257,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.257,
+                            "metamorph": 0,
+                            "computeUnits": 0.00007138888888888889,
+                            "memAvgBytes": 3194880,
+                            "memMaxBytes": 3194880,
+                            "memCurrentBytes": 3194880,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 380,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 36000,
+                            "memoryMbytes": 1024,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "VNUCF0ThtIvpiPiR3",
+                        "defaultKeyValueStoreId": "QWULDI6ec9u6prBWf",
+                        "defaultDatasetId": "RcVN0h3BUIk6rSHVs",
+                        "defaultRequestQueueId": "9iZppFkS3iWmz3bIo",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "QWULDI6ec9u6prBWf"
+                            },
+                            "datasets": {
+                                "default": "RcVN0h3BUIk6rSHVs"
+                            },
+                            "requestQueues": {
+                                "default": "9iZppFkS3iWmz3bIo"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-03-13T12:57:35.676Z",
+                            "startedAt": "2026-03-13T12:57:35.676Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "review-scraped": {
+                                        "eventTitle": "Scraped review",
+                                        "eventDescription": "Cost per individual review scraped.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0003
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.517",
+                        "containerUrl": "https://vfxsbr5nqw2f.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/aBj47PxfqlmB0qCuh",
+                        "eventUsage": {
+                            "review-scraped": {
+                                "eventTitle": "Scraped review",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/aBj47PxfqlmB0qCuh"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "aBj47PxfqlmB0qCuh",
+                        "actId": "Xb8osYTtOjlsgI6k9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.131Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 165,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 257,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.257,
+                            "metamorph": 0,
+                            "computeUnits": 0.00007138888888888889,
+                            "memAvgBytes": 3194880,
+                            "memMaxBytes": 3194880,
+                            "memCurrentBytes": 3194880,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 380,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 36000,
+                            "memoryMbytes": 1024,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "VNUCF0ThtIvpiPiR3",
+                        "defaultKeyValueStoreId": "QWULDI6ec9u6prBWf",
+                        "defaultDatasetId": "RcVN0h3BUIk6rSHVs",
+                        "defaultRequestQueueId": "9iZppFkS3iWmz3bIo",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "QWULDI6ec9u6prBWf"
+                            },
+                            "datasets": {
+                                "default": "RcVN0h3BUIk6rSHVs"
+                            },
+                            "requestQueues": {
+                                "default": "9iZppFkS3iWmz3bIo"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-03-13T12:57:35.676Z",
+                            "startedAt": "2026-03-13T12:57:35.676Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "review-scraped": {
+                                        "eventTitle": "Scraped review",
+                                        "eventDescription": "Cost per individual review scraped.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0003
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.517",
+                        "containerUrl": "https://vfxsbr5nqw2f.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/aBj47PxfqlmB0qCuh",
+                        "eventUsage": {
+                            "review-scraped": {
+                                "eventTitle": "Scraped review",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/aBj47PxfqlmB0qCuh"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "aBj47PxfqlmB0qCuh",
+                        "actId": "Xb8osYTtOjlsgI6k9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.131Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 165,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4297,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.297,
+                            "metamorph": 0,
+                            "computeUnits": 0.0011936111111111112,
+                            "memAvgBytes": 104270718.59995346,
+                            "memMaxBytes": 121081856,
+                            "memCurrentBytes": 118681600,
+                            "cpuAvgUsage": 50.186129998926354,
+                            "cpuMaxUsage": 91.01378874130297,
+                            "cpuCurrentUsage": 4.537383535417996,
+                            "netRxBytes": 107730,
+                            "netTxBytes": 19984
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 36000,
+                            "memoryMbytes": 1024,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "VNUCF0ThtIvpiPiR3",
+                        "defaultKeyValueStoreId": "QWULDI6ec9u6prBWf",
+                        "defaultDatasetId": "RcVN0h3BUIk6rSHVs",
+                        "defaultRequestQueueId": "9iZppFkS3iWmz3bIo",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "QWULDI6ec9u6prBWf"
+                            },
+                            "datasets": {
+                                "default": "RcVN0h3BUIk6rSHVs"
+                            },
+                            "requestQueues": {
+                                "default": "9iZppFkS3iWmz3bIo"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-03-13T12:57:35.676Z",
+                            "startedAt": "2026-03-13T12:57:35.676Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "review-scraped": {
+                                        "eventTitle": "Scraped review",
+                                        "eventDescription": "Cost per individual review scraped.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0003
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.517",
+                        "containerUrl": "https://vfxsbr5nqw2f.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/aBj47PxfqlmB0qCuh",
+                        "eventUsage": {
+                            "review-scraped": {
+                                "eventTitle": "Scraped review",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/aBj47PxfqlmB0qCuh"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "aBj47PxfqlmB0qCuh",
+                        "actId": "Xb8osYTtOjlsgI6k9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.131Z",
+                        "finishedAt": "2026-09-05T01:41:21.837Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "Finished! Total 1 requests: 1 succeeded, 0 failed.",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 165,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 7562,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 7.562,
+                            "metamorph": 0,
+                            "computeUnits": 0.0021005555555555556,
+                            "memAvgBytes": 110371404.18380743,
+                            "memMaxBytes": 121081856,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 30.817164528076454,
+                            "cpuMaxUsage": 91.01378874130297,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 146634,
+                            "netTxBytes": 38760
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 36000,
+                            "memoryMbytes": 1024,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "VNUCF0ThtIvpiPiR3",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "QWULDI6ec9u6prBWf",
+                        "defaultDatasetId": "RcVN0h3BUIk6rSHVs",
+                        "defaultRequestQueueId": "9iZppFkS3iWmz3bIo",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "QWULDI6ec9u6prBWf"
+                            },
+                            "datasets": {
+                                "default": "RcVN0h3BUIk6rSHVs"
+                            },
+                            "requestQueues": {
+                                "default": "9iZppFkS3iWmz3bIo"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-03-13T12:57:35.676Z",
+                            "startedAt": "2026-03-13T12:57:35.676Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "review-scraped": {
+                                        "eventTitle": "Scraped review",
+                                        "eventDescription": "Cost per individual review scraped.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0003
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "review-scraped": 0,
+                            "apify-actor-start": 1
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.517",
+                        "containerUrl": "https://vfxsbr5nqw2f.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/aBj47PxfqlmB0qCuh",
+                        "eventUsage": {
+                            "review-scraped": {
+                                "eventTitle": "Scraped review",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/RcVN0h3BUIk6rSHVs/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "searchString": "place_id:ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "reviewerId": "115792451998862408859",
+                        "reviewerUrl": "https://www.google.com/maps/contrib/115792451998862408859?hl=en",
+                        "name": "Richa Mathur",
+                        "reviewerNumberOfReviews": 65,
+                        "isLocalGuide": true,
+                        "reviewerPhotoUrl": "https://lh3.googleusercontent.com/a/ACg8ocJDzRupsef24X_6mxgYnNHlH_NDKmsb-aEpMkMZ5ZKEOD0epg=s1920-c-rp-mo-ba12-br100",
+                        "text": null,
+                        "textTranslated": null,
+                        "publishAt": "a week ago",
+                        "publishedAtDate": "2026-08-24T03:49:06.903Z",
+                        "likesCount": 0,
+                        "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT2xsemFUTkVWVFZYVVY4eU9GSjZUMFp0YlhOVFluYxAB",
+                        "reviewUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT2xsemFUTkVWVFZYVVY4eU9GSjZUMFp0YlhOVFluYxAB!2m1!1s0x0:0x6c296c66619367e0!3m1!1s2@1:CAIQACodChtycF9oOllzaTNEVTVXUV8yOFJ6T0ZtbXNTYnc%7C%7C?hl=en",
+                        "reviewOrigin": "Google",
+                        "stars": 5,
+                        "rating": null,
+                        "responseFromOwnerDate": null,
+                        "responseFromOwnerText": null,
+                        "reviewImageUrls": [],
+                        "reviewContext": {},
+                        "reviewDetailedRating": {},
+                        "visitedIn": null,
+                        "originalLanguage": null,
+                        "translatedLanguage": null,
+                        "isAdvertisement": false,
+                        "placeId": "ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "location": {
+                            "lat": 37.4220541,
+                            "lng": -122.0853242
+                        },
+                        "address": "1600 Amphitheatre Pkwy, Mountain View, CA 94043",
+                        "neighborhood": null,
+                        "street": "1600 Amphitheatre Pkwy",
+                        "city": "Mountain View",
+                        "postalCode": "94043",
+                        "state": "California",
+                        "countryCode": "US",
+                        "categoryName": "Corporate campus",
+                        "categories": [
+                            "Corporate campus",
+                            "Software company"
+                        ],
+                        "title": "Googleplex",
+                        "totalScore": 4.1,
+                        "permanentlyClosed": false,
+                        "temporarilyClosed": false,
+                        "reviewsCount": 9660,
+                        "url": "https://www.google.com/maps/search/?api=1&query=Googleplex&query_place_id=ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "price": null,
+                        "cid": "7793879817120868320",
+                        "fid": "0x808fba02425dad8f:0x6c296c66619367e0",
+                        "hotelStars": null,
+                        "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmJ4BlFC-GFPf1aNEyUBfm3qU8p1sGPfli2NeTW0gUC9iEYK6K-B04EuGUR5Al1DyhjQObx7y8m-tIHeCuA103PtDXr6js-tRrVnpEFQ-ZCgvd9Fw4jwdvQVjxdDPJLaoeNIriF=w408-h306-k-no",
+                        "scrapedAt": "2026-09-05T01:41:20.759Z",
+                        "language": "en",
+                        "kgmid": "/m/03bby1",
+                        "businessProfileId": null
+                    },
+                    {
+                        "searchString": "place_id:ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "reviewerId": "111073810891432779168",
+                        "reviewerUrl": "https://www.google.com/maps/contrib/111073810891432779168?hl=en",
+                        "name": "Luis Hall",
+                        "reviewerNumberOfReviews": 283,
+                        "isLocalGuide": true,
+                        "reviewerPhotoUrl": "https://lh3.googleusercontent.com/a-/ALV-UjXrNhDAnRTHecAZbIas7Q1wgdASvb9ESTL5u9Tayi8UnA3MhXSG=s1920-c-rp-mo-ba12-br100",
+                        "text": "I. Sending this package back or bit me",
+                        "textTranslated": null,
+                        "publishAt": "a week ago",
+                        "publishedAtDate": "2026-08-22T06:10:15.810Z",
+                        "likesCount": 0,
+                        "reviewId": "Ci9DQUlRQUNvZENodHljRjlvT25OVVluQmlPV2RXVTB3NWIzWXpNVjh0VERKclFWRRAB",
+                        "reviewUrl": "https://www.google.com/maps/reviews/data=!4m8!14m7!1m6!2m5!1sCi9DQUlRQUNvZENodHljRjlvT25OVVluQmlPV2RXVTB3NWIzWXpNVjh0VERKclFWRRAB!2m1!1s0x0:0x6c296c66619367e0!3m1!1s2@1:CAIQACodChtycF9oOnNUYnBiOWdWU0w5b3YzMV8tTDJrQVE%7C%7C?hl=en",
+                        "reviewOrigin": "Google",
+                        "stars": 5,
+                        "rating": null,
+                        "responseFromOwnerDate": null,
+                        "responseFromOwnerText": null,
+                        "reviewImageUrls": [],
+                        "reviewContext": {},
+                        "reviewDetailedRating": {},
+                        "visitedIn": null,
+                        "originalLanguage": "en",
+                        "translatedLanguage": null,
+                        "isAdvertisement": false,
+                        "placeId": "ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "location": {
+                            "lat": 37.4220541,
+                            "lng": -122.0853242
+                        },
+                        "address": "1600 Amphitheatre Pkwy, Mountain View, CA 94043",
+                        "neighborhood": null,
+                        "street": "1600 Amphitheatre Pkwy",
+                        "city": "Mountain View",
+                        "postalCode": "94043",
+                        "state": "California",
+                        "countryCode": "US",
+                        "categoryName": "Corporate campus",
+                        "categories": [
+                            "Corporate campus",
+                            "Software company"
+                        ],
+                        "title": "Googleplex",
+                        "totalScore": 4.1,
+                        "permanentlyClosed": false,
+                        "temporarilyClosed": false,
+                        "reviewsCount": 9660,
+                        "url": "https://www.google.com/maps/search/?api=1&query=Googleplex&query_place_id=ChIJj61dQgK6j4AR4GeTYWZsKWw",
+                        "price": null,
+                        "cid": "7793879817120868320",
+                        "fid": "0x808fba02425dad8f:0x6c296c66619367e0",
+                        "hotelStars": null,
+                        "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmJ4BlFC-GFPf1aNEyUBfm3qU8p1sGPfli2NeTW0gUC9iEYK6K-B04EuGUR5Al1DyhjQObx7y8m-tIHeCuA103PtDXr6js-tRrVnpEFQ-ZCgvd9Fw4jwdvQVjxdDPJLaoeNIriF=w408-h306-k-no",
+                        "scrapedAt": "2026-09-05T01:41:20.759Z",
+                        "language": "en",
+                        "kgmid": "/m/03bby1",
+                        "businessProfileId": null
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,359 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/data_xplorer~google-news-scraper-fast/runs",
+                "body": {
+                    "keywords": [
+                        "artificial intelligence"
+                    ],
+                    "maxArticles": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "4Bga0GLf2xmmLv8Cr",
+                        "actId": "3Z6SK7F2WoPU3t2sg",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.255Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 238,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "stable",
+                            "timeoutSecs": 1200,
+                            "memoryMbytes": 1024,
+                            "maxItems": 1811650,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "ObWpIQgjVnS3l2AdR",
+                        "defaultKeyValueStoreId": "DPdbgWuCi3ODQg1Lo",
+                        "defaultDatasetId": "AhEpcT0LZUVhZzyS7",
+                        "defaultRequestQueueId": "IDMuRNSRs9aDVqXPm",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "DPdbgWuCi3ODQg1Lo"
+                            },
+                            "datasets": {
+                                "default": "AhEpcT0LZUVhZzyS7"
+                            },
+                            "requestQueues": {
+                                "default": "IDMuRNSRs9aDVqXPm"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-03-07T06:40:17.781Z",
+                            "createdAt": "2026-03-07T06:40:17.969Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.6",
+                        "containerUrl": "https://pywevdwwinhf.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/AhEpcT0LZUVhZzyS7/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/4Bga0GLf2xmmLv8Cr"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "4Bga0GLf2xmmLv8Cr",
+                        "actId": "3Z6SK7F2WoPU3t2sg",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.255Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 238,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 197,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.197,
+                            "metamorph": 0,
+                            "computeUnits": 0.00005472222222222222,
+                            "memAvgBytes": 8368128,
+                            "memMaxBytes": 8368128,
+                            "memCurrentBytes": 8368128,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 292,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "stable",
+                            "timeoutSecs": 1200,
+                            "memoryMbytes": 1024,
+                            "maxItems": 1811650,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "ObWpIQgjVnS3l2AdR",
+                        "defaultKeyValueStoreId": "DPdbgWuCi3ODQg1Lo",
+                        "defaultDatasetId": "AhEpcT0LZUVhZzyS7",
+                        "defaultRequestQueueId": "IDMuRNSRs9aDVqXPm",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "DPdbgWuCi3ODQg1Lo"
+                            },
+                            "datasets": {
+                                "default": "AhEpcT0LZUVhZzyS7"
+                            },
+                            "requestQueues": {
+                                "default": "IDMuRNSRs9aDVqXPm"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-03-07T06:40:17.781Z",
+                            "createdAt": "2026-03-07T06:40:17.969Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.6",
+                        "containerUrl": "https://pywevdwwinhf.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/4Bga0GLf2xmmLv8Cr",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/AhEpcT0LZUVhZzyS7/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/4Bga0GLf2xmmLv8Cr"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "4Bga0GLf2xmmLv8Cr",
+                        "actId": "3Z6SK7F2WoPU3t2sg",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.255Z",
+                        "finishedAt": "2026-09-05T01:41:17.738Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 238,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 3313,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 3.313,
+                            "metamorph": 0,
+                            "computeUnits": 0.0009202777777777778,
+                            "memAvgBytes": 65120741.371535346,
+                            "memMaxBytes": 87826432,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 47.892701544725156,
+                            "cpuMaxUsage": 79.9210165184244,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 337079,
+                            "netTxBytes": 18073
+                        },
+                        "options": {
+                            "build": "stable",
+                            "timeoutSecs": 1200,
+                            "memoryMbytes": 1024,
+                            "maxItems": 1811650,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "ObWpIQgjVnS3l2AdR",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "DPdbgWuCi3ODQg1Lo",
+                        "defaultDatasetId": "AhEpcT0LZUVhZzyS7",
+                        "defaultRequestQueueId": "IDMuRNSRs9aDVqXPm",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "DPdbgWuCi3ODQg1Lo"
+                            },
+                            "datasets": {
+                                "default": "AhEpcT0LZUVhZzyS7"
+                            },
+                            "requestQueues": {
+                                "default": "IDMuRNSRs9aDVqXPm"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-03-07T06:40:17.781Z",
+                            "createdAt": "2026-03-07T06:40:17.969Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.6",
+                        "containerUrl": "https://pywevdwwinhf.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/4Bga0GLf2xmmLv8Cr",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "results": "https://api.apify.com/v2/datasets/AhEpcT0LZUVhZzyS7/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/AhEpcT0LZUVhZzyS7/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "title": "Applied Digital vs. IREN: Evaluating the Better Artificial Intelligence Stock to Buy for 2026",
+                        "url": "https://news.google.com/read/CBMi3AFBVV95cUxNQnBpTWExT1hnNWppeEdFQ2ZQbDZydjRwZmdlR1d3WlBXYVJzSzFfWkg0YmI3aEhDZ1M2dFUtU0JEUU1rZWl5SkozQU5hOTk2RTgxWFBFXzZyUFRzT2ZGYjRDMjVtZjl5OVZBV1R3SjNIQlRHZkhaSnBLRUxJVTNtMm10MGF3VEJNQ3JrdWxiS1h6eGtnelRVZU4wME8wRlVoVGd1NHcxSFlRRndGNGNZdmlxMzVONTRLUXVzcXlPMTk4VUhVdHhaenU3bnBPNTF0M3JTajBqdGRuSThK?hl=en-US&gl=US&ceid=US%3Aen",
+                        "source": "The Motley Fool",
+                        "publishedAt": "2026-09-05T01:38:01Z",
+                        "publishedTimestamp": 1788572281000,
+                        "image": "https://news.google.com/api/attachments/CC8iK0NnNWFkVU16T1ZSb2FYcGpRV3gwVFJERUF4aW5CU2dLTWdhZG81SnJQUVk=-w800-h400-p-df-rw",
+                        "metadata": {
+                            "scrapeTimestamp": "2026-09-05T01:41:17.404323",
+                            "keyword": "artificial intelligence",
+                            "sourceType": "keyword",
+                            "timeframe": "1h"
+                        }
+                    },
+                    {
+                        "title": "Southern Nevada teachers get hands-on AI training",
+                        "url": "https://news.google.com/read/CBMikAFBVV95cUxNcXVrTjNhcDVoa1BfM3BNY09jb3M2eDNHekxaWmFlMFZjdUk0TDBGNzJzc3QwWXFuZjY5WGI4eXZIei1CRWc3eXpnbHpvYklWaDJ4WGRkakJnTUVQQ1hQR2Z3NHg5Sk5QUjd1TG1aUVNqSzFURkZFXzQ2SEZGX1VocDFIZGlVTlFDRGx3bUYzMmnSAaQBQVVfeXFMT3pZWW5XZGx2VUVRSzNVc01sVERsMlJfVXRabkpVLUIzVWFKc21EQ1VjWHpEYUJwY1BFRlNRWk1QU1VhQkxKUzF4TFNGZU9FelhMdEc4OGFqZTV0aFhEbXUxTFdsanBTMzREVnlMUTdSd01GZ2REZndPc3huNXAtQmp5NmQ1MjNld0NtaWpqcDJJMVZYbmZvOGU1Zjh3SEV2OGE0Nms?hl=en-US&gl=US&ceid=US%3Aen",
+                        "source": "fox5vegas.com",
+                        "publishedAt": "2026-09-05T01:21:00Z",
+                        "publishedTimestamp": 1788571260000,
+                        "image": "https://news.google.com/api/attachments/CC8iK0NnNVVVVjlWTkhwdlJGcGFaa2hsVFJDSEF4aVBCaWdLTWdZQmNJeWt0QVU=-w800-h400-p-df-rw",
+                        "metadata": {
+                            "scrapeTimestamp": "2026-09-05T01:41:17.405097",
+                            "keyword": "artificial intelligence",
+                            "sourceType": "keyword",
+                            "timeframe": "1h"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

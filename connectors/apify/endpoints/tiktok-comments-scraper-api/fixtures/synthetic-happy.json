@@ -1,0 +1,79 @@
+{
+    "name": "synthetic-happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/scraptik~tiktok-comments-scraper-api/runs",
+                "body": {
+                    "listComments_awemeId": "7106594312292453675",
+                    "listComments_count": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "actId": "ACT1",
+                        "status": "READY",
+                        "defaultDatasetId": "SYNDS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SYNRUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "SYNDS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SYNRUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "SYNDS1",
+                        "usageTotalUsd": 0.004,
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/SYNDS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "comment_id": "7106600000000000001",
+                        "text": "example comment",
+                        "digg_count": 3
+                    }
+                ]
+            }
+        }
+    ]
+}

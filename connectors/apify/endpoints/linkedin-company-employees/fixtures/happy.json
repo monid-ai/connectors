@@ -1,0 +1,961 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-company-employees/runs",
+                "body": {
+                    "companies": [
+                        "https://www.linkedin.com/company/microsoft"
+                    ],
+                    "profileScraperMode": "Short ($4 per 1k)",
+                    "maxItems": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/9cgEDafmfhztw5TEk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 198,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.198,
+                            "metamorph": 0,
+                            "computeUnits": 0.00001375,
+                            "memAvgBytes": 6012928,
+                            "memMaxBytes": 6012928,
+                            "memCurrentBytes": 6012928,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 248,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/9cgEDafmfhztw5TEk",
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/9cgEDafmfhztw5TEk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 198,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.198,
+                            "metamorph": 0,
+                            "computeUnits": 0.00001375,
+                            "memAvgBytes": 6012928,
+                            "memMaxBytes": 6012928,
+                            "memCurrentBytes": 6012928,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 248,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/9cgEDafmfhztw5TEk",
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/9cgEDafmfhztw5TEk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4215,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.215,
+                            "metamorph": 0,
+                            "computeUnits": 0.00029270833333333335,
+                            "memAvgBytes": 43817602.82419929,
+                            "memMaxBytes": 46133248,
+                            "memCurrentBytes": 45535232,
+                            "cpuAvgUsage": 25.007302483262627,
+                            "cpuMaxUsage": 105.06206896551724,
+                            "cpuCurrentUsage": 0.07688576898532226,
+                            "netRxBytes": 8290,
+                            "netTxBytes": 4852
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/9cgEDafmfhztw5TEk",
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/9cgEDafmfhztw5TEk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4215,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.215,
+                            "metamorph": 0,
+                            "computeUnits": 0.00029270833333333335,
+                            "memAvgBytes": 43817602.82419929,
+                            "memMaxBytes": 46133248,
+                            "memCurrentBytes": 45535232,
+                            "cpuAvgUsage": 25.007302483262627,
+                            "cpuMaxUsage": 105.06206896551724,
+                            "cpuCurrentUsage": 0.07688576898532226,
+                            "netRxBytes": 8290,
+                            "netTxBytes": 4852
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/9cgEDafmfhztw5TEk",
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/9cgEDafmfhztw5TEk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "9cgEDafmfhztw5TEk",
+                        "actId": "Vb6LZkh4EqRlR0Ka9",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:42:43.720Z",
+                        "finishedAt": "2026-09-05T01:42:53.049Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "success",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 147,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 9203,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 9.203,
+                            "metamorph": 0,
+                            "computeUnits": 0.0006390972222222222,
+                            "memAvgBytes": 44771573.9188174,
+                            "memMaxBytes": 46170112,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 15.48852751423154,
+                            "cpuMaxUsage": 105.06206896551724,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 79392,
+                            "netTxBytes": 15041
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 15000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1810.920559,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "dkyNoEUYU6B0NYmwI",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "fvmoRs0nNZvQlRVsx",
+                        "defaultDatasetId": "XiOCQe5iRsl3ysmZM",
+                        "defaultRequestQueueId": "S6Yx3S1lSqeGuarvp",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "fvmoRs0nNZvQlRVsx"
+                            },
+                            "datasets": {
+                                "default": "XiOCQe5iRsl3ysmZM"
+                            },
+                            "requestQueues": {
+                                "default": "S6Yx3S1lSqeGuarvp"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.05,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are adding Apify store discounts!\nBasic profile Business: $0.0015 per result\nFull profile Business: $0.004 per result\n\nAt a larger scale, please contact the Apify sales team to discuss custom pricing: https://apify.com/contact-sales",
+                            "startedAt": "2026-04-13T11:22:05.000Z",
+                            "createdAt": "2026-03-30T11:22:06.017Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-30T11:23:13.841Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "short-profile": {
+                                        "eventTitle": "Basic profile",
+                                        "eventDescription": "Extract limited profile details",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.004
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + run email search",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "short-profile": 2,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "short-profile": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.158",
+                        "containerUrl": "https://mj6i6rsugpsc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/9cgEDafmfhztw5TEk",
+                        "eventUsage": {
+                            "short-profile": {
+                                "eventTitle": "Basic profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/XiOCQe5iRsl3ysmZM/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "ACwAAAIU6dUBNAY9BFfIRokqDFfdir1ho245Ldg",
+                        "linkedinUrl": "https://www.linkedin.com/in/ACwAAAIU6dUBNAY9BFfIRokqDFfdir1ho245Ldg",
+                        "firstName": "Iris (Zhihong)",
+                        "lastName": "Shen",
+                        "summary": "Enterprise AI leader building enterprise agent runtime infrastructure for M365 Copilot: digital co-worker systems and long-running agents - memory architecture, orchestration, grounding, tool/skill quality, task lifecycle management, evaluation, fine-tuning loops, and inference efficiency.Previously at MSR: took Microsoft Academic Graph from research to a billion‑scale platform adopted by OECD AI Observatory and the Stanford AI Index; delivered KDD tutorials, an edX course, and invited talks.Spe",
+                        "openProfile": false,
+                        "premium": false,
+                        "currentPositions": [
+                            {
+                                "tenureAtPosition": {
+                                    "numYears": 18
+                                },
+                                "companyName": "Microsoft",
+                                "description": "2021 - present | Principal Group Science Manager - M365 Copilot / Agent Runtime Infrastructure  \n\nLead applied science and engineering work for M365 Copilot runtime infrastructure, focused on enterprise digital co-worker systems and long-running agents across memory, orchestration, grounding, evaluation, tool/skill quality, and inference efficiency.\n\n- Agent runtime infrastructure: Architected core runtime and evaluation infrastructure for M365 Copilot, spanning memory, orchestration, grounding,",
+                                "title": "Principal Group Science Manager ",
+                                "current": true,
+                                "tenureAtCompany": {
+                                    "numYears": 18
+                                },
+                                "startedOn": {
+                                    "month": 10,
+                                    "year": 2008
+                                },
+                                "companyId": "1035",
+                                "companyLinkedinUrl": "https://www.linkedin.com/company/1035"
+                            }
+                        ],
+                        "pictureUrl": "https://media.licdn.com/dms/image/v2/C5603AQHeqU119Si0Gw/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1517700861764?e=1790208000&v=beta&t=6eum0OjQN2uMdOMdNYYT5xAvd2LWHNn4TpnQQECFOpM",
+                        "location": {
+                            "linkedinText": "Redmond, Washington, United States"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 259785,
+                                "totalPages": 100,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            },
+                            "query": {
+                                "currentCompanies": [
+                                    "https://www.linkedin.com/company/microsoft"
+                                ]
+                            },
+                            "scrapedAt": "2026-09-05T01:42:51.825Z"
+                        }
+                    },
+                    {
+                        "id": "ACwAACKvC38BZvNfdutch68yQ2v12Btyj-J7sE8",
+                        "linkedinUrl": "https://www.linkedin.com/in/ACwAACKvC38BZvNfdutch68yQ2v12Btyj-J7sE8",
+                        "firstName": "Reza",
+                        "lastName": "Soroushmehr, Ph.D.",
+                        "summary": "• Designed AI/ML and deep learning models using advanced 2D/3D image and video processing techniques, time series and EHR, ensuring HIPAA compliance.  Supervised researchers and translated research innovations into practical, some licensed to industry and resulting in multiple publications and U.S. patents.• Contributed to the Microsoft-Stanford Research collaboration that introduced FlashAttention in 2022, removing attention-memory bottlenecks and enabling sub-2-minute transformer training at s",
+                        "openProfile": false,
+                        "premium": true,
+                        "currentPositions": [
+                            {
+                                "tenureAtPosition": {
+                                    "numYears": 4,
+                                    "numMonths": 2
+                                },
+                                "companyName": "Microsoft",
+                                "title": "Senior Software Engineer",
+                                "current": true,
+                                "tenureAtCompany": {
+                                    "numYears": 4,
+                                    "numMonths": 2
+                                },
+                                "startedOn": {
+                                    "month": 8,
+                                    "year": 2022
+                                },
+                                "companyId": "1035",
+                                "companyLinkedinUrl": "https://www.linkedin.com/company/1035"
+                            }
+                        ],
+                        "pictureUrl": "https://media.licdn.com/dms/image/v2/C5603AQG00SXQXUC5EA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1660174867582?e=1790208000&v=beta&t=Pkmohw4YRWXoV4Y9aHc2V86GD-zSkHEj1WJGrUNmf-w",
+                        "location": {
+                            "linkedinText": "United States"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 259785,
+                                "totalPages": 100,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            },
+                            "query": {
+                                "currentCompanies": [
+                                    "https://www.linkedin.com/company/microsoft"
+                                ]
+                            },
+                            "scrapedAt": "2026-09-05T01:42:51.824Z"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,871 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-post-search/runs",
+                "body": {
+                    "searchQueries": [
+                        "typescript"
+                    ],
+                    "maxPosts": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "juwqUzpaYhWPKrGjG",
+                        "actId": "buIWk2uOUzTmcLsuB",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.335Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 163,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 9000,
+                            "memoryMbytes": 256,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "HfJ30ZgVveOsT3Nqi",
+                        "defaultKeyValueStoreId": "FcDxguoKfj8YY3rjl",
+                        "defaultDatasetId": "EEFbO90tOJCMkrCbU",
+                        "defaultRequestQueueId": "YifpfdIWQoLFWRWfx",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "FcDxguoKfj8YY3rjl"
+                            },
+                            "datasets": {
+                                "default": "EEFbO90tOJCMkrCbU"
+                            },
+                            "requestQueues": {
+                                "default": "YifpfdIWQoLFWRWfx"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.01,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are migrating to the event-based pricing model and adding Apify store discounts. Under the new pricing model, the Actor will charge for 0-result queries because they consume resources for scraping pages",
+                            "startedAt": "2026-03-09T18:21:14.671Z",
+                            "createdAt": "2026-02-23T18:21:14.978Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-02-23T18:21:53.301Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    },
+                                    "post": {
+                                        "eventTitle": "Post",
+                                        "eventDescription": "Post result item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Optionally enrich posts with main profile details (without complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Optionally enrich posts with full profile details (complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "reaction": {
+                                        "eventTitle": "Reaction",
+                                        "eventDescription": "Post reaction result, if selected to scrape reactions",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "comment": {
+                                        "eventTitle": "Comment",
+                                        "eventDescription": "Post comment result, if selected to scrape comments",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "no-result": {
+                                        "eventTitle": "0-result query",
+                                        "eventDescription": "Charged for scraping queries without results",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 0,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.111",
+                        "containerUrl": "https://mp2pqpfk7mcs.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            },
+                            "post": {
+                                "eventTitle": "Post",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "reaction": {
+                                "eventTitle": "Reaction",
+                                "eventTotalUsd": 0
+                            },
+                            "comment": {
+                                "eventTitle": "Comment",
+                                "eventTotalUsd": 0
+                            },
+                            "no-result": {
+                                "eventTitle": "0-result query",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/juwqUzpaYhWPKrGjG"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "juwqUzpaYhWPKrGjG",
+                        "actId": "buIWk2uOUzTmcLsuB",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.335Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 163,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 225,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.225,
+                            "metamorph": 0,
+                            "computeUnits": 0.000015625,
+                            "memAvgBytes": 3977216,
+                            "memMaxBytes": 3977216,
+                            "memCurrentBytes": 3977216,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 290,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 9000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "HfJ30ZgVveOsT3Nqi",
+                        "defaultKeyValueStoreId": "FcDxguoKfj8YY3rjl",
+                        "defaultDatasetId": "EEFbO90tOJCMkrCbU",
+                        "defaultRequestQueueId": "YifpfdIWQoLFWRWfx",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "FcDxguoKfj8YY3rjl"
+                            },
+                            "datasets": {
+                                "default": "EEFbO90tOJCMkrCbU"
+                            },
+                            "requestQueues": {
+                                "default": "YifpfdIWQoLFWRWfx"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.01,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are migrating to the event-based pricing model and adding Apify store discounts. Under the new pricing model, the Actor will charge for 0-result queries because they consume resources for scraping pages",
+                            "startedAt": "2026-03-09T18:21:14.671Z",
+                            "createdAt": "2026-02-23T18:21:14.978Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-02-23T18:21:53.301Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    },
+                                    "post": {
+                                        "eventTitle": "Post",
+                                        "eventDescription": "Post result item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Optionally enrich posts with main profile details (without complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Optionally enrich posts with full profile details (complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "reaction": {
+                                        "eventTitle": "Reaction",
+                                        "eventDescription": "Post reaction result, if selected to scrape reactions",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "comment": {
+                                        "eventTitle": "Comment",
+                                        "eventDescription": "Post comment result, if selected to scrape comments",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "no-result": {
+                                        "eventTitle": "0-result query",
+                                        "eventDescription": "Charged for scraping queries without results",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 0,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.111",
+                        "containerUrl": "https://mp2pqpfk7mcs.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/juwqUzpaYhWPKrGjG",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            },
+                            "post": {
+                                "eventTitle": "Post",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "reaction": {
+                                "eventTitle": "Reaction",
+                                "eventTotalUsd": 0
+                            },
+                            "comment": {
+                                "eventTitle": "Comment",
+                                "eventTotalUsd": 0
+                            },
+                            "no-result": {
+                                "eventTitle": "0-result query",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/juwqUzpaYhWPKrGjG"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "juwqUzpaYhWPKrGjG",
+                        "actId": "buIWk2uOUzTmcLsuB",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.335Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 163,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 225,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.225,
+                            "metamorph": 0,
+                            "computeUnits": 0.000015625,
+                            "memAvgBytes": 3977216,
+                            "memMaxBytes": 3977216,
+                            "memCurrentBytes": 3977216,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 290,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 9000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "HfJ30ZgVveOsT3Nqi",
+                        "defaultKeyValueStoreId": "FcDxguoKfj8YY3rjl",
+                        "defaultDatasetId": "EEFbO90tOJCMkrCbU",
+                        "defaultRequestQueueId": "YifpfdIWQoLFWRWfx",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "FcDxguoKfj8YY3rjl"
+                            },
+                            "datasets": {
+                                "default": "EEFbO90tOJCMkrCbU"
+                            },
+                            "requestQueues": {
+                                "default": "YifpfdIWQoLFWRWfx"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.01,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are migrating to the event-based pricing model and adding Apify store discounts. Under the new pricing model, the Actor will charge for 0-result queries because they consume resources for scraping pages",
+                            "startedAt": "2026-03-09T18:21:14.671Z",
+                            "createdAt": "2026-02-23T18:21:14.978Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-02-23T18:21:53.301Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    },
+                                    "post": {
+                                        "eventTitle": "Post",
+                                        "eventDescription": "Post result item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Optionally enrich posts with main profile details (without complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Optionally enrich posts with full profile details (complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "reaction": {
+                                        "eventTitle": "Reaction",
+                                        "eventDescription": "Post reaction result, if selected to scrape reactions",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "comment": {
+                                        "eventTitle": "Comment",
+                                        "eventDescription": "Post comment result, if selected to scrape comments",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "no-result": {
+                                        "eventTitle": "0-result query",
+                                        "eventDescription": "Charged for scraping queries without results",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.111",
+                        "containerUrl": "https://mp2pqpfk7mcs.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/juwqUzpaYhWPKrGjG",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            },
+                            "post": {
+                                "eventTitle": "Post",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "reaction": {
+                                "eventTitle": "Reaction",
+                                "eventTotalUsd": 0
+                            },
+                            "comment": {
+                                "eventTitle": "Comment",
+                                "eventTotalUsd": 0
+                            },
+                            "no-result": {
+                                "eventTitle": "0-result query",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/juwqUzpaYhWPKrGjG"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "juwqUzpaYhWPKrGjG",
+                        "actId": "buIWk2uOUzTmcLsuB",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.335Z",
+                        "finishedAt": "2026-09-05T01:41:20.118Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 163,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 5659,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 5.659,
+                            "metamorph": 0,
+                            "computeUnits": 0.0003929861111111111,
+                            "memAvgBytes": 52413483.43770211,
+                            "memMaxBytes": 59330560,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 23.839863062710734,
+                            "cpuMaxUsage": 86.62564885496184,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 26019,
+                            "netTxBytes": 5662
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 9000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "HfJ30ZgVveOsT3Nqi",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "FcDxguoKfj8YY3rjl",
+                        "defaultDatasetId": "EEFbO90tOJCMkrCbU",
+                        "defaultRequestQueueId": "YifpfdIWQoLFWRWfx",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "FcDxguoKfj8YY3rjl"
+                            },
+                            "datasets": {
+                                "default": "EEFbO90tOJCMkrCbU"
+                            },
+                            "requestQueues": {
+                                "default": "YifpfdIWQoLFWRWfx"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.01,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are migrating to the event-based pricing model and adding Apify store discounts. Under the new pricing model, the Actor will charge for 0-result queries because they consume resources for scraping pages",
+                            "startedAt": "2026-03-09T18:21:14.671Z",
+                            "createdAt": "2026-02-23T18:21:14.978Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-02-23T18:21:53.301Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    },
+                                    "post": {
+                                        "eventTitle": "Post",
+                                        "eventDescription": "Post result item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Optionally enrich posts with main profile details (without complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Optionally enrich posts with full profile details (complete profile sections)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "reaction": {
+                                        "eventTitle": "Reaction",
+                                        "eventDescription": "Post reaction result, if selected to scrape reactions",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "comment": {
+                                        "eventTitle": "Comment",
+                                        "eventDescription": "Post comment result, if selected to scrape comments",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0015
+                                    },
+                                    "no-result": {
+                                        "eventTitle": "0-result query",
+                                        "eventDescription": "Charged for scraping queries without results",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "post": 0,
+                            "main-profile": 0,
+                            "full-profile": 0,
+                            "reaction": 0,
+                            "comment": 0,
+                            "no-result": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.111",
+                        "containerUrl": "https://mp2pqpfk7mcs.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/juwqUzpaYhWPKrGjG",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            },
+                            "post": {
+                                "eventTitle": "Post",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "reaction": {
+                                "eventTitle": "Reaction",
+                                "eventTotalUsd": 0
+                            },
+                            "comment": {
+                                "eventTitle": "Comment",
+                                "eventTotalUsd": 0
+                            },
+                            "no-result": {
+                                "eventTitle": "0-result query",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/EEFbO90tOJCMkrCbU/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "type": "post",
+                        "id": "7501623561615269888",
+                        "linkedinUrl": "https://www.linkedin.com/posts/alexbussey_if-anyone-knows-of-a-recruiter-that-works-activity-7501623561615269888-nM56",
+                        "content": "If anyone knows of a recruiter that works with open positions for Software Engineers (TypeScript) either in the Philadelphia area or remote, please let me know.",
+                        "contentAttributes": [],
+                        "author": {
+                            "id": "ACoAAACf2iMBKOmYJ5_eQLS17ip5uY_wZ4u2f6o",
+                            "universalName": null,
+                            "publicIdentifier": "alexbussey",
+                            "type": "profile",
+                            "name": "Alex Bussey",
+                            "linkedinUrl": "https://www.linkedin.com/in/alexbussey?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAACf2iMBKOmYJ5_eQLS17ip5uY_wZ4u2f6o",
+                            "info": "Building front-end experiences",
+                            "website": null,
+                            "websiteLabel": null,
+                            "avatar": {
+                                "url": "https://media.licdn.com/dms/image/v2/D5635AQE9Ylc_pX3X2w/profile-framedphoto-shrink_800_800/B56aBO3lSnG0AY-/0/1788029589099?e=1789178400&v=beta&t=dUbk5xolrApy41hIKoPMBHVWKE87y-TIYbTyDwuqjWg",
+                                "width": 450,
+                                "height": 450
+                            },
+                            "urn": "10476067",
+                            "profileId": "ACoAAACf2iMBKOmYJ5_eQLS17ip5uY_wZ4u2f6o"
+                        },
+                        "postedAt": {
+                            "timestamp": 1788526430515,
+                            "date": "2026-09-04T12:53:50.515Z",
+                            "postedAgoShort": "12h",
+                            "postedAgoText": "12 hours ago • Visible to anyone on or off LinkedIn"
+                        },
+                        "postImages": [],
+                        "socialContent": {
+                            "hideCommentsCount": false,
+                            "hideReactionsCount": false,
+                            "hideSocialActivityCounts": false,
+                            "hideShareAction": true,
+                            "hideSendAction": true,
+                            "hideRepostsCount": false,
+                            "hideViewsCount": false,
+                            "trustInterventionBanner": null,
+                            "hideReactAction": false,
+                            "hideCommentAction": false,
+                            "shareUrl": "https://www.linkedin.com/posts/alexbussey_if-anyone-knows-of-a-recruiter-that-works-activity-7501623561615269888-nM56?",
+                            "showContributionExperience": false,
+                            "showSocialDetail": true
+                        },
+                        "comments": [],
+                        "header": {
+                            "text": null
+                        },
+                        "entityId": "7501623561615269888",
+                        "shareUrn": "urn:li:share:7501623561061584896",
+                        "shareLinkedinUrl": "https://www.linkedin.com/feed/update/urn:li:share:7501623561061584896",
+                        "engagement": {
+                            "id": "7501623561615269888",
+                            "likes": 15,
+                            "comments": 0,
+                            "shares": 3,
+                            "reactions": [
+                                {
+                                    "type": "LIKE",
+                                    "count": 8
+                                },
+                                {
+                                    "type": "APPRECIATION",
+                                    "count": 7
+                                }
+                            ]
+                        },
+                        "reactions": [],
+                        "reactionIds": [],
+                        "commentIds": [],
+                        "query": {
+                            "page": 1,
+                            "search": "typescript"
+                        }
+                    },
+                    {
+                        "type": "post",
+                        "id": "7500154885233852416",
+                        "linkedinUrl": "https://www.linkedin.com/posts/muhammed-nasl-17524b29b_typescript-javascript-webdevelopment-activity-7500154885233852416-f84H",
+                        "content": "I avoided TypeScript for a while because I thought it was too complicated.\n\nWhen I first came across it, things like types, interfaces, and type annotations looked like a lot to learn.\n\nRecently, I started using TypeScript in my projects, and honestly, it wasn't as difficult as I expected.\n\nSince I already knew JavaScript, most of the code felt familiar. The main difference was adding types, which helped me catch mistakes earlier and understand my code better.\n\nThe more I used it, the more comfo",
+                        "contentAttributes": [],
+                        "author": {
+                            "id": "ACoAAEh5FykBK81O57-EL61c-SNtIDCec2Rhp9Q",
+                            "universalName": null,
+                            "publicIdentifier": "muhammed-nasl-17524b29b",
+                            "type": "profile",
+                            "name": "Muhammed Nasl",
+                            "linkedinUrl": "https://www.linkedin.com/in/muhammed-nasl-17524b29b?miniProfileUrn=urn%3Ali%3Afsd_profile%3AACoAAEh5FykBK81O57-EL61c-SNtIDCec2Rhp9Q",
+                            "info": "MERN STACK | React js | Node js | MongoDB | Express js",
+                            "website": null,
+                            "websiteLabel": null,
+                            "avatar": {
+                                "url": "https://media.licdn.com/dms/image/v2/D4E03AQHLoKk7QDVLbA/profile-displayphoto-crop_800_800/B4EZ_8CqypHkAI-/0/1786639987887?e=1790208000&v=beta&t=F8oj7gs-yqu3sbOSgiMZNK_MMHLC3TxFuPwYvPcvYzk",
+                                "width": 800,
+                                "height": 800
+                            },
+                            "urn": "1215895337",
+                            "profileId": "ACoAAEh5FykBK81O57-EL61c-SNtIDCec2Rhp9Q"
+                        },
+                        "postedAt": {
+                            "timestamp": 1788176270779,
+                            "date": "2026-08-31T11:37:50.779Z",
+                            "postedAgoShort": "4d",
+                            "postedAgoText": "4 days ago • Visible to anyone on or off LinkedIn"
+                        },
+                        "postImages": [],
+                        "socialContent": {
+                            "hideCommentsCount": false,
+                            "hideReactionsCount": false,
+                            "hideSocialActivityCounts": false,
+                            "hideShareAction": true,
+                            "hideSendAction": true,
+                            "hideRepostsCount": false,
+                            "hideViewsCount": false,
+                            "trustInterventionBanner": null,
+                            "hideReactAction": false,
+                            "hideCommentAction": false,
+                            "shareUrl": "https://www.linkedin.com/posts/muhammed-nasl-17524b29b_typescript-javascript-webdevelopment-activity-7500154885233852416-f84H?",
+                            "showContributionExperience": false,
+                            "showSocialDetail": true
+                        },
+                        "comments": [],
+                        "header": {
+                            "text": null
+                        },
+                        "entityId": "7500154885233852416",
+                        "shareUrn": "urn:li:share:7500154884172943360",
+                        "shareLinkedinUrl": "https://www.linkedin.com/feed/update/urn:li:share:7500154884172943360",
+                        "engagement": {
+                            "id": "7500154885233852416",
+                            "likes": 5,
+                            "comments": 0,
+                            "shares": 0,
+                            "reactions": [
+                                {
+                                    "type": "LIKE",
+                                    "count": 5
+                                }
+                            ]
+                        },
+                        "reactions": [],
+                        "reactionIds": [],
+                        "commentIds": [],
+                        "query": {
+                            "page": 1,
+                            "search": "typescript"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,348 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/damilo~google-shopping-apify/runs",
+                "body": {
+                    "query": "usb cable",
+                    "country": "us",
+                    "language": "en",
+                    "num": "10",
+                    "date_range": "anytime",
+                    "max_pages": 1
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "VdgoAPd2CLqgr5Fif",
+                        "actId": "F1ITW3XNjGuy7ZzcM",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.154Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 113,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 517614,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "stOYgVE7kx4824JLI",
+                        "defaultKeyValueStoreId": "I3ELVSqWdKnCfhgGq",
+                        "defaultDatasetId": "BH5goSHKjx4xfzfNs",
+                        "defaultRequestQueueId": "ZQtUfSreRMggKHSGe",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "I3ELVSqWdKnCfhgGq"
+                            },
+                            "datasets": {
+                                "default": "BH5goSHKjx4xfzfNs"
+                            },
+                            "requestQueues": {
+                                "default": "ZQtUfSreRMggKHSGe"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-03-03T15:07:46.400Z",
+                            "startedAt": "2026-03-03T15:07:46.400Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0035
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.11",
+                        "containerUrl": "https://zibcxoxzorh2.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/VdgoAPd2CLqgr5Fif"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "VdgoAPd2CLqgr5Fif",
+                        "actId": "F1ITW3XNjGuy7ZzcM",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.154Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 113,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 229,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.229,
+                            "metamorph": 0,
+                            "computeUnits": 0.00006361111111111111,
+                            "memAvgBytes": 1802240,
+                            "memMaxBytes": 1802240,
+                            "memCurrentBytes": 1802240,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 176,
+                            "netTxBytes": 382
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 517614,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "stOYgVE7kx4824JLI",
+                        "defaultKeyValueStoreId": "I3ELVSqWdKnCfhgGq",
+                        "defaultDatasetId": "BH5goSHKjx4xfzfNs",
+                        "defaultRequestQueueId": "ZQtUfSreRMggKHSGe",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "I3ELVSqWdKnCfhgGq"
+                            },
+                            "datasets": {
+                                "default": "BH5goSHKjx4xfzfNs"
+                            },
+                            "requestQueues": {
+                                "default": "ZQtUfSreRMggKHSGe"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-03-03T15:07:46.400Z",
+                            "startedAt": "2026-03-03T15:07:46.400Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0035
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.11",
+                        "containerUrl": "https://zibcxoxzorh2.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/VdgoAPd2CLqgr5Fif",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/VdgoAPd2CLqgr5Fif"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "VdgoAPd2CLqgr5Fif",
+                        "actId": "F1ITW3XNjGuy7ZzcM",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.154Z",
+                        "finishedAt": "2026-09-05T01:41:17.660Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 113,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 3368,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 3.368,
+                            "metamorph": 0,
+                            "computeUnits": 0.0009355555555555556,
+                            "memAvgBytes": 39852450.217821784,
+                            "memMaxBytes": 47206400,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 40.602742183127276,
+                            "cpuMaxUsage": 97.5965525982256,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 42144,
+                            "netTxBytes": 14342
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 517614,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "stOYgVE7kx4824JLI",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "I3ELVSqWdKnCfhgGq",
+                        "defaultDatasetId": "BH5goSHKjx4xfzfNs",
+                        "defaultRequestQueueId": "ZQtUfSreRMggKHSGe",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "I3ELVSqWdKnCfhgGq"
+                            },
+                            "datasets": {
+                                "default": "BH5goSHKjx4xfzfNs"
+                            },
+                            "requestQueues": {
+                                "default": "ZQtUfSreRMggKHSGe"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-03-03T15:07:46.400Z",
+                            "startedAt": "2026-03-03T15:07:46.400Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0035
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.11",
+                        "containerUrl": "https://zibcxoxzorh2.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/VdgoAPd2CLqgr5Fif",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/BH5goSHKjx4xfzfNs/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "title": "Anker USB-A to USB-C Cable",
+                        "source": "Walmart",
+                        "link": "https://www.google.com/search?ibp=oshop&q=usb+cable&prds=localAnnotatedOfferId:1,catalogid:17515011422070168357,pvo:2,pvt:hg,rds:PC_6027158597472037202%7CPROD_PC_6027158597472037202&gl=us&udm=28&pvorigin=2",
+                        "price": "$7.97",
+                        "imageUrl": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcRQ2cyAtyLPoCuxGcWTMq-2NTt5vxjqyKP616RWCJeyIPVKIFBtEcZ1rcyRX2bXmJWmG2N4rcjKOeI6360uDMP_JSg3MhpV_Zlmqwix2M1QRAdxnEVe-6C9Xg",
+                        "rating": 4.3,
+                        "ratingCount": 419,
+                        "productId": "17515011422070168357",
+                        "position": 1,
+                        "query": "usb cable"
+                    },
+                    {
+                        "title": "Best Buy essentials Micro USB to USB Charge & Sync Cable",
+                        "source": "Best Buy",
+                        "link": "https://www.google.com/search?ibp=oshop&q=usb+cable&prds=localAnnotatedOfferId:1,catalogid:10563083541338372675,pvo:2,pvt:hg,rds:PC_6027158597472037202%7CPROD_PC_6027158597472037202&gl=us&udm=28&pvorigin=2",
+                        "price": "$7.99",
+                        "imageUrl": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSNXB7hgbHIMy9fvKb1cZ3ToP2nLhXzvmMZ2e0-FBkcIcx-ZJzkPt1mlzlQh3m_8KJ0LH2WHkp9z6gn80MjFBkgbfgLGT87XwozDY4rMgy3yrD5abNiOKyNdw",
+                        "rating": 4.8,
+                        "ratingCount": 644,
+                        "productId": "10563083541338372675",
+                        "position": 2,
+                        "query": "usb cable"
+                    }
+                ]
+            }
+        }
+    ]
+}

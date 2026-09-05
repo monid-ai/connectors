@@ -1,0 +1,80 @@
+{
+    "name": "synthetic-happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/tri_angle~snapchat-spotlight-scraper/runs",
+                "body": {
+                    "spotlightUrls": [
+                        "https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaXNyaGF3Y2pxAZL2N1WMAZL2NjV0AAAAAA"
+                    ]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "actId": "ACT1",
+                        "status": "READY",
+                        "defaultDatasetId": "SYNDS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SYNRUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "SYNDS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/SYNRUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "SYNRUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "SYNDS1",
+                        "usageTotalUsd": 0.004,
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/SYNDS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "videoUrl": "https://cf-st.sc-cdn.net/d/example.mp4",
+                        "viewCount": 12345,
+                        "creator": "example"
+                    }
+                ]
+            }
+        }
+    ]
+}

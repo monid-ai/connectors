@@ -1,0 +1,441 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-search-by-name/runs",
+                "body": {
+                    "profileScraperMode": "Short",
+                    "firstName": "Satya",
+                    "lastName": "Nadella",
+                    "maxPages": 1
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "2qkmfzvyIkSPhci1s",
+                        "actId": "CP1SVZfEwWflrmWCX",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.386Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 104,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YtZ1NMWyfvHiDBPgd",
+                        "defaultKeyValueStoreId": "skNZiYmpD5ZofFFpH",
+                        "defaultDatasetId": "6Oa5D7ZcsBARfhDtU",
+                        "defaultRequestQueueId": "PtnPQ0ZUpjnS2fsxF",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "skNZiYmpD5ZofFFpH"
+                            },
+                            "datasets": {
+                                "default": "6Oa5D7ZcsBARfhDtU"
+                            },
+                            "requestQueues": {
+                                "default": "PtnPQ0ZUpjnS2fsxF"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.004,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We scaled our resources, which allowed us to lower the price for search pages",
+                            "startedAt": "2026-01-25T23:58:19.984Z",
+                            "createdAt": "2026-01-25T23:58:19.984Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-11-12T17:25:51.093Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 10 short profiles",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "eventPriceUsd": 0.01
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Extract main profile details ($2 per 1k)",
+                                        "eventPriceUsd": 0.0015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.49",
+                        "containerUrl": "https://hbb7n2sqrhsl.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/2qkmfzvyIkSPhci1s"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "2qkmfzvyIkSPhci1s",
+                        "actId": "CP1SVZfEwWflrmWCX",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.386Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 104,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 225,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.225,
+                            "metamorph": 0,
+                            "computeUnits": 0.000015625,
+                            "memAvgBytes": 7204864,
+                            "memMaxBytes": 7204864,
+                            "memCurrentBytes": 7204864,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YtZ1NMWyfvHiDBPgd",
+                        "defaultKeyValueStoreId": "skNZiYmpD5ZofFFpH",
+                        "defaultDatasetId": "6Oa5D7ZcsBARfhDtU",
+                        "defaultRequestQueueId": "PtnPQ0ZUpjnS2fsxF",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "skNZiYmpD5ZofFFpH"
+                            },
+                            "datasets": {
+                                "default": "6Oa5D7ZcsBARfhDtU"
+                            },
+                            "requestQueues": {
+                                "default": "PtnPQ0ZUpjnS2fsxF"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.004,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We scaled our resources, which allowed us to lower the price for search pages",
+                            "startedAt": "2026-01-25T23:58:19.984Z",
+                            "createdAt": "2026-01-25T23:58:19.984Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-11-12T17:25:51.093Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 10 short profiles",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "eventPriceUsd": 0.01
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Extract main profile details ($2 per 1k)",
+                                        "eventPriceUsd": 0.0015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.49",
+                        "containerUrl": "https://hbb7n2sqrhsl.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/2qkmfzvyIkSPhci1s",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/2qkmfzvyIkSPhci1s"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "2qkmfzvyIkSPhci1s",
+                        "actId": "CP1SVZfEwWflrmWCX",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.386Z",
+                        "finishedAt": "2026-09-05T01:41:18.581Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 104,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4058,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.058,
+                            "metamorph": 0,
+                            "computeUnits": 0.00028180555555555554,
+                            "memAvgBytes": 75803986.79553904,
+                            "memMaxBytes": 86409216,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 42.89248176568665,
+                            "cpuMaxUsage": 95.99550159744409,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 5569,
+                            "netTxBytes": 3883
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YtZ1NMWyfvHiDBPgd",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "skNZiYmpD5ZofFFpH",
+                        "defaultDatasetId": "6Oa5D7ZcsBARfhDtU",
+                        "defaultRequestQueueId": "PtnPQ0ZUpjnS2fsxF",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "skNZiYmpD5ZofFFpH"
+                            },
+                            "datasets": {
+                                "default": "6Oa5D7ZcsBARfhDtU"
+                            },
+                            "requestQueues": {
+                                "default": "PtnPQ0ZUpjnS2fsxF"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.004,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We scaled our resources, which allowed us to lower the price for search pages",
+                            "startedAt": "2026-01-25T23:58:19.984Z",
+                            "createdAt": "2026-01-25T23:58:19.984Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-11-12T17:25:51.093Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 10 short profiles",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "eventPriceUsd": 0.003
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "eventPriceUsd": 0.01
+                                    },
+                                    "main-profile": {
+                                        "eventTitle": "Main profile",
+                                        "eventDescription": "Extract main profile details ($2 per 1k)",
+                                        "eventPriceUsd": 0.0015
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0,
+                            "main-profile": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.49",
+                        "containerUrl": "https://hbb7n2sqrhsl.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/2qkmfzvyIkSPhci1s",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            },
+                            "main-profile": {
+                                "eventTitle": "Main profile",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/6Oa5D7ZcsBARfhDtU/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "ACoAAEtBZToB797xSZd0ya2PBMgQpapRY11083A",
+                        "name": "Satya Nadella",
+                        "position": "--",
+                        "photo": "https://media.licdn.com/dms/image/v2/D4D03AQFJ0JRt2WFwcw/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1706953630991?e=1790208000&v=beta&t=9YQ2ir9Ix8AOH5hBDo4v0LSWAJNL78IGG57EKObZkF8",
+                        "location": {
+                            "linkedinText": "Sri Lanka"
+                        },
+                        "linkedinUrl": "https://www.linkedin.com/in/satya-nadella-b62a012b2",
+                        "publicIdentifier": "satya-nadella-b62a012b2"
+                    },
+                    {
+                        "id": "ACoAADtWhDgBfl8t6tJ1r9LiCTa-DEIvP-FMwjA",
+                        "name": "satya nadella",
+                        "position": "Attended St. Xavier School - Delhi",
+                        "location": {
+                            "linkedinText": "Delhi, India"
+                        },
+                        "linkedinUrl": "https://www.linkedin.com/in/satya-nadella-4a0496239",
+                        "publicIdentifier": "satya-nadella-4a0496239"
+                    }
+                ]
+            }
+        }
+    ]
+}

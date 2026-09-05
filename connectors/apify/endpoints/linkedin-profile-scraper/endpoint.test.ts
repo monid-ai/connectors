@@ -23,21 +23,45 @@ Deno.test("apify doc shape: lifecycle fused from the provider, 0.2.0 floor, ONE 
     assert(unit.doc.lifecycle, "lifecycle must be fused from the provider");
     assert(unit.doc.lifecycle.poll && unit.doc.lifecycle.stop);
     // interning payoff: every apify endpoint points at the SAME provider
-    // lifecycle + consolidate entries (one fnTable entry each)
+    // lifecycle + consolidate entries (one fnTable entry each) — EXCEPT
+    // linkedin-profile-search, the leaf-wise-override showcase: it replaces
+    // poll + consolidate (page-basis billing) while still inheriting start
     const bundle = await testBundle();
     const apifyDocs = Object.values(bundle.endpoints)
         .filter((doc) => doc.provider === "apify");
-    assert(apifyDocs.length >= 5);
+    assert(apifyDocs.length >= 46);
+    const custom = "apify#linkedin-profile-search";
     for (const doc of apifyDocs) {
         assertEquals(
             doc.lifecycle?.start.$fn.key,
             unit.doc.lifecycle.start.$fn.key,
         );
         assertEquals(
+            doc.lifecycle?.stop?.$fn.key,
+            unit.doc.lifecycle.stop!.$fn.key,
+        );
+        if (doc.id === custom) continue;
+        assertEquals(
+            doc.lifecycle?.poll?.$fn.key,
+            unit.doc.lifecycle.poll!.$fn.key,
+        );
+        assertEquals(
             doc.usage.consolidate.$fn.key,
             unit.doc.usage.consolidate.$fn.key,
         );
+        assertEquals(
+            doc.output.fromError?.$fn.key,
+            unit.doc.output.fromError!.$fn.key,
+        );
     }
+    const customDoc = bundle.endpoints[custom];
+    assert(
+        customDoc.lifecycle?.poll!.$fn.key !== unit.doc.lifecycle.poll!.$fn.key,
+    );
+    assert(
+        customDoc.usage.consolidate.$fn.key !==
+            unit.doc.usage.consolidate.$fn.key,
+    );
 });
 
 Deno.test("apify#linkedin-profile-scraper happy (recorded): start → poll×3 → dataset → settle", async () => {

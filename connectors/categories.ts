@@ -88,4 +88,42 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         description:
             "Maps and local-places data: businesses, reviews, and points of interest.",
     },
+    {
+        id: "amazon",
+        displayName: "Amazon",
+        description:
+            "Amazon data: products, reviews, search results, and sellers.",
+    },
+    {
+        id: "facebook",
+        displayName: "Facebook",
+        description:
+            "Facebook data: pages, groups, events, ads, posts, and reviews.",
+    },
+    {
+        id: "google-shopping",
+        displayName: "Google Shopping",
+        description: "Google Shopping data: products, prices, and sellers.",
+    },
+    {
+        id: "jobs",
+        displayName: "Jobs",
+        description: "Job listings and hiring data.",
+    },
+    {
+        id: "reddit",
+        displayName: "Reddit",
+        description: "Reddit data: posts, comments, and communities.",
+    },
+    {
+        id: "snapchat",
+        displayName: "Snapchat",
+        description: "Snapchat data: profiles, stories, and spotlight videos.",
+    },
+    {
+        id: "tiktok",
+        displayName: "TikTok",
+        description:
+            "TikTok data: videos, profiles, comments, and search results.",
+    },
 ]);

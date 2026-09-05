@@ -76,9 +76,26 @@
 - [x] 6.5 Tests: doc-shape + shared-interning, happy replays for all five,
       error-item billing, synthesized-500 zero usage, 401 zero usage, stop
       swallow, live smoke (youtube, gated), live schema-drift guard
-- [ ] 6.6 Tranche 2: bulk-port the remaining ~55 v1 actor endpoints
-      (scaffold + meta port + synthetic fixtures + live smoke) — follow-up
-      wave on this machinery
+- [x] 6.6 Tranche 2 — the FULL port: all 46 v1 apify endpoints in-repo.
+      41 new endpoint defs generated from the v1 catalog dump (meta ported;
+      pricing/estimation/visibility stay hosted); 41 schemas scaffolded
+      fresh from each actor's published schema + curated; 7 new category
+      leaves (amazon, facebook, google-shopping, jobs, reddit, snapchat,
+      tiktok); 44 REAL recorded happy chains (batch-recorded live with
+      minimal inputs, trimmed by D11; reddit-scraper-lite's 31-call chain
+      compacted; the 3 schema-rejected inputs re-recorded after the
+      compiled schemas caught them pre-spend) + 2 synthetic-happy
+      (snapchat-spotlight, tiktok-comments — no recordable input at hand);
+      one generated happy-replay test per endpoint
+- [x] 6.7 linkedin-profile-search — the leaf-wise-override showcase:
+      endpoint-level poll (page/profile reconstruction stamped onto output
+      + state) + consolidate (units = SEARCH PAGES + profiles; a
+      zero-profile run stays billable) over inherited start/stop/fromError;
+      Unit.PAGE added (append-only, covered by the 0.2.0 minor);
+      profileScraperMode REQUIRED in the schema (the v1 admission rule,
+      declaratively); event rates refreshed from the actor's live
+      pricingPerEvent (v1's constants had drifted — the exact re-verify
+      trigger its decision record named)
 
 ## 7. ABI polish round (design D12–D14, review round 2)
 
