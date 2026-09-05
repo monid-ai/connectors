@@ -10,17 +10,26 @@ import { zUsage } from "../usage/usage.ts";
  * Catalog/Broker consume `usage` — contract, not engine internals, hence
  * CORE.
  *
- * Deliberately NOT adopted from monid-services (design D29 +
- * add-async-run-protocol): `providerHttpStatus` (relevant only when in-body
- * error detection lands for sync docs — `isProviderError` IS today's
- * classification), the `actualCost`-on-error channel (usage is doc-settled;
- * vendor error ⇒ zero usage is policy), the `metadata` bag (the lifecycle
- * `state` IS the handle), and `stop.unresolved` (stop is best-effort void —
- * result reporting arrives with the metered wave).
+ * Adopted from monid-services with async (design D12): the ours/theirs
+ * status pair — as an OPTIONAL `providerHttpStatus` (stated only when a
+ * lifecycle fn synthesized the billed status; v1 required it verbatim
+ * everywhere). Deliberately NOT adopted: the `actualCost`-on-error channel
+ * (usage is doc-settled; vendor error ⇒ zero usage is policy), the
+ * `metadata` bag and `providerRunId` field (the lifecycle `state` IS the
+ * handle — reserved key `state.externalRunId`), and `stop.unresolved`
+ * (stop is best-effort void — result reporting arrives with the metered
+ * wave).
  */
 export const zRunCompleted = z.strictObject({
     kind: z.literal("completed"),
     httpStatus: z.number().int(),
+    /**
+     * THEIRS — what the upstream exchange actually returned, stated ONLY
+     * when a lifecycle fn SYNTHESIZED `httpStatus` (e.g. a failed Apify
+     * actor: httpStatus 500, providerHttpStatus 200). Absent = relayed
+     * verbatim (the v1 ours/theirs pair, optional form — design D12).
+     */
+    providerHttpStatus: z.number().int().optional(),
     output: zJson.nullable(),
     usage: zUsage,
     /**
@@ -35,21 +44,20 @@ export const zRunCompleted = z.strictObject({
 export type RunCompleted = z.infer<typeof zRunCompleted>;
 
 /**
- * A parked async run. ONE shape for both phases (start AND poll — carrying
- * `providerRunId` on poll ticks costs nothing and keeps correlation alive):
+ * A parked async run. ONE shape for both phases:
  *   - `state`: the opaque Json handle the orchestrator threads into the next
  *     `poll(input, state)` / `stop(input, state)` — ids + billing signals,
- *     never payloads (engine-capped, config schema.state_max_bytes).
+ *     never payloads (engine-capped, config schema.state_max_bytes). ONE
+ *     reserved key: `state.externalRunId` — the vendor's own run/job id,
+ *     THE correlation handle hosts read (↔ v1 `providerRunId`); when
+ *     present it must be a non-empty string (engine-enforced).
  *   - `pollAfterMs`: when to poll next — the fn's per-tick override ?? the
  *     doc's `timeouts.pollMs`.
- *   - `providerRunId`: correlation-only (hosted teardown/webhooks); the
- *     engine never consumes it.
  */
 export const zRunRunning = z.strictObject({
     kind: z.literal("running"),
     state: zJson,
     pollAfterMs: z.number().int().positive(),
-    providerRunId: z.string().min(1).optional(),
 });
 export type RunRunning = z.infer<typeof zRunRunning>;
 

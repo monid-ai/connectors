@@ -44,14 +44,16 @@ its Temporal `endpointExecution` workflow.
   engine, never in fns".
 - Decision: the invariant becomes **"all IO flows through the engine's
   transport port"**. The four pure hooks are untouched; the three lifecycle
-  contracts receive `utils.http` — the v2 provider runtime, engine-bound per
-  loaded endpoint: CONSTRUCTED FROM the doc's request + auth, per-call
-  overridable on every field EXCEPT auth (injected by the transport at
-  egress — fns never see credentials). `path` resolves against the request
-  URL's origin (v1 `apiPath` semantics); absolute `url`s are allowed ("fns
-  can do whatever they want" — egress hygiene is transport/Relay POLICY in
-  hosted mode). `utils.log` mirrors v1's `client.logger`
-  (→ EngineCtx.logger, silent default). NOT carried over: `resources`
+  contracts receive the v2 provider runtime, bound PER
+  INVOCATION (amended, D14): `utils.http(call)` — the RAW explicit
+  capability (`method` + `url`|`path` required; `path` resolves against the
+  request URL's origin, v1 `apiPath` semantics; absolute `url`s allowed —
+  egress hygiene is transport/Relay POLICY in hosted mode) — and
+  `utils.request(overrides?)` — the DEFAULT RELAY: executes THE endpoint's
+  compiled request initialized from data.request + caller input, any field
+  overridable. Auth is injected by the transport at egress on both — fns
+  never see credentials. Logging is `ctx.logger` (HookLogger), a ctx member
+  of EVERY hook (D14), routed to EngineCtx.logger, silent default. NOT carried over: `resources`
   (stays removed, D19) and deterministic runId/idempotency keys (additive
   later).
 - Preserved by construction: auth custody, fixture replay (transport-level
@@ -63,11 +65,11 @@ its Temporal `endpointExecution` workflow.
 
 ## D3 — Contracts: async data/outcome schema pairs, not z.function
 
-- Decision: `LifecycleStartFn: ({data: {input, request}, utils}) →
+- Decision: `LifecycleStartFn: ({data: {input, request}, utils, logger}) →
   Promise<Outcome>`, `LifecyclePollFn`/`LifecycleStopFn` with
   `{input, request, state}`; `Outcome = {kind: "running", state,
-  providerRunId?, pollAfterMs?} | {kind: "completed", httpStatus, output,
-  state?}` (stop's return is ignored). zod's z.function factory does not
+  pollAfterMs?} | {kind: "completed", httpStatus, providerHttpStatus?,
+  output, state?}` (stop's return is ignored; amended by D12/D14). zod's z.function factory does not
   model Promise returns, so the contract is the data schema + outcome
   schema pair, enforced by an async engine wrapper: ctx.data validated
   before the call, the awaited outcome after (FN_CONTRACT on either);
@@ -94,14 +96,14 @@ its Temporal `endpointExecution` workflow.
 - Not adopted from v1: the observed-cost-on-error channel (`actualCost` on
   failed runs) — v2 policy is vendor error ⇒ zero usage, period.
 
-## D5 — Run results: ONE running shape, providerRunId on both phases
+## D5 — Run results: ONE running shape; the id lives IN the state (amended by D14)
 
 - Decision (amends the D29 evolution note): `zRunRunning = {kind, state,
-  pollAfterMs, providerRunId?}` for BOTH start and poll (review: "having
-  the id doesn't hurt" — the derived minus-providerRunId poll variant was
-  dropped). `providerRunId` is correlation-only (hosted teardown/webhooks);
-  the state Json IS the handle. `zRunStartResult`/`zRunPollResult` are
-  aliases of `zRunResult` kept for interface clarity.
+  pollAfterMs}` for BOTH start and poll. The separate `providerRunId`
+  field was first kept on both phases, then DISSOLVED into the state as
+  the ONE reserved key `state.externalRunId` (D14) — the field duplicated
+  what every connector already stored in state. `zRunStartResult`/
+  `zRunPollResult` are aliases of `zRunResult` kept for interface clarity.
 - Engine surface: `start(runInput)`; `poll(runInput, state)` and
   `stop(runInput, state)` take the caller's input alongside the state —
   re-derived deterministically (validate + input.toRequest) so fns see the
@@ -150,6 +152,11 @@ its Temporal `endpointExecution` workflow.
   `spec_version` stays 1.0.0 deliberately: it is a `z.literal` gate in
   every engine binary, so bumping it would make old engines reject even
   sync docs.
+- AMENDED (D14): `fn_abi_since` → **0.2.0** — the hook ctx gained `logger`
+  as its third member, and "the oldest engine that understands the current
+  ABI" is honestly 0.2.0 (no 0.1.0 engine ever shipped or passed it).
+  Every compiled doc now floors at 0.2.0; the earlier "sync docs stay
+  0.1.0" property was real only while the pure-hook ABI was untouched.
 
 ## D9 — Apify: schemas fetched fresh at AUTHORING time, static in-repo
 
@@ -212,12 +219,92 @@ its Temporal `endpointExecution` workflow.
   wire chains and vendor shapes survive; tranche 2 inherits the diet by
   default.
 
+## D12 — Provider-error categorization: digest via a hook, ours/theirs optional
+
+- Context: v1 categorizes with a data/error SPLIT field
+  (`providerResponse.data` XOR `.error`), a REQUIRED ours/theirs status
+  pair (`httpStatus`/`providerHttpStatus`, lifecycleResults.ts), and
+  adaptor-normalized error bodies (`apifyErrorBody` → `{message, type?}`)
+  called at every error site — which also DROPS the raw body. Review asked
+  for v2 to pass errors along AND make them digestible.
+- Decision — three moves, one table:
+  1. **`output.fromError`** — the fifth PURE hook (optional, leaf-wise like
+     fromResponse; shares its contract shape): the presentation-only
+     projection of provider-error envelopes. Runs ONLY when
+     isProviderError, AFTER zero-usage forcing (structurally cannot touch a
+     bill); absent ⇒ raw passthrough. Convention: digest into
+     `{message, …}` and keep the full body under `raw` — digest, never
+     hide (v1 discarded it). Digestion is ONE hook instead of a helper
+     repeated at every error site. `output.schema` never applies to error
+     projections.
+  2. **`providerHttpStatus?`** (THEIRS) on completed outcomes and
+     RunCompleted — stated ONLY when a lifecycle fn SYNTHESIZED the billed
+     status (failed actor: ours 500, theirs 200); absent = relayed
+     verbatim (v1 required the pair verbatim everywhere; our sync path
+     cannot invent statuses, so absence-means-relayed is safe).
+  3. v1's data/error split collapses into ONE `output` + isProviderError;
+     the observed-cost-on-error channel stays dropped (vendor error ⇒ zero
+     usage, period).
+- The categorization table (apify as the reference):
+
+  | Case | httpStatus | providerHttpStatus | output | usage |
+  | --- | --- | --- | --- | --- |
+  | Vendor API non-2xx | vendor status | absent | fromError projection (raw kept) | zero |
+  | Vendor job failed in-body (exitCode ≠ 0) | fn-synthesized 500 | 200 | fn `{message}` → fromError | zero |
+  | Error ITEM in a successful dataset | 200 | absent | normal output — NOT a provider error | billed per item |
+  | Infra (no run id, transport throw) | — thrown EXECUTION_FAILED (retriable) | — | — | n/a |
+
+## D13 — Steps array REJECTED; stage-dispatch is the multi-stage pattern
+
+- Context: review asked whether start+poll should generalize to an array
+  of steps (each possibly polling), double-checked against EVERY
+  monid-services async adaptor.
+- Evidence: apify (poll = status GET + dataset GET), minimax video (poll =
+  query + files/retrieve), bytedance/alibaba/suzanne/clay/hunterio (plain
+  polls), surf (poll = status + results fetch), mint (preview-approve
+  MID-poll ⇒ ONE poll fn dispatching on `state.stage`), saperly
+  provision-number (a 4-call SAGA entirely inside START — no waiting
+  between calls), saperly calls (metered accrual — a separate billing
+  clock, the declared metered wave, not a steps problem), apollo (poll +
+  readback graft — state stays small). ZERO adaptors chain two polling
+  stages.
+- Decision: REJECTED as over-engineering. Imperative fns already cover
+  multi-call phases; multi-STAGE chains are expressible today as a state
+  machine in one poll fn (`state.stage` dispatch — the mint pattern, the
+  canonical expression). A steps array would ripple through outcomes, run
+  results, the engine loop, the hosted Temporal loop, and fixtures for
+  generality nothing observed needs. Revisit trigger: a real connector
+  whose stage-dispatch poll fn becomes unwieldy.
+
+## D14 — ABI polish round: three-part ctx, the default relay, externalRunId
+
+- **ctx = `{data, utils, logger}` for EVERY hook** (review: "three, not
+  logger in utils"): `HookLogger` (debug/info/warn/error — no `child`;
+  defined in core to keep it dependency-free) is its own ctx member;
+  `utils.log` deleted. The auth hook's logger is DELIBERATELY silent
+  regardless of host config — resolved credentials are in scope there.
+  Consequence: fn_abi_since 0.2.0 (see D8 amendment).
+- **`utils.request(overrides?)` beside an untouched `utils.http`** (review:
+  "keep http its own place; a new thing does the defaults"): the DEFAULT
+  RELAY executes the compiled request initialized from data.request +
+  caller input; overrides are method/headers/queryParams/body/requestMs —
+  deliberately NOT url/path (a different target is what `http` is for).
+  Apify's start collapses to `await utils.request()`. Both bind PER
+  INVOCATION (they need the tick's derived input + substituted url).
+- **`state.externalRunId`** replaces the `providerRunId` field (review:
+  rename + structure): the vendor's run id is part of the handle, so it
+  lives IN the handle — ONE reserved state key ("external*" =
+  monid-services' cross-system prefix), engine-enforced when present
+  (non-empty string, else FN_CONTRACT), everything else fn-owned. Hosts
+  correlate via `state.externalRunId` (↔ v1 providerRunId). A rigid state
+  schema stays rejected — it would fight the imperative-fn design.
+
 ## Concepts delta
 
 | Term | Definition |
 | --- | --- |
 | **Lifecycle** (`lifecycle.start/poll/stop`) | The effectful hook family — the async run protocol. Start replaces declarative execution (request = data into it); poll = one status tick (running ∣ completed envelope); stop = best-effort abort. Leaf-wise per phase. |
-| **Provider runtime** (`utils.http`) | v1 `ProviderRuntime` re-homed as host ABI: constructed from request + auth, per-call overridable except auth; path resolves against the request origin; sniff-decoded `{status, body}`; non-2xx returned, transport failures throw EXECUTION_FAILED. |
-| **Outcome** | A lifecycle fn's return: `running{state, providerRunId?, pollAfterMs?}` ∣ `completed{httpStatus, output, state?}` — the completed arm IS the raw envelope the settle pipeline consumes. |
-| **State** | The opaque Json handle threaded between ticks by value — ids + billing signals only, hard-capped (`schema.state_max_bytes`). v1's `providerRunId` + `metadata`, unified. |
+| **Provider runtime** (`utils.http` + `utils.request`) | v1 `ProviderRuntime` re-homed as host ABI, bound per invocation: `http` = raw explicit calls (path resolves against the request origin); `request` = the default relay over the compiled request + caller input, field-overridable. Auth injected at the transport on both; sniff-decoded `{status, body}`; non-2xx returned, transport failures throw EXECUTION_FAILED. |
+| **Outcome** | A lifecycle fn's return: `running{state, pollAfterMs?}` ∣ `completed{httpStatus, providerHttpStatus?, output, state?}` — the completed arm IS the raw envelope the settle pipeline consumes. |
+| **State** | The opaque Json handle threaded between ticks by value — ids + billing signals only, hard-capped (`schema.state_max_bytes`). ONE reserved key: `externalRunId` (the vendor's run id — v1's `providerRunId`); the rest is fn-owned (v1's `metadata`). |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |

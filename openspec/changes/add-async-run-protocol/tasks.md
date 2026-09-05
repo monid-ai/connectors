@@ -80,14 +80,32 @@
       (scaffold + meta port + synthetic fixtures + live smoke) — follow-up
       wave on this machinery
 
-## 7. Versioning + docs
+## 7. ABI polish round (design D12–D14, review round 2)
+
+- [x] 7.a ctx = {data, utils, logger} for EVERY hook (HookLogger in core;
+      utils.log deleted; auth's logger silent by construction);
+      fn_abi_since → 0.2.0 (every doc floors there — honestly, no 0.1.0
+      engine ever shipped)
+- [x] 7.b utils.request() — the default relay beside untouched utils.http;
+      both bound per invocation; apify start = `await utils.request()`
+- [x] 7.c output.fromError (5th pure hook: contract + section + doc slot +
+      fnKeysOf + compiler + linkFns + engine error path) +
+      providerHttpStatus? (ours/theirs, optional) — apify's provider-level
+      fromError ports v1's apifyErrorBody with `raw` preserved
+- [x] 7.d state.externalRunId reserved key replaces the providerRunId field
+      (engine-enforced non-empty string; apify + demo + tests migrated)
+- [x] 7.e Design records D12 (error categorization), D13 (steps-array
+      rejection, full adaptor table), D14 (ABI polish); spec deltas +
+      AGENT.md refreshed
+
+## 8. Versioning + docs
 
 - [x] 7.1 version-check CONTRACT_PATHS: hooks/lifecycle.ts,
       sections/lifecycle.ts, sections/timeouts.ts
 - [x] 7.2 AGENT.md: hooks now seven; amended IO invariant; async no longer
       reserved; apify:scaffold command
 
-## 8. Verification
+## 9. Verification
 
 - [x] 8.1 `deno task check` + `deno task test` green (109 tests);
       double-compile byte-identical (existing determinism test)

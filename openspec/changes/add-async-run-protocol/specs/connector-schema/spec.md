@@ -2,15 +2,27 @@
 
 ## ADDED Requirements
 
+### Requirement: Three-part hook ctx
+EVERY hook fn SHALL take one ctx `{data, utils, logger}` — `logger` is a
+`HookLogger` (debug/info/warn/error), its own ctx member, never inside
+utils. The auth hook's logger is silent by construction (credentials in
+scope).
+
+#### Scenario: Logger reaches a hook
+- **WHEN** any hook fn calls ctx.logger.info
+- **THEN** the message routes to the host's EngineCtx.logger (no-op default)
+
 ### Requirement: Lifecycle hook family contracts
 The schema SHALL define the effectful lifecycle hook family
 (`hooks/lifecycle.ts`): `LifecycleStartFn` (`ctx.data = {input, request}`),
 `LifecyclePollFn` and `LifecycleStopFn` (`ctx.data = {input, request,
 state}`), each async, each receiving `LifecycleUtils` = the pure ABI
 (`json`, `money`) plus `http` (zHttpCall: method + exactly one of url|path
-+ headers?/queryParams?/body?/requestMs?) and `log`. The shared outcome
-union SHALL be `{kind: "running", state, providerRunId?, pollAfterMs?} |
-{kind: "completed", httpStatus, output, state?}`.
++ headers?/queryParams?/body?/requestMs?) and `request` (the default relay:
+zRequestOverrides — method/headers/queryParams/body/requestMs, never a
+target). The shared outcome union SHALL be `{kind: "running", state,
+pollAfterMs?} | {kind: "completed", httpStatus, providerHttpStatus?,
+output, state?}`.
 
 #### Scenario: HttpCall shape is validated
 - **WHEN** a lifecycle fn calls utils.http with both `url` and `path` (or neither)

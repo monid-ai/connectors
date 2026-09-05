@@ -62,6 +62,26 @@ export function substituteUrl(doc: EndpointDoc, input: RunInput): string {
     return url;
 }
 
+/** Map queryParams to wire strings — scalars only (shared by the
+ *  declarative pipeline and utils.request). */
+export function toScalarQuery(
+    docId: string,
+    queryParams: Record<string, unknown>,
+): Record<string, string> {
+    const query: Record<string, string> = {};
+    for (const [key, value] of Object.entries(queryParams)) {
+        if (value === null || value === undefined) continue;
+        if (Array.isArray(value) || typeof value === "object") {
+            throw new EngineError(
+                EngineErrorCode.INVALID_INPUT,
+                `${docId}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
+            );
+        }
+        query[key] = String(value);
+    }
+    return query;
+}
+
 /** Build the PreparedRequest: {pathParam} substitution, query mapping, JSON body. */
 export function buildRequest(
     doc: EndpointDoc,
@@ -69,18 +89,7 @@ export function buildRequest(
     injectEntry: FnEntry,
 ): PreparedRequest {
     const url = substituteUrl(doc, input);
-
-    const query: Record<string, string> = {};
-    for (const [key, value] of Object.entries(input.queryParams ?? {})) {
-        if (value === null || value === undefined) continue;
-        if (Array.isArray(value) || typeof value === "object") {
-            throw new EngineError(
-                EngineErrorCode.INVALID_INPUT,
-                `${doc.id}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
-            );
-        }
-        query[key] = String(value);
-    }
+    const query = toScalarQuery(doc.id, input.queryParams ?? {});
 
     return {
         method: doc.request.method,

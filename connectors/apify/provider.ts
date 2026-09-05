@@ -47,15 +47,13 @@ export default defineProvider({
     // request 30s, run 300s, poll every 2s
     timeouts: { requestMs: 30_000, runMs: 300_000, pollMs: 2_000 },
     lifecycle: {
-        start: async ({ data, utils }) => {
-            utils.log.info("starting apify actor run", {
+        start: async ({ data, utils, logger }) => {
+            logger.info("starting apify actor run", {
                 url: data.request.url,
             });
-            const res = await utils.http({
-                method: data.request.method,
-                url: data.request.url,
-                body: data.input.body ?? {},
-            });
+            // the DEFAULT RELAY: method/url/headers from the compiled
+            // request, body/queryParams from the caller input
+            const res = await utils.request();
             if (res.status < 200 || res.status >= 300) {
                 // Apify API error (actor not found, rate limit) — DATA.
                 return {
@@ -75,15 +73,18 @@ export default defineProvider({
             );
             return {
                 kind: "running",
-                providerRunId: runId,
                 state: {
-                    runId,
+                    // reserved key: the vendor's run id, the correlation
+                    // handle hosts read (↔ v1 providerRunId)
+                    externalRunId: runId,
                     ...(typeof datasetId === "string" ? { datasetId } : {}),
                 },
             };
         },
-        poll: async ({ data, utils }) => {
-            const runId = String(utils.json.get(data.state, "$.runId"));
+        poll: async ({ data, utils, logger }) => {
+            const runId = String(
+                utils.json.get(data.state, "$.externalRunId"),
+            );
             const res = await utils.http({
                 method: "GET",
                 path: "/v2/actor-runs/" + encodeURIComponent(runId),
@@ -143,7 +144,7 @@ export default defineProvider({
                     httpStatus: 200,
                     output: Array.isArray(items.body) ? items.body : [],
                     state: {
-                        runId,
+                        externalRunId: runId,
                         datasetId,
                         ...(typeof model === "string"
                             ? { pricingModel: model }
@@ -163,10 +164,13 @@ export default defineProvider({
                 res.body,
                 "$.data.statusMessage",
             );
-            utils.log.warn("apify actor run failed", { runId, exitCode });
+            logger.warn("apify actor run failed", { runId, exitCode });
             return {
                 kind: "completed",
+                // OURS synthesized (the ACTOR failed) / THEIRS was a 200
+                // (the poll exchange itself succeeded) — design D12
                 httpStatus: 500,
+                providerHttpStatus: 200,
                 output: {
                     message: typeof message === "string" && message !== ""
                         ? message
@@ -174,8 +178,10 @@ export default defineProvider({
                 },
             };
         },
-        stop: async ({ data, utils }) => {
-            const runId = String(utils.json.get(data.state, "$.runId"));
+        stop: async ({ data, utils, logger }) => {
+            const runId = String(
+                utils.json.get(data.state, "$.externalRunId"),
+            );
             const res = await utils.http({
                 method: "POST",
                 path: "/v2/actor-runs/" + encodeURIComponent(runId) +
@@ -183,11 +189,37 @@ export default defineProvider({
             });
             if (res.status < 200 || res.status >= 300) {
                 // already-terminal runs / transient API errors are expected
-                utils.log.warn("apify abort failed (best-effort, ignored)", {
+                logger.warn("apify abort failed (best-effort, ignored)", {
                     runId,
                     status: res.status,
                 });
             }
+        },
+    },
+    output: {
+        // THE error-digestion hook (design D12) — v1's per-call-site
+        // apifyErrorBody normalization as ONE provider-level projection:
+        // runs only on provider-error envelopes, after zero-usage forcing.
+        // Handles both shapes — the Apify API error envelope ({error:
+        // {message, type}}) and lifecycle-synthesized bodies ({message}) —
+        // and keeps the raw body under `raw` (digest, never hide).
+        fromError: ({ data, utils }) => {
+            const nested = utils.json.optionalGet(
+                data.output,
+                "$.error.message",
+            );
+            const flat = utils.json.optionalGet(data.output, "$.message");
+            const type = utils.json.optionalGet(data.output, "$.error.type");
+            const message = typeof nested === "string"
+                ? nested
+                : typeof flat === "string"
+                ? flat
+                : "Apify API error";
+            return {
+                message,
+                ...(typeof type === "string" ? { type } : {}),
+                raw: data.output,
+            };
         },
     },
     usage: {
@@ -212,7 +244,7 @@ export default defineProvider({
                     units: [{ amount: items, unit: "result" }],
                     ...(cost !== undefined ? { cost } : {}),
                     evidence: utils.json.pick(state, [
-                        "$.runId",
+                        "$.externalRunId",
                         "$.pricingModel",
                         "$.pricePerUnitUsd",
                         "$.usageTotalUsd",

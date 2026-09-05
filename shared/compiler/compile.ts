@@ -313,6 +313,19 @@ export async function compileBundle(
                     SC.fnAbiSince,
                 )
                 : undefined;
+            const fromError = resolve(
+                def.output?.fromError,
+                `${endpointFile}#output.fromError`,
+                provider.output?.fromError,
+                `${providerFile}#output.fromError`,
+            );
+            const fromErrorRef = fromError
+                ? await interner.intern(
+                    fromError.value,
+                    fromError.label,
+                    SC.fnAbiSince,
+                )
+                : undefined;
 
             // ---- usage.consolidate: THE settle fn, REQUIRED ---------------
             const consolidate = resolve(
@@ -349,6 +362,7 @@ export async function compileBundle(
                 injectRef,
                 toRequestRef,
                 fromResponseRef,
+                fromErrorRef,
                 consolidateRef,
                 lifecycleStartRef,
                 lifecyclePollRef,
@@ -399,6 +413,7 @@ export async function compileBundle(
                 },
                 output: {
                     fromResponse: fromResponseRef as unknown as Json,
+                    fromError: fromErrorRef as unknown as Json,
                     schema: schemaLeaf(
                         def.output?.schema,
                         provider.output?.schema,

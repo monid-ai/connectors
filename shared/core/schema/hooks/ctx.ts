@@ -5,19 +5,23 @@ import { type MoneyUtil } from "../usage/monetary.ts";
 
 /**
  * WHAT A HOOK IS (see the design.md/README primer): a doc is a recipe card of
- * pure data; the seven fn-bearing doc fields are the HOOKS — the only places
- * code may appear. Four are PURE (`input.toRequest`, `usage.consolidate`,
- * `output.fromResponse`, `auth.inject`); three are the EFFECTFUL lifecycle
- * family (`lifecycle.start` / `poll` / `stop` — hooks/lifecycle.ts). Each
- * hook has ONE definition: its CONTRACT — defined in its own file here,
- * beside its ctx data shape. Every hook fn takes ONE `ctx = { data, utils }`:
- *   - `ctx.data`  — pure JSON, hook-specific, validated on every call
+ * pure data; the fn-bearing doc fields are the HOOKS — the only places code
+ * may appear. Five are PURE (`input.toRequest`, `usage.consolidate`,
+ * `output.fromResponse`, `output.fromError`, `auth.inject`); three are the
+ * EFFECTFUL lifecycle family (`lifecycle.start` / `poll` / `stop` —
+ * hooks/lifecycle.ts). Each hook has ONE definition: its CONTRACT — defined
+ * in its own file here, beside its ctx data shape. Every hook fn takes ONE
+ * `ctx = { data, utils, logger }`:
+ *   - `ctx.data`   — pure JSON, hook-specific, validated on every call
  *     (FN_CONTRACT). The validated/unvalidatable boundary is structural,
  *     not a naming convention.
- *   - `ctx.utils` — host capabilities (engine code, not data): `utils.json`
+ *   - `ctx.utils`  — host capabilities (engine code, not data): `utils.json`
  *     (JsonUtil) and `utils.money` (MoneyUtil) for every hook; lifecycle
- *     hooks additionally get `utils.http` + `utils.log` (LifecycleUtils).
- *     All implemented in engine/fn-utils.ts.
+ *     hooks additionally get `utils.http` + `utils.request`
+ *     (LifecycleUtils). All implemented in engine/fn-utils.ts.
+ *   - `ctx.logger` — structured logging (HookLogger), its own ctx member
+ *     (cross-cutting, not a data utility); routed to the host's logger,
+ *     silent no-op by default.
  */
 export interface FnUtils {
     json: JsonUtil;
@@ -29,6 +33,27 @@ export const zFnUtils = z.custom<FnUtils>(
         typeof value === "object" && value !== null && "json" in value &&
         "money" in value,
     "expected FnUtils ({ json: JsonUtil, money: MoneyUtil })",
+);
+
+/**
+ * HookLogger — `ctx.logger`, the third ctx member of EVERY hook. A minimal
+ * 4-method surface (deliberately no `child` — fns are per-call, bindings
+ * are the host's job); the engine adapts EngineCtx.logger into it. Defined
+ * here (not imported from @shared/logging) to keep core dependency-free
+ * and the fn-facing surface minimal.
+ */
+export interface HookLogger {
+    debug(message: string, fields?: Record<string, Json>): void;
+    info(message: string, fields?: Record<string, Json>): void;
+    warn(message: string, fields?: Record<string, Json>): void;
+    error(message: string, fields?: Record<string, Json>): void;
+}
+
+export const zHookLogger = z.custom<HookLogger>(
+    (value) =>
+        typeof value === "object" && value !== null && "debug" in value &&
+        "info" in value && "warn" in value && "error" in value,
+    "expected a HookLogger ({ debug, info, warn, error })",
 );
 
 /**

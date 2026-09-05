@@ -31,14 +31,18 @@ without a resolved lifecycle.poll SHALL fail closed (CONTRACT_VIOLATION).
 - **WHEN** run() drives start → running → poll (running) → poll (completed with a second fetch)
 - **THEN** the wire sequence is exactly the fn-issued calls and the result settles with the final state in the envelope
 
-### Requirement: utils.http is the provider runtime
-The engine SHALL bind `utils.http` per loaded endpoint: constructed from
-the doc's request + auth, per-call overridable on every field EXCEPT auth
-(always injected by the transport — fns never see credentials); `path`
-resolves against the request URL's origin; responses are sniff-decoded
-`{status, body}`; vendor non-2xx is RETURNED; transport failures throw
-EXECUTION_FAILED (retriable); malformed call shapes throw FN_CONTRACT.
-`utils.log` SHALL route to EngineCtx.logger (silent no-op default).
+### Requirement: utils.http + utils.request are the provider runtime
+The engine SHALL bind both PER INVOCATION (this tick's derived input +
+substituted request). `http`: raw explicit calls (`path` resolves against
+the request URL's origin; only given fields sent). `request(overrides?)`:
+the default relay — method/url/headers from the compiled request,
+`body ?? input.body`, `queryParams ?? input.queryParams`, per-call
+overridable; `utils.request()` alone sends exactly what the declarative
+pipeline would. Auth is ALWAYS injected by the transport on both — fns
+never see credentials. Responses are sniff-decoded `{status, body}`;
+vendor non-2xx is RETURNED; transport failures throw EXECUTION_FAILED
+(retriable); malformed call/override shapes throw FN_CONTRACT. ctx.logger
+routes to EngineCtx.logger (silent no-op default).
 
 #### Scenario: Auth injected on fn-issued calls
 - **WHEN** a lifecycle fn issues utils.http({method, path}) with extra headers
@@ -63,6 +67,21 @@ EXECUTION_FAILED (retriable). Serialized `state` larger than
 #### Scenario: Oversized state
 - **WHEN** a fn returns running with a 70 KiB state
 - **THEN** the engine rejects FN_CONTRACT naming the state cap
+
+#### Scenario: Reserved state key enforced
+- **WHEN** a fn returns state with a non-string externalRunId
+- **THEN** the engine rejects FN_CONTRACT naming the reserved key
+
+### Requirement: Provider-error digestion (output.fromError)
+When the settled envelope is a provider error, the engine SHALL apply the
+resolved `output.fromError` projection (if any) AFTER zero-usage forcing —
+absent means raw passthrough; `output.schema` never applies to error
+projections. `RunCompleted.providerHttpStatus` SHALL carry the outcome's
+value only when it differs from httpStatus.
+
+#### Scenario: Digest with raw preserved
+- **WHEN** a 401 envelope settles on a doc with fromError
+- **THEN** the output is the projection (with the raw body under `raw`) and usage stays zero
 
 ### Requirement: Best-effort stop and bounded run loop
 `stop` SHALL be a no-op without lifecycle.stop; with one it SHALL run the

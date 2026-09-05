@@ -12,6 +12,7 @@ import {
     fnKey,
     type FnRef,
     formatZodError,
+    type HookLogger,
     type HttpRequestParts,
     InputToRequestContract,
     type InputToRequestFn,
@@ -20,6 +21,8 @@ import {
     type LifecycleStartData,
     type LifecycleTickData,
     type LifecycleUtils,
+    OutputFromErrorContract,
+    type OutputFromErrorFn,
     OutputFromResponseContract,
     type OutputFromResponseFn,
     type RunInput,
@@ -49,10 +52,12 @@ export interface LinkedFns {
     authInject: (data: AuthData) => HttpRequestParts;
     toRequest?: (data: ToRequestData) => RunInput;
     fromResponse?: (data: EnvelopeData) => Json;
+    /** Provider-error projection — runs only on error envelopes. */
+    fromError?: (data: EnvelopeData) => Json;
     /** THE settle fn: raw envelope → {usage, output?}. */
     usageConsolidate: (data: EnvelopeData) => Consolidated;
-    /** Lifecycle (async) family — effectful, so `utils` (with http/log bound
-     *  to THIS doc + transport) is passed per call by the engine. */
+    /** Lifecycle (async) family — effectful, so `utils` (http/request bound
+     *  to THIS invocation's input + request) is passed per call. */
     lifecycleStart?: (
         data: LifecycleStartData,
         utils: LifecycleUtils,
@@ -142,22 +147,26 @@ interface ContractLike<F> {
 /**
  * Wrap a raw linked fn with its hook contract: `Contract.implement` validates
  * the ctx argument and the return per call (ZodError); any violation or
- * throw becomes FN_CONTRACT.
+ * throw becomes FN_CONTRACT. `utils` and `logger` are injected by the
+ * wrapper; callers pass data only.
  */
 function wrapContract<
     D,
     R,
-    F extends (ctx: { data: D; utils: typeof fnUtils }) => R,
+    F extends (
+        ctx: { data: D; utils: typeof fnUtils; logger: HookLogger },
+    ) => R,
 >(
     contract: ContractLike<F>,
     raw: unknown,
     label: string,
     hookName: string,
+    logger: HookLogger,
 ): (data: D) => R {
     const impl = contract.implement(raw as F);
     return (data: D): R => {
         try {
-            return impl({ data, utils: fnUtils } as Parameters<F>[0]);
+            return impl({ data, utils: fnUtils, logger } as Parameters<F>[0]);
         } catch (error) {
             throw new EngineError(
                 EngineErrorCode.FN_CONTRACT,
@@ -185,6 +194,7 @@ function wrapLifecycle<D>(
     raw: unknown,
     label: string,
     hookName: string,
+    logger: HookLogger,
 ): (data: D, utils: LifecycleUtils) => Promise<LifecycleOutcome> {
     return async (data, utils) => {
         const checked = dataSchema.safeParse(data);
@@ -199,8 +209,12 @@ function wrapLifecycle<D>(
         let result: unknown;
         try {
             result = await (raw as (
-                ctx: { data: D; utils: LifecycleUtils },
-            ) => unknown)({ data: checked.data, utils });
+                ctx: {
+                    data: D;
+                    utils: LifecycleUtils;
+                    logger: HookLogger;
+                },
+            ) => unknown)({ data: checked.data, utils, logger });
         } catch (error) {
             if (error instanceof EngineError) throw error;
             throw new EngineError(
@@ -227,6 +241,7 @@ function wrapLifecycle<D>(
 function wrapLifecycleStop(
     raw: unknown,
     label: string,
+    logger: HookLogger,
 ): (data: LifecycleTickData, utils: LifecycleUtils) => Promise<void> {
     return async (data, utils) => {
         const checked = zLifecycleTickData.safeParse(data);
@@ -239,16 +254,29 @@ function wrapLifecycleStop(
             );
         }
         await (raw as (
-            ctx: { data: LifecycleTickData; utils: LifecycleUtils },
-        ) => unknown)({ data: checked.data, utils });
+            ctx: {
+                data: LifecycleTickData;
+                utils: LifecycleUtils;
+                logger: HookLogger;
+            },
+        ) => unknown)({ data: checked.data, utils, logger });
     };
 }
+
+const NOOP_HOOK_LOGGER: HookLogger = {
+    debug() {},
+    info() {},
+    warn() {},
+    error() {},
+};
 
 export async function linkFns(
     doc: EndpointDoc,
     fns: Record<string, FnEntry>,
     engineVersion: string,
+    hookLogger: HookLogger = NOOP_HOOK_LOGGER,
 ): Promise<LinkedFns> {
+    const logger = hookLogger;
     const linked: LinkedFns = {
         authInject: wrapContract<AuthData, HttpRequestParts, AuthInjectFn>(
             AuthInjectContract,
@@ -260,6 +288,7 @@ export async function linkFns(
             ),
             doc.id,
             "auth.inject",
+            logger,
         ),
         usageConsolidate: wrapContract<
             EnvelopeData,
@@ -275,6 +304,7 @@ export async function linkFns(
             ),
             doc.id,
             "usage.consolidate",
+            logger,
         ),
     };
     if (doc.input.toRequest) {
@@ -292,6 +322,7 @@ export async function linkFns(
             ),
             doc.id,
             "input.toRequest",
+            logger,
         );
     }
     if (doc.output.fromResponse) {
@@ -309,6 +340,25 @@ export async function linkFns(
             ),
             doc.id,
             "output.fromResponse",
+            logger,
+        );
+    }
+    if (doc.output.fromError) {
+        linked.fromError = wrapContract<
+            EnvelopeData,
+            Json,
+            OutputFromErrorFn
+        >(
+            OutputFromErrorContract,
+            await resolveFn(
+                doc.output.fromError,
+                fns,
+                engineVersion,
+                `${doc.id}#output.fromError`,
+            ),
+            doc.id,
+            "output.fromError",
+            logger,
         );
     }
     if (doc.lifecycle) {
@@ -322,6 +372,7 @@ export async function linkFns(
             ),
             doc.id,
             "lifecycle.start",
+            logger,
         );
         if (doc.lifecycle.poll) {
             linked.lifecyclePoll = wrapLifecycle(
@@ -334,6 +385,7 @@ export async function linkFns(
                 ),
                 doc.id,
                 "lifecycle.poll",
+                logger,
             );
         }
         if (doc.lifecycle.stop) {
@@ -345,6 +397,7 @@ export async function linkFns(
                     `${doc.id}#lifecycle.stop`,
                 ),
                 doc.id,
+                logger,
             );
         }
     }

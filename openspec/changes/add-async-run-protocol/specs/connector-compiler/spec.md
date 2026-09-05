@@ -30,6 +30,14 @@ legitimate default (not emitted for sync docs).
 - **WHEN** a sync endpoint declares timeouts.pollMs
 - **THEN** compilation fails naming the dead config
 
+### Requirement: fromError resolution
+`output.fromError` SHALL resolve leaf-wise (endpoint ?? provider) and
+intern like fromResponse; its ref joins fnKeysOf/minEngineVersion inputs.
+
+#### Scenario: Provider-level fromError shared
+- **WHEN** a provider declares output.fromError and endpoints declare none
+- **THEN** every doc references the same fromError fn id
+
 ### Requirement: Closed-term whitelist additions
 The closed-term lint SHALL additionally whitelist `encodeURIComponent`,
 `decodeURIComponent`, and `Promise` (pure globals lifecycle fns need).

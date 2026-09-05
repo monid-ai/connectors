@@ -51,7 +51,9 @@ export const zEndpointDoc = z.strictObject({
     }),
     output: z.strictObject({
         fromResponse: zFnRef.optional(),
-        /** Validates the FINAL (post-fromResponse) output. */
+        /** Provider-error projection (runs after zero-usage forcing). */
+        fromError: zFnRef.optional(),
+        /** Validates the FINAL (post-fromResponse) SUCCESS output. */
         schema: zJsonSchemaDoc.optional(),
     }),
     usage: z.strictObject({
@@ -81,6 +83,7 @@ export function fnKeysOf(doc: EndpointDoc): string[] {
     const keys: string[] = [doc.auth.inject.$fn.key];
     if (doc.input.toRequest) keys.push(doc.input.toRequest.$fn.key);
     if (doc.output.fromResponse) keys.push(doc.output.fromResponse.$fn.key);
+    if (doc.output.fromError) keys.push(doc.output.fromError.$fn.key);
     keys.push(doc.usage.consolidate.$fn.key);
     if (doc.lifecycle) {
         keys.push(doc.lifecycle.start.$fn.key);

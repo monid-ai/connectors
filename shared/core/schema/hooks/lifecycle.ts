@@ -2,7 +2,7 @@ import { z } from "zod";
 import { zHttpMethod } from "../common/http.ts";
 import { type Json, zJson } from "../json/type.ts";
 import { zRunInput } from "../run/input.ts";
-import { fnCarrier, type FnUtils } from "./ctx.ts";
+import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
 
 /**
  * THE LIFECYCLE HOOK FAMILY — `lifecycle.start` / `lifecycle.poll` /
@@ -72,26 +72,42 @@ export interface HttpResult {
 
 export type LifecycleHttpFn = (call: HttpCall) => Promise<HttpResult>;
 
-/** Structured logging for lifecycle fns (v1 `client.logger` parity) —
- *  routed to EngineCtx.logger, silent no-op by default. */
-export interface LogUtil {
-    debug(message: string, fields?: Record<string, Json>): void;
-    info(message: string, fields?: Record<string, Json>): void;
-    warn(message: string, fields?: Record<string, Json>): void;
-    error(message: string, fields?: Record<string, Json>): void;
-}
+/**
+ * Per-call overrides for `utils.request()` — the DEFAULT RELAY (v1's
+ * "default HTTP relay" as a callable): it executes THE endpoint's compiled
+ * request, initialized from `data.request` + the caller input —
+ * method/url/headers from the compiled request, `body ?? input.body`,
+ * `queryParams ?? input.queryParams` — with any field here overriding per
+ * call. `utils.request()` alone sends exactly what the declarative sync
+ * pipeline would. Targeting a DIFFERENT url/path is deliberately not an
+ * override — that is what `utils.http` is for.
+ */
+export const zRequestOverrides = z.strictObject({
+    method: zHttpMethod.optional(),
+    headers: z.record(z.string(), z.string()).optional(),
+    queryParams: z.record(z.string(), zJson).optional(),
+    body: zJson.optional(),
+    requestMs: z.number().int().positive().optional(),
+});
+export type RequestOverrides = z.infer<typeof zRequestOverrides>;
 
-/** The lifecycle hooks' utils: the pure ABI + the effect capabilities. */
+export type LifecycleRequestFn = (
+    overrides?: RequestOverrides,
+) => Promise<HttpResult>;
+
+/** The lifecycle hooks' utils: the pure ABI + the effect capabilities —
+ *  `http` (raw, explicit) and `request` (the default relay). Logging is
+ *  NOT here: `ctx.logger` is its own ctx member (every hook has it). */
 export interface LifecycleUtils extends FnUtils {
     http: LifecycleHttpFn;
-    log: LogUtil;
+    request: LifecycleRequestFn;
 }
 
 export const zLifecycleUtils = z.custom<LifecycleUtils>(
     (value) =>
         typeof value === "object" && value !== null && "json" in value &&
-        "money" in value && "http" in value && "log" in value,
-    "expected LifecycleUtils ({ json, money, http, log })",
+        "money" in value && "http" in value && "request" in value,
+    "expected LifecycleUtils ({ json, money, http, request })",
 );
 
 // ---------------------------------------------------------------------------
@@ -134,28 +150,34 @@ export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
  * ids, dataset ids, pricing fields, attempt counters) — never payloads: it
  * travels BY VALUE every tick (Temporal payloads, run records, fixtures) and
  * the engine caps its serialized size (config schema.state_max_bytes →
- * FN_CONTRACT). `providerRunId` is correlation-only (hosted teardown /
- * webhooks) — the state IS the handle. `pollAfterMs` overrides the doc's
- * `timeouts.pollMs` for the NEXT tick only (adaptive cadence).
+ * FN_CONTRACT). ONE reserved state key: `externalRunId` — the vendor's own
+ * run/job id, the correlation handle hosts read (teardown, webhooks);
+ * when present it must be a non-empty string (engine-enforced,
+ * FN_CONTRACT). Everything else in state is fn-owned. `pollAfterMs`
+ * overrides the doc's `timeouts.pollMs` for the NEXT tick only (adaptive
+ * cadence).
  */
 export const zLifecycleRunning = z.strictObject({
     kind: z.literal("running"),
     state: zJson,
-    providerRunId: z.string().min(1).optional(),
     pollAfterMs: z.number().int().positive().optional(),
 });
 
 /**
  * The run's RAW envelope: `httpStatus` + `output` feed the ONE settle
  * pipeline exactly like a declarative response would (non-2xx ⇒ provider
- * error, zero usage — engine-forced; a fn synthesizes e.g. a 500 for
- * in-body vendor failures, v1 parity). `state` (absent = previous tick's)
- * rides into the settle envelope so usage.consolidate can read billing
- * signals stashed during polling.
+ * error, zero usage — engine-forced). `providerHttpStatus` (THEIRS, v1's
+ * ours/theirs pair — design D12) is stated ONLY when the fn SYNTHESIZED
+ * `httpStatus` (e.g. a failed actor: httpStatus 500, providerHttpStatus
+ * 200 — the upstream exchange itself succeeded); absent = relayed
+ * verbatim. `state` (absent = previous tick's) rides into the settle
+ * envelope so usage.consolidate can read billing signals stashed during
+ * polling.
  */
 export const zLifecycleCompleted = z.strictObject({
     kind: z.literal("completed"),
     httpStatus: z.number().int(),
+    providerHttpStatus: z.number().int().optional(),
     output: zJson,
     state: zJson.optional(),
 });
@@ -171,14 +193,22 @@ export type LifecycleOutcome = z.infer<typeof zLifecycleOutcome>;
 // ---------------------------------------------------------------------------
 
 export type LifecycleStartFn = (
-    ctx: { data: LifecycleStartData; utils: LifecycleUtils },
+    ctx: {
+        data: LifecycleStartData;
+        utils: LifecycleUtils;
+        logger: HookLogger;
+    },
 ) => Promise<LifecycleOutcome>;
 export const zLifecycleStartFn = fnCarrier<LifecycleStartFn>(
     "a lifecycle.start fn",
 );
 
 export type LifecyclePollFn = (
-    ctx: { data: LifecycleTickData; utils: LifecycleUtils },
+    ctx: {
+        data: LifecycleTickData;
+        utils: LifecycleUtils;
+        logger: HookLogger;
+    },
 ) => Promise<LifecycleOutcome>;
 export const zLifecyclePollFn = fnCarrier<LifecyclePollFn>(
     "a lifecycle.poll fn",
@@ -187,7 +217,11 @@ export const zLifecyclePollFn = fnCarrier<LifecyclePollFn>(
 /** Best-effort teardown: the return is ignored; the engine swallows every
  *  failure (cleanup never masks the run outcome — v1 stop posture). */
 export type LifecycleStopFn = (
-    ctx: { data: LifecycleTickData; utils: LifecycleUtils },
+    ctx: {
+        data: LifecycleTickData;
+        utils: LifecycleUtils;
+        logger: HookLogger;
+    },
 ) => Promise<void>;
 export const zLifecycleStopFn = fnCarrier<LifecycleStopFn>(
     "a lifecycle.stop fn",

@@ -7,11 +7,16 @@ The apify provider SHALL declare `request.baseUrl https://api.apify.com`,
 `presets.auth.bearer()`, timeouts {30s request, 300s run, 2s poll}, and the
 whole lifecycle at provider level: start executes the endpoint's compiled
 request (POST `/v2/acts/{owner~name}/runs`), relays non-2xx as data,
-throws on a 2xx without a run id, else parks with `{runId, datasetId}`
-state and providerRunId; poll GETs `/v2/actor-runs/{id}` (no exitCode →
+throws on a 2xx without a run id, else parks with
+`{externalRunId, datasetId}` state (externalRunId = the reserved
+correlation key); poll GETs `/v2/actor-runs/{id}` (no exitCode →
 running; SUCCEEDED → fetch `/v2/datasets/{id}/items` and stash
 pricingModel/pricePerUnitUsd/usageTotalUsd in state; failure → synthesized
-500 with the statusMessage); stop POSTs `/abort` best-effort. ONE
+500 with providerHttpStatus 200 and the statusMessage); stop POSTs
+`/abort` best-effort. Start is literally `utils.request()` — the default
+relay over the endpoint's compiled request. ONE provider `output.fromError`
+SHALL digest error envelopes (the v1 apifyErrorBody port: `{message,
+type?, raw}` — raw preserved). ONE
 provider consolidate SHALL settle: units = dataset item count as
 `result`; cost = PRICE_PER_DATASET_ITEM (perUnit × items) or
 PAY_PER_EVENT (usageTotalUsd), else absent; evidence = the state signals.

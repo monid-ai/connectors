@@ -606,12 +606,11 @@ function asyncConnector(): ConnectorSource[] {
             request: { baseUrl: "https://api.asyncdemo.test" },
             timeouts: { requestMs: 1_000, runMs: 5_000, pollMs: 5 },
             lifecycle: {
-                start: async ({ data, utils }) => {
-                    const res = await utils.http({
-                        method: data.request.method,
-                        url: data.request.url,
-                        body: data.input.body ?? {},
-                    });
+                start: async ({ data, utils, logger }) => {
+                    logger.debug("starting job", { url: data.request.url });
+                    // the default relay: method/url from the compiled
+                    // request, body from the caller input
+                    const res = await utils.request();
                     if (res.status < 200 || res.status >= 300) {
                         return {
                             kind: "completed",
@@ -622,13 +621,12 @@ function asyncConnector(): ConnectorSource[] {
                     const jobId = utils.json.get(res.body, "$.jobId");
                     return {
                         kind: "running",
-                        state: { jobId },
-                        providerRunId: String(jobId),
+                        state: { externalRunId: String(jobId) },
                     };
                 },
                 poll: async ({ data, utils }) => {
                     const jobId = String(
-                        utils.json.get(data.state, "$.jobId"),
+                        utils.json.get(data.state, "$.externalRunId"),
                     );
                     const res = await utils.http({
                         method: "GET",
@@ -670,14 +668,14 @@ function asyncConnector(): ConnectorSource[] {
                         httpStatus: 200,
                         output: items.body,
                         state: {
-                            jobId,
+                            externalRunId: jobId,
                             ...(usd !== undefined ? { usd } : {}),
                         },
                     };
                 },
                 stop: async ({ data, utils }) => {
                     const jobId = String(
-                        utils.json.get(data.state, "$.jobId"),
+                        utils.json.get(data.state, "$.externalRunId"),
                     );
                     await utils.http({
                         method: "POST",
@@ -777,7 +775,7 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     ]);
 });
 
-Deno.test("lifecycle: start returns running with state + providerRunId + doc pollMs", async () => {
+Deno.test("lifecycle: start returns running with state (externalRunId) + doc pollMs", async () => {
     const engine = new Engine({
         transport: scriptTransport([{ status: 201, body: { jobId: "j9" } }]),
     });
@@ -785,10 +783,94 @@ Deno.test("lifecycle: start returns running with state + providerRunId + doc pol
     const tick = await loaded.start({ body: { q: "x" } });
     assertEquals(tick, {
         kind: "running",
-        state: { jobId: "j9" },
+        state: { externalRunId: "j9" },
         pollAfterMs: 5,
-        providerRunId: "j9",
     });
+});
+
+Deno.test("lifecycle: reserved state.externalRunId must be a non-empty string", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 201, body: { jobId: 42 } }]),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = async ({ utils }) => {
+                const res = await utils.request();
+                return {
+                    kind: "running",
+                    // number where the reserved key demands a string
+                    state: {
+                        externalRunId: utils.json.get(res.body, "$.jobId"),
+                    },
+                };
+            };
+        }),
+    );
+    await expectCode(
+        loaded.start({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("lifecycle: output.fromError digests provider-error envelopes (zero usage untouched)", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 429, body: { error: { message: "slow down" } } },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.output = {
+                fromError: ({ data, utils }) => ({
+                    message: utils.json.optionalGet(
+                        data.output,
+                        "$.error.message",
+                    ) ?? "vendor error",
+                    raw: data.output,
+                }),
+            };
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.output, {
+        message: "slow down",
+        raw: { error: { message: "slow down" } },
+    });
+});
+
+Deno.test("lifecycle: fn-synthesized status carries providerHttpStatus (ours/theirs)", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "failed" } },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.poll = async (
+                { data, utils },
+            ) => {
+                const jobId = String(
+                    utils.json.get(data.state, "$.externalRunId"),
+                );
+                await utils.http({ method: "GET", path: "/jobs/" + jobId });
+                return {
+                    kind: "completed",
+                    httpStatus: 500, // OURS (synthesized: the JOB failed)
+                    providerHttpStatus: 200, // THEIRS (the poll call succeeded)
+                    output: { message: "job failed" },
+                };
+            };
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.httpStatus, 500);
+    assertEquals(result.providerHttpStatus, 200);
 });
 
 Deno.test("lifecycle: vendor non-2xx at start is DATA — zero usage, no throw", async () => {
@@ -922,7 +1004,7 @@ Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => 
         transport: scriptTransport([{ status: 409, body: {} }], seen),
     });
     const loaded = await engine.load(await asyncUnit());
-    await loaded.stop({ body: { q: "x" } }, { jobId: "j1" });
+    await loaded.stop({ body: { q: "x" } }, { externalRunId: "j1" });
     assertEquals(seen, [{
         method: "POST",
         url: "https://api.asyncdemo.test/jobs/j1/abort",
@@ -930,7 +1012,7 @@ Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => 
     // transport-level failure is swallowed too
     const engine2 = new Engine({ transport: scriptTransport([]) });
     const loaded2 = await engine2.load(await asyncUnit());
-    await loaded2.stop({ body: { q: "x" } }, { jobId: "j1" });
+    await loaded2.stop({ body: { q: "x" } }, { externalRunId: "j1" });
 });
 
 Deno.test("lifecycle: run() timeout stops the vendor job then throws TIMEOUT", async () => {
@@ -1042,11 +1124,13 @@ Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead co
     }
 });
 
-Deno.test("lifecycle: sync docs stay at 0.1.0 (never over-pinned)", async () => {
+Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not async machinery", async () => {
     const bundle = await compileBundle(demoConnector(), COMPILE_OPTS);
+    // 0.2.0 via fn_abi_since (the {data, utils, logger} ctx) — NOT because
+    // of anything async: sync docs carry no lifecycle surface at all
     assertEquals(
         bundle.endpoints["demo#search"].minEngineVersion,
-        "0.1.0",
+        "0.2.0",
     );
     assertEquals(bundle.endpoints["demo#search"].lifecycle, undefined);
     assertEquals(bundle.endpoints["demo#search"].timeouts.pollMs, undefined);

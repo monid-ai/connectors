@@ -4,6 +4,7 @@ import {
     type EndpointDoc,
     type EnvelopeData,
     formatZodError,
+    type HookLogger,
     type Json,
     type LifecycleOutcome,
     type LifecycleRequestInfo,
@@ -24,7 +25,7 @@ import type {
 } from "./interfaces/mod.ts";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import { type LinkedFns, linkFns } from "./link.ts";
-import { makeLifecycleUtils } from "./fn-utils.ts";
+import { makeLifecycleUtils, toHookLogger } from "./fn-utils.ts";
 import { buildRequest, substituteUrl, validateInput } from "./request.ts";
 import { sniffDecode } from "./transport.ts";
 import { validateAgainst } from "./validate.ts";
@@ -77,7 +78,8 @@ export class Engine implements ConnectorEngine {
                 `${doc.id} needs engine ${doc.minEngineVersion}, this engine is ${ENGINE_VERSION}`,
             );
         }
-        const linked = await linkFns(doc, fns, ENGINE_VERSION);
+        const hookLogger = toHookLogger(this.logger);
+        const linked = await linkFns(doc, fns, ENGINE_VERSION, hookLogger);
         this.logger.debug("loaded endpoint", { id: doc.id });
         return new LoadedEndpoint(
             doc,
@@ -90,22 +92,26 @@ export class Engine implements ConnectorEngine {
 }
 
 export class LoadedEndpoint implements RunnableEndpoint {
-    /** Built once per loaded endpoint: utils.http/log bound to THIS doc's
-     *  request + auth + the ctx transport (the v2 provider runtime). */
-    private readonly lifecycleUtils: LifecycleUtils;
-
     constructor(
         readonly doc: EndpointDoc,
         private readonly injectEntry: Parameters<typeof buildRequest>[2],
         private readonly fns: LinkedFns,
         private readonly ctx: EngineCtx,
         private readonly logger: Logger,
-    ) {
-        this.lifecycleUtils = makeLifecycleUtils({
-            doc,
-            injectEntry,
-            transport: ctx.transport,
-            logger,
+    ) {}
+
+    /** utils.http/request bound PER INVOCATION: this tick's derived input +
+     *  substituted request (the v2 provider runtime). */
+    private utilsFor(
+        input: RunInput,
+        requestInfo: LifecycleRequestInfo,
+    ): LifecycleUtils {
+        return makeLifecycleUtils({
+            doc: this.doc,
+            injectEntry: this.injectEntry,
+            transport: this.ctx.transport,
+            requestInfo,
+            input,
         });
     }
 
@@ -118,9 +124,10 @@ export class LoadedEndpoint implements RunnableEndpoint {
         // LIFECYCLE mode: the start fn replaces the declarative execution —
         // the compiled request rides in as DATA (ctx.data.request).
         if (this.fns.lifecycleStart) {
+            const request = this.requestInfo(input);
             const outcome = await this.fns.lifecycleStart(
-                { input, request: this.requestInfo(input) },
-                this.lifecycleUtils,
+                { input, request },
+                this.utilsFor(input, request),
             );
             return this.fromOutcome(outcome, input, undefined);
         }
@@ -148,9 +155,10 @@ export class LoadedEndpoint implements RunnableEndpoint {
             );
         }
         const input = this.deriveInput(runInput);
+        const request = this.requestInfo(input);
         const outcome = await this.fns.lifecyclePoll(
-            { input, request: this.requestInfo(input), state },
-            this.lifecycleUtils,
+            { input, request, state },
+            this.utilsFor(input, request),
         );
         return this.fromOutcome(outcome, input, state);
     }
@@ -161,9 +169,10 @@ export class LoadedEndpoint implements RunnableEndpoint {
         if (!this.fns.lifecycleStop) return;
         try {
             const input = this.deriveInput(runInput);
+            const request = this.requestInfo(input);
             await this.fns.lifecycleStop(
-                { input, request: this.requestInfo(input), state },
-                this.lifecycleUtils,
+                { input, request, state },
+                this.utilsFor(input, request),
             );
         } catch (error) {
             this.logger.warn("lifecycle.stop failed (best-effort, ignored)", {
@@ -233,7 +242,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
                     `${this.doc.id}: lifecycle returned "running" but the doc has no lifecycle.poll`,
                 );
             }
-            this.assertStateSize(outcome.state);
+            this.assertState(outcome.state);
             const pollAfterMs = outcome.pollAfterMs ??
                 this.doc.timeouts.pollMs;
             if (pollAfterMs === undefined) {
@@ -242,21 +251,15 @@ export class LoadedEndpoint implements RunnableEndpoint {
                     `${this.doc.id}: pollable doc carries no timeouts.pollMs`,
                 );
             }
-            return {
-                kind: "running",
-                state: outcome.state,
-                pollAfterMs,
-                ...(outcome.providerRunId !== undefined
-                    ? { providerRunId: outcome.providerRunId }
-                    : {}),
-            };
+            return { kind: "running", state: outcome.state, pollAfterMs };
         }
-        if (outcome.state !== undefined) this.assertStateSize(outcome.state);
+        if (outcome.state !== undefined) this.assertState(outcome.state);
         return this.settle(
             input,
             outcome.httpStatus,
             outcome.output,
             outcome.state ?? prevState,
+            outcome.providerHttpStatus,
         );
     }
 
@@ -274,11 +277,22 @@ export class LoadedEndpoint implements RunnableEndpoint {
         httpStatus: number,
         raw: Json,
         state?: Json,
+        providerHttpStatus?: number,
     ): RunCompleted {
         const doc = this.doc;
         const isProviderError = !(httpStatus >= 200 && httpStatus < 300);
         let usage = zeroUsage();
         let output = raw;
+        if (isProviderError && this.fns.fromError) {
+            // presentation-only error projection — runs AFTER zero-usage
+            // forcing (a projection can never touch a bill); output.schema
+            // never applies to error shapes
+            output = this.fns.fromError({
+                input,
+                output: raw,
+                ...(state !== undefined ? { state } : {}),
+            });
+        }
         if (!isProviderError) {
             const envelope: EnvelopeData = {
                 input,
@@ -309,15 +323,22 @@ export class LoadedEndpoint implements RunnableEndpoint {
         return {
             kind: "completed",
             httpStatus,
+            ...(providerHttpStatus !== undefined &&
+                    providerHttpStatus !== httpStatus
+                ? { providerHttpStatus }
+                : {}),
             output,
             usage,
             isProviderError,
         };
     }
 
-    /** HARD state cap (config schema.state_max_bytes): state travels BY
-     *  VALUE every tick — ids + billing signals, never payloads. */
-    private assertStateSize(state: Json): void {
+    /** State discipline, fail-closed: the HARD size cap (config
+     *  schema.state_max_bytes — state travels BY VALUE every tick, ids +
+     *  billing signals, never payloads) and the ONE reserved key —
+     *  `state.externalRunId` (the vendor's run id, THE correlation handle
+     *  hosts read) must be a non-empty string when present. */
+    private assertState(state: Json): void {
         const bytes = new TextEncoder().encode(JSON.stringify(state)).length;
         const max = contractConfig.schema.stateMaxBytes;
         if (bytes > max) {
@@ -326,6 +347,19 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 `${this.doc.id}: lifecycle state is ${bytes} bytes (max ${max}) — ` +
                     `state carries ids + billing signals, never payloads`,
             );
+        }
+        if (
+            state !== null && typeof state === "object" &&
+            !Array.isArray(state) && "externalRunId" in state
+        ) {
+            const id = (state as Record<string, Json>).externalRunId;
+            if (typeof id !== "string" || id === "") {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${this.doc.id}: state.externalRunId is reserved for the ` +
+                        `vendor's run id and must be a non-empty string`,
+                );
+            }
         }
     }
 }

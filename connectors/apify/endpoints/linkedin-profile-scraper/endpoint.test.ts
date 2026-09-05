@@ -66,7 +66,10 @@ Deno.test("apify#linkedin-profile-scraper happy (recorded): start → poll×3 �
     });
     // evidence: billing signals threaded through STATE from the poll tick
     assertEquals(result.usage.evidence?.pricingModel, "PAY_PER_EVENT");
-    assertEquals(result.usage.evidence?.runId, "Fzmln12xWJioVawSa");
+    assertEquals(
+        result.usage.evidence?.externalRunId,
+        "Fzmln12xWJioVawSa",
+    );
     // output = the BARE dataset item array
     const output = result.output as Array<Record<string, unknown>>;
     assertEquals(output.length, 1);
@@ -108,11 +111,17 @@ Deno.test("apify#linkedin-profile-scraper actor failure: fn-synthesized 500, zer
     // envelope; the engine classifies + zero-bills it (v1: recorded observed
     // cost, never billed — v2 policy: vendor error ⇒ zero usage, period)
     assertEquals(result.isProviderError, true);
+    // ours/theirs (design D12): OURS synthesized 500, THEIRS was the 200
+    // poll exchange
     assertEquals(result.httpStatus, 500);
+    assertEquals(result.providerHttpStatus, 200);
     assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
     assertEquals(result.usage.cost, undefined);
+    // fromError digests the synthesized body too (flat $.message shape),
+    // raw preserved
     assertEquals(result.output, {
         message: "Actor run failed: browser could not start",
+        raw: { message: "Actor run failed: browser could not start" },
     });
 });
 
@@ -132,9 +141,18 @@ Deno.test("apify#linkedin-profile-scraper provider error: 401 at start is data, 
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
     assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
-    // raw Apify error body passes through untouched
-    const output = result.output as Record<string, Record<string, unknown>>;
-    assertEquals(output.error.type, "token-not-found");
+    // output.fromError (the v1 apifyErrorBody port, ONE provider-level
+    // hook): the vendor envelope digested for humans, raw preserved
+    assertEquals(result.output, {
+        message: "Authentication token was not found in the request.",
+        type: "token-not-found",
+        raw: {
+            error: {
+                type: "token-not-found",
+                message: "Authentication token was not found in the request.",
+            },
+        },
+    });
 });
 
 Deno.test("apify#linkedin-profile-scraper stop: best-effort abort, failures swallowed", async () => {
