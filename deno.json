@@ -17,7 +17,8 @@
         "engine:run": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run=git scripts/run.ts",
         "catalog": "deno run --allow-read --allow-write --allow-env --allow-run=git scripts/catalog.ts",
         "record": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run=git scripts/record.ts",
-        "version:check": "deno run --allow-read --allow-run=git scripts/version-check.ts"
+        "version:check": "deno run --allow-read --allow-run=git scripts/version-check.ts",
+        "apify:scaffold": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com scripts/apify-scaffold.ts"
     },
     "imports": {
         "@cliffy/command": "jsr:@cliffy/command@^1.2.1",

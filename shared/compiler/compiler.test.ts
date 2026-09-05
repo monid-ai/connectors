@@ -532,7 +532,8 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     const doc = bundle.endpoints["exa#search"];
     assert(doc, "exa#search compiled");
     assertEquals(doc.provider, "exa");
-    assertEquals(doc.minEngineVersion, "0.1.0");
+    // fn_abi_since 0.2.0: the hook ctx gained logger, so every doc floors here
+    assertEquals(doc.minEngineVersion, "0.2.0");
     assertEquals(doc.request, {
         method: "POST",
         url: "https://api.exa.ai/search",
@@ -564,7 +565,7 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     assertEquals(authEntry.provenance, "presets#auth.header");
     assertEquals(bundle.fnTable[doc.usage.consolidate.$fn.key].kind, "fn");
     // every entry declares its ABI floor
-    assertEquals(authEntry.api, "0.1.0");
+    assertEquals(authEntry.api, "0.2.0");
 
     // interning across endpoints: contents shares the settle fn + auth
     const contents = bundle.endpoints["exa#contents"];

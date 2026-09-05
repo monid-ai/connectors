@@ -10,30 +10,50 @@ import { zUsage } from "../usage/usage.ts";
  * Catalog/Broker consume `usage` — contract, not engine internals, hence
  * CORE.
  *
- * Deliberately NOT adopted from monid-services (design D29):
- * `providerHttpStatus` (relevant only when in-body error detection lands —
- * `isProviderError` IS today's classification), the `actualCost`-on-error
- * channel (usage is doc-settled; vendor error ⇒ zero usage is policy),
- * `metadata`, `stop.unresolved` + `providerRunId` (async is reserved; when
- * it lands, this splits into per-phase RunStartResult/RunPollResult with
- * derived variants so shapes cannot drift).
+ * Adopted from monid-services with async (design D12): the ours/theirs
+ * status pair — as an OPTIONAL `providerHttpStatus` (stated only when a
+ * lifecycle fn synthesized the billed status; v1 required it verbatim
+ * everywhere). Deliberately NOT adopted: the `actualCost`-on-error channel
+ * (usage is doc-settled; vendor error ⇒ zero usage is policy), the
+ * `metadata` bag and `providerRunId` field (the lifecycle `state` IS the
+ * handle — reserved key `state.externalRunId`), and `stop.unresolved`
+ * (stop is best-effort void — result reporting arrives with the metered
+ * wave).
  */
 export const zRunCompleted = z.strictObject({
     kind: z.literal("completed"),
     httpStatus: z.number().int(),
+    /**
+     * THEIRS — what the upstream exchange actually returned, stated ONLY
+     * when a lifecycle fn SYNTHESIZED `httpStatus` (e.g. a failed Apify
+     * actor: httpStatus 500, providerHttpStatus 200). Absent = relayed
+     * verbatim (the v1 ours/theirs pair, optional form — design D12).
+     */
+    providerHttpStatus: z.number().int().optional(),
     output: zJson.nullable(),
     usage: zUsage,
     /**
      * The ENGINE's authoritative classification (vendor non-2xx is DATA, not
      * an exception) — it drives zero-usage forcing and callers must not
-     * re-derive it from httpStatus (vendors that signal errors in-body with
-     * HTTP 200 will be classified here when doc-level detection lands).
+     * re-derive it from httpStatus. For lifecycle docs an in-body vendor
+     * failure is classified here via the fn-synthesized httpStatus (e.g. a
+     * failed Apify actor completes as a 500 envelope).
      */
     isProviderError: z.boolean(),
 });
 export type RunCompleted = z.infer<typeof zRunCompleted>;
 
-/** Reserved for async endpoints at a later engine version. */
+/**
+ * A parked async run. ONE shape for both phases:
+ *   - `state`: the opaque Json handle the orchestrator threads into the next
+ *     `poll(input, state)` / `stop(input, state)` — ids + billing signals,
+ *     never payloads (engine-capped, config schema.state_max_bytes). ONE
+ *     reserved key: `state.externalRunId` — the vendor's own run/job id,
+ *     THE correlation handle hosts read (↔ v1 `providerRunId`); when
+ *     present it must be a non-empty string (engine-enforced).
+ *   - `pollAfterMs`: when to poll next — the fn's per-tick override ?? the
+ *     doc's `timeouts.pollMs`.
+ */
 export const zRunRunning = z.strictObject({
     kind: z.literal("running"),
     state: zJson,
@@ -41,9 +61,16 @@ export const zRunRunning = z.strictObject({
 });
 export type RunRunning = z.infer<typeof zRunRunning>;
 
-/** What `start`/`poll` return; `run()` returns RunCompleted directly. */
+/** What `start`/`poll` return; `run()` returns RunCompleted directly. The
+ *  per-phase aliases exist for interface clarity — the shapes are identical
+ *  by decision (having the id on poll doesn't hurt). */
 export const zRunResult = z.discriminatedUnion("kind", [
     zRunCompleted,
     zRunRunning,
 ]);
 export type RunResult = z.infer<typeof zRunResult>;
+
+export const zRunStartResult = zRunResult;
+export type RunStartResult = RunResult;
+export const zRunPollResult = zRunResult;
+export type RunPollResult = RunResult;

@@ -1,0 +1,628 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/axesso_data~amazon-search-scraper/runs",
+                "body": {
+                    "input": [
+                        {
+                            "keyword": "usb cable",
+                            "domainCode": "com",
+                            "sortBy": "relevanceblender",
+                            "maxPages": 1
+                        }
+                    ]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "GviGzpU4Qd1IYawt3",
+                        "actId": "9GmEDf8sr9Jyb6b3X",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.065Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 95,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 18116507,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "9DeygEtRiadL7rTpU",
+                        "defaultKeyValueStoreId": "wvNzznODv0UCf8gqF",
+                        "defaultDatasetId": "LhusDwbpqr8wx9gSt",
+                        "defaultRequestQueueId": "AYIdE8LLyClPP6JNq",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "wvNzznODv0UCf8gqF"
+                            },
+                            "datasets": {
+                                "default": "LhusDwbpqr8wx9gSt"
+                            },
+                            "requestQueues": {
+                                "default": "AYIdE8LLyClPP6JNq"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are increasing the price for free users to limit usage to testing purposes only. Pricing for paid users remains unchanged.",
+                            "startedAt": "2026-04-09T08:08:21.153Z",
+                            "createdAt": "2026-03-26T09:08:21.412Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-26T09:08:43.216Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "product",
+                                        "eventDescription": "Single product in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "1.0.8",
+                        "containerUrl": "https://ekw0tlddr0p3.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "product",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/GviGzpU4Qd1IYawt3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "GviGzpU4Qd1IYawt3",
+                        "actId": "9GmEDf8sr9Jyb6b3X",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.065Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 95,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 358,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.358,
+                            "metamorph": 0,
+                            "computeUnits": 0.00002486111111111111,
+                            "memAvgBytes": 12132352,
+                            "memMaxBytes": 12132352,
+                            "memCurrentBytes": 12132352,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 292,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 18116507,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "9DeygEtRiadL7rTpU",
+                        "defaultKeyValueStoreId": "wvNzznODv0UCf8gqF",
+                        "defaultDatasetId": "LhusDwbpqr8wx9gSt",
+                        "defaultRequestQueueId": "AYIdE8LLyClPP6JNq",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "wvNzznODv0UCf8gqF"
+                            },
+                            "datasets": {
+                                "default": "LhusDwbpqr8wx9gSt"
+                            },
+                            "requestQueues": {
+                                "default": "AYIdE8LLyClPP6JNq"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are increasing the price for free users to limit usage to testing purposes only. Pricing for paid users remains unchanged.",
+                            "startedAt": "2026-04-09T08:08:21.153Z",
+                            "createdAt": "2026-03-26T09:08:21.412Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-26T09:08:43.216Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "product",
+                                        "eventDescription": "Single product in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "1.0.8",
+                        "containerUrl": "https://ekw0tlddr0p3.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/GviGzpU4Qd1IYawt3",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "product",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/GviGzpU4Qd1IYawt3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "GviGzpU4Qd1IYawt3",
+                        "actId": "9GmEDf8sr9Jyb6b3X",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.065Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 95,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 358,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.358,
+                            "metamorph": 0,
+                            "computeUnits": 0.00002486111111111111,
+                            "memAvgBytes": 12132352,
+                            "memMaxBytes": 12132352,
+                            "memCurrentBytes": 12132352,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 292,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 18116507,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "9DeygEtRiadL7rTpU",
+                        "defaultKeyValueStoreId": "wvNzznODv0UCf8gqF",
+                        "defaultDatasetId": "LhusDwbpqr8wx9gSt",
+                        "defaultRequestQueueId": "AYIdE8LLyClPP6JNq",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "wvNzznODv0UCf8gqF"
+                            },
+                            "datasets": {
+                                "default": "LhusDwbpqr8wx9gSt"
+                            },
+                            "requestQueues": {
+                                "default": "AYIdE8LLyClPP6JNq"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are increasing the price for free users to limit usage to testing purposes only. Pricing for paid users remains unchanged.",
+                            "startedAt": "2026-04-09T08:08:21.153Z",
+                            "createdAt": "2026-03-26T09:08:21.412Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-26T09:08:43.216Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "product",
+                                        "eventDescription": "Single product in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "1.0.8",
+                        "containerUrl": "https://ekw0tlddr0p3.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/GviGzpU4Qd1IYawt3",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "product",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/GviGzpU4Qd1IYawt3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "GviGzpU4Qd1IYawt3",
+                        "actId": "9GmEDf8sr9Jyb6b3X",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.065Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 95,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4394,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.394,
+                            "metamorph": 0,
+                            "computeUnits": 0.00030513888888888886,
+                            "memAvgBytes": 52349601.966317706,
+                            "memMaxBytes": 63987712,
+                            "memCurrentBytes": 63987712,
+                            "cpuAvgUsage": 46.53725053496018,
+                            "cpuMaxUsage": 79.1984858044164,
+                            "cpuCurrentUsage": 1.8874507310870945,
+                            "netRxBytes": 10871,
+                            "netTxBytes": 5214
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 18116507,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "9DeygEtRiadL7rTpU",
+                        "defaultKeyValueStoreId": "wvNzznODv0UCf8gqF",
+                        "defaultDatasetId": "LhusDwbpqr8wx9gSt",
+                        "defaultRequestQueueId": "AYIdE8LLyClPP6JNq",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "wvNzznODv0UCf8gqF"
+                            },
+                            "datasets": {
+                                "default": "LhusDwbpqr8wx9gSt"
+                            },
+                            "requestQueues": {
+                                "default": "AYIdE8LLyClPP6JNq"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are increasing the price for free users to limit usage to testing purposes only. Pricing for paid users remains unchanged.",
+                            "startedAt": "2026-04-09T08:08:21.153Z",
+                            "createdAt": "2026-03-26T09:08:21.412Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-26T09:08:43.216Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "product",
+                                        "eventDescription": "Single product in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "1.0.8",
+                        "containerUrl": "https://ekw0tlddr0p3.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/GviGzpU4Qd1IYawt3",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "product",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/GviGzpU4Qd1IYawt3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "GviGzpU4Qd1IYawt3",
+                        "actId": "9GmEDf8sr9Jyb6b3X",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.065Z",
+                        "finishedAt": "2026-09-05T01:41:21.619Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 95,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 7387,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 7.387,
+                            "metamorph": 0,
+                            "computeUnits": 0.0005129861111111111,
+                            "memAvgBytes": 55993674.8750977,
+                            "memMaxBytes": 63987712,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 46.53725053496018,
+                            "cpuMaxUsage": 79.1984858044164,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 12216,
+                            "netTxBytes": 5694
+                        },
+                        "options": {
+                            "build": "latest",
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 3600,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 18116507,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "9DeygEtRiadL7rTpU",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "wvNzznODv0UCf8gqF",
+                        "defaultDatasetId": "LhusDwbpqr8wx9gSt",
+                        "defaultRequestQueueId": "AYIdE8LLyClPP6JNq",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "wvNzznODv0UCf8gqF"
+                            },
+                            "datasets": {
+                                "default": "LhusDwbpqr8wx9gSt"
+                            },
+                            "requestQueues": {
+                                "default": "AYIdE8LLyClPP6JNq"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "We are increasing the price for free users to limit usage to testing purposes only. Pricing for paid users remains unchanged.",
+                            "startedAt": "2026-04-09T08:08:21.153Z",
+                            "createdAt": "2026-03-26T09:08:21.412Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-26T09:08:43.216Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "product",
+                                        "eventDescription": "Single product in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "1.0.8",
+                        "containerUrl": "https://ekw0tlddr0p3.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/GviGzpU4Qd1IYawt3",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "product",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/LhusDwbpqr8wx9gSt/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "statusCode": 200,
+                        "statusMessage": "FOUND",
+                        "keyword": "usb cable",
+                        "domainCode": "com",
+                        "page": 1,
+                        "selectedCategory": "aps",
+                        "browseNode": null,
+                        "nodeHierarchy": null,
+                        "resultCount": 100000,
+                        "categories": [],
+                        "similarKeywords": [
+                            {
+                                "keyword": "usb",
+                                "url": null
+                            },
+                            {
+                                "keyword": "micro usb cable",
+                                "url": null
+                            }
+                        ],
+                        "currentPage": 1,
+                        "sortStrategy": "relevanceblender",
+                        "productDescription": "AINOPE USB to USB Cable, 6.6FT USB 3.0 A to A Male to Male Cable 5Gbps Double End Type A Cord for Data Transfer Compatible with Hard Drive, Laptop Cooling Pad, USB Hub, KVM, DVD",
+                        "asin": "B09FDJFJ6Z",
+                        "countReview": 22419,
+                        "imgUrl": "https://m.media-amazon.com/images/I/71DCjDthZVL._AC_UY218_.jpg",
+                        "price": 6.6,
+                        "retailPrice": 6.99,
+                        "productRating": "4.6 out of 5 stars",
+                        "prime": false,
+                        "dpUrl": "/AINOPE-Double-Transfer-Compatible-Cooling/dp/B09FDJFJ6Z/ref=sr_1_1?dib=eyJ2IjoiMSJ9.aPbHcq77FHXy4WIVcb_reLxwTFxHUg-zGlbMT2N4Xqsivw2SL2MiKBsvv1I8ZeSxetJ60uhx0EyZ-9xYAEJ37ah7U6_yss30Q6AGp3ZJJ41B6DieQ1wtBqMNnWcQ06RvYrudBjmZHj8jmgpXUOR9tPN5Lv0yRpqHTrF5hQGWTgwsdN31zyTIk1kVHnV046hmrAyi1yD5ZIpZZKPw9mVv988rhGdmKPbsXKDYZifBtB4.2QFT5XbJ_ikh7YCL5VyHdU9QKeCJMlgvSm_cOQNkTIE&dib_tag=se&keywords=usb+cable&qid=1788572479&sr=8-1",
+                        "series": null,
+                        "deliveryMessage": "Join Prime to get FREE delivery Tomorrow, Sep 5",
+                        "variations": [],
+                        "productDetails": [],
+                        "salesVolume": "6K+ bought in past month",
+                        "manufacturer": null,
+                        "secondaryOffer": 0,
+                        "sponsored": false,
+                        "searchResultPosition": 0
+                    },
+                    {
+                        "statusCode": 200,
+                        "statusMessage": "FOUND",
+                        "keyword": "usb cable",
+                        "domainCode": "com",
+                        "page": 1,
+                        "selectedCategory": "aps",
+                        "browseNode": null,
+                        "nodeHierarchy": null,
+                        "resultCount": 100000,
+                        "categories": [],
+                        "similarKeywords": [
+                            {
+                                "keyword": "usb",
+                                "url": null
+                            },
+                            {
+                                "keyword": "micro usb cable",
+                                "url": null
+                            }
+                        ],
+                        "currentPage": 1,
+                        "sortStrategy": "relevanceblender",
+                        "productDescription": "USB C Cable Fast Charging Nylon Braided 3Pack 6ft USB A to Type C Cord | USB C Charger Data Sync Transfer for iPhone 17 Pro Max/17 Air/16 Pro Max/16 Plus/15 Pro/iPad Pro Air Mini Galaxy S20 Note 20",
+                        "asin": "B07SMNZK8H",
+                        "countReview": 22399,
+                        "imgUrl": "https://m.media-amazon.com/images/I/61G0ZYYBAAL._AC_UY218_.jpg",
+                        "price": 5.99,
+                        "retailPrice": 7.99,
+                        "productRating": "4.6 out of 5 stars",
+                        "prime": false,
+                        "dpUrl": "/TAKAGI-Charging-Transfer-Charger-Compatible/dp/B07SMNZK8H/ref=sr_1_2?dib=eyJ2IjoiMSJ9.aPbHcq77FHXy4WIVcb_reLxwTFxHUg-zGlbMT2N4Xqsivw2SL2MiKBsvv1I8ZeSxetJ60uhx0EyZ-9xYAEJ37ah7U6_yss30Q6AGp3ZJJ41B6DieQ1wtBqMNnWcQ06RvYrudBjmZHj8jmgpXUOR9tPN5Lv0yRpqHTrF5hQGWTgwsdN31zyTIk1kVHnV046hmrAyi1yD5ZIpZZKPw9mVv988rhGdmKPbsXKDYZifBtB4.2QFT5XbJ_ikh7YCL5VyHdU9QKeCJMlgvSm_cOQNkTIE&dib_tag=se&keywords=usb+cable&qid=1788572479&sr=8-2",
+                        "series": null,
+                        "deliveryMessage": "Join Prime to get FREE delivery Tomorrow, Sep 5",
+                        "variations": [],
+                        "productDetails": [],
+                        "salesVolume": "10K+ bought in past month",
+                        "manufacturer": null,
+                        "secondaryOffer": 0,
+                        "sponsored": false,
+                        "searchResultPosition": 1
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,510 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/automation-lab~snapchat-scraper/runs",
+                "body": {
+                    "usernames": [
+                        "snapchat"
+                    ]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "fj2crmcNGpCNHmuI5",
+                        "actId": "DFofRTozQZh0gyNGT",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.430Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 51,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 300,
+                            "build": "latest",
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YfVWUVtxHX4sajPqg",
+                        "defaultKeyValueStoreId": "jWb530Q98cnUiIaZi",
+                        "defaultDatasetId": "OogMFe0a2wagKWinB",
+                        "defaultRequestQueueId": "RbtQmEAzxDfP2m1mH",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "jWb530Q98cnUiIaZi"
+                            },
+                            "datasets": {
+                                "default": "OogMFe0a2wagKWinB"
+                            },
+                            "requestQueues": {
+                                "default": "RbtQmEAzxDfP2m1mH"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "startedAt": "2026-08-25T20:06:57.450Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-06-22T08:28:11.121Z",
+                            "notifiedAboutChangeAt": "2026-07-13T10:36:16.507Z",
+                            "createdAt": "2026-08-25T20:06:57.538Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "start": {
+                                        "eventTitle": "Run started",
+                                        "eventDescription": "One-time cost per run.",
+                                        "eventPriceUsd": 0.005,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "profile-scraped": {
+                                        "eventTitle": "Profile scraped",
+                                        "eventDescription": "Cost per Snapchat profile extracted.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0013
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.1.17",
+                        "containerUrl": "https://vqprcb3lgnx9.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "start": {
+                                "eventTitle": "Run started",
+                                "eventTotalUsd": 0
+                            },
+                            "profile-scraped": {
+                                "eventTitle": "Profile scraped",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "overview": "https://api.apify.com/v2/datasets/OogMFe0a2wagKWinB/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/fj2crmcNGpCNHmuI5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "fj2crmcNGpCNHmuI5",
+                        "actId": "DFofRTozQZh0gyNGT",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.430Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 51,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 1739,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 1.739,
+                            "metamorph": 0,
+                            "computeUnits": 0.0001207638888888889,
+                            "memAvgBytes": 8052736,
+                            "memMaxBytes": 8052736,
+                            "memCurrentBytes": 8052736,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 300,
+                            "build": "latest",
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YfVWUVtxHX4sajPqg",
+                        "defaultKeyValueStoreId": "jWb530Q98cnUiIaZi",
+                        "defaultDatasetId": "OogMFe0a2wagKWinB",
+                        "defaultRequestQueueId": "RbtQmEAzxDfP2m1mH",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "jWb530Q98cnUiIaZi"
+                            },
+                            "datasets": {
+                                "default": "OogMFe0a2wagKWinB"
+                            },
+                            "requestQueues": {
+                                "default": "RbtQmEAzxDfP2m1mH"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "startedAt": "2026-08-25T20:06:57.450Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-06-22T08:28:11.121Z",
+                            "notifiedAboutChangeAt": "2026-07-13T10:36:16.507Z",
+                            "createdAt": "2026-08-25T20:06:57.538Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "start": {
+                                        "eventTitle": "Run started",
+                                        "eventDescription": "One-time cost per run.",
+                                        "eventPriceUsd": 0.005,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "profile-scraped": {
+                                        "eventTitle": "Profile scraped",
+                                        "eventDescription": "Cost per Snapchat profile extracted.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0013
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.1.17",
+                        "containerUrl": "https://vqprcb3lgnx9.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/fj2crmcNGpCNHmuI5",
+                        "eventUsage": {
+                            "start": {
+                                "eventTitle": "Run started",
+                                "eventTotalUsd": 0
+                            },
+                            "profile-scraped": {
+                                "eventTitle": "Profile scraped",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "overview": "https://api.apify.com/v2/datasets/OogMFe0a2wagKWinB/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/fj2crmcNGpCNHmuI5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "fj2crmcNGpCNHmuI5",
+                        "actId": "DFofRTozQZh0gyNGT",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.430Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 51,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 1739,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 1.739,
+                            "metamorph": 0,
+                            "computeUnits": 0.0001207638888888889,
+                            "memAvgBytes": 8052736,
+                            "memMaxBytes": 8052736,
+                            "memCurrentBytes": 8052736,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 300,
+                            "build": "latest",
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YfVWUVtxHX4sajPqg",
+                        "defaultKeyValueStoreId": "jWb530Q98cnUiIaZi",
+                        "defaultDatasetId": "OogMFe0a2wagKWinB",
+                        "defaultRequestQueueId": "RbtQmEAzxDfP2m1mH",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "jWb530Q98cnUiIaZi"
+                            },
+                            "datasets": {
+                                "default": "OogMFe0a2wagKWinB"
+                            },
+                            "requestQueues": {
+                                "default": "RbtQmEAzxDfP2m1mH"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "startedAt": "2026-08-25T20:06:57.450Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-06-22T08:28:11.121Z",
+                            "notifiedAboutChangeAt": "2026-07-13T10:36:16.507Z",
+                            "createdAt": "2026-08-25T20:06:57.538Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "start": {
+                                        "eventTitle": "Run started",
+                                        "eventDescription": "One-time cost per run.",
+                                        "eventPriceUsd": 0.005,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "profile-scraped": {
+                                        "eventTitle": "Profile scraped",
+                                        "eventDescription": "Cost per Snapchat profile extracted.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0013
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.1.17",
+                        "containerUrl": "https://vqprcb3lgnx9.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/fj2crmcNGpCNHmuI5",
+                        "eventUsage": {
+                            "start": {
+                                "eventTitle": "Run started",
+                                "eventTotalUsd": 0
+                            },
+                            "profile-scraped": {
+                                "eventTitle": "Profile scraped",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "overview": "https://api.apify.com/v2/datasets/OogMFe0a2wagKWinB/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/fj2crmcNGpCNHmuI5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "fj2crmcNGpCNHmuI5",
+                        "actId": "DFofRTozQZh0gyNGT",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.430Z",
+                        "finishedAt": "2026-09-05T01:41:18.804Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "Starting the crawler.",
+                        "isStatusMessageTerminal": null,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 51,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4261,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.261,
+                            "metamorph": 0,
+                            "computeUnits": 0.0002959027777777778,
+                            "memAvgBytes": 28214555.30392943,
+                            "memMaxBytes": 54288384,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 34.886999937949334,
+                            "cpuMaxUsage": 86.07888678051866,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 37444,
+                            "netTxBytes": 16322
+                        },
+                        "options": {
+                            "memoryMbytes": 256,
+                            "timeoutSecs": 300,
+                            "build": "latest",
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "YfVWUVtxHX4sajPqg",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "jWb530Q98cnUiIaZi",
+                        "defaultDatasetId": "OogMFe0a2wagKWinB",
+                        "defaultRequestQueueId": "RbtQmEAzxDfP2m1mH",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "jWb530Q98cnUiIaZi"
+                            },
+                            "datasets": {
+                                "default": "OogMFe0a2wagKWinB"
+                            },
+                            "requestQueues": {
+                                "default": "RbtQmEAzxDfP2m1mH"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "startedAt": "2026-08-25T20:06:57.450Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-06-22T08:28:11.121Z",
+                            "notifiedAboutChangeAt": "2026-07-13T10:36:16.507Z",
+                            "createdAt": "2026-08-25T20:06:57.538Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "start": {
+                                        "eventTitle": "Run started",
+                                        "eventDescription": "One-time cost per run.",
+                                        "eventPriceUsd": 0.005,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "profile-scraped": {
+                                        "eventTitle": "Profile scraped",
+                                        "eventDescription": "Cost per Snapchat profile extracted.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0013
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "start": 0,
+                            "profile-scraped": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.1.17",
+                        "containerUrl": "https://vqprcb3lgnx9.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/fj2crmcNGpCNHmuI5",
+                        "eventUsage": {
+                            "start": {
+                                "eventTitle": "Run started",
+                                "eventTotalUsd": 0
+                            },
+                            "profile-scraped": {
+                                "eventTitle": "Profile scraped",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "overview": "https://api.apify.com/v2/datasets/OogMFe0a2wagKWinB/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/OogMFe0a2wagKWinB/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "username": "snapchat",
+                        "displayName": null,
+                        "profileType": "not_found",
+                        "subscriberCount": null,
+                        "bio": null,
+                        "websiteUrl": null,
+                        "isVerified": false,
+                        "category": null,
+                        "subcategory": null,
+                        "profilePictureUrl": null,
+                        "snapcodeImageUrl": null,
+                        "heroImageUrl": null,
+                        "hasStory": false,
+                        "hasCuratedHighlights": false,
+                        "hasSpotlightHighlights": false,
+                        "lensCount": 0,
+                        "highlightCount": 0,
+                        "spotlightCount": 0,
+                        "relatedAccounts": [],
+                        "createdAt": null,
+                        "lastUpdatedAt": null,
+                        "businessProfileId": null,
+                        "address": null,
+                        "url": "https://www.snapchat.com/add/snapchat"
+                    }
+                ]
+            }
+        }
+    ]
+}

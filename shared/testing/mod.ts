@@ -4,6 +4,10 @@ export {
     type RecordedCall,
     recordingFetch,
     replayFetch,
+    TRIM_ARRAY_CAP,
+    TRIM_STRING_CAP,
+    trimCalls,
+    trimJson,
     zFixture,
 } from "./fixtures.ts";
 export {

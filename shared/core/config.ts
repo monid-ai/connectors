@@ -25,6 +25,8 @@ const zContractSections = z.object({
         // engine that understands X", a historical fact set when X changes).
         doc_format_since: zSemverRaw,
         fn_abi_since: zSemverRaw,
+        async_since: zSemverRaw,
+        state_max_bytes: z.number().int().positive(),
         logging: zIgnoredLogging,
     }).strict(),
     compiler: z.object({
@@ -33,6 +35,7 @@ const zContractSections = z.object({
         defaults: z.object({
             request_timeout_ms: z.number().int().positive(),
             run_timeout_ms: z.number().int().positive(),
+            poll_interval_ms: z.number().int().positive(),
         }).strict(),
         logging: zIgnoredLogging,
     }).strict(),
@@ -61,6 +64,11 @@ export const contractConfig = Object.freeze({
         docFormatSince: loaded.schema.doc_format_since,
         /** Engine release of the current hook ABI — stamped as fn entries' `api`. */
         fnAbiSince: loaded.schema.fn_abi_since,
+        /** Engine release of the lifecycle (async) hook family — stamped as
+         *  lifecycle fn entries' `api` (docs carrying a lifecycle floor here). */
+        asyncSince: loaded.schema.async_since,
+        /** Hard engine cap on serialized lifecycle state bytes. */
+        stateMaxBytes: loaded.schema.state_max_bytes,
     }),
     compiler: Object.freeze({
         docSizeWarnBytes: loaded.compiler.doc_size_warn_bytes,
@@ -68,6 +76,7 @@ export const contractConfig = Object.freeze({
         defaultTimeouts: Object.freeze({
             requestMs: loaded.compiler.defaults.request_timeout_ms,
             runMs: loaded.compiler.defaults.run_timeout_ms,
+            pollMs: loaded.compiler.defaults.poll_interval_ms,
         }),
     }),
 });

@@ -1,0 +1,608 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/web_wanderer~amazon-reviews-extractor/runs",
+                "body": {
+                    "products": [
+                        "https://www.amazon.com/dp/B08N5WRWNW"
+                    ],
+                    "limit": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "frqcKinXGyApR7YPw",
+                        "actId": "gFtgG31RZJYlphznm",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.123Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 274,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "FkHk5CMUEZ0riutRL",
+                        "defaultKeyValueStoreId": "CaikosONTOwn81c3q",
+                        "defaultDatasetId": "apJAL4OQ5CrMSArFh",
+                        "defaultRequestQueueId": "dEwaZEy1mDl8cOw1G",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "CaikosONTOwn81c3q"
+                            },
+                            "datasets": {
+                                "default": "apJAL4OQ5CrMSArFh"
+                            },
+                            "requestQueues": {
+                                "default": "dEwaZEy1mDl8cOw1G"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.02,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Introduced store discount and simplified the pricing.\nNo increase in costs.",
+                            "startedAt": "2025-10-24T22:36:26.099Z",
+                            "createdAt": "2025-10-10T22:36:25.810Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-10-10T22:36:47.013Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventDescription": "Flat fee for Actor start.",
+                                        "eventPriceUsd": 0.00002,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "review": {
+                                        "eventTitle": "Review",
+                                        "eventDescription": "Each review scraped.",
+                                        "eventPriceUsd": 0.0007
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 0,
+                            "review": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.5.60",
+                        "containerUrl": "https://hvs5kgwgx76k.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor start",
+                                "eventTotalUsd": 0
+                            },
+                            "review": {
+                                "eventTitle": "Review",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items",
+                            "datasetStats": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/frqcKinXGyApR7YPw"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "frqcKinXGyApR7YPw",
+                        "actId": "gFtgG31RZJYlphznm",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.123Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 274,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 177,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.177,
+                            "metamorph": 0,
+                            "computeUnits": 0.000024583333333333332,
+                            "memAvgBytes": 8073216,
+                            "memMaxBytes": 8073216,
+                            "memCurrentBytes": 8073216,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "FkHk5CMUEZ0riutRL",
+                        "defaultKeyValueStoreId": "CaikosONTOwn81c3q",
+                        "defaultDatasetId": "apJAL4OQ5CrMSArFh",
+                        "defaultRequestQueueId": "dEwaZEy1mDl8cOw1G",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "CaikosONTOwn81c3q"
+                            },
+                            "datasets": {
+                                "default": "apJAL4OQ5CrMSArFh"
+                            },
+                            "requestQueues": {
+                                "default": "dEwaZEy1mDl8cOw1G"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.02,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Introduced store discount and simplified the pricing.\nNo increase in costs.",
+                            "startedAt": "2025-10-24T22:36:26.099Z",
+                            "createdAt": "2025-10-10T22:36:25.810Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-10-10T22:36:47.013Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventDescription": "Flat fee for Actor start.",
+                                        "eventPriceUsd": 0.00002,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "review": {
+                                        "eventTitle": "Review",
+                                        "eventDescription": "Each review scraped.",
+                                        "eventPriceUsd": 0.0007
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 0,
+                            "review": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.5.60",
+                        "containerUrl": "https://hvs5kgwgx76k.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/frqcKinXGyApR7YPw",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor start",
+                                "eventTotalUsd": 0
+                            },
+                            "review": {
+                                "eventTitle": "Review",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items",
+                            "datasetStats": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/frqcKinXGyApR7YPw"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "frqcKinXGyApR7YPw",
+                        "actId": "gFtgG31RZJYlphznm",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.123Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 274,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 177,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.177,
+                            "metamorph": 0,
+                            "computeUnits": 0.000024583333333333332,
+                            "memAvgBytes": 8073216,
+                            "memMaxBytes": 8073216,
+                            "memCurrentBytes": 8073216,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "FkHk5CMUEZ0riutRL",
+                        "defaultKeyValueStoreId": "CaikosONTOwn81c3q",
+                        "defaultDatasetId": "apJAL4OQ5CrMSArFh",
+                        "defaultRequestQueueId": "dEwaZEy1mDl8cOw1G",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "CaikosONTOwn81c3q"
+                            },
+                            "datasets": {
+                                "default": "apJAL4OQ5CrMSArFh"
+                            },
+                            "requestQueues": {
+                                "default": "dEwaZEy1mDl8cOw1G"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.02,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Introduced store discount and simplified the pricing.\nNo increase in costs.",
+                            "startedAt": "2025-10-24T22:36:26.099Z",
+                            "createdAt": "2025-10-10T22:36:25.810Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-10-10T22:36:47.013Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventDescription": "Flat fee for Actor start.",
+                                        "eventPriceUsd": 0.00002,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "review": {
+                                        "eventTitle": "Review",
+                                        "eventDescription": "Each review scraped.",
+                                        "eventPriceUsd": 0.0007
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.5.60",
+                        "containerUrl": "https://hvs5kgwgx76k.runs.apify.net",
+                        "usageTotalUsd": 0.00002,
+                        "consoleUrl": "https://console.apify.com/view/runs/frqcKinXGyApR7YPw",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor start",
+                                "eventTotalUsd": 0.00002
+                            },
+                            "review": {
+                                "eventTitle": "Review",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items",
+                            "datasetStats": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/frqcKinXGyApR7YPw"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "frqcKinXGyApR7YPw",
+                        "actId": "gFtgG31RZJYlphznm",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.123Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 274,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4182,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.182,
+                            "metamorph": 0,
+                            "computeUnits": 0.0005808333333333334,
+                            "memAvgBytes": 90545486.4772836,
+                            "memMaxBytes": 108019712,
+                            "memCurrentBytes": 107814912,
+                            "cpuAvgUsage": 27.91356987094373,
+                            "cpuMaxUsage": 69.98167088607595,
+                            "cpuCurrentUsage": 1.1727939317319849,
+                            "netRxBytes": 47481,
+                            "netTxBytes": 23886
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "FkHk5CMUEZ0riutRL",
+                        "defaultKeyValueStoreId": "CaikosONTOwn81c3q",
+                        "defaultDatasetId": "apJAL4OQ5CrMSArFh",
+                        "defaultRequestQueueId": "dEwaZEy1mDl8cOw1G",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "CaikosONTOwn81c3q"
+                            },
+                            "datasets": {
+                                "default": "apJAL4OQ5CrMSArFh"
+                            },
+                            "requestQueues": {
+                                "default": "dEwaZEy1mDl8cOw1G"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.02,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Introduced store discount and simplified the pricing.\nNo increase in costs.",
+                            "startedAt": "2025-10-24T22:36:26.099Z",
+                            "createdAt": "2025-10-10T22:36:25.810Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-10-10T22:36:47.013Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventDescription": "Flat fee for Actor start.",
+                                        "eventPriceUsd": 0.00002,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "review": {
+                                        "eventTitle": "Review",
+                                        "eventDescription": "Each review scraped.",
+                                        "eventPriceUsd": 0.0007
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.5.60",
+                        "containerUrl": "https://hvs5kgwgx76k.runs.apify.net",
+                        "usageTotalUsd": 0.00002,
+                        "consoleUrl": "https://console.apify.com/view/runs/frqcKinXGyApR7YPw",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor start",
+                                "eventTotalUsd": 0.00002
+                            },
+                            "review": {
+                                "eventTitle": "Review",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items",
+                            "datasetStats": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/frqcKinXGyApR7YPw"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "frqcKinXGyApR7YPw",
+                        "actId": "gFtgG31RZJYlphznm",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.123Z",
+                        "finishedAt": "2026-09-05T01:41:22.412Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 274,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 8136,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 8.136,
+                            "metamorph": 0,
+                            "computeUnits": 0.00113,
+                            "memAvgBytes": 98072783.67728475,
+                            "memMaxBytes": 108679168,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 16.776018759993025,
+                            "cpuMaxUsage": 69.98167088607595,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 104146,
+                            "netTxBytes": 57016
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "FkHk5CMUEZ0riutRL",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "CaikosONTOwn81c3q",
+                        "defaultDatasetId": "apJAL4OQ5CrMSArFh",
+                        "defaultRequestQueueId": "dEwaZEy1mDl8cOw1G",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "CaikosONTOwn81c3q"
+                            },
+                            "datasets": {
+                                "default": "apJAL4OQ5CrMSArFh"
+                            },
+                            "requestQueues": {
+                                "default": "dEwaZEy1mDl8cOw1G"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.02,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Introduced store discount and simplified the pricing.\nNo increase in costs.",
+                            "startedAt": "2025-10-24T22:36:26.099Z",
+                            "createdAt": "2025-10-10T22:36:25.810Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-10-10T22:36:47.013Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventDescription": "Flat fee for Actor start.",
+                                        "eventPriceUsd": 0.00002,
+                                        "isOneTimeEvent": true
+                                    },
+                                    "review": {
+                                        "eventTitle": "Review",
+                                        "eventDescription": "Each review scraped.",
+                                        "eventPriceUsd": 0.0007
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-actor-start": 1,
+                            "review": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.5.60",
+                        "containerUrl": "https://hvs5kgwgx76k.runs.apify.net",
+                        "usageTotalUsd": 0.00002,
+                        "consoleUrl": "https://console.apify.com/view/runs/frqcKinXGyApR7YPw",
+                        "eventUsage": {
+                            "apify-actor-start": {
+                                "eventTitle": "Actor start",
+                                "eventTotalUsd": 0.00002
+                            },
+                            "review": {
+                                "eventTitle": "Review",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items",
+                            "datasetStats": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/apJAL4OQ5CrMSArFh/items"
+            },
+            "res": {
+                "status": 200,
+                "body": []
+            }
+        }
+    ]
+}

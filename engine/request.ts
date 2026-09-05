@@ -43,12 +43,10 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     return runInput;
 }
 
-/** Build the PreparedRequest: {pathParam} substitution, query mapping, JSON body. */
-export function buildRequest(
-    doc: EndpointDoc,
-    input: RunInput,
-    injectEntry: FnEntry,
-): PreparedRequest {
+/** Substitute {pathParam} placeholders into the doc's compiled url — shared
+ *  by the declarative pipeline (buildRequest) and the lifecycle ctx's
+ *  data.request (fns receive the SUBSTITUTED url). */
+export function substituteUrl(doc: EndpointDoc, input: RunInput): string {
     let url = doc.request.url;
     for (const placeholder of url.match(/\{[A-Za-z_][A-Za-z0-9_]*\}/g) ?? []) {
         const name = placeholder.slice(1, -1);
@@ -61,18 +59,37 @@ export function buildRequest(
         }
         url = url.replaceAll(placeholder, encodeURIComponent(value));
     }
+    return url;
+}
 
+/** Map queryParams to wire strings — scalars only (shared by the
+ *  declarative pipeline and utils.request). */
+export function toScalarQuery(
+    docId: string,
+    queryParams: Record<string, unknown>,
+): Record<string, string> {
     const query: Record<string, string> = {};
-    for (const [key, value] of Object.entries(input.queryParams ?? {})) {
+    for (const [key, value] of Object.entries(queryParams)) {
         if (value === null || value === undefined) continue;
         if (Array.isArray(value) || typeof value === "object") {
             throw new EngineError(
                 EngineErrorCode.INVALID_INPUT,
-                `${doc.id}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
+                `${docId}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
             );
         }
         query[key] = String(value);
     }
+    return query;
+}
+
+/** Build the PreparedRequest: {pathParam} substitution, query mapping, JSON body. */
+export function buildRequest(
+    doc: EndpointDoc,
+    input: RunInput,
+    injectEntry: FnEntry,
+): PreparedRequest {
+    const url = substituteUrl(doc, input);
+    const query = toScalarQuery(doc.id, input.queryParams ?? {});
 
     return {
         method: doc.request.method,

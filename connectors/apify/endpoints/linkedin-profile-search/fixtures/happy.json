@@ -1,0 +1,729 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-profile-search/runs",
+                "body": {
+                    "profileScraperMode": "Short",
+                    "searchQuery": "deno developer",
+                    "maxItems": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "ZGgOhhMccVhBINjZY",
+                        "actId": "M2FMdjRVeF1HPGFcc",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.304Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 88,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 90000,
+                            "memoryMbytes": 256,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "rN8UwvEPlEHaGsjFK",
+                        "defaultKeyValueStoreId": "mH742CcLRaI2VDdMr",
+                        "defaultDatasetId": "BoUVL1IjOJe1W6I95",
+                        "defaultRequestQueueId": "md9FsYfM3VRaorVEa",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "mH742CcLRaI2VDdMr"
+                            },
+                            "datasets": {
+                                "default": "BoUVL1IjOJe1W6I95"
+                            },
+                            "requestQueues": {
+                                "default": "md9FsYfM3VRaorVEa"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-02-05T18:32:27.781Z",
+                            "startedAt": "2026-02-05T18:32:27.781Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 25 short profiles",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.265",
+                        "containerUrl": "https://3dhgnebtkkhv.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ZGgOhhMccVhBINjZY"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ZGgOhhMccVhBINjZY",
+                        "actId": "M2FMdjRVeF1HPGFcc",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.304Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 88,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 217,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.217,
+                            "metamorph": 0,
+                            "computeUnits": 0.000015069444444444444,
+                            "memAvgBytes": 4911104,
+                            "memMaxBytes": 4911104,
+                            "memCurrentBytes": 4911104,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 248,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 90000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "rN8UwvEPlEHaGsjFK",
+                        "defaultKeyValueStoreId": "mH742CcLRaI2VDdMr",
+                        "defaultDatasetId": "BoUVL1IjOJe1W6I95",
+                        "defaultRequestQueueId": "md9FsYfM3VRaorVEa",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "mH742CcLRaI2VDdMr"
+                            },
+                            "datasets": {
+                                "default": "BoUVL1IjOJe1W6I95"
+                            },
+                            "requestQueues": {
+                                "default": "md9FsYfM3VRaorVEa"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-02-05T18:32:27.781Z",
+                            "startedAt": "2026-02-05T18:32:27.781Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 25 short profiles",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.265",
+                        "containerUrl": "https://3dhgnebtkkhv.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/ZGgOhhMccVhBINjZY",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ZGgOhhMccVhBINjZY"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ZGgOhhMccVhBINjZY",
+                        "actId": "M2FMdjRVeF1HPGFcc",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.304Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 88,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 217,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.217,
+                            "metamorph": 0,
+                            "computeUnits": 0.000015069444444444444,
+                            "memAvgBytes": 4911104,
+                            "memMaxBytes": 4911104,
+                            "memCurrentBytes": 4911104,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 248,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 90000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "rN8UwvEPlEHaGsjFK",
+                        "defaultKeyValueStoreId": "mH742CcLRaI2VDdMr",
+                        "defaultDatasetId": "BoUVL1IjOJe1W6I95",
+                        "defaultRequestQueueId": "md9FsYfM3VRaorVEa",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "mH742CcLRaI2VDdMr"
+                            },
+                            "datasets": {
+                                "default": "BoUVL1IjOJe1W6I95"
+                            },
+                            "requestQueues": {
+                                "default": "md9FsYfM3VRaorVEa"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-02-05T18:32:27.781Z",
+                            "startedAt": "2026-02-05T18:32:27.781Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 25 short profiles",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.265",
+                        "containerUrl": "https://3dhgnebtkkhv.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/ZGgOhhMccVhBINjZY",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ZGgOhhMccVhBINjZY"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ZGgOhhMccVhBINjZY",
+                        "actId": "M2FMdjRVeF1HPGFcc",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.304Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 88,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4223,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.223,
+                            "metamorph": 0,
+                            "computeUnits": 0.0002932638888888889,
+                            "memAvgBytes": 58880832.197016336,
+                            "memMaxBytes": 66539520,
+                            "memCurrentBytes": 66236416,
+                            "cpuAvgUsage": 36.13062737001983,
+                            "cpuMaxUsage": 87.63263757115749,
+                            "cpuCurrentUsage": 0.06412175015852885,
+                            "netRxBytes": 7211,
+                            "netTxBytes": 4603
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 90000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "rN8UwvEPlEHaGsjFK",
+                        "defaultKeyValueStoreId": "mH742CcLRaI2VDdMr",
+                        "defaultDatasetId": "BoUVL1IjOJe1W6I95",
+                        "defaultRequestQueueId": "md9FsYfM3VRaorVEa",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "mH742CcLRaI2VDdMr"
+                            },
+                            "datasets": {
+                                "default": "BoUVL1IjOJe1W6I95"
+                            },
+                            "requestQueues": {
+                                "default": "md9FsYfM3VRaorVEa"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-02-05T18:32:27.781Z",
+                            "startedAt": "2026-02-05T18:32:27.781Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 25 short profiles",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.265",
+                        "containerUrl": "https://3dhgnebtkkhv.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/ZGgOhhMccVhBINjZY",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ZGgOhhMccVhBINjZY"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ZGgOhhMccVhBINjZY",
+                        "actId": "M2FMdjRVeF1HPGFcc",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.304Z",
+                        "finishedAt": "2026-09-05T01:41:21.892Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 88,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 7469,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 7.469,
+                            "metamorph": 0,
+                            "computeUnits": 0.0005186805555555555,
+                            "memAvgBytes": 62060245.2742873,
+                            "memMaxBytes": 67051520,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 23.27621439750912,
+                            "cpuMaxUsage": 87.63263757115749,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 42619,
+                            "netTxBytes": 10421
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 90000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "rN8UwvEPlEHaGsjFK",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "mH742CcLRaI2VDdMr",
+                        "defaultDatasetId": "BoUVL1IjOJe1W6I95",
+                        "defaultRequestQueueId": "md9FsYfM3VRaorVEa",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "mH742CcLRaI2VDdMr"
+                            },
+                            "datasets": {
+                                "default": "BoUVL1IjOJe1W6I95"
+                            },
+                            "requestQueues": {
+                                "default": "md9FsYfM3VRaorVEa"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": true,
+                            "createdAt": "2026-02-05T18:32:27.781Z",
+                            "startedAt": "2026-02-05T18:32:27.781Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventDescription": "Scrape search page results, up to 25 short profiles",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventDescription": "Extract full profile details ($4 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventDescription": "Extract full profile details + email search ($10 per 1k)",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "search-page": 1,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "search-page": 0,
+                            "full-profile": 0,
+                            "full-profile-with-email": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.265",
+                        "containerUrl": "https://3dhgnebtkkhv.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/ZGgOhhMccVhBINjZY",
+                        "eventUsage": {
+                            "search-page": {
+                                "eventTitle": "Search page results",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile": {
+                                "eventTitle": "Full profile",
+                                "eventTotalUsd": 0
+                            },
+                            "full-profile-with-email": {
+                                "eventTitle": "Full profile + email search",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/BoUVL1IjOJe1W6I95/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "ACwAABMZs3IBVZiqfg1sKPwz1uMIdumuAwumZoU",
+                        "linkedinUrl": "https://www.linkedin.com/in/ACwAABMZs3IBVZiqfg1sKPwz1uMIdumuAwumZoU",
+                        "firstName": "Mladen",
+                        "lastName": "Makreev",
+                        "summary": "I am a skilled full-stack developer with over 10 years of experience as a consultant and as an internal\ndeveloper in variaty of industries, primarily on the .NET platform, especially in event\nsourcing and the EventStore platform. I can code in: C#, Java, Javascript, Typescript, ASP Classic, PHP, GO, Laravel, Python, SQL, GDScript, HTTP, CSS. I am particularly keen on using Linux and Docker for both development and management.\n\nUltimatelly I enjoy challenging myself with learning new programming ",
+                        "openProfile": false,
+                        "premium": false,
+                        "currentPositions": [
+                            {
+                                "tenureAtPosition": {
+                                    "numYears": 2
+                                },
+                                "companyName": "Solita A/S",
+                                "title": "Software Developer",
+                                "current": true,
+                                "tenureAtCompany": {
+                                    "numYears": 2
+                                },
+                                "startedOn": {
+                                    "month": 9,
+                                    "year": 2024
+                                },
+                                "companyId": "1078249",
+                                "companyLinkedinUrl": "https://www.linkedin.com/company/1078249"
+                            }
+                        ],
+                        "location": {
+                            "linkedinText": "Central Denmark Region, Denmark"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 33,
+                                "totalPages": 2,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            },
+                            "scrapedAt": "2026-09-05T01:41:20.755Z"
+                        },
+                        "profileIdInSearch": "ACwAABMZs3IBVZiqfg1sKPwz1uMIdumuAwumZoU"
+                    },
+                    {
+                        "id": "ACwAAAungVcBoEFedSagTx1eY2AHnte9OHN9BsU",
+                        "linkedinUrl": "https://www.linkedin.com/in/ACwAAAungVcBoEFedSagTx1eY2AHnte9OHN9BsU",
+                        "firstName": "Deno",
+                        "lastName": "Garzolini",
+                        "openProfile": false,
+                        "premium": false,
+                        "currentPositions": [
+                            {
+                                "tenureAtPosition": {
+                                    "numYears": 15,
+                                    "numMonths": 6
+                                },
+                                "companyName": "TTi Global",
+                                "description": "I have developed web based automotive training:\n-Engine Management\n-Automatic Transmission\n\nI have developed instructor led training activities for\n-New Vehicle system training for a parcel delivery company            \n-Subject matter expert for axle/differential courses \n-Subject matter expert for manual transmission and driveline\nDeveloped instructor led course for a new model medium truck service update for fleet customer",
+                                "title": "Curriculum Developer",
+                                "current": true,
+                                "tenureAtCompany": {
+                                    "numYears": 15,
+                                    "numMonths": 6
+                                },
+                                "startedOn": {
+                                    "month": 3,
+                                    "year": 2011
+                                },
+                                "companyId": "671812",
+                                "companyLinkedinUrl": "https://www.linkedin.com/company/671812"
+                            }
+                        ],
+                        "location": {
+                            "linkedinText": "Auburn Hills, Michigan, United States"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 33,
+                                "totalPages": 2,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            },
+                            "scrapedAt": "2026-09-05T01:41:20.754Z"
+                        },
+                        "profileIdInSearch": "ACwAAAungVcBoEFedSagTx1eY2AHnte9OHN9BsU"
+                    }
+                ]
+            }
+        }
+    ]
+}

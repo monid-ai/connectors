@@ -1,0 +1,630 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/harvestapi~linkedin-job-search/runs",
+                "body": {
+                    "jobTitles": [
+                        "Software Engineer"
+                    ],
+                    "locations": [
+                        "United States"
+                    ],
+                    "maxItems": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RpyIH5GZgp9U52N6z",
+                        "actId": "zn01OAlzP853oqn4Z",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.350Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 78,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "PdFOLKfnw0nVI5oUs",
+                        "defaultKeyValueStoreId": "RgeQG2Rrs2bBOVRII",
+                        "defaultDatasetId": "UNnntbTGqKUlZeDcb",
+                        "defaultRequestQueueId": "7hqXgcaYBzPmStqtU",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "RgeQG2Rrs2bBOVRII"
+                            },
+                            "datasets": {
+                                "default": "UNnntbTGqKUlZeDcb"
+                            },
+                            "requestQueues": {
+                                "default": "7hqXgcaYBzPmStqtU"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.002,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Added actor start cost to cover the initial job search request.",
+                            "startedAt": "2025-08-23T00:00:00.000Z",
+                            "createdAt": "2025-08-09T22:44:45.693Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-08-09T22:45:07.177Z",
+                            "notifiedAboutChangeAt": "2025-08-23T00:05:17.547Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "job": {
+                                        "eventTitle": "Job details",
+                                        "eventDescription": "Job details",
+                                        "eventPriceUsd": 0.001
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.60",
+                        "containerUrl": "https://beh9h7dacfrr.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "job": {
+                                "eventTitle": "Job details",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/RpyIH5GZgp9U52N6z"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RpyIH5GZgp9U52N6z",
+                        "actId": "zn01OAlzP853oqn4Z",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.350Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 78,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 186,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.186,
+                            "metamorph": 0,
+                            "computeUnits": 0.000012916666666666666,
+                            "memAvgBytes": 7630848,
+                            "memMaxBytes": 7630848,
+                            "memCurrentBytes": 7630848,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 382,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "PdFOLKfnw0nVI5oUs",
+                        "defaultKeyValueStoreId": "RgeQG2Rrs2bBOVRII",
+                        "defaultDatasetId": "UNnntbTGqKUlZeDcb",
+                        "defaultRequestQueueId": "7hqXgcaYBzPmStqtU",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "RgeQG2Rrs2bBOVRII"
+                            },
+                            "datasets": {
+                                "default": "UNnntbTGqKUlZeDcb"
+                            },
+                            "requestQueues": {
+                                "default": "7hqXgcaYBzPmStqtU"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.002,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Added actor start cost to cover the initial job search request.",
+                            "startedAt": "2025-08-23T00:00:00.000Z",
+                            "createdAt": "2025-08-09T22:44:45.693Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-08-09T22:45:07.177Z",
+                            "notifiedAboutChangeAt": "2025-08-23T00:05:17.547Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "job": {
+                                        "eventTitle": "Job details",
+                                        "eventDescription": "Job details",
+                                        "eventPriceUsd": 0.001
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.60",
+                        "containerUrl": "https://beh9h7dacfrr.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/RpyIH5GZgp9U52N6z",
+                        "eventUsage": {
+                            "job": {
+                                "eventTitle": "Job details",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/RpyIH5GZgp9U52N6z"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RpyIH5GZgp9U52N6z",
+                        "actId": "zn01OAlzP853oqn4Z",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.350Z",
+                        "finishedAt": "2026-09-05T01:41:18.181Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 78,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 3693,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 3.693,
+                            "metamorph": 0,
+                            "computeUnits": 0.0002564583333333333,
+                            "memAvgBytes": 71816828.74882409,
+                            "memMaxBytes": 78536704,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 54.763465784175125,
+                            "cpuMaxUsage": 116.93692405871093,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 24997,
+                            "netTxBytes": 12020
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 4000,
+                            "memoryMbytes": 256,
+                            "maxItems": null,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "PdFOLKfnw0nVI5oUs",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "RgeQG2Rrs2bBOVRII",
+                        "defaultDatasetId": "UNnntbTGqKUlZeDcb",
+                        "defaultRequestQueueId": "7hqXgcaYBzPmStqtU",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "RgeQG2Rrs2bBOVRII"
+                            },
+                            "datasets": {
+                                "default": "UNnntbTGqKUlZeDcb"
+                            },
+                            "requestQueues": {
+                                "default": "7hqXgcaYBzPmStqtU"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.002,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "Added actor start cost to cover the initial job search request.",
+                            "startedAt": "2025-08-23T00:00:00.000Z",
+                            "createdAt": "2025-08-09T22:44:45.693Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2025-08-09T22:45:07.177Z",
+                            "notifiedAboutChangeAt": "2025-08-23T00:05:17.547Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "job": {
+                                        "eventTitle": "Job details",
+                                        "eventDescription": "Job details",
+                                        "eventPriceUsd": 0.001
+                                    },
+                                    "actor-start": {
+                                        "eventTitle": "Actor start cost",
+                                        "eventDescription": "Actor start cost",
+                                        "eventPriceUsd": 0.001
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "job": 0,
+                            "actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.60",
+                        "containerUrl": "https://beh9h7dacfrr.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/RpyIH5GZgp9U52N6z",
+                        "eventUsage": {
+                            "job": {
+                                "eventTitle": "Job details",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start": {
+                                "eventTitle": "Actor start cost",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/UNnntbTGqKUlZeDcb/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "4463687506",
+                        "title": "Principal Software Engineer  - VolP,",
+                        "linkedinUrl": "https://www.linkedin.com/jobs/view/4463687506/",
+                        "jobState": "LISTED",
+                        "postedDate": "2026-09-05T01:33:29.000Z",
+                        "headerCaptionText": "Baxter International Inc.\nRaleigh, NC\n7 minutes ago\nBe among the first 25 applicants\nSee who Baxter International Inc. has hired for this role",
+                        "descriptionText": "This is where your work makes a difference.\n\nAt Baxter, we believe every person—regardless of who they are or where they are from—deserves a chance to live a healthy life. It was our founding belief in 1931 and continues to be our guiding principle. We are redefining healthcare delivery to make a greater impact today, tomorrow, and beyond.\n\nOur Baxter colleagues are united by our Mission to Save and Sustain Lives. Together, our community is driven by a culture of courage, trust, and collaboratio",
+                        "descriptionHtml": "<b>This is where </b>your work makes a difference.<br><br><br><br>At Baxter, we believe every person—regardless of who they are or where they are from—deserves a chance to live a healthy life. It was our founding belief in 1931 and continues to be our guiding principle. We are redefining healthcare delivery to make a greater impact today, tomorrow, and beyond.<br><br><br><br>Our Baxter colleagues are united by our Mission to Save and Sustain Lives. Together, our community is driven by a culture ",
+                        "location": {
+                            "linkedinText": "Raleigh, NC",
+                            "postalAddress": null,
+                            "countryCode": "us",
+                            "geoId": "100197101",
+                            "parsed": {
+                                "text": "Raleigh, NC, United States",
+                                "countryCode": "US",
+                                "regionCode": null,
+                                "country": "United States",
+                                "countryFull": "United States of America",
+                                "state": "North Carolina",
+                                "city": "Raleigh"
+                            }
+                        },
+                        "employmentType": "full_time",
+                        "workplaceType": "remote",
+                        "workRemoteAllowed": true,
+                        "easyApplyUrl": null,
+                        "applyMethod": {
+                            "companyApplyUrl": "https://dsp.prng.co/27hL9Fb?source=rd_linkedin_jobposting",
+                            "applyStartersPreferenceVoid": true,
+                            "inPageOffsiteApply": false,
+                            "type": "OffsiteApply"
+                        },
+                        "applicants": 25,
+                        "hiringTeam": [],
+                        "company": {
+                            "id": "2371",
+                            "universalName": "baxter-healthcare",
+                            "linkedinUrl": "https://www.linkedin.com/company/baxter-healthcare",
+                            "name": "Baxter International Inc.",
+                            "website": "http://www.baxter.com",
+                            "logo": "https://media.licdn.com/dms/image/v2/D560BAQHdNB4ekluoIw/company-logo_400_400/B56Zi.rLWuHQAg-/0/1755545647131/baxter_healthcare_logo?e=1790208000&v=beta&t=SR8sp_UZzsmIdejUD-D8c7GRcYgctf7g15nfcPUgrf4",
+                            "employeeCount": 39271,
+                            "employeeCountRange": {
+                                "start": 10001
+                            },
+                            "followerCount": 1303359,
+                            "description": "For nearly a century, we have delivered on our commitment to saving and sustaining the lives of patients, working alongside clinicians and providers around the world. We believe every person — regardless of who they are or where they are from — deserves a chance to live a healthy life, free from illness and full of possibility. At the intersection of progress and purpose is where we are redefining what it means to be a global medtech leader. It is where we are relentlessly pursuing healthcare tr",
+                            "locations": [
+                                {
+                                    "country": "US",
+                                    "geographicArea": "Illinois",
+                                    "city": "Deerfield",
+                                    "line1": "1 Baxter Pkwy",
+                                    "postalCode": "60015",
+                                    "headquarter": true,
+                                    "parsed": {
+                                        "text": "Deerfield, IL, United States",
+                                        "countryCode": "US",
+                                        "regionCode": null,
+                                        "country": "United States",
+                                        "countryFull": "United States of America",
+                                        "state": "Illinois",
+                                        "city": "Deerfield"
+                                    }
+                                }
+                            ],
+                            "specialities": [
+                                "Medical Devices",
+                                "Biosurgery"
+                            ],
+                            "industries": [
+                                {
+                                    "id": null,
+                                    "name": "Medical Equipment Manufacturing",
+                                    "title": "Medical Equipment Manufacturing",
+                                    "hierarchy": null
+                                }
+                            ],
+                            "logos": [
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D560BAQHdNB4ekluoIw/company-logo_400_400/B56Zi.rLWuHQAg-/0/1755545647131/baxter_healthcare_logo?e=1790208000&v=beta&t=SR8sp_UZzsmIdejUD-D8c7GRcYgctf7g15nfcPUgrf4",
+                                    "width": 400,
+                                    "height": 400
+                                },
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D560BAQHdNB4ekluoIw/company-logo_200_200/B56Zi.rLWuHQAQ-/0/1755545647131/baxter_healthcare_logo?e=1790208000&v=beta&t=4I_B9IbkOjmGqGszpJydxdfDbOIuPUsgMTRDJ3_5pew",
+                                    "width": 200,
+                                    "height": 200
+                                }
+                            ],
+                            "backgroundCover": "https://media.licdn.com/dms/image/v2/D563DAQEt0KnMnOZEXA/image-scale_191_1128/B56ZbFWZ.eGkAc-/0/1747067708000/baxter_healthcare_cover?e=1789178400&v=beta&t=WCyq4lbaT67v1hcUJUGwSJT8zGcjZ825LnnwYFs98Q8",
+                            "backgroundCovers": [
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D563DAQEt0KnMnOZEXA/image-scale_191_1128/B56ZbFWZ.eGkAc-/0/1747067708000/baxter_healthcare_cover?e=1789178400&v=beta&t=WCyq4lbaT67v1hcUJUGwSJT8zGcjZ825LnnwYFs98Q8",
+                                    "width": 1128,
+                                    "height": 191
+                                },
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D563DAQEt0KnMnOZEXA/image-scale_127_750/B56ZbFWZ.eGkAM-/0/1747067708000/baxter_healthcare_cover?e=1789178400&v=beta&t=K7NTWg2fifCQ5Ewyk9Q5GwRdxd1rxdw8MQDyp5KFREY",
+                                    "width": 749,
+                                    "height": 127
+                                }
+                            ],
+                            "callToActionUrl": null,
+                            "similarOrganizations": [],
+                            "affiliatedPages": []
+                        },
+                        "salary": {
+                            "text": null,
+                            "min": null,
+                            "max": null
+                        },
+                        "jobFunctions": [
+                            "ENG",
+                            "IT"
+                        ],
+                        "industries": [
+                            "Medical Equipment Manufacturing"
+                        ],
+                        "experienceLevel": null,
+                        "benefits": [],
+                        "benefitsDataSource": null,
+                        "views": 0,
+                        "expireAt": "2026-10-05T01:33:29.000Z",
+                        "new": true,
+                        "closedAt": null,
+                        "contentSource": "JOBS_PREMIUM_OFFLINE",
+                        "jobApplicationLimitReached": false,
+                        "applicantTrackingSystem": null,
+                        "query": {
+                            "search": "Software Engineer",
+                            "location": "United States"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 70357,
+                                "totalPages": 2815,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            }
+                        }
+                    },
+                    {
+                        "id": "4462343861",
+                        "title": "Senior Salesforce Developer",
+                        "linkedinUrl": "https://www.linkedin.com/jobs/view/4462343861/",
+                        "jobState": "LISTED",
+                        "postedDate": "2026-09-05T01:14:55.000Z",
+                        "headerCaptionText": "Everpure\nSanta Clara, CA\n26 minutes ago\nBe among the first 25 applicants\nSee who Everpure has hired for this role",
+                        "descriptionText": "Everpure (NYSE: P) has evolved from storage pioneer to data platform, closing fiscal 2026 with $3.7 billion in revenue, its first billion-dollar quarter, and accelerating growth into FY27. Our strategic agenda spans the companies defining the next era of technology - hyperscalers, AI labs, the AI hardware supply chain, data platform providers, and the broader AI ecosystem.\n\nThis type of work—work that changes the world—is what the tech industry was founded on. So, if you're ready to seize the en",
+                        "descriptionHtml": "Everpure (NYSE: P) has evolved from storage pioneer to data platform, closing fiscal 2026 with $3.7 billion in revenue, its first billion-dollar quarter, and accelerating growth into FY27. Our strategic agenda spans the companies defining the next era of technology - hyperscalers, AI labs, the AI hardware supply chain, data platform providers, and the broader AI ecosystem.<br><br><br><br>This type of work—work that changes the world—is what the tech industry was founded on. So, if you&#39;re rea",
+                        "location": {
+                            "linkedinText": "Santa Clara, CA",
+                            "postalAddress": null,
+                            "countryCode": "us",
+                            "geoId": "100075706",
+                            "parsed": {
+                                "text": "Santa Clara, CA, United States",
+                                "countryCode": "US",
+                                "regionCode": null,
+                                "country": "United States",
+                                "countryFull": "United States of America",
+                                "state": "California",
+                                "city": "Santa Clara"
+                            }
+                        },
+                        "employmentType": "full_time",
+                        "workplaceType": "on_site",
+                        "workRemoteAllowed": false,
+                        "easyApplyUrl": null,
+                        "applyMethod": {
+                            "companyApplyUrl": "https://job-boards.greenhouse.io/purestorage/jobs/8178787?gh_src=1ev8671",
+                            "applyStartersPreferenceVoid": true,
+                            "inPageOffsiteApply": false,
+                            "type": "OffsiteApply"
+                        },
+                        "applicants": 25,
+                        "hiringTeam": [],
+                        "company": {
+                            "id": "111937900",
+                            "universalName": "everpure-data",
+                            "linkedinUrl": "https://www.linkedin.com/company/everpure-data",
+                            "name": "Everpure",
+                            "website": "http://www.everpuredata.com",
+                            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQE5m0IBKiWT4g/company-logo_400_400/B4EZzeCWnyJwAY-/0/1773251685253/everpure_data_logo?e=1790208000&v=beta&t=Pv-nD945i1_vcKhbHijKJYGDu-FjmBPGKuQsoC6wi8o",
+                            "employeeCount": 7646,
+                            "employeeCountRange": {
+                                "start": 5001,
+                                "end": 10000
+                            },
+                            "followerCount": 550589,
+                            "description": "We are Everpure. We don’t just store data—we bring it to life.\nAs AI becomes core to business, infrastructure must evolve, yet too many organizations are still relying on rigid, siloed systems built for the past.\n\nThe Everpure Platform replaces static storage with a unified, living platform that evolves with you—agile, resilient, and built to scale—so you can eliminate friction and unleash the power of your data.\n\nLearn more at www.everpuredata.com\n#Everpuredata",
+                            "locations": [],
+                            "specialities": [],
+                            "industries": [
+                                {
+                                    "id": null,
+                                    "name": "Software Development",
+                                    "title": "Software Development",
+                                    "hierarchy": null
+                                }
+                            ],
+                            "logos": [
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D4E0BAQE5m0IBKiWT4g/company-logo_400_400/B4EZzeCWnyJwAY-/0/1773251685253/everpure_data_logo?e=1790208000&v=beta&t=Pv-nD945i1_vcKhbHijKJYGDu-FjmBPGKuQsoC6wi8o",
+                                    "width": 400,
+                                    "height": 400
+                                },
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D4E0BAQE5m0IBKiWT4g/company-logo_200_200/B4EZzeCWnyJwAI-/0/1773251685253/everpure_data_logo?e=1790208000&v=beta&t=hCPahlz-wkFy8ArMxe_aC0ZC_cO0U3a5p6TaVvTn0lI",
+                                    "width": 200,
+                                    "height": 200
+                                }
+                            ],
+                            "backgroundCover": "https://media.licdn.com/dms/image/v2/D4E3DAQFvvh_RXxxZlw/image-scale_191_1128/B4EZy_g.mAJsAg-/0/1772739619552/everpure_data_cover?e=1789178400&v=beta&t=yipXDvRWlBXBo7axy8nqxnoqwi_CzX35KAxqjvwgvro",
+                            "backgroundCovers": [
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D4E3DAQFvvh_RXxxZlw/image-scale_191_1128/B4EZy_g.mAJsAg-/0/1772739619552/everpure_data_cover?e=1789178400&v=beta&t=yipXDvRWlBXBo7axy8nqxnoqwi_CzX35KAxqjvwgvro",
+                                    "width": 1121,
+                                    "height": 190
+                                },
+                                {
+                                    "url": "https://media.licdn.com/dms/image/v2/D4E3DAQFvvh_RXxxZlw/image-scale_127_750/B4EZy_g.mAJsAQ-/0/1772739619552/everpure_data_cover?e=1789178400&v=beta&t=jHkjLOv8RSD3AgI1YopZSM5v6zpzInSgJ_yH5TeoR8A",
+                                    "width": 749,
+                                    "height": 127
+                                }
+                            ],
+                            "callToActionUrl": null,
+                            "similarOrganizations": [],
+                            "affiliatedPages": []
+                        },
+                        "salary": {
+                            "text": null,
+                            "min": null,
+                            "max": null
+                        },
+                        "jobFunctions": [
+                            "IT"
+                        ],
+                        "industries": [
+                            "Computer Hardware Manufacturing",
+                            "Software Development"
+                        ],
+                        "experienceLevel": null,
+                        "benefits": [],
+                        "benefitsDataSource": "JOB_POSTER",
+                        "views": 0,
+                        "expireAt": "2026-10-05T01:14:55.000Z",
+                        "new": true,
+                        "closedAt": null,
+                        "contentSource": "JOBS_PREMIUM_OFFLINE",
+                        "jobApplicationLimitReached": false,
+                        "applicantTrackingSystem": null,
+                        "query": {
+                            "search": "Software Engineer",
+                            "location": "United States"
+                        },
+                        "_meta": {
+                            "pagination": {
+                                "totalElements": 70357,
+                                "totalPages": 2815,
+                                "pageNumber": 1,
+                                "previousElements": 0,
+                                "pageSize": 25
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

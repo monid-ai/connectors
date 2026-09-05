@@ -13,6 +13,9 @@ export const Unit = {
     SECOND: "second",
     MINUTE: "minute",
     CREDIT: "credit",
+    /** A charged page of results (apify#linkedin-profile-search bills per
+     *  search page scraped, independent of profiles found on it). */
+    PAGE: "page",
 } as const;
 export type Unit = (typeof Unit)[keyof typeof Unit];
 

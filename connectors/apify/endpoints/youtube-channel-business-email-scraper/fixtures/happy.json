@@ -1,0 +1,384 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/dataovercoffee~youtube-channel-business-email-scraper/runs",
+                "body": {
+                    "channels": [
+                        "https://www.youtube.com/@mkbhd"
+                    ]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "opdaqbC6aydX7l8u8",
+                        "actId": "Xa3Un5HYidE8VMKZu",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.422Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 75,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 128,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 15097,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 256
+                        },
+                        "buildId": "He7zbgY0QRKfMuGgb",
+                        "defaultKeyValueStoreId": "JOg8VPjnCMgQCU8JI",
+                        "defaultDatasetId": "X20OxzUpkkAEAuYVt",
+                        "defaultRequestQueueId": "Vdsq3MEx4Z6JS6uhf",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "JOg8VPjnCMgQCU8JI"
+                            },
+                            "datasets": {
+                                "default": "X20OxzUpkkAEAuYVt"
+                            },
+                            "requestQueues": {
+                                "default": "Vdsq3MEx4Z6JS6uhf"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No change to standard pricing ($0.12/email). \n\nNew optional feature: Force Fresh Email Scrape. \n\nIf enabled, a $0.28/email surcharge applies ($0.40 total). Off by default — your pricing stays the same. Available after March 24, 2026.",
+                            "startedAt": "2026-03-24T09:32:04.335Z",
+                            "createdAt": "2026-03-10T09:32:05.719Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-10T09:32:30.323Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "Email",
+                                        "eventDescription": "Single email in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.12,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "force-fresh-email-scrape-surcharge": {
+                                        "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                        "eventDescription": "Surcharge per email when Force Fresh Email Scrape is enabled manually. Most users don't need this.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.28
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.0.47",
+                        "containerUrl": "https://typigx93kh2w.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "Email",
+                                "eventTotalUsd": 0
+                            },
+                            "force-fresh-email-scrape-surcharge": {
+                                "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "channelEmails": "https://api.apify.com/v2/datasets/X20OxzUpkkAEAuYVt/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/opdaqbC6aydX7l8u8"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "opdaqbC6aydX7l8u8",
+                        "actId": "Xa3Un5HYidE8VMKZu",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.422Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 75,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 190,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.19,
+                            "metamorph": 0,
+                            "computeUnits": 0.000006597222222222222,
+                            "memAvgBytes": 4915200,
+                            "memMaxBytes": 4915200,
+                            "memCurrentBytes": 4915200,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 128,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 15097,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 256
+                        },
+                        "buildId": "He7zbgY0QRKfMuGgb",
+                        "defaultKeyValueStoreId": "JOg8VPjnCMgQCU8JI",
+                        "defaultDatasetId": "X20OxzUpkkAEAuYVt",
+                        "defaultRequestQueueId": "Vdsq3MEx4Z6JS6uhf",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "JOg8VPjnCMgQCU8JI"
+                            },
+                            "datasets": {
+                                "default": "X20OxzUpkkAEAuYVt"
+                            },
+                            "requestQueues": {
+                                "default": "Vdsq3MEx4Z6JS6uhf"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No change to standard pricing ($0.12/email). \n\nNew optional feature: Force Fresh Email Scrape. \n\nIf enabled, a $0.28/email surcharge applies ($0.40 total). Off by default — your pricing stays the same. Available after March 24, 2026.",
+                            "startedAt": "2026-03-24T09:32:04.335Z",
+                            "createdAt": "2026-03-10T09:32:05.719Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-10T09:32:30.323Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "Email",
+                                        "eventDescription": "Single email in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.12,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "force-fresh-email-scrape-surcharge": {
+                                        "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                        "eventDescription": "Surcharge per email when Force Fresh Email Scrape is enabled manually. Most users don't need this.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.28
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.0.47",
+                        "containerUrl": "https://typigx93kh2w.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/opdaqbC6aydX7l8u8",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "Email",
+                                "eventTotalUsd": 0
+                            },
+                            "force-fresh-email-scrape-surcharge": {
+                                "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "channelEmails": "https://api.apify.com/v2/datasets/X20OxzUpkkAEAuYVt/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/opdaqbC6aydX7l8u8"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "opdaqbC6aydX7l8u8",
+                        "actId": "Xa3Un5HYidE8VMKZu",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.422Z",
+                        "finishedAt": "2026-09-05T01:41:18.591Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 75,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4040,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.04,
+                            "metamorph": 0,
+                            "computeUnits": 0.00014027777777777777,
+                            "memAvgBytes": 52433654.8028741,
+                            "memMaxBytes": 62492672,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 36.53986936788611,
+                            "cpuMaxUsage": 82.74788804071247,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 18492,
+                            "netTxBytes": 6953
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 128,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 15097,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 256
+                        },
+                        "buildId": "He7zbgY0QRKfMuGgb",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "JOg8VPjnCMgQCU8JI",
+                        "defaultDatasetId": "X20OxzUpkkAEAuYVt",
+                        "defaultRequestQueueId": "Vdsq3MEx4Z6JS6uhf",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "JOg8VPjnCMgQCU8JI"
+                            },
+                            "datasets": {
+                                "default": "X20OxzUpkkAEAuYVt"
+                            },
+                            "requestQueues": {
+                                "default": "Vdsq3MEx4Z6JS6uhf"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 1,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No change to standard pricing ($0.12/email). \n\nNew optional feature: Force Fresh Email Scrape. \n\nIf enabled, a $0.28/email surcharge applies ($0.40 total). Off by default — your pricing stays the same. Available after March 24, 2026.",
+                            "startedAt": "2026-03-24T09:32:04.335Z",
+                            "createdAt": "2026-03-10T09:32:05.719Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-03-10T09:32:30.323Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "Email",
+                                        "eventDescription": "Single email in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.12,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "force-fresh-email-scrape-surcharge": {
+                                        "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                        "eventDescription": "Surcharge per email when Force Fresh Email Scrape is enabled manually. Most users don't need this.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.28
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "force-fresh-email-scrape-surcharge": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.0.47",
+                        "containerUrl": "https://typigx93kh2w.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/opdaqbC6aydX7l8u8",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "Email",
+                                "eventTotalUsd": 0
+                            },
+                            "force-fresh-email-scrape-surcharge": {
+                                "eventTitle": "Force Fresh Email Scrape Surcharge",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "channelEmails": "https://api.apify.com/v2/datasets/X20OxzUpkkAEAuYVt/items?view=overview"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/X20OxzUpkkAEAuYVt/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "Query": "https://www.youtube.com/@mkbhd",
+                        "ChannelId": "UCBJycsmduvYEL83R_U4JriQ",
+                        "Email": "business@MKBHD.com",
+                        "Status": "EMAIL_AVAILABLE",
+                        "ChannelHandle": "@mkbhd",
+                        "SubscriberCount": 21200000,
+                        "ChannelName": "Marques Brownlee",
+                        "Country": "United States",
+                        "TotalViews": 5560709432,
+                        "TotalVideosCount": 1844
+                    }
+                ]
+            }
+        }
+    ]
+}

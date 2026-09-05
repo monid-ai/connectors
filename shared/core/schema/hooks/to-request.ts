@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zRunInput } from "../run/input.ts";
-import { fnCarrier, zFnUtils } from "./ctx.ts";
+import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
 
 /**
  * HOOK input.toRequest — validated caller input → the input actually sent
@@ -22,7 +22,11 @@ export const zToRequestData = z.strictObject({
 export type ToRequestData = z.infer<typeof zToRequestData>;
 
 export const InputToRequestContract = z.function({
-    input: [z.object({ data: zToRequestData, utils: zFnUtils })],
+    input: [z.object({
+        data: zToRequestData,
+        utils: zFnUtils,
+        logger: zHookLogger,
+    })],
     output: zRunInput,
 });
 export type InputToRequestFn = z.infer<typeof InputToRequestContract>;

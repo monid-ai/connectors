@@ -1,0 +1,411 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/trudax~reddit-scraper-lite/runs",
+                "body": {
+                    "searches": [
+                        "deno"
+                    ],
+                    "maxItems": 2,
+                    "skipComments": true,
+                    "searchPosts": true,
+                    "searchComments": false
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "z3yOjndFp0zF35FFS",
+                        "actId": "oAuCIx3ItNrs2okjQ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.438Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 490,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 2048,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 4096
+                        },
+                        "buildId": "2ecxnMTQ7waR14Pey",
+                        "defaultKeyValueStoreId": "YylKM3Bkn7f0CpvxD",
+                        "defaultDatasetId": "XlEBnjU6CIn2oqkx0",
+                        "defaultRequestQueueId": "dtQdPMpQBdhHN2Hzj",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "YylKM3Bkn7f0CpvxD"
+                            },
+                            "datasets": {
+                                "default": "XlEBnjU6CIn2oqkx0"
+                            },
+                            "requestQueues": {
+                                "default": "dtQdPMpQBdhHN2Hzj"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.04,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-06-30T00:28:51.119Z",
+                            "createdAt": "2026-06-30T00:28:49.618Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Result stored",
+                                        "eventDescription": "Cost per result stored.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0034
+                                    },
+                                    "actor-start-gb": {
+                                        "eventTitle": "Actor start per 1 GB",
+                                        "eventDescription": "Flat fee for starting an Actor run for each 1 GB of memory.",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.02
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "actor-start-gb": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "actor-start-gb": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "5.7.9",
+                        "containerUrl": "https://w53msjotsyvp.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Result stored",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start-gb": {
+                                "eventTitle": "Actor start per 1 GB",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/XlEBnjU6CIn2oqkx0/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/z3yOjndFp0zF35FFS"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "z3yOjndFp0zF35FFS",
+                        "actId": "oAuCIx3ItNrs2okjQ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.438Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 490,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 212,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.212,
+                            "metamorph": 0,
+                            "computeUnits": 0.00011777777777777778,
+                            "memAvgBytes": 12746752,
+                            "memMaxBytes": 12746752,
+                            "memCurrentBytes": 12746752,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 334,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 2048,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 4096
+                        },
+                        "buildId": "2ecxnMTQ7waR14Pey",
+                        "defaultKeyValueStoreId": "YylKM3Bkn7f0CpvxD",
+                        "defaultDatasetId": "XlEBnjU6CIn2oqkx0",
+                        "defaultRequestQueueId": "dtQdPMpQBdhHN2Hzj",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "YylKM3Bkn7f0CpvxD"
+                            },
+                            "datasets": {
+                                "default": "XlEBnjU6CIn2oqkx0"
+                            },
+                            "requestQueues": {
+                                "default": "dtQdPMpQBdhHN2Hzj"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.04,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-06-30T00:28:51.119Z",
+                            "createdAt": "2026-06-30T00:28:49.618Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Result stored",
+                                        "eventDescription": "Cost per result stored.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0034
+                                    },
+                                    "actor-start-gb": {
+                                        "eventTitle": "Actor start per 1 GB",
+                                        "eventDescription": "Flat fee for starting an Actor run for each 1 GB of memory.",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.02
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 0,
+                            "actor-start-gb": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 0,
+                            "actor-start-gb": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "5.7.9",
+                        "containerUrl": "https://w53msjotsyvp.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/z3yOjndFp0zF35FFS",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Result stored",
+                                "eventTotalUsd": 0
+                            },
+                            "actor-start-gb": {
+                                "eventTitle": "Actor start per 1 GB",
+                                "eventTotalUsd": 0
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/XlEBnjU6CIn2oqkx0/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/z3yOjndFp0zF35FFS"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "z3yOjndFp0zF35FFS",
+                        "actId": "oAuCIx3ItNrs2okjQ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.438Z",
+                        "finishedAt": "2026-09-05T01:42:14.191Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "Finished! Total 4 requests: 4 succeeded, 0 failed.",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 490,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 59599,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 59.599,
+                            "metamorph": 0,
+                            "computeUnits": 0.03311055555555555,
+                            "memAvgBytes": 454124437.61423963,
+                            "memMaxBytes": 661876736,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 42.9464101661615,
+                            "cpuMaxUsage": 146.2106309751434,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 4664696,
+                            "netTxBytes": 643904
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 2048,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 4096
+                        },
+                        "buildId": "2ecxnMTQ7waR14Pey",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "YylKM3Bkn7f0CpvxD",
+                        "defaultDatasetId": "XlEBnjU6CIn2oqkx0",
+                        "defaultRequestQueueId": "dtQdPMpQBdhHN2Hzj",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "YylKM3Bkn7f0CpvxD"
+                            },
+                            "datasets": {
+                                "default": "XlEBnjU6CIn2oqkx0"
+                            },
+                            "requestQueues": {
+                                "default": "dtQdPMpQBdhHN2Hzj"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.04,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "startedAt": "2026-06-30T00:28:51.119Z",
+                            "createdAt": "2026-06-30T00:28:49.618Z",
+                            "apifyMarginPercentage": 0.2,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "result": {
+                                        "eventTitle": "Result stored",
+                                        "eventDescription": "Cost per result stored.",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.0034
+                                    },
+                                    "actor-start-gb": {
+                                        "eventTitle": "Actor start per 1 GB",
+                                        "eventDescription": "Flat fee for starting an Actor run for each 1 GB of memory.",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.02
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "result": 2,
+                            "actor-start-gb": 2
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "result": 2,
+                            "actor-start-gb": 2
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "5.7.9",
+                        "containerUrl": "https://w53msjotsyvp.runs.apify.net",
+                        "usageTotalUsd": 0.0468,
+                        "consoleUrl": "https://console.apify.com/view/runs/z3yOjndFp0zF35FFS",
+                        "eventUsage": {
+                            "result": {
+                                "eventTitle": "Result stored",
+                                "eventTotalUsd": 0.0068
+                            },
+                            "actor-start-gb": {
+                                "eventTitle": "Actor start per 1 GB",
+                                "eventTotalUsd": 0.04
+                            }
+                        },
+                        "output": {
+                            "dataset": "https://api.apify.com/v2/datasets/XlEBnjU6CIn2oqkx0/items"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/XlEBnjU6CIn2oqkx0/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "t3_1w7dfdm",
+                        "title": "[H] 90% UPI [W] 2k BB GC",
+                        "url": "https://www.reddit.com/r/IndiaDealsExchange/comments/1w7dfdm/h_90_upi_w_2k_bb_gc/",
+                        "link": "https://www.reddit.com/r/IndiaDealsExchange/comments/1w7dfdm/h_90_upi_w_2k_bb_gc/",
+                        "username": "Dazzling-Mixture3453",
+                        "upVotes": 1,
+                        "upVoteRatio": 1,
+                        "numberOfComments": 2,
+                        "createdAt": "2026-09-04T18:58:44.981Z",
+                        "body": "Dm your offer. Multiple deno is fine.",
+                        "communityName": "r/IndiaDealsExchange",
+                        "parsedCommunityName": "IndiaDealsExchange",
+                        "contentType": "text",
+                        "imageUrls": [
+                            "https://styles.redditmedia.com/t5_en6kgi/styles/communityIcon_y8wxg4tkgr9f1.png?width=96&height=96&frame=1&auto=webp&s=251ff850785cbaf4cbf57aef71da2072638c85ce"
+                        ],
+                        "dataType": "post",
+                        "parsedId": "1w7dfdm"
+                    },
+                    {
+                        "id": "t3_1w771mq",
+                        "title": "I accidentally built an event-processing toolkit for Deno: Hooksmith",
+                        "url": "https://www.reddit.com/r/Deno/comments/1w771mq/i_accidentally_built_an_eventprocessing_toolkit/",
+                        "link": "https://www.reddit.com/r/Deno/comments/1w771mq/i_accidentally_built_an_eventprocessing_toolkit/",
+                        "username": "Kralizek82",
+                        "upVotes": 0,
+                        "upVoteRatio": 0.4,
+                        "numberOfComments": 0,
+                        "createdAt": "2026-09-04T15:08:55.343Z",
+                        "body": "I accidentally built an event-processing toolkit for Deno\n\nThis started with a very small problem.\n\nI wanted my Jekyll site to publish an event when a post went live, and have something else decide what to do with it \u2014 initially, post it to social media.\n\nI could obviously have put all of that directly into the GitHub Action.\n\nInstead, I started separating the pieces.\n\nThe producer emits an event. A runtime hydrates it, evaluates routes, and invokes listeners. Conditions and listeners are ordina",
+                        "communityName": "r/Deno",
+                        "parsedCommunityName": "Deno",
+                        "contentType": "multi_media",
+                        "imageUrls": [
+                            "https://styles.redditmedia.com/t5_2rbun/styles/communityIcon_ah4llac45j7f1.png?width=96&height=96&frame=1&auto=webp&s=aa7c6bebde8aa64161cdc0e0fa6147b343bd3fcc"
+                        ],
+                        "dataType": "post",
+                        "parsedId": "1w771mq"
+                    }
+                ]
+            }
+        }
+    ]
+}

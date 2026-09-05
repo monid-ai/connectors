@@ -2,6 +2,7 @@ import {
     type AuthData,
     AuthInjectContract,
     type AuthInjectFn,
+    type HookLogger,
     type HttpRequestParts,
 } from "@shared/core";
 import { EngineError, EngineErrorCode } from "./errors.ts";
@@ -49,7 +50,7 @@ export async function applyAuth(
         params,
     };
     try {
-        return impl({ data, utils: fnUtils });
+        return impl({ data, utils: fnUtils, logger: SILENT_LOGGER });
     } catch (error) {
         throw new EngineError(
             EngineErrorCode.FN_CONTRACT,
@@ -58,6 +59,16 @@ export async function applyAuth(
         );
     }
 }
+
+/** The auth hook's logger is DELIBERATELY silent regardless of host
+ *  configuration: resolved credentials are in scope here, and a log line is
+ *  the one way an inject fn could leak them. */
+const SILENT_LOGGER: HookLogger = {
+    debug() {},
+    info() {},
+    warn() {},
+    error() {},
+};
 
 /** Convention: EXA_API_KEY for provider "exa" (dashes → underscores). */
 export function envVarFor(provider: string): string {

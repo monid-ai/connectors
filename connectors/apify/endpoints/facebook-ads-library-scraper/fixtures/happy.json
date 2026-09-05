@@ -1,0 +1,374 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/curious_coder~facebook-ads-library-scraper/runs",
+                "body": {
+                    "urls": [
+                        {
+                            "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=nike&search_type=keyword_unordered"
+                        }
+                    ],
+                    "count": 2
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "ePOZwgSbruJZH5BfD",
+                        "actId": "XtaWFhbtfxyzqrFmd",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:13.990Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 286,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 2415534,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "3SuyiOYYvkWfhW9dB",
+                        "defaultKeyValueStoreId": "qce2BM2dAbP880cQl",
+                        "defaultDatasetId": "vvyX1mr0WaWuYKubc",
+                        "defaultRequestQueueId": "uuIMdiH9GMAHiKmti",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "qce2BM2dAbP880cQl"
+                            },
+                            "datasets": {
+                                "default": "vvyX1mr0WaWuYKubc"
+                            },
+                            "requestQueues": {
+                                "default": "uuIMdiH9GMAHiKmti"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.00075,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No significant change. Just a small charge per run of $0.00005 or $0.05 per 1000 runs",
+                            "startedAt": "2026-08-14T03:18:51.036Z",
+                            "createdAt": "2026-07-31T03:18:51.563Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-07-31T03:20:33.225Z",
+                            "notifiedAboutChangeAt": "2026-08-19T08:06:18.488Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "ad",
+                                        "eventDescription": "Single ad in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.00075,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.24",
+                        "containerUrl": "https://gv9ujmudqrvw.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "ad",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ePOZwgSbruJZH5BfD"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ePOZwgSbruJZH5BfD",
+                        "actId": "XtaWFhbtfxyzqrFmd",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:13.990Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 286,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 177,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.177,
+                            "metamorph": 0,
+                            "computeUnits": 0.000024583333333333332,
+                            "memAvgBytes": 9134080,
+                            "memMaxBytes": 9134080,
+                            "memCurrentBytes": 9134080,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 2415534,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "3SuyiOYYvkWfhW9dB",
+                        "defaultKeyValueStoreId": "qce2BM2dAbP880cQl",
+                        "defaultDatasetId": "vvyX1mr0WaWuYKubc",
+                        "defaultRequestQueueId": "uuIMdiH9GMAHiKmti",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "qce2BM2dAbP880cQl"
+                            },
+                            "datasets": {
+                                "default": "vvyX1mr0WaWuYKubc"
+                            },
+                            "requestQueues": {
+                                "default": "uuIMdiH9GMAHiKmti"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.00075,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No significant change. Just a small charge per run of $0.00005 or $0.05 per 1000 runs",
+                            "startedAt": "2026-08-14T03:18:51.036Z",
+                            "createdAt": "2026-07-31T03:18:51.563Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-07-31T03:20:33.225Z",
+                            "notifiedAboutChangeAt": "2026-08-19T08:06:18.488Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "ad",
+                                        "eventDescription": "Single ad in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.00075,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.24",
+                        "containerUrl": "https://gv9ujmudqrvw.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/ePOZwgSbruJZH5BfD",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "ad",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/ePOZwgSbruJZH5BfD"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "ePOZwgSbruJZH5BfD",
+                        "actId": "XtaWFhbtfxyzqrFmd",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:13.990Z",
+                        "finishedAt": "2026-09-05T01:41:16.731Z",
+                        "status": "SUCCEEDED",
+                        "statusMessage": "\"Maximum charged results\" option must be atleast 10 to run this actor",
+                        "isStatusMessageTerminal": true,
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 286,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 2616,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 2.616,
+                            "metamorph": 0,
+                            "computeUnits": 0.00036333333333333335,
+                            "memAvgBytes": 78882753.0279945,
+                            "memMaxBytes": 112128000,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 91.62633324720532,
+                            "cpuMaxUsage": 103.01806534272902,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 978,
+                            "netTxBytes": 784
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3600,
+                            "memoryMbytes": 512,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": 2415534,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 1024
+                        },
+                        "buildId": "3SuyiOYYvkWfhW9dB",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "qce2BM2dAbP880cQl",
+                        "defaultDatasetId": "vvyX1mr0WaWuYKubc",
+                        "defaultRequestQueueId": "uuIMdiH9GMAHiKmti",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "qce2BM2dAbP880cQl"
+                            },
+                            "datasets": {
+                                "default": "vvyX1mr0WaWuYKubc"
+                            },
+                            "requestQueues": {
+                                "default": "uuIMdiH9GMAHiKmti"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": 0.00075,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "No significant change. Just a small charge per run of $0.00005 or $0.05 per 1000 runs",
+                            "startedAt": "2026-08-14T03:18:51.036Z",
+                            "createdAt": "2026-07-31T03:18:51.563Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-07-31T03:20:33.225Z",
+                            "notifiedAboutChangeAt": "2026-08-19T08:06:18.488Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "ad",
+                                        "eventDescription": "Single ad in the default dataset.",
+                                        "isOneTimeEvent": false,
+                                        "eventPriceUsd": 0.00075,
+                                        "isPrimaryEvent": true
+                                    },
+                                    "apify-actor-start": {
+                                        "eventTitle": "Actor Start",
+                                        "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                                        "isOneTimeEvent": true,
+                                        "eventPriceUsd": 0.00005
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 1
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0,
+                            "apify-actor-start": 1
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "2.7.24",
+                        "containerUrl": "https://gv9ujmudqrvw.runs.apify.net",
+                        "usageTotalUsd": 0.00005,
+                        "consoleUrl": "https://console.apify.com/view/runs/ePOZwgSbruJZH5BfD",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "ad",
+                                "eventTotalUsd": 0
+                            },
+                            "apify-actor-start": {
+                                "eventTitle": "Actor Start",
+                                "eventTotalUsd": 0.00005
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/vvyX1mr0WaWuYKubc/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "error": "\"Maximum charged results\" option must be atleast 10 to run this actor"
+                    }
+                ]
+            }
+        }
+    ]
+}

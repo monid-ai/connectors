@@ -24,6 +24,11 @@ const GLOBAL_WHITELIST = new Set([
     "Error",
     "TypeError",
     "RangeError",
+    // pure URL-escaping primitives (lifecycle fns build wire paths)
+    "encodeURIComponent",
+    "decodeURIComponent",
+    // async lifecycle fns may name it (e.g. Promise.all over utils.http calls)
+    "Promise",
 ]);
 
 export function lintClosedTerm(canonicalSrc: string, label: string): void {

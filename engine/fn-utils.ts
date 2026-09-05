@@ -1,11 +1,26 @@
 import {
     type Currency,
+    type EndpointDoc,
+    type FnEntry,
+    formatZodError,
     getPath,
+    type HookLogger,
+    type HttpResult,
     type Json,
     type JsonUtil,
+    type LifecycleRequestInfo,
+    type LifecycleUtils,
     type MoneyUtil,
     PATH_PATTERN,
+    type RunInput,
+    zHttpCall,
+    zRequestOverrides,
 } from "@shared/core";
+import type { Logger } from "@shared/logging";
+import { EngineError, EngineErrorCode } from "./errors.ts";
+import type { PreparedRequest, Transport } from "./interfaces/mod.ts";
+import { toScalarQuery } from "./request.ts";
+import { sniffDecode } from "./transport.ts";
 
 function lastSegment(path: string): string {
     const match = path.match(/\.([A-Za-z_][A-Za-z0-9_-]*)(\[\d+\])*$/);
@@ -155,3 +170,125 @@ export const moneyUtil: MoneyUtil = {
 /** The ctx.utils namespace assembled by the engine (ALL of the hook ABI's
  *  host half lives in THIS file; the interfaces live in @shared/core). */
 export const fnUtils = Object.freeze({ json: jsonUtil, money: moneyUtil });
+
+/**
+ * `ctx.utils` for the LIFECYCLE hook family — the pure ABI plus the two
+ * effect capabilities, bound PER INVOCATION (they need this tick's derived
+ * input + substituted request). Auth is injected by the transport at
+ * egress on both — fns never see credentials.
+ *
+ *   - `http(call)` — the RAW, explicit capability (v1 `client.request`):
+ *     `method` + exactly one of `url`|`path` required; `path` resolves
+ *     against the doc request URL's ORIGIN (v1 apiPath semantics); only
+ *     given fields are sent (`headers` merge OVER the doc's request
+ *     headers; `requestMs` overrides the per-request timeout).
+ *   - `request(overrides?)` — the DEFAULT RELAY: executes THE endpoint's
+ *     compiled request, initialized from data.request + the caller input
+ *     (method/url/headers from the request; `body ?? input.body`;
+ *     `queryParams ?? input.queryParams`), any field overridable per call.
+ *     `utils.request()` alone sends exactly what the declarative sync
+ *     pipeline would.
+ *
+ * Responses come back sniff-decoded `{status, body}`; vendor non-2xx is
+ * DATA (returned); transport failures throw EXECUTION_FAILED (retriable)
+ * through the fn unless it catches. A malformed call/override shape is a
+ * fn bug → FN_CONTRACT, fail-closed.
+ */
+export function makeLifecycleUtils(opts: {
+    doc: EndpointDoc;
+    injectEntry: FnEntry;
+    transport: Transport;
+    /** This invocation's compiled request ({pathParam}s substituted). */
+    requestInfo: LifecycleRequestInfo;
+    /** This invocation's derived (validated + toRequest) input. */
+    input: RunInput;
+}): LifecycleUtils {
+    const { doc, injectEntry, transport, requestInfo, input } = opts;
+    const origin = new URL(doc.request.url).origin;
+
+    const execute = async (parts: {
+        method: PreparedRequest["method"];
+        url: string;
+        headers?: Record<string, string>;
+        query: Record<string, string>;
+        body?: Json;
+        requestMs?: number;
+    }): Promise<HttpResult> => {
+        const prepared: PreparedRequest = {
+            method: parts.method,
+            url: parts.url,
+            headers: { ...doc.request.headers, ...parts.headers },
+            query: parts.query,
+            body: parts.body,
+            auth: {
+                inject: { ref: doc.auth.inject, entry: injectEntry },
+                credentials: doc.auth.credentials,
+            },
+            provider: doc.provider,
+            timeouts: {
+                requestMs: parts.requestMs ?? doc.timeouts.requestMs,
+            },
+        };
+        const response = await transport.execute(prepared);
+        return { status: response.status, body: sniffDecode(response) };
+    };
+
+    const utils: LifecycleUtils = {
+        json: jsonUtil,
+        money: moneyUtil,
+        http: (call) => {
+            const parsed = zHttpCall.safeParse(call);
+            if (!parsed.success) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${doc.id}: utils.http call invalid: ${
+                        formatZodError(parsed.error)
+                    }`,
+                );
+            }
+            const c = parsed.data;
+            return execute({
+                method: c.method,
+                url: c.url ?? origin + c.path,
+                headers: c.headers,
+                query: { ...c.queryParams },
+                body: c.body,
+                requestMs: c.requestMs,
+            });
+        },
+        request: (overrides) => {
+            const parsed = zRequestOverrides.safeParse(overrides ?? {});
+            if (!parsed.success) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${doc.id}: utils.request overrides invalid: ${
+                        formatZodError(parsed.error)
+                    }`,
+                );
+            }
+            const o = parsed.data;
+            return execute({
+                method: o.method ?? requestInfo.method,
+                url: requestInfo.url,
+                headers: o.headers,
+                query: toScalarQuery(
+                    doc.id,
+                    o.queryParams ?? input.queryParams ?? {},
+                ),
+                body: o.body ?? input.body,
+                requestMs: o.requestMs,
+            });
+        },
+    };
+    return Object.freeze(utils);
+}
+
+/** Adapt the host Logger into the fn-facing HookLogger (ctx.logger). */
+export function toHookLogger(logger: Logger): HookLogger {
+    return {
+        debug: (message, fields) => logger.debug(message, fields),
+        info: (message, fields) => logger.info(message, fields),
+        warn: (message, fields) => logger.warn(message, fields),
+        error: (message, fields) => logger.error(message, fields),
+    };
+}

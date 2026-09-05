@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-provider-error",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/dev_fusion~linkedin-profile-scraper/runs",
+                "body": {
+                    "profileUrls": ["https://www.linkedin.com/in/anyone"]
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": {
+                        "type": "token-not-found",
+                        "message": "Authentication token was not found in the request."
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,631 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/dev_fusion~linkedin-profile-scraper/runs",
+                "body": {
+                    "profileUrls": [
+                        "https://www.linkedin.com/in/satyanadella"
+                    ]
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "Fzmln12xWJioVawSa",
+                        "actId": "2SyF0bVxmgGr8IVCZ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-03T17:50:29.313Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 60,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3000,
+                            "memoryMbytes": 256,
+                            "maxItems": 198188,
+                            "maxTotalChargeUsd": 1981.886114,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "l0q6JP9gnNizrogy0",
+                        "defaultKeyValueStoreId": "gxiHcL5a8L96wWMBn",
+                        "defaultDatasetId": "ny8OTwQSgjcEpfvl9",
+                        "defaultRequestQueueId": "tN94gMzF6NOFi4GXD",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "gxiHcL5a8L96wWMBn"
+                            },
+                            "datasets": {
+                                "default": "ny8OTwQSgjcEpfvl9"
+                            },
+                            "requestQueues": {
+                                "default": "tN94gMzF6NOFi4GXD"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-26T08:01:11.995Z",
+                            "startedAt": "2026-02-26T08:01:11.995Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.01
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.134",
+                        "containerUrl": "https://nzlb6zrwrizc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/Fzmln12xWJioVawSa"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "Fzmln12xWJioVawSa",
+                        "actId": "2SyF0bVxmgGr8IVCZ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-03T17:50:29.313Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 60,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 183,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.183,
+                            "metamorph": 0,
+                            "computeUnits": 0.000012708333333333333,
+                            "memAvgBytes": 8597504,
+                            "memMaxBytes": 8597504,
+                            "memCurrentBytes": 8597504,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3000,
+                            "memoryMbytes": 256,
+                            "maxItems": 198188,
+                            "maxTotalChargeUsd": 1981.886114,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "l0q6JP9gnNizrogy0",
+                        "defaultKeyValueStoreId": "gxiHcL5a8L96wWMBn",
+                        "defaultDatasetId": "ny8OTwQSgjcEpfvl9",
+                        "defaultRequestQueueId": "tN94gMzF6NOFi4GXD",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "gxiHcL5a8L96wWMBn"
+                            },
+                            "datasets": {
+                                "default": "ny8OTwQSgjcEpfvl9"
+                            },
+                            "requestQueues": {
+                                "default": "tN94gMzF6NOFi4GXD"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-26T08:01:11.995Z",
+                            "startedAt": "2026-02-26T08:01:11.995Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.01
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.134",
+                        "containerUrl": "https://nzlb6zrwrizc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/Fzmln12xWJioVawSa",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/Fzmln12xWJioVawSa"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "Fzmln12xWJioVawSa",
+                        "actId": "2SyF0bVxmgGr8IVCZ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-03T17:50:29.313Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 60,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 183,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.183,
+                            "metamorph": 0,
+                            "computeUnits": 0.000012708333333333333,
+                            "memAvgBytes": 8597504,
+                            "memMaxBytes": 8597504,
+                            "memCurrentBytes": 8597504,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 206,
+                            "netTxBytes": 478
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3000,
+                            "memoryMbytes": 256,
+                            "maxItems": 198188,
+                            "maxTotalChargeUsd": 1981.886114,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "l0q6JP9gnNizrogy0",
+                        "defaultKeyValueStoreId": "gxiHcL5a8L96wWMBn",
+                        "defaultDatasetId": "ny8OTwQSgjcEpfvl9",
+                        "defaultRequestQueueId": "tN94gMzF6NOFi4GXD",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "gxiHcL5a8L96wWMBn"
+                            },
+                            "datasets": {
+                                "default": "ny8OTwQSgjcEpfvl9"
+                            },
+                            "requestQueues": {
+                                "default": "tN94gMzF6NOFi4GXD"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-26T08:01:11.995Z",
+                            "startedAt": "2026-02-26T08:01:11.995Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.01
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.134",
+                        "containerUrl": "https://nzlb6zrwrizc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/Fzmln12xWJioVawSa",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/Fzmln12xWJioVawSa"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "Fzmln12xWJioVawSa",
+                        "actId": "2SyF0bVxmgGr8IVCZ",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-03T17:50:29.313Z",
+                        "finishedAt": "2026-09-03T17:50:34.387Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 60,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 4859,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 4.859,
+                            "metamorph": 0,
+                            "computeUnits": 0.00033743055555555555,
+                            "memAvgBytes": 54211979.803153366,
+                            "memMaxBytes": 57081856,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 28.019330806284305,
+                            "cpuMaxUsage": 101.1688634920635,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 132749,
+                            "netTxBytes": 24296
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 3000,
+                            "memoryMbytes": 256,
+                            "maxItems": 198188,
+                            "maxTotalChargeUsd": 1981.886114,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 512
+                        },
+                        "buildId": "l0q6JP9gnNizrogy0",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "gxiHcL5a8L96wWMBn",
+                        "defaultDatasetId": "ny8OTwQSgjcEpfvl9",
+                        "defaultRequestQueueId": "tN94gMzF6NOFi4GXD",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "gxiHcL5a8L96wWMBn"
+                            },
+                            "datasets": {
+                                "default": "ny8OTwQSgjcEpfvl9"
+                            },
+                            "requestQueues": {
+                                "default": "tN94gMzF6NOFi4GXD"
+                            }
+                        },
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "createdAt": "2026-02-26T08:01:11.995Z",
+                            "startedAt": "2026-02-26T08:01:11.995Z",
+                            "apifyMarginPercentage": 0.2,
+                            "isPriceChangeNotificationSuppressed": true,
+                            "reasonForChange": "Migration from Pay Per Result to Pay Per Event with apify-default-dataset-item event",
+                            "forceContainsSignificantPriceChange": false,
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "apify-default-dataset-item": {
+                                        "eventTitle": "result",
+                                        "eventDescription": "Single result in the default dataset.",
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.01
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "apify-default-dataset-item": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.134",
+                        "containerUrl": "https://nzlb6zrwrizc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/Fzmln12xWJioVawSa",
+                        "eventUsage": {
+                            "apify-default-dataset-item": {
+                                "eventTitle": "result",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/ny8OTwQSgjcEpfvl9/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "linkedinUrl": "https://www.linkedin.com/in/satyanadella",
+                        "firstName": "Satya",
+                        "lastName": "Nadella",
+                        "fullName": "Satya Nadella",
+                        "headline": "Chairman and CEO at Microsoft",
+                        "email": "satyan@microsoft.com",
+                        "mobileNumber": "+14254450068",
+                        "jobTitle": "Chairman and CEO",
+                        "jobStartedOn": "02-2014",
+                        "jobLocation": null,
+                        "jobStillWorking": true,
+                        "companyName": "Microsoft",
+                        "companyIndustry": "Computer Software",
+                        "companyWebsite": "microsoft.com",
+                        "companyLinkedin": "linkedin.com/company/microsoft",
+                        "companyFoundedIn": null,
+                        "companySize": "10001+",
+                        "currentJobDuration": "11 yrs 11 mos",
+                        "currentJobDurationInYrs": 11.92,
+                        "topSkillsByEndorsements": null,
+                        "addressCountryOnly": "United States",
+                        "addressWithCountry": "Redmond, Washington United States",
+                        "addressWithoutCountry": "Redmond, Washington",
+                        "profilePic": "https://media.licdn.com/dms/image/v2/C5603AQHHUuOSlRVA1w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1579726625483?e=1790208000&v=beta&t=6ACTGZJegkYWGRa4YOfOfYR5T3omufE1QF_V9X-tGYc",
+                        "profilePicHighQuality": "https://media.licdn.com/dms/image/v2/C5603AQHHUuOSlRVA1w/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1579726625483?e=1790208000&v=beta&t=6ACTGZJegkYWGRa4YOfOfYR5T3omufE1QF_V9X-tGYc",
+                        "backgroundPic": "https://media.licdn.com/dms/image/v2/D5616AQFVwYcBLAcPqQ/profile-displaybackgroundimage-shrink_350_1400/B56Z6tkWeBKAAU-/0/1781028448390?e=1790208000&v=beta&t=WlF6q_sAVdZ3aJm9q8vgwerwZWTnqzseW-k2y2mRIUE",
+                        "linkedinId": null,
+                        "isPremium": true,
+                        "isVerified": false,
+                        "isJobSeeker": null,
+                        "isRetired": false,
+                        "isCreator": true,
+                        "isInfluencer": true,
+                        "isCurrentlyEmployed": true,
+                        "about": "As chairman and CEO of Microsoft, I define my mission and that of my company as empowering every person and every organization on the planet to achieve more.",
+                        "publicIdentifier": "satyanadella",
+                        "linkedinPublicUrl": "https://www.linkedin.com/in/satyanadella",
+                        "openConnection": null,
+                        "urn": "ACoAAAEkwwAB9KEc2TrQgOLEQ-vzRyZeCDyc6DQ",
+                        "totalRecommendationsReceived": 0,
+                        "totalRecommendationsGiven": 0,
+                        "birthday": null,
+                        "associatedHashtag": [],
+                        "firstRoleYear": 2014,
+                        "totalExperienceYears": 12.6,
+                        "experiencesCount": 5,
+                        "experiences": [
+                            {
+                                "companyId": "1035",
+                                "companyUrn": "urn:li:fsd_company:1035",
+                                "companyLink1": "https://www.linkedin.com/company/microsoft/",
+                                "companyName": "Microsoft",
+                                "companySize": "10001+",
+                                "companyWebsite": "microsoft.com",
+                                "companyIndustry": "Computer Software",
+                                "logo": "https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1790208000&v=beta&t=U4u5GqZwilvpz9VM7BbcrZETNnqPY13f5VJ3WSREGUs",
+                                "title": "Chairman and CEO",
+                                "jobDescription": null,
+                                "jobStartedOn": "02-2014",
+                                "jobEndedOn": null,
+                                "jobLocation": "Greater Seattle Area",
+                                "jobStillWorking": true,
+                                "jobLocationCountry": null,
+                                "employmentType": null
+                            },
+                            {
+                                "companyId": "3881",
+                                "companyUrn": "urn:li:fsd_company:3881",
+                                "companyLink1": "https://www.linkedin.com/school/uchicago/",
+                                "companyName": null,
+                                "companySize": null,
+                                "companyWebsite": null,
+                                "companyIndustry": null,
+                                "logo": "https://media.licdn.com/dms/image/v2/C4D0BAQHbp_dv8CAlpQ/company-logo_400_400/company-logo_400_400/0/1630577480920/uchicago_logo?e=1790208000&v=beta&t=WUXA3MnFhP9vD_73QXxmeTT3-FMiSBfRoKwt9sqp2N0",
+                                "title": "Member Board Of Trustees",
+                                "jobDescription": null,
+                                "jobStartedOn": "2018",
+                                "jobEndedOn": null,
+                                "jobLocation": null,
+                                "jobStillWorking": true,
+                                "jobLocationCountry": null,
+                                "employmentType": null
+                            },
+                            {
+                                "companyId": "2271",
+                                "companyUrn": "urn:li:fsd_company:2271",
+                                "companyLink1": "https://www.linkedin.com/company/starbucks/",
+                                "companyName": "Starbucks",
+                                "companySize": "10001+",
+                                "companyWebsite": "starbucks.com",
+                                "companyIndustry": "Retail",
+                                "logo": "https://media.licdn.com/dms/image/v2/C4D0BAQEQxk9y2rk7Hw/company-logo_400_400/company-logo_400_400/0/1631316692276?e=1790208000&v=beta&t=OEF5lPhVrU5g_k21pXMUDAvi5RB6jIvVHahOekyASZY",
+                                "title": "Board Member",
+                                "jobDescription": null,
+                                "jobStartedOn": "2017",
+                                "jobEndedOn": "2024",
+                                "jobLocation": null,
+                                "jobStillWorking": false,
+                                "jobLocationCountry": null,
+                                "employmentType": null
+                            },
+                            {
+                                "companyId": "5301945",
+                                "companyUrn": "urn:li:fsd_company:5301945",
+                                "companyLink1": "https://www.linkedin.com/company/the-business-council-us/",
+                                "companyName": "The Business Council U.S.",
+                                "companySize": "1-10",
+                                "companyWebsite": "businesscouncil.com",
+                                "companyIndustry": "Non-Profit Organization Management",
+                                "logo": "https://media.licdn.com/dms/image/v2/C4D0BAQGcnaZNpjMvrw/company-logo_400_400/company-logo_400_400/0/1630557702704/the_business_council_us_logo?e=1790208000&v=beta&t=WfTdxSze6kOJonYplcr2onP6QLNYShAvqNZ74g7srDo",
+                                "title": "Chairman",
+                                "jobDescription": null,
+                                "jobStartedOn": "2021",
+                                "jobEndedOn": "2023",
+                                "jobLocation": null,
+                                "jobStillWorking": false,
+                                "jobLocationCountry": null,
+                                "employmentType": null
+                            },
+                            {
+                                "companyId": "7158",
+                                "companyUrn": "urn:li:fsd_company:7158",
+                                "companyLink1": "https://www.linkedin.com/company/fredhutch/",
+                                "companyName": "Fred Hutch",
+                                "companySize": "1001-5000",
+                                "companyWebsite": "satcomia.com",
+                                "companyIndustry": "Hospital & Health Care",
+                                "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQGF4eOou62nvQ/company-logo_400_400/company-logo_400_400/0/1664795263764/fredhutch_logo?e=1790208000&v=beta&t=NcVJm7yuf8M6P1q5V-q9LVPxaL7WJaQCXm7XpdL5NAw",
+                                "title": "Board Member",
+                                "jobDescription": null,
+                                "jobStartedOn": "2016",
+                                "jobEndedOn": "2022",
+                                "jobLocation": null,
+                                "jobStillWorking": false,
+                                "jobLocationCountry": null,
+                                "employmentType": null
+                            }
+                        ],
+                        "updates": [],
+                        "skills": [],
+                        "creatorWebsite": [],
+                        "profilePicAllDimensions": [],
+                        "educations": [
+                            {
+                                "companyId": "8398",
+                                "companyUrn": "urn:li:fsd_company:8398",
+                                "companyLink1": "https://www.linkedin.com/school/universityofchicagoboothschoolofbusiness/",
+                                "logo": "https://media.licdn.com/dms/image/v2/D560BAQFZO05jhYKSkw/company-logo_400_400/company-logo_400_400/0/1692627816910/universityofchicagoboothschoolofbusiness_logo?e=1790208000&v=beta&t=mvCzRYhSpZ443bBfXKJh7aIJZ5TYnFVOyBBWYGhoEvA",
+                                "title": "The University of Chicago Booth School of Business",
+                                "subtitle": "null, null",
+                                "description": null,
+                                "grade": null,
+                                "period": {
+                                    "startedOn": null,
+                                    "endedOn": null
+                                }
+                            },
+                            {
+                                "companyId": "577550",
+                                "companyUrn": "urn:li:fsd_company:577550",
+                                "companyLink1": "https://www.linkedin.com/school/manipal-institute-of-technology/",
+                                "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQHodG_7cUqs6w/company-logo_100_100/B4DZ8hC8AUJQAI-/0/1782965846315/manipal_institute_of_technology_logo?e=1790208000&v=beta&t=hzlZvDAM1yEddxUDIF0apE20aROoyOtBCYoylY_aKtM",
+                                "title": "Manipal Institute of Technology",
+                                "subtitle": "Bachelor’s Degree, Electrical Engineering",
+                                "description": null,
+                                "grade": null,
+                                "period": {
+                                    "startedOn": null,
+                                    "endedOn": null
+                                }
+                            },
+                            {
+                                "companyId": "166690",
+                                "companyUrn": "urn:li:fsd_company:166690",
+                                "companyLink1": "https://www.linkedin.com/school/uwmilwaukee/",
+                                "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQE47QlO_LG8SQ/company-logo_400_400/company-logo_400_400/0/1729615751602/uwmilwaukee_logo?e=1790208000&v=beta&t=LhoL30EDHj9oMShaclnJmE0n_2XdE81sS1ULiM7lqUg",
+                                "title": "University of Wisconsin-Milwaukee",
+                                "subtitle": "Master’s Degree, Computer Science",
+                                "description": null,
+                                "grade": null,
+                                "period": {
+                                    "startedOn": null,
+                                    "endedOn": null
+                                }
+                            }
+                        ],
+                        "licenseAndCertificates": [],
+                        "honorsAndAwards": [],
+                        "languages": [],
+                        "volunteerAndAwards": [],
+                        "verifications": [],
+                        "promos": [],
+                        "highlights": [],
+                        "projects": [],
+                        "publications": [],
+                        "patents": [],
+                        "courses": [],
+                        "testScores": [],
+                        "organizations": [],
+                        "volunteerCauses": [],
+                        "interests": [],
+                        "recommendationsReceived": [],
+                        "recommendations": [],
+                        "peopleAlsoViewed": []
+                    }
+                ]
+            }
+        }
+    ]
+}

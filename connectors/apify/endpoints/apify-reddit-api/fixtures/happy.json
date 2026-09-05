@@ -1,0 +1,366 @@
+{
+    "name": "happy",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apify.com/v2/acts/practicaltools~apify-reddit-api/runs",
+                "body": {
+                    "searches": [
+                        "deno"
+                    ],
+                    "maxItems": 2,
+                    "skipComments": true
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "abxoihCne9Bgwh4sk",
+                        "actId": "bYDdgZhOyVinvqrRI",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.501Z",
+                        "finishedAt": null,
+                        "status": "READY",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 287,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "resurrectCount": 0,
+                            "computeUnits": 0
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "Ti1T96ND6ULOh9uV3",
+                        "defaultKeyValueStoreId": "Se3iZimIJWdw0e9ZY",
+                        "defaultDatasetId": "EhvupPZqt0Z5yiWFQ",
+                        "defaultRequestQueueId": "mc7IZ9oWEdeUH2HQ4",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Se3iZimIJWdw0e9ZY"
+                            },
+                            "datasets": {
+                                "default": "EhvupPZqt0Z5yiWFQ"
+                            },
+                            "requestQueues": {
+                                "default": "mc7IZ9oWEdeUH2HQ4"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "To maintain the high reliability and speed of this endpoint amidst increasing overhead costs, we are updating our pricing.\n\nThe good news is: If you are on the Gold plan, your price remains $0.002/item, effectively no change for you.",
+                            "startedAt": "2026-03-01T06:09:19.786Z",
+                            "createdAt": "2026-03-01T06:09:19.786Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-01-26T07:05:33.226Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "item_returned": {
+                                        "eventTitle": "Item price",
+                                        "eventDescription": "Price for a single returned item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.002
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.56",
+                        "containerUrl": "https://maar1hn03bzc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "eventUsage": {
+                            "item_returned": {
+                                "eventTitle": "Item price",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/abxoihCne9Bgwh4sk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "abxoihCne9Bgwh4sk",
+                        "actId": "bYDdgZhOyVinvqrRI",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.501Z",
+                        "finishedAt": null,
+                        "status": "RUNNING",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 287,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 189,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 0.189,
+                            "metamorph": 0,
+                            "computeUnits": 0.0000525,
+                            "memAvgBytes": 3616768,
+                            "memMaxBytes": 3616768,
+                            "memCurrentBytes": 3616768,
+                            "cpuAvgUsage": 0,
+                            "cpuMaxUsage": 0,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 334,
+                            "netTxBytes": 388
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "Ti1T96ND6ULOh9uV3",
+                        "defaultKeyValueStoreId": "Se3iZimIJWdw0e9ZY",
+                        "defaultDatasetId": "EhvupPZqt0Z5yiWFQ",
+                        "defaultRequestQueueId": "mc7IZ9oWEdeUH2HQ4",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Se3iZimIJWdw0e9ZY"
+                            },
+                            "datasets": {
+                                "default": "EhvupPZqt0Z5yiWFQ"
+                            },
+                            "requestQueues": {
+                                "default": "mc7IZ9oWEdeUH2HQ4"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "To maintain the high reliability and speed of this endpoint amidst increasing overhead costs, we are updating our pricing.\n\nThe good news is: If you are on the Gold plan, your price remains $0.002/item, effectively no change for you.",
+                            "startedAt": "2026-03-01T06:09:19.786Z",
+                            "createdAt": "2026-03-01T06:09:19.786Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-01-26T07:05:33.226Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "item_returned": {
+                                        "eventTitle": "Item price",
+                                        "eventDescription": "Price for a single returned item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.002
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.56",
+                        "containerUrl": "https://maar1hn03bzc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/abxoihCne9Bgwh4sk",
+                        "eventUsage": {
+                            "item_returned": {
+                                "eventTitle": "Item price",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/actor-runs/abxoihCne9Bgwh4sk"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "abxoihCne9Bgwh4sk",
+                        "actId": "bYDdgZhOyVinvqrRI",
+                        "userId": "p8VLxuSN65beRtx9g",
+                        "startedAt": "2026-09-05T01:41:14.501Z",
+                        "finishedAt": "2026-09-05T01:41:16.925Z",
+                        "status": "SUCCEEDED",
+                        "meta": {
+                            "origin": "API",
+                            "userAgent": "Deno/2.7.4"
+                        },
+                        "stats": {
+                            "inputBodyLen": 287,
+                            "migrationCount": 0,
+                            "rebootCount": 0,
+                            "restartCount": 0,
+                            "durationMillis": 2236,
+                            "resurrectCount": 0,
+                            "runTimeSecs": 2.236,
+                            "metamorph": 0,
+                            "computeUnits": 0.0006211111111111111,
+                            "memAvgBytes": 54940771.03649635,
+                            "memMaxBytes": 64798720,
+                            "memCurrentBytes": 0,
+                            "cpuAvgUsage": 50.75224938375492,
+                            "cpuMaxUsage": 74.29428389560789,
+                            "cpuCurrentUsage": 0,
+                            "netRxBytes": 62906,
+                            "netTxBytes": 11658
+                        },
+                        "options": {
+                            "build": "latest",
+                            "timeoutSecs": 300,
+                            "memoryMbytes": 1024,
+                            "maxTotalChargeUsd": 1811.650763,
+                            "maxItems": null,
+                            "isMaxTotalChargeUsdSetByUser": false,
+                            "diskMbytes": 2048
+                        },
+                        "buildId": "Ti1T96ND6ULOh9uV3",
+                        "exitCode": 0,
+                        "defaultKeyValueStoreId": "Se3iZimIJWdw0e9ZY",
+                        "defaultDatasetId": "EhvupPZqt0Z5yiWFQ",
+                        "defaultRequestQueueId": "mc7IZ9oWEdeUH2HQ4",
+                        "storageIds": {
+                            "keyValueStores": {
+                                "default": "Se3iZimIJWdw0e9ZY"
+                            },
+                            "datasets": {
+                                "default": "EhvupPZqt0Z5yiWFQ"
+                            },
+                            "requestQueues": {
+                                "default": "mc7IZ9oWEdeUH2HQ4"
+                            }
+                        },
+                        "pricingInfo": {
+                            "minimalMaxTotalChargeUsd": null,
+                            "pricingModel": "PAY_PER_EVENT",
+                            "isPriceChangeNotificationSuppressed": false,
+                            "reasonForChange": "To maintain the high reliability and speed of this endpoint amidst increasing overhead costs, we are updating our pricing.\n\nThe good news is: If you are on the Gold plan, your price remains $0.002/item, effectively no change for you.",
+                            "startedAt": "2026-03-01T06:09:19.786Z",
+                            "createdAt": "2026-03-01T06:09:19.786Z",
+                            "apifyMarginPercentage": 0.2,
+                            "notifiedAboutFutureChangeAt": "2026-01-26T07:05:33.226Z",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "item_returned": {
+                                        "eventTitle": "Item price",
+                                        "eventDescription": "Price for a single returned item",
+                                        "isOneTimeEvent": false,
+                                        "isPrimaryEvent": true,
+                                        "eventPriceUsd": 0.002
+                                    }
+                                }
+                            }
+                        },
+                        "chargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "platformUsageBillingModel": "DEVELOPER",
+                        "accountedChargedEventCounts": {
+                            "item_returned": 0
+                        },
+                        "standby": null,
+                        "generalAccess": "FOLLOW_USER_SETTING",
+                        "buildNumber": "0.0.56",
+                        "containerUrl": "https://maar1hn03bzc.runs.apify.net",
+                        "usageTotalUsd": 0,
+                        "consoleUrl": "https://console.apify.com/view/runs/abxoihCne9Bgwh4sk",
+                        "eventUsage": {
+                            "item_returned": {
+                                "eventTitle": "Item price",
+                                "eventTotalUsd": 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apify.com/v2/datasets/EhvupPZqt0Z5yiWFQ/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "t3_1u084tp",
+                        "parsedId": "1u084tp",
+                        "url": "https://www.reddit.com/r/javascript/comments/1u084tp/i_wish_deno_would_keep_doing_what_it_does_best/",
+                        "username": "hongminhee",
+                        "title": "I wish Deno would keep doing what it does best",
+                        "communityName": "r/javascript",
+                        "parsedCommunityName": "javascript",
+                        "body": "",
+                        "html": null,
+                        "numberOfComments": 11,
+                        "upVotes": 43,
+                        "isVideo": false,
+                        "isAd": false,
+                        "over18": false,
+                        "createdAt": "2026-06-08T13:36:01.000Z",
+                        "scrapedAt": "2026-09-05T01:41:16.808Z",
+                        "dataType": "post"
+                    },
+                    {
+                        "id": "t3_1u084kf",
+                        "parsedId": "1u084kf",
+                        "url": "https://www.reddit.com/r/Deno/comments/1u084kf/i_wish_deno_would_keep_doing_what_it_does_best/",
+                        "username": "hongminhee",
+                        "title": "I wish Deno would keep doing what it does best",
+                        "communityName": "r/Deno",
+                        "parsedCommunityName": "Deno",
+                        "body": "",
+                        "html": null,
+                        "numberOfComments": 10,
+                        "upVotes": 61,
+                        "isVideo": false,
+                        "isAd": false,
+                        "over18": false,
+                        "createdAt": "2026-06-08T13:35:44.000Z",
+                        "scrapedAt": "2026-09-05T01:41:16.808Z",
+                        "dataType": "post"
+                    }
+                ]
+            }
+        }
+    ]
+}

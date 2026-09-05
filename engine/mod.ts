@@ -6,17 +6,25 @@ export type {
     PreparedRequest,
     RunCompleted,
     RunnableEndpoint,
+    RunPollResult,
     RunResult,
+    RunStartResult,
     Transport,
     TransportResponse,
 } from "./interfaces/mod.ts";
 export { EngineError, EngineErrorCode } from "./errors.ts";
-export { fnUtils, jsonUtil, moneyUtil } from "./fn-utils.ts";
-export { buildRequest, validateInput } from "./request.ts";
+export {
+    fnUtils,
+    jsonUtil,
+    makeLifecycleUtils,
+    moneyUtil,
+} from "./fn-utils.ts";
+export { buildRequest, substituteUrl, validateInput } from "./request.ts";
 export { applyAuth, envVarFor } from "./auth.ts";
 export {
     directTransport,
     envParamsResolver,
     relayTransport,
+    sniffDecode,
 } from "./transport.ts";
 export { type LinkedFns, linkFns } from "./link.ts";
