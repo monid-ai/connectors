@@ -51,7 +51,7 @@ Deno.test("akta#news happy (recorded): credits are the native unit; arrays go co
     });
     assertEquals(result.httpStatus, 200);
     // native unit = credits; vendor cost derived ($1 = 20 credits)
-    assertEquals(result.usage.units, [{ amount: 0.12, unit: "credit" }]);
+    assertEquals(result.usage.units, [{ amount: 0.12, unit: "CREDIT" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 6_000, // 0.12 / 20 dollars = $0.006 = 6k micro-dollars
@@ -76,7 +76,7 @@ Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits"
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     // money follows evidence: no credits consumed, $0
-    assertEquals(result.usage.units, [{ amount: 0, unit: "credit" }]);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "CREDIT" }]);
     assertEquals((result.output as Record<string, unknown>).count, 0);
 });
 
@@ -138,7 +138,7 @@ Deno.test("akta#news provider error (recorded 401): zero usage", async () => {
     });
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
 });
 
 Deno.test({

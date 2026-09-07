@@ -21,7 +21,7 @@ Deno.test("tinyfish#fetch happy (synthetic): free — one call unit for the batc
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     const output = result.output as Record<string, unknown>;
     assertEquals((output.errors as unknown[]).length, 0);
 });

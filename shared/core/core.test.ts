@@ -138,7 +138,7 @@ Deno.test("getPath: dotted keys + numeric indexes; unsupported syntax → undefi
 });
 
 Deno.test("zeroUsage: the forced settle-shape on provider errors", () => {
-    assertEquals(zeroUsage(), { units: [{ amount: 0, unit: "call" }] });
+    assertEquals(zeroUsage(), { units: [] });
 });
 
 // ---------------------------------------------------------------------------

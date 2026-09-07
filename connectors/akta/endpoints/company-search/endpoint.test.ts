@@ -19,7 +19,7 @@ Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "credit" }]);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "CREDIT" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 0,

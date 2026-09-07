@@ -1,21 +1,29 @@
 import { z } from "zod";
 
 /**
- * Units of measure for usage reporting — provider-NATIVE truth only (uniform
- * pricing is the hosted Broker's job). monid-services const-object pattern.
- * Append-only: extending requires an engine minor bump.
+ * Unit — counted quantities a run can consume: the PER_UNIT/VARIANT model
+ * unit vocabulary AND the `zUsage.units` measure vocabulary (one and the
+ * same — there is no measure that isn't countable). CALL is deliberately
+ * NOT here: "one flat call" is the PER_CALL model KIND, fully described by
+ * the model + the run's success flag — it needs no measure, so giving it
+ * one was a second spelling of the same fact (design D18).
+ *
+ * UPPERCASE canonical values (the repo enum rule: uppercase keys AND
+ * values for every closed vocabulary); lowercase rendering is a DISPLAY
+ * concern (web/CLI label maps). Provider-NATIVE truth only (uniform
+ * pricing is the hosted rate card's job). Append-only: extending requires
+ * an engine minor bump.
  */
 export const Unit = {
-    CALL: "call",
-    RESULT: "result",
-    TOKEN: "token",
-    CHARACTER: "character",
-    SECOND: "second",
-    MINUTE: "minute",
-    CREDIT: "credit",
+    RESULT: "RESULT",
+    TOKEN: "TOKEN",
+    CHARACTER: "CHARACTER",
+    SECOND: "SECOND",
+    MINUTE: "MINUTE",
+    CREDIT: "CREDIT",
     /** A charged page of results (apify#linkedin-profile-search bills per
      *  search page scraped, independent of profiles found on it). */
-    PAGE: "page",
+    PAGE: "PAGE",
 } as const;
 export type Unit = (typeof Unit)[keyof typeof Unit];
 

@@ -1,4 +1,4 @@
-import { defineProvider, presets } from "@shared/core";
+import { defineProvider, presets, Unit, UsageModelKind } from "@shared/core";
 
 /**
  * Akta (akta.pro, by Wokelo) — company intelligence. Every endpoint is a
@@ -45,12 +45,15 @@ export default defineProvider({
         }),
     },
     usage: {
+        /** Billed in akta's own meter — credits (the tier's $/credit is
+         *  the hosted rate card's row). */
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
         consolidate: ({ data, utils }) => {
             const credits =
                 utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
             return {
                 usage: {
-                    units: [{ amount: credits, unit: "credit" }],
+                    units: [{ amount: credits, unit: "CREDIT" }],
                     cost: utils.money.fromDollars(credits / 20),
                     evidence: utils.json.pick(data.output, [
                         "$.credits_consumed",

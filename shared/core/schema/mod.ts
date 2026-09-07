@@ -1,4 +1,5 @@
 export * from "./parse.ts";
+export * from "./zod-util.ts";
 export * from "./common/mod.ts";
 export * from "./run/mod.ts";
 export * from "./json/mod.ts";

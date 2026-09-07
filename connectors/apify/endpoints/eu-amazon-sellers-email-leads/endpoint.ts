@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zEuAmazonSellersEmailLeadsBody } from "./schema/inputs.ts";
 
 /**
@@ -29,7 +29,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zEuAmazonSellersEmailLeadsBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** max_results caps the run — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.limitIsExact(["max_results"], 3),

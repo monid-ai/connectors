@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zTiktokCommentsScraperApiBody } from "./schema/inputs.ts";
 
 /**
@@ -24,7 +24,9 @@ export default defineEndpoint({
         path: "/v2/acts/scraptik~tiktok-comments-scraper-api/runs",
     },
     input: { schema: { body: zTiktokCommentsScraperApiBody } },
-    /** Flat per-run pricing (v1 PER_CALL) — the engine default
-     *  estimate (one CALL) is already exact. */
-    usage: { model: { kind: "per_call" } },
+    /** Flat per-run pricing (survey: the `request` charge event) — the
+     *  run is the product: nothing to count, so no estimate fn (the
+     *  engine default `{units: []}` is already exact) and the settle
+     *  reports no measures. */
+    usage: { model: { kind: UsageModelKind.PER_CALL } },
 });

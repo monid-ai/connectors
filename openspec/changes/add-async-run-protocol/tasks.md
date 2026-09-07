@@ -203,3 +203,41 @@
       inline estimate (per-item maxPages inside the input array)
 - [x] 11.d presets.estimate docstring reframed (fields = pinned schema
       fields); design D17 + apify spec delta updated; 117 tests green
+
+## 12. Rate-free model algebra + estimate surface (D18)
+
+- [x] 12.a LIVE price re-check, all 46 actors (`GET /v2/acts/{id}`): every
+      actor is PAY_PER_EVENT; event prices are TIERED BY OUR SUBSCRIPTION
+      PLAN (eventTieredPricingUsd FREE→DIAMOND) — the no-rate-on-doc
+      decision is a verified fact; 17 actors publish actor-start events
+- [x] 12.b Unit enum: CALL REMOVED (a flat charge is never a count);
+      values UPPERCASE (enum rule: uppercase keys AND values; lowercase =
+      display); zUsage.units may be EMPTY — zeroUsage/defaultUsage/
+      presets.usage.perCall/engine estimate default all `{units: []}`;
+      estimate.perCall preset deleted
+- [x] 12.c usage/model/ split one-kind-per-file (v1 price-module pattern):
+      per-call, per-unit, scalar (leaf union), composite (AND: ≥2 scalar
+      components, ≤1 PER_CALL, distinct units, superRefined), variant
+      (SELECT, née unit_matrix; request-side selectors only), mod.ts union
+      + DERIVED zUsageModelKind (extractZodDiscriminatorKeys ported to
+      schema/zod-util.ts) + literal-typed const with load-time staleness
+      guard; TIERED deleted (schedules are card rows)
+- [x] 12.d All connectors declare survey-verified models via consts:
+      apify 27 PER_UNIT·RESULT + 17 COMPOSITE([PER_CALL, PER_UNIT·RESULT])
+      + 2 PER_CALL + PER_UNIT·PAGE (linkedin-profile-search);
+      instagram-hashtag/post SURVEY-CORRECTED from v1's per-call to
+      metered (+ exact-field estimates); akta PER_UNIT·CREDIT; exa
+      PER_UNIT·RESULT; octen COMPOSITEs/PER_UNITs (search's call measure
+      deleted — model-declared); tinyfish PER_CALL
+- [x] 12.e `scripts/estimate.ts` + `engine:estimate` task (pure standalone
+      estimate: rejecting transport as the no-IO proof, prints model +
+      units); `scripts/apify-pricing-survey.ts` + `apify:pricing` task
+      (shape drift guard — caught instagram-api-scraper's missed
+      actor-start on first run; all 46 green after)
+- [x] 12.f Tests: engine count-true chain (estimate units deep-equal
+      settled units), estimate purity + `[]` default; apify card
+      invariant (estimate AND settle cover every billed unit; PER_CALL
+      estimates []) + estimate-accuracy log
+- [x] 12.g Docs: design D18 + Concepts delta (Model row, Estimate row);
+      spec deltas refreshed; version-check paths (model/ files,
+      zod-util); 122 tests green, live pricing survey green

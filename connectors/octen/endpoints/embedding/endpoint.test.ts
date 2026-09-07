@@ -21,7 +21,7 @@ Deno.test("octen#embedding happy (recorded): input tokens are the native unit", 
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 3, unit: "token" }]);
+    assertEquals(result.usage.units, [{ amount: 3, unit: "TOKEN" }]);
     assertEquals(result.usage.evidence?.usage, { input_tokens: 3 });
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);

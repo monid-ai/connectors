@@ -43,7 +43,7 @@ Deno.test("tinyfish#search happy (synthetic): free — one call unit, no cost", 
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.usage.cost, undefined);
     const output = result.output as Record<string, unknown>;
     assertEquals((output.results as unknown[]).length, 2);
@@ -61,7 +61,7 @@ Deno.test("tinyfish#search provider error (synthetic): 429 is data, zero usage",
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
 });
 
 Deno.test({
@@ -79,7 +79,7 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
+        assertEquals(result.usage.units, []);
         assert(
             Array.isArray((result.output as Record<string, unknown>).results),
             "results array present",

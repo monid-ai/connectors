@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenEmbeddingBody } from "./schema/inputs.ts";
 
 /**
@@ -24,6 +24,7 @@ export default defineEndpoint({
     request: { method: "POST", path: "/embedding" },
     input: { schema: { body: zOctenEmbeddingBody } },
     usage: {
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
         consolidate: ({ data, utils }) => ({
             usage: {
                 units: [{
@@ -31,7 +32,7 @@ export default defineEndpoint({
                         data.output,
                         "$.meta.usage.input_tokens",
                     ) ?? 0,
-                    unit: "token",
+                    unit: "TOKEN",
                 }],
                 evidence: utils.json.pick(data.output, ["$.meta.usage"]),
             },

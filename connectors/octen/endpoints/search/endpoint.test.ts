@@ -25,10 +25,10 @@ Deno.test("octen#search happy (recorded): call + gated token tier, meter absorbe
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // TWO native measures: the call + the gated full-content tokens
+    // ONE counted measure: the gated full-content tokens. The flat call
+    // component is MODEL-declared (COMPOSITE), never a measure (D18).
     assertEquals(result.usage.units, [
-        { amount: 1, unit: "call" },
-        { amount: 4112, unit: "token" },
+        { amount: 4112, unit: "TOKEN" },
     ]);
     assertEquals(result.usage.evidence?.usage, {
         num_search_queries: 1,
@@ -54,7 +54,7 @@ Deno.test("octen#search provider error (recorded 401): zero usage", async () => 
     });
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
 });
 
 Deno.test("octen#search: non-ISO start_time/end_time rejected before the wire", async () => {
@@ -94,6 +94,8 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0], { amount: 1, unit: "call" });
+        // no full-content in the live probe: nothing counted (flat call
+        // charge is model-declared, not a measure)
+        assertEquals(result.usage.units, []);
     },
 });

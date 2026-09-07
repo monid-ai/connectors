@@ -18,17 +18,11 @@ import { preset } from "./preset.ts";
  * an estimated Usage in consolidate's units and NEVER throws on user
  * input: absent fields fall back to `fallback` (v1 FALLBACK_DEFAULT
  * posture). Each parametric fn is a CLOSED TERM (re-instantiated in an
- * empty scope), so the small helpers are inlined per preset.
+ * empty scope), so the small helpers are inlined per preset. There is
+ * deliberately no perCall preset: a PER_CALL estimate is `{units: []}` —
+ * the engine default when no estimate fn is declared (design D18).
  */
 export const estimate = {
-    /** One flat CALL unit — PER_CALL endpoints (v1 basis PER_CALL). */
-    perCall: preset(
-        "estimate.perCall",
-        (): UsageEstimateFn => () => ({
-            units: [{ amount: 1, unit: "call" }],
-        }),
-    ),
-
     /** ONE_PER_QUERY: one result per query item — the sum of array lengths
      *  over the present multiplier fields, min 1. */
     onePerQuery: preset(
@@ -45,7 +39,7 @@ export const estimate = {
                 if (Array.isArray(value)) total += value.length;
             }
             return {
-                units: [{ amount: Math.max(total, 1), unit: "result" }],
+                units: [{ amount: Math.max(total, 1), unit: "RESULT" }],
             };
         },
     ),
@@ -66,12 +60,12 @@ export const estimate = {
                     return {
                         units: [{
                             amount: Math.floor(n),
-                            unit: "result",
+                            unit: "RESULT",
                         }],
                     };
                 }
             }
-            return { units: [{ amount: fallback, unit: "result" }] };
+            return { units: [{ amount: fallback, unit: "RESULT" }] };
         },
     ),
 
@@ -99,7 +93,7 @@ export const estimate = {
                 }
             }
             if (limit === undefined) {
-                return { units: [{ amount: fallback, unit: "result" }] };
+                return { units: [{ amount: fallback, unit: "RESULT" }] };
             }
             let queries = 0;
             for (const field of queryFields) {
@@ -109,7 +103,7 @@ export const estimate = {
             return {
                 units: [{
                     amount: limit * Math.max(queries, 1),
-                    unit: "result",
+                    unit: "RESULT",
                 }],
             };
         },
@@ -142,7 +136,7 @@ export const estimate = {
                 }
             }
             if (pages === undefined) {
-                return { units: [{ amount: fallback, unit: "result" }] };
+                return { units: [{ amount: fallback, unit: "RESULT" }] };
             }
             let size = resultsPerPage > 0 ? resultsPerPage : undefined;
             if (size === undefined) {
@@ -155,7 +149,7 @@ export const estimate = {
                 }
             }
             return {
-                units: [{ amount: pages * (size ?? 10), unit: "result" }],
+                units: [{ amount: pages * (size ?? 10), unit: "RESULT" }],
             };
         },
     ),
@@ -186,7 +180,7 @@ export const estimate = {
                 }
             }
             if (pages === undefined) {
-                return { units: [{ amount: fallback, unit: "result" }] };
+                return { units: [{ amount: fallback, unit: "RESULT" }] };
             }
             let size = resultsPerPage > 0 ? resultsPerPage : undefined;
             if (size === undefined) {
@@ -206,7 +200,7 @@ export const estimate = {
             return {
                 units: [{
                     amount: pages * (size ?? 10) * Math.max(queries, 1),
-                    unit: "result",
+                    unit: "RESULT",
                 }],
             };
         },
@@ -235,7 +229,7 @@ export const estimate = {
                     return {
                         units: [{
                             amount: Math.floor(n),
-                            unit: "result",
+                            unit: "RESULT",
                         }],
                     };
                 }
@@ -249,7 +243,7 @@ export const estimate = {
                 }
             }
             if (pages === undefined) {
-                return { units: [{ amount: fallback, unit: "result" }] };
+                return { units: [{ amount: fallback, unit: "RESULT" }] };
             }
             let size = resultsPerPage > 0 ? resultsPerPage : undefined;
             if (size === undefined) {
@@ -262,7 +256,7 @@ export const estimate = {
                 }
             }
             return {
-                units: [{ amount: pages * (size ?? 10), unit: "result" }],
+                units: [{ amount: pages * (size ?? 10), unit: "RESULT" }],
             };
         },
     ),

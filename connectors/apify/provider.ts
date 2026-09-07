@@ -296,7 +296,7 @@ export default defineProvider({
                 : undefined;
             return {
                 usage: {
-                    units: [{ amount: items, unit: "result" }],
+                    units: [{ amount: items, unit: "RESULT" }],
                     ...(cost !== undefined ? { cost } : {}),
                     evidence: utils.json.pick(state, [
                         "$.externalRunId",

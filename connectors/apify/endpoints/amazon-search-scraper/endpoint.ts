@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zAmazonSearchScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -29,7 +29,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zAmazonSearchScraperBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** CUSTOM estimate: the page knob lives INSIDE the `input` array
          *  items (one entry per keyword, each with its own maxPages) — no
          *  flat-field preset can see it. Σ over items of (maxPages ?? 1)
@@ -49,7 +49,7 @@ export default defineEndpoint({
                 pages += Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
             }
             return {
-                units: [{ amount: Math.max(pages, 1) * 10, unit: "result" }],
+                units: [{ amount: Math.max(pages, 1) * 10, unit: "RESULT" }],
             };
         },
     },

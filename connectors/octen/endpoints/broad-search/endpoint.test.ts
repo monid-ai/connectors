@@ -22,8 +22,8 @@ Deno.test("octen#broad-search happy (recorded): receipt queries are the result u
     // settled on the RECEIPT's num_search_queries (2), not the request's
     // max_queries fallback; the token tier reports 0 (present in receipt)
     assertEquals(result.usage.units, [
-        { amount: 2, unit: "result" },
-        { amount: 0, unit: "token" },
+        { amount: 2, unit: "RESULT" },
+        { amount: 0, unit: "TOKEN" },
     ]);
     assertEquals(result.usage.evidence?.usage, {
         num_search_queries: 2,

@@ -100,20 +100,46 @@ state). Sync docs are unaffected (field absent).
 - **WHEN** a lifecycle run completes with state.data `{usageTotalUsd: 0.01}`
 - **THEN** the consolidate fn reads it at `$.data.usageTotalUsd`
 
-### Requirement: usage.model + usage.estimate
-`zUsageSection` SHALL gain `model?: zUsageModel` (rate-free cost-shape
-DATA: per_call | per_result | per_unit | unit_matrix | tiered, with
-`startWith: "call"` as the base-fee component and zModelSelector
-locations for matrix/tiered; no METERED — duration is per_unit
-SECOND/MINUTE) and `estimate?: zUsageEstimateFn` (the 6th pure hook:
-`{input} → Usage` in consolidate's units). `doc.usage` SHALL carry
-`model` inline (hash-covered) and `estimate` as a FnRef. Presets
-`presets.estimate.*` SHALL port the v1 EstimationLabel machinery with
-field allow-lists as ARGS.
+### Requirement: Unit vocabulary — countables only, UPPERCASE, no CALL
+`Unit` SHALL hold only COUNTABLE quantities (RESULT, TOKEN, CHARACTER,
+SECOND, MINUTE, CREDIT, PAGE) with UPPERCASE keys AND values (the repo
+enum rule; lowercase is display-only). CALL SHALL NOT be a unit: a flat
+charge is the PER_CALL model kind, never a measure. `zUsage.units` MAY be
+EMPTY — the canonical "nothing counted": PER_CALL settles, all zero/error
+paths (`zeroUsage()`/`defaultUsage()` return `{units: []}`,
+`presets.usage.perCall()` settles `{usage: {units: []}}`).
+
+#### Scenario: Zero is unit-agnostic
+- **WHEN** a provider error forces zero usage
+- **THEN** the settled usage is `{units: []}` — no fake measure of any unit
+
+### Requirement: usage.model — the rate-free billing ALGEBRA
+`zUsageModel` SHALL be the discriminated union of three orthogonal
+operators, one kind per file under `usage/model/` with the runtime kind
+enum DERIVED from the union (extractZodDiscriminatorKeys — the v1
+zPriceTypes pattern; a literal-typed authoring const is kept in sync by a
+load-time staleness guard):
+- LEAF: `PER_CALL` ({kind} only — billed 1 iff success, no measure) and
+  `PER_UNIT` ({kind, unit} — metered per N of unit; pure, no base-fee
+  side pocket);
+- AND: `COMPOSITE` ({kind, components: scalars, min 2}) — the SUM of
+  scalar components; at most one PER_CALL, distinct PER_UNIT units, no
+  nesting (the v1 leaf rule);
+- SELECT: `VARIANT` ({kind, unit, selectors}) — request coordinates pick
+  WHICH card row prices the unit (request-side zModelSelector only).
+No TIERED kind: volume schedules are services card-row shapes, invisible
+to a rate-free doc. No rate field anywhere: apify event prices are tiered
+by OUR subscription plan (verified), so rates are services config.
+`zUsageSection` carries `model?` (and `estimate?`); `doc.usage` carries
+`model` inline (hash-covered) and `estimate` as a FnRef.
+
+#### Scenario: Composite constraints enforced
+- **WHEN** a model declares COMPOSITE with two PER_CALL components (or two PER_UNIT components of the same unit)
+- **THEN** the schema rejects it
 
 #### Scenario: Estimate preset applied
 - **WHEN** an endpoint declares presets.estimate.limitIsExact([...fields], 3)
-- **THEN** the compiled doc references one interned factory entry with the lists as args
+- **THEN** the compiled doc references one interned factory entry with the fields as args
 
 ### Requirement: Coded JSON path errors
 `utils.json` lookups SHALL throw `JsonPathError` with `code`

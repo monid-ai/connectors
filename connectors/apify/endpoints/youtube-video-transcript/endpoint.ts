@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeVideoTranscriptBody } from "./schema/inputs.ts";
 
 /**
@@ -28,7 +28,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zYoutubeVideoTranscriptBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** video-url mode returns 1; channel mode caps at max_videos — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.limitIsExact(["max_videos"], 1),

@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zExaSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -38,6 +38,7 @@ export default defineEndpoint({
         }),
     },
     usage: {
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         consolidate: ({ data, utils }) => {
             const total = utils.json.optionalNum(
                 data.output,
@@ -47,7 +48,7 @@ export default defineEndpoint({
                 usage: {
                     units: [{
                         amount: utils.json.len(data.output, "$.results"),
-                        unit: "result",
+                        unit: "RESULT",
                     }],
                     ...(total !== undefined
                         ? { cost: utils.money.fromDollars(total) }

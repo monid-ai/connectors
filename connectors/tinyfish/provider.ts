@@ -1,4 +1,4 @@
-import { defineProvider, presets } from "@shared/core";
+import { defineProvider, presets, UsageModelKind } from "@shared/core";
 
 /**
  * TinyFish (tinyfish.ai) — both integrated endpoints are FREE (0 credits on
@@ -21,5 +21,8 @@ export default defineProvider({
         categories: ["web-search"],
     },
     auth: { inject: presets.auth.header("X-API-Key") },
-    usage: { consolidate: presets.usage.perCall() },
+    usage: {
+        model: { kind: UsageModelKind.PER_CALL },
+        consolidate: presets.usage.perCall(),
+    },
 });

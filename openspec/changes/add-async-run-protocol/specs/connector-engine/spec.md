@@ -101,11 +101,25 @@ resolve the credential). Absolute targets SHALL be https-only
 ### Requirement: Pre-run estimate entrypoint
 `estimate(runInput)` SHALL derive the input (validate + toRequest) and
 run the linked `usage.estimate` fn — PURE, no IO, no state; absent
-estimate ⇒ `{units: [{amount: 1, unit: CALL}]}` (the v1 PER_CALL base).
+estimate ⇒ `{units: []}` (nothing countable to predict — the PER_CALL
+posture: the flat charge is fully described by the model + success). A
+standalone command (`deno task engine:estimate`) SHALL print the model +
+estimated units, loading against a transport that rejects every call.
 
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
 - **THEN** it returns the estimated Usage without touching the wire
+
+### Requirement: The card invariant — estimate and settle share units
+For a doc with a metered `usage.model`, estimate() AND the settled usage
+SHALL each report a measure of every billed unit (PER_UNIT's unit; a
+COMPOSITE's PER_UNIT component units) — one card row prices both ends.
+On a count-true chain (the estimate's counted input equals the produced
+output) the estimated units SHALL deep-equal the settled units.
+
+#### Scenario: Count-true chain agrees exactly
+- **WHEN** 2 queries produce a 2-item chain and the estimate counts queries
+- **THEN** estimate(input).units deep-equals run(input).usage.units
 
 ### Requirement: Zero usage forced on every non-2xx envelope
 The settle pipeline SHALL force zero usage whenever the envelope's

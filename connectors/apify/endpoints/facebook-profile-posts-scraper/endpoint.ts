@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zFacebookProfilePostsScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -32,7 +32,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zFacebookProfilePostsScraperBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** CUSTOM estimate (v1: "no single estimationLabel is true here"):
          *  ONE actor, SIX modes, and NEWLINE-separated target textareas the
          *  shared array-multiplier presets cannot see. Detail/id modes →
@@ -60,7 +60,7 @@ export default defineEndpoint({
             const amount = isPostMode
                 ? n * cap + (mode === "profile_posts_by_url" ? n : 0)
                 : n;
-            return { units: [{ amount, unit: "result" }] };
+            return { units: [{ amount, unit: "RESULT" }] };
         },
     },
 });

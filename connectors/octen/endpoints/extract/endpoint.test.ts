@@ -19,7 +19,7 @@ Deno.test("octen#extract happy (recorded): bills SUCCESSFUL urls only", async ()
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 1, unit: "RESULT" }]);
     assertEquals(result.usage.evidence?.usage, {
         total_urls: 1,
         successful_urls: 1,
@@ -40,7 +40,7 @@ Deno.test("octen#extract empty (recorded): failed url bills ZERO — money follo
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     // 1 url sent, 0 succeeded — the receipt, not the request, is billed
-    assertEquals(result.usage.units, [{ amount: 0, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 0, unit: "RESULT" }]);
     assertEquals(result.usage.evidence?.usage, {
         total_urls: 1,
         successful_urls: 0,

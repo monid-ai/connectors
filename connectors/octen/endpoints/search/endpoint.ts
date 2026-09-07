@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -26,6 +26,14 @@ export default defineEndpoint({
     request: { method: "POST", path: "/search" },
     input: { schema: { body: zOctenSearchBody } },
     usage: {
+        /** Flat call fee AND gated full-content tokens (AND = COMPOSITE). */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: [
+                { kind: UsageModelKind.PER_CALL },
+                { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
+            ],
+        },
         consolidate: ({ data, utils }) => {
             const tokens = utils.json.optionalNum(
                 data.output,
@@ -34,9 +42,11 @@ export default defineEndpoint({
             return {
                 usage: {
                     units: [
-                        { amount: 1, unit: "call" as const },
+                        // the flat call component is MODEL-declared
+                        // (COMPOSITE [PER_CALL, PER_UNIT·TOKEN]) — never a
+                        // measure (design D18)
                         ...(tokens !== undefined
-                            ? [{ amount: tokens, unit: "token" as const }]
+                            ? [{ amount: tokens, unit: "TOKEN" as const }]
                             : []),
                     ],
                     evidence: utils.json.pick(data.output, ["$.meta.usage"]),

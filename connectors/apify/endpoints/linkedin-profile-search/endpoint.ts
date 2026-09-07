@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -200,7 +200,7 @@ export default defineEndpoint({
         /** Page-basis billing: a per-page charge in every mode (profiles
          *  ride as a second native measure — the cost signal in Full
          *  modes; rates live in the catalog, not here). */
-        model: { kind: "per_unit", unit: "page" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.PAGE },
         /** v1 DUAL_LIMIT (resultsPerPage 25): takePages, else
          *  ceil(maxItems/25), else 1 page — in the SAME units consolidate
          *  settles (pages + profiles). */
@@ -212,8 +212,8 @@ export default defineEndpoint({
                 (maxItems !== undefined ? Math.ceil(maxItems / 25) : 1);
             return {
                 units: [
-                    { amount: pages, unit: "page" },
-                    { amount: maxItems ?? pages * 25, unit: "result" },
+                    { amount: pages, unit: "PAGE" },
+                    { amount: maxItems ?? pages * 25, unit: "RESULT" },
                 ],
             };
         },
@@ -241,8 +241,8 @@ export default defineEndpoint({
             return {
                 usage: {
                     units: [
-                        { amount: pages, unit: "page" },
-                        { amount: profiles, unit: "result" },
+                        { amount: pages, unit: "PAGE" },
+                        { amount: profiles, unit: "RESULT" },
                     ],
                     ...(model === "PAY_PER_EVENT"
                         ? { cost: utils.money.fromDollars(totalUsd ?? 0) }

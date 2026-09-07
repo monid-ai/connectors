@@ -126,11 +126,13 @@ export class LoadedEndpoint implements RunnableEndpoint {
 
     /** Pre-run cost estimate (v1 paymentLifecycle.estimate): validated
      *  input → estimated Usage in consolidate's units — PURE, no IO, no
-     *  state. Absent estimate fn ⇒ one CALL unit (the v1 PER_CALL base). */
+     *  state. Absent estimate fn ⇒ `{units: []}` — nothing countable to
+     *  predict (the PER_CALL posture: the flat charge is fully described
+     *  by the model + success, never a fake measure — design D18). */
     estimate(runInput: RunInput): Usage {
         const input = this.deriveInput(runInput);
         if (this.fns.usageEstimate) return this.fns.usageEstimate({ input });
-        return { units: [{ amount: 1, unit: "call" }] };
+        return { units: [] };
     }
 
     async start(runInput: RunInput): Promise<RunStartResult> {

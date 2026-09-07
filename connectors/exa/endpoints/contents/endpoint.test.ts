@@ -26,7 +26,7 @@ Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
     });
 
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 1, unit: "RESULT" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 1_000,
@@ -46,7 +46,7 @@ Deno.test("exa#contents provider error: zero usage", async () => {
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
 });
 
 Deno.test("interning: search and contents share the settle fn + auth entries", async () => {

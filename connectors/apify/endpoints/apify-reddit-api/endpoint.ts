@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zApifyRedditApiBody } from "./schema/inputs.ts";
 
 /**
@@ -31,7 +31,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zApifyRedditApiBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxItems per startUrl — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(

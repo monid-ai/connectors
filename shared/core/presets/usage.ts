@@ -7,11 +7,13 @@ import { preset } from "./preset.ts";
  * boilerplate). They return {usage} only — output absent = unchanged.
  */
 export const usage = {
-    /** One flat call unit per successful run. */
+    /** Flat per-run billing (model kind PER_CALL): nothing to count — the
+     *  flat charge is fully described by the model + the success flag, so
+     *  the settle reports NO measures (design D18). */
     perCall: preset(
         "usage.perCall",
         (): UsageConsolidateFn => () => ({
-            usage: { units: [{ amount: 1, unit: "call" }] },
+            usage: { units: [] },
         }),
     ),
     /** Units = array length at the given output path (e.g. "$.results"). */
@@ -21,7 +23,7 @@ export const usage = {
             usage: {
                 units: [{
                     amount: utils.json.len(data.output, path),
-                    unit: "result",
+                    unit: "RESULT",
                 }],
             },
         }),

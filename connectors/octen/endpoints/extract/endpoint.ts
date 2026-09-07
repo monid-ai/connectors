@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenExtractBody } from "./schema/inputs.ts";
 
 /**
@@ -26,6 +26,7 @@ export default defineEndpoint({
     input: { schema: { body: zOctenExtractBody } },
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         consolidate: ({ data, utils }) => ({
             usage: {
                 units: [{
@@ -33,7 +34,7 @@ export default defineEndpoint({
                         data.output,
                         "$.meta.usage.successful_urls",
                     ) ?? 0,
-                    unit: "result",
+                    unit: "RESULT",
                 }],
                 evidence: utils.json.pick(data.output, ["$.meta.usage"]),
             },

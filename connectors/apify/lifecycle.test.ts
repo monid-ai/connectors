@@ -1,6 +1,6 @@
 import { assert, assertEquals } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import type { RunInput } from "@shared/core";
+import type { RunInput, UsageModel } from "@shared/core";
 import {
     loadFixture,
     runEndpoint,
@@ -56,7 +56,7 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ite
         });
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
-        assertEquals(result.usage.units, [{ amount: 2, unit: "result" }], id);
+        assertEquals(result.usage.units, [{ amount: 2, unit: "RESULT" }], id);
         // PRICE_PER_DATASET_ITEM: 2 × $0.005 — signals threaded via state.data
         assertEquals(result.usage.cost, {
             currency: "USD",
@@ -81,7 +81,7 @@ Deno.test("apify: actor failure chain — synthesized 500, zero usage, digested 
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 500);
     assertEquals(result.providerHttpStatus, 200); // ours/theirs (D12)
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     const output = result.output as Record<string, unknown>;
     assertEquals(output.message, "Actor exited with error");
     assert("raw" in output); // digest, never hide
@@ -98,7 +98,7 @@ Deno.test("apify: start-rejected chain — vendor 404 is DATA, digested", async 
     });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 404);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     const output = result.output as Record<string, unknown>;
     assertEquals(output.message, "Actor was not found");
     assertEquals(output.type, "actor-not-found");
@@ -117,8 +117,8 @@ Deno.test("apify#linkedin-profile-search: pages reconstructed from LIVE run-reco
     // usageTotalUsd $0.04 at the LIVE $0.02 page rate ⇒ 2 pages; the baked
     // $0.05 fallback would have yielded 1 — proves the run-record read
     assertEquals(result.usage.units, [
-        { amount: 2, unit: "page" },
-        { amount: 2, unit: "result" },
+        { amount: 2, unit: "PAGE" },
+        { amount: 2, unit: "RESULT" },
     ]);
     assertEquals(result.usage.cost, {
         currency: "USD",
@@ -139,7 +139,7 @@ Deno.test("apify: PAY_PER_EVENT chain settles cost = usageTotalUsd for provider-
         mode: "replay",
         fixture,
     });
-    assertEquals(result.usage.units, [{ amount: 2, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 2, unit: "RESULT" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 40_000,
@@ -182,13 +182,77 @@ async function estimateFor(id: string, body: RunInput["body"]) {
     return loaded.estimate({ body });
 }
 
-Deno.test("apify estimates: every endpoint estimates without IO, in settle units", async () => {
+/** The units a model BILLS (the card rows services multiplies): PER_CALL
+ *  bills the flat charge (no measure); metered kinds bill their units. */
+function billedUnits(model: UsageModel): string[] {
+    switch (model.kind) {
+        case "PER_CALL":
+            return [];
+        case "PER_UNIT":
+        case "VARIANT":
+            return [model.unit];
+        case "COMPOSITE":
+            return model.components
+                .filter((component) => component.kind === "PER_UNIT")
+                .map((component) => (component as { unit: string }).unit);
+    }
+}
+
+Deno.test("apify estimates: the card invariant — estimate covers every billed unit, no IO", async () => {
+    const bundle = await testBundle();
     for (const id of await endpointIds()) {
-        const usage = await estimateFor(id, inputFor(id).body);
-        assert(usage.units.length >= 1, id);
-        for (const measure of usage.units) {
+        const model = bundle.endpoints[id].usage.model;
+        assert(model, `${id}: usage.model missing`);
+        const estimated = await estimateFor(id, inputFor(id).body);
+        for (const measure of estimated.units) {
             assert(measure.amount >= 0, id);
         }
+        if (model.kind === "PER_CALL") {
+            // nothing countable to predict — the flat charge is fully
+            // described by the model + success (design D18)
+            assertEquals(estimated.units, [], id);
+            continue;
+        }
+        for (const unit of billedUnits(model)) {
+            assert(
+                estimated.units.some((measure) => measure.unit === unit),
+                `${id}: estimate misses billed unit ${unit} — one card row ` +
+                    `must price both the estimate and the settle`,
+            );
+        }
+    }
+});
+
+Deno.test("apify settles: the card invariant + estimate accuracy (shared chain)", async () => {
+    const bundle = await testBundle();
+    const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
+    for (const id of await endpointIds()) {
+        if (CUSTOM_BILLING.has(id.split("#")[1])) continue;
+        const model = bundle.endpoints[id].usage.model;
+        assert(model, id);
+        const estimated = await estimateFor(id, inputFor(id).body);
+        const settled = await runEndpoint({
+            unit: await testSealedUnit(id),
+            input: inputFor(id),
+            mode: "replay",
+            fixture,
+        });
+        // every billed PER_UNIT unit is settled as a measure (PER_CALL
+        // endpoints settle observation measures freely — billing reads the
+        // MODEL, so nothing is asserted for the flat component)
+        for (const unit of billedUnits(model)) {
+            assert(
+                settled.usage.units.some((measure) => measure.unit === unit),
+                `${id}: settle misses billed unit ${unit}`,
+            );
+        }
+        // v1 estimateAccuracy posture: visible, not asserted (the shared
+        // chain is synthetic — 2 items regardless of the estimate input)
+        console.log(
+            `[estimate-accuracy] ${id}: estimated=${
+                JSON.stringify(estimated.units)
+            } settled=${JSON.stringify(settled.usage.units)}`,
+        );
     }
 });
 
@@ -199,14 +263,14 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
             searchTerms: ["a"],
             maxItems: 7,
         })).units,
-        [{ amount: 7, unit: "result" }],
+        [{ amount: 7, unit: "RESULT" }],
     );
     // ONE_PER_QUERY: one per multiplier entry
     assertEquals(
         (await estimateFor("apify#instagram-profile-scraper", {
             usernames: ["a", "b", "c"],
         })).units,
-        [{ amount: 3, unit: "result" }],
+        [{ amount: 3, unit: "RESULT" }],
     );
     // PER_QUERY_LIMIT: limit × queries
     assertEquals(
@@ -214,15 +278,15 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
             searchQueries: ["x", "y"],
             maxResults: 4,
         })).units,
-        [{ amount: 8, unit: "result" }],
+        [{ amount: 8, unit: "RESULT" }],
     );
     // FALLBACK_DEFAULT (v1 DEFAULT_ESTIMATED_RESULTS = 3) when nothing probes
     assertEquals(
         (await estimateFor("apify#tweet-scraper", { searchTerms: ["a"] }))
             .units,
-        [{ amount: 3, unit: "result" }],
+        [{ amount: 3, unit: "RESULT" }],
     );
-    // PER_CALL endpoints: the engine default — one CALL
+    // PER_CALL endpoints: the engine default — nothing countable, `[]`
     assertEquals(
         (await estimateFor("apify#tiktok-api", {
             type: "SEARCH",
@@ -230,7 +294,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
             url: "https://www.tiktok.com/@tiktok",
             keywords: ["deno"],
         })).units,
-        [{ amount: 1, unit: "call" }],
+        [],
     );
     // linkedin-profile-search: page units (maxItems 2 → ceil(2/25) = 1 page)
     assertEquals(
@@ -240,8 +304,8 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
             maxItems: 2,
         })).units,
         [
-            { amount: 1, unit: "page" },
-            { amount: 2, unit: "result" },
+            { amount: 1, unit: "PAGE" },
+            { amount: 2, unit: "RESULT" },
         ],
     );
 });

@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenBroadSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -26,6 +26,14 @@ export default defineEndpoint({
     request: { method: "POST", path: "/broad-search" },
     input: { schema: { body: zOctenBroadSearchBody } },
     usage: {
+        /** Receipt queries AND gated full-content tokens (AND = COMPOSITE). */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: [
+                { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
+            ],
+        },
         consolidate: ({ data, utils }) => {
             const queries = utils.json.optionalNum(
                 data.output,
@@ -42,9 +50,9 @@ export default defineEndpoint({
             return {
                 usage: {
                     units: [
-                        { amount: queries, unit: "result" as const },
+                        { amount: queries, unit: "RESULT" as const },
                         ...(tokens !== undefined
-                            ? [{ amount: tokens, unit: "token" as const }]
+                            ? [{ amount: tokens, unit: "TOKEN" as const }]
                             : []),
                     ],
                     evidence: utils.json.pick(data.output, ["$.meta.usage"]),

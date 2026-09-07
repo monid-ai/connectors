@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zRedditScraperLiteBody } from "./schema/inputs.ts";
 
 /**
@@ -25,7 +25,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zRedditScraperLiteBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: {
+            // verified actor-start charge event + per-item metering (survey)
+            kind: UsageModelKind.COMPOSITE,
+            components: [
+                { kind: UsageModelKind.PER_CALL },
+                { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+            ],
+        },
         /** maxItems caps the run — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.limitIsExact(["maxItems"], 3),

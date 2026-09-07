@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zTiktokVideoScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -29,7 +29,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zTiktokVideoScraperBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one video per post url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.onePerQuery(["postURLs"]),

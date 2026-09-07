@@ -73,6 +73,16 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   reports at settle, sync runs included) — engine-capped
   (`schema.state_max_bytes`). `timeouts.pollMs` is the cadence default, per-tick
   `pollAfterMs` overrides. Every doc floors at `schema.fn_abi_since`.
+- **Rate-free billing shapes**: `usage.model` declares the billing ALGEBRA per
+  endpoint — LEAF (`PER_CALL` flat / `PER_UNIT` metered), AND (`COMPOSITE` of
+  scalars), SELECT (`VARIANT`) — never a rate: vendor prices are
+  account/tier-dependent (apify event prices tier by subscription plan), so
+  rates live in the hosted rate card. `usage.units` holds COUNTABLE measures
+  only (UPPERCASE values; CALL is not a unit — a flat charge is model + success,
+  and `{units: []}` is the canonical "nothing counted").
+  `deno task engine:estimate` prints an endpoint's pre-run estimate;
+  `deno task apify:pricing` guards model-shape drift against live published
+  pricing (D18).
 - **Billing before presentation**: `usage.consolidate` is REQUIRED and runs on
   the RAW response envelope BEFORE `fromResponse` — presentation changes can
   never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;

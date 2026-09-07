@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zUsageConsolidateFn, zUsageEstimateFn } from "../hooks/mod.ts";
-import { zUsageModel } from "../usage/model.ts";
+import { zUsageModel } from "../usage/model/mod.ts";
 
 /**
  * Usage section — SHARED by EndpointDef and ProviderDef (leaf-wise fallback):
@@ -11,7 +11,7 @@ import { zUsageModel } from "../usage/model.ts";
  *     compile error if neither; use presets.usage.perCall() for flat
  *     billing). Runs BEFORE fromResponse, engine-executed for every
  *     operator.
- *   - `model`: the RATE-FREE cost-shape declaration (usage/model.ts) —
+ *   - `model`: the RATE-FREE billing-shape declaration (usage/model/) —
  *     inline DATA on the compiled doc (never a fn), so catalogs can price
  *     without executing anything.
  *   - `estimate`: the PRE-RUN estimate hook (hooks/estimate.ts) —

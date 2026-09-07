@@ -11,7 +11,7 @@ import { zEndpointMeta } from "../meta/endpoint.ts";
 import { zJsonSchemaDoc } from "./json-schema-doc.ts";
 import { zFnRef } from "../fn-table/ref.ts";
 import { zTimeouts } from "../sections/timeouts.ts";
-import { zUsageModel } from "../usage/model.ts";
+import { zUsageModel } from "../usage/model/mod.ts";
 
 /**
  * zEndpointDoc — the COMPILED artifact: pure, flat, strict RFC 8259 JSON,

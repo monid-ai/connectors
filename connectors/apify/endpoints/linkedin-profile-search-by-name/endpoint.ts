@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinProfileSearchByNameBody } from "./schema/inputs.ts";
 
 /**
@@ -28,7 +28,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zLinkedinProfileSearchByNameBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxItems wins; else maxPages x 25 profiles/page — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.dualLimit(

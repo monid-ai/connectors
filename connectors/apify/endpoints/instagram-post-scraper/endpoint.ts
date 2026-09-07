@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramPostScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -27,7 +27,14 @@ export default defineEndpoint({
         path: "/v2/acts/apify~instagram-post-scraper/runs",
     },
     input: { schema: { body: zInstagramPostScraperBody } },
-    /** Flat per-run pricing (v1 PER_CALL) — the engine default
-     *  estimate (one CALL) is already exact. */
-    usage: { model: { kind: "per_call" } },
+    usage: {
+        // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
+        // published charge event is per item — metered, not flat.
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        estimate: presets.estimate.perQueryLimit(
+            ["resultsLimit"],
+            ["username"],
+            3,
+        ),
+    },
 });

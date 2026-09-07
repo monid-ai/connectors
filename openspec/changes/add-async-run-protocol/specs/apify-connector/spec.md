@@ -51,23 +51,39 @@ entry per lifecycle fn and one consolidate entry.
 - **WHEN** the bundle is compiled
 - **THEN** every apify doc references the same lifecycle.start/poll/stop and consolidate fn ids
 
-### Requirement: Per-endpoint model + estimate pinned to the input schema
-Every endpoint SHALL declare `usage.model` exactly matching its cost
-shape (per_result on dataset-item actors, per_call on flat actors,
-per_unit PAGE on linkedin-profile-search — NO provider default) and
-`usage.estimate` naming the endpoint's OWN input-schema fields via
-`presets.estimate.*` (e.g. tweet-scraper `limitIsExact(["maxItems"], 3)`,
-instagram-profile-scraper `onePerQuery(["usernames"])`). v1's allow-list
-field PROBING is NOT ported — inputs are pinned, so estimates read them
-directly; endpoints whose knobs no flat-field preset can see
-(amazon-search-scraper: per-item maxPages inside the `input` array;
-facebook-profile-posts-scraper: newline-separated targets × max_posts)
-declare custom inline estimates. PER_CALL endpoints declare no estimate
-(the engine default one-CALL is already exact).
+### Requirement: Survey-verified per-endpoint models + pinned-field estimates
+Every endpoint SHALL declare `usage.model` matching its LIVE published
+pricing (verified per actor via the Apify API, not v1 folklore): 27
+PER_UNIT·RESULT dataset actors; 17 COMPOSITE([PER_CALL, PER_UNIT·RESULT])
+actors with a verified actor-start charge event; 2 PER_CALL actors
+(`request`-event: tiktok-api, tiktok-comments-scraper-api); PER_UNIT·PAGE
+on linkedin-profile-search. instagram-hashtag/post are SURVEY-CORRECTED
+from v1's per-call to metered. Models reference `UsageModelKind.*` /
+`Unit.*` consts, never raw strings. `usage.estimate` names the endpoint's
+OWN input-schema fields via `presets.estimate.*` (v1's allow-list probing
+is NOT ported — inputs are pinned); endpoints whose knobs no flat-field
+preset can see (amazon-search-scraper: per-item maxPages;
+facebook-profile-posts-scraper: newline targets × max_posts) declare
+custom inline estimates. PER_CALL endpoints declare no estimate (the
+engine default `{units: []}` is already exact).
 
 #### Scenario: Exact-field estimate
 - **WHEN** tweet-scraper estimates {maxItems: 7}
-- **THEN** the estimate is 7 result units; absent maxItems falls back to 3 (v1 DEFAULT_ESTIMATED_RESULTS)
+- **THEN** the estimate is 7 RESULT units; absent maxItems falls back to 3 (v1 DEFAULT_ESTIMATED_RESULTS)
+
+### Requirement: Pricing drift guard (live)
+`deno task apify:pricing` (APIFY_API_KEY) SHALL fetch every actor's
+CURRENT published pricing and FAIL on a regime change (pricingModel ≠
+PAY_PER_EVENT) or a SHAPE mismatch between the published charge events
+(flat = /start/-named or `request`; metered = the rest) and the declared
+model (flat ⇔ a PER_CALL component; metered ⇔ a PER_UNIT/VARIANT
+component). Rates are deliberately UNCHECKED — apify event prices are
+tiered by OUR subscription plan; rate reconciliation is a services-side
+alert against the card.
+
+#### Scenario: Missed actor-start event
+- **WHEN** an actor publishes an actor-start event but the model declares plain PER_UNIT
+- **THEN** the survey exits nonzero naming the endpoint (this caught instagram-api-scraper on the guard's first run)
 
 ### Requirement: linkedin-profile-search bills pages from LIVE run-record rates
 The leaf-wise-override showcase SHALL read its PAY_PER_EVENT rates FROM

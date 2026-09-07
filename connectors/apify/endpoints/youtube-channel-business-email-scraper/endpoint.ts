@@ -1,4 +1,4 @@
-import { defineEndpoint, presets } from "@shared/core";
+import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeChannelBusinessEmailScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -32,7 +32,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zYoutubeChannelBusinessEmailScraperBody } },
     usage: {
-        model: { kind: "per_result" },
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one channel record per entry — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.onePerQuery(["channels"]),

@@ -27,7 +27,7 @@ Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidat
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     // usage: measures carry number + unit; vendor-reported usd cost (READ, not computed)
-    assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 3, unit: "RESULT" }]);
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 5_000,
@@ -61,7 +61,7 @@ Deno.test("exa#search provider error: 401 is data, zero usage", async () => {
 
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.usage.cost, undefined);
     // raw body passes through untouched on provider error
     assertEquals(result.output, {

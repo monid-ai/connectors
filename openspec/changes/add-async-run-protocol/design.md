@@ -398,6 +398,83 @@ its Temporal `endpointExecution` workflow.
 - Consequence: breaking hook ABI revision — ENGINE_VERSION 0.3.0;
   fn_abi_since/async_since 0.3.0 (every doc floors there).
 
+## D18 — Rates are services-owned; the model is a rate-free billing ALGEBRA
+
+- Context: review arc on "transparent estimates" (rate on the doc? \u2192 no)
+  \u2014 settled by a LIVE fact: every one of our 46 apify actors now publishes
+  PAY_PER_EVENT pricing whose event prices are TIERED BY OUR SUBSCRIPTION
+  PLAN (`eventTieredPricingUsd: FREE\u2026DIAMOND`, verified raw). Any
+  repo-baked rate would mis-price some account, so:
+- **Ownership**: DOC = the billing SHAPE (`usage.model`); ENGINE = the
+  COUNTS (`estimate()` pre-run; the settle tail post-run) + in-band
+  vendor-cost EVIDENCE (`usage.cost`, tier-correct by construction);
+  SERVICES = the rate card ((endpoint|provider, tier) → $ per model unit)
+  AND the multiply. NOTHING rate-shaped ships from this repo (rev-3's
+  zVendorRate/applyRate helper was REJECTED: services-owned config ⇒
+  services-owned code). Services-side expectations: estimate hold =
+  card × `estimate().units`; settle vendor cost = `usage.cost` evidence
+  else card × units; reconciliation alert when evidence diverges from
+  card × units.
+- **The model algebra — three orthogonal operators** (one kind per file,
+  usage/model/; union + DERIVED enum in mod.ts via
+  extractZodDiscriminatorKeys, the v1 zPriceTypes pattern):
+  - LEAF: `PER_CALL` (flat — the run is the product; billed 1 iff
+    success; NO unit field and NO measure) and `PER_UNIT` (metered —
+    billed per N of `unit`).
+  - AND: `COMPOSITE` — the SUM of scalar components (v1 leaf.ts lineage;
+    ≥2 components, ≤1 PER_CALL, distinct PER_UNIT units, no nesting).
+    The verified apify actor-start fee + per-item metering is
+    `[PER_CALL, PER_UNIT·RESULT]` (17 of 46 actors).
+  - SELECT: `VARIANT` (née unit_matrix — renamed: rate-free docs carry
+    variant SELECTION, not a rate matrix; v1's own rows were already
+    named `variants`) — request coordinates pick WHICH card row prices
+    the unit; exactly one active; unmatched ⇒ unpriceable ⇒ admission
+    rejects.
+  - DELETED: `TIERED` — volume schedules are a shape of the services
+    CARD ROW, invisible to a rate-free doc; the doc's only job is naming
+    the quantities, which PER_UNIT/COMPOSITE do (octen "call + token
+    tier" ≡ COMPOSITE([PER_CALL, PER_UNIT·TOKEN]) + a tiered card row).
+- **CALL is not a Unit**: every old CALL measure was PER_CALL restated (or
+  an arbitrary unit on a zero). `usage.units` answers ONE question — how
+  many of each COUNTABLE thing did this run consume — so a flat charge
+  (fully known from model + success) never appears in it. Consequences:
+  `zUsage.units` may be EMPTY (the canonical "nothing counted"),
+  `zeroUsage()`/`defaultUsage()` return `{units: []}` (a zero is
+  unit-agnostic), `presets.usage.perCall()` settles `{units: []}`, the
+  engine's no-estimate default is `{units: []}`, and there is no
+  estimate.perCall preset.
+- **The enum rule**: UPPERCASE keys AND values for every closed
+  vocabulary (`Unit.RESULT = "RESULT"`, `UsageModelKind.PER_UNIT =
+  "PER_UNIT"`); lowercase is a DISPLAY concern (web/CLI label maps).
+  Defs reference consts, never raw strings; closed-term fn BODIES write
+  the raw UPPERCASE literal (they cannot import).
+- **Estimate is a first-class surface**: `estimate()` is the one PURE
+  public engine entry (workflow admission holds AND standalone tooling —
+  `deno task engine:estimate` prints model + estimated units with a
+  rejecting transport as the no-IO proof). The public surface is
+  estimate/start/poll/stop/run; `settle` is the INTERNAL tail of
+  whichever tick completes; `run()` = start + injectable-sleep + poll
+  loop (embedded mode: CLI/tests/recorder — Temporal re-implements the
+  loop as durable activities and never calls it). The card invariant is
+  TESTED: estimate and settle report the model's billed units, so one
+  card row prices both ends; count-true chains assert estimate ==
+  settled units exactly.
+- **Pricing drift guard**: `deno task apify:pricing` re-fetches every
+  actor's published pricing and fails on regime change or shape mismatch
+  vs the declared model (rates deliberately unchecked — tier-dependent).
+  It caught instagram-api-scraper's missed actor-start event on its
+  FIRST run.
+- **Variant-priced vendors (Apollo posture)**: prefer the vendor's own
+  meter (credits) so variant complexity collapses into the COUNT; billed
+  units must be explainable from the response the caller holds (output
+  markers, the linkedin precedent) + itemized `usage.evidence`
+  arithmetic. No black-box counts.
+- Follow-ups: exa re-model to credits (confirm per-response reporting
+  first); linkedin-profile-search-by-name/-by-services billing basis
+  review (they publish the search-page event family but bill per RESULT
+  today, v1 parity); add-on events as extra COMPOSITE components where
+  estimate fidelity warrants.
+
 ## Concepts delta
 
 | Term | Definition |
@@ -407,5 +484,6 @@ its Temporal `endpointExecution` workflow.
 | **Outcome** | A lifecycle fn's return: `RUNNING{state: patch, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?: patch}` — the completed arm IS the raw envelope the settle pipeline consumes; state patches merge presence-based over the previous state. |
 | **State** (`zRunState`) | The STRUCTURED envelope threaded between ticks by value: fn-owned `externalRunId`/`stage`/`data` (ids + billing signals, typed when the doc declares `lifecycle.state`) + ENGINE-owned `timing` (the v1 providerRun clock — feeds the ClickHouse provider slices). Hard-capped (`schema.state_max_bytes`). |
 | **Timing** (`zRunTiming`) | The settle-side provider-timing report on every RunCompleted (async AND sync): startedAt/completedAt/attempts/startRequestMs/pollMsTotal/providerTotalMs → t_provider_* usage-event slices. Engine-stamped; hosts keep measuring their own slices. |
-| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage in consolidate's units, engine-executed with no IO (`estimate(runInput)`); `usage.model` is the rate-free cost-shape declaration beside it. |
+| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage in consolidate's units, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{units: []}` (the PER_CALL posture). |
+| **Model** (`usage.model`) | The rate-free billing ALGEBRA on the doc: LEAF (PER_CALL flat / PER_UNIT metered), AND (COMPOSITE of scalars), SELECT (VARIANT — request coordinates pick the card row). Rates and tier schedules live in the services rate card (D18). |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |

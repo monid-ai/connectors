@@ -60,7 +60,7 @@ function demoConnector(): ConnectorSource[] {
                                     data.output,
                                     "$.results",
                                 ),
-                                unit: "result",
+                                unit: "RESULT",
                             }],
                         },
                     }),
@@ -192,7 +192,7 @@ Deno.test("happy path: auth injected, usage computed, output validated", async (
     const loaded = await engine.load(await demoUnit());
     const result = await loaded.run({ body: { q: "hi" } });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 2, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 2, unit: "RESULT" }]);
     assertEquals(seen.url, "https://api.demo.test/search");
     assertEquals(seen.headers?.["x-demo-key"], "k"); // injected inside the transport
 });
@@ -259,7 +259,7 @@ Deno.test("vendor non-2xx is DATA: zero usage, raw body, no throw", async () => 
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 429);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.output, { error: "slow down" });
 });
 
@@ -420,7 +420,7 @@ Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", asy
                 usage: {
                     units: [{
                         amount: utils.json.len(data.output, "$.results"),
-                        unit: "result",
+                        unit: "RESULT",
                     }],
                     cost: utils.money.fromDollars(
                         utils.json.num(data.output, "$.costDollars.total"),
@@ -468,14 +468,14 @@ Deno.test("usage.consolidate: absent output = unchanged payload", async () => {
     const loaded = await engine.load(await demoUnit());
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.output, { results: [{ id: "a" }], extra: true });
-    assertEquals(result.usage.units, [{ amount: 1, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 1, unit: "RESULT" }]);
 });
 
 Deno.test("FN_CONTRACT: bad OUTPUT half of the settle pair fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         consolidate: ((_ctx: never) => ({
-            usage: { units: [{ amount: 1, unit: "call" }] },
+            usage: { units: [] },
             output: () => 1, // not Json — the pair contract rejects it
         })) as never,
     };
@@ -716,7 +716,7 @@ function asyncConnector(): ConnectorSource[] {
                                 amount: Array.isArray(data.output)
                                     ? data.output.length
                                     : 0,
-                                unit: "result",
+                                unit: "RESULT",
                             }],
                             ...(usd !== undefined
                                 ? { cost: utils.money.fromDollars(usd) }
@@ -779,7 +779,7 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     assertEquals(result.kind, "COMPLETED");
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
+    assertEquals(result.usage.units, [{ amount: 3, unit: "RESULT" }]);
     // ENGINE-stamped provider timing (t_provider_* slices): a start tick +
     // two poll ticks were measured
     assertEquals(result.timing.attempts, 2);
@@ -913,7 +913,7 @@ Deno.test("lifecycle: output.fromError digests provider-error envelopes (zero us
     );
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.output, {
         message: "slow down",
         raw: { error: { message: "slow down" } },
@@ -963,7 +963,7 @@ Deno.test("lifecycle: vendor non-2xx at start is DATA — zero usage, no throw",
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 429);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.output, { error: "slow down" });
 });
 
@@ -979,7 +979,7 @@ Deno.test("lifecycle: in-body vendor failure → fn-synthesized 500, zero usage"
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 500);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage.units, []);
     assertEquals(result.output, { message: "job failed" });
 });
 
@@ -1203,6 +1203,55 @@ Deno.test("lifecycle: utils.http per-call header/query overrides + auth still in
     assert(tick.kind === "RUNNING");
     assertEquals(headersSeen[0]["x-extra"], "yes");
     assertEquals(headersSeen[0]["x-demo-key"], "k"); // auth injected by the transport
+});
+
+// ---------------------------------------------------------------------------
+// estimate — pure entrypoint, and estimate-vs-actual comparability
+// ---------------------------------------------------------------------------
+
+Deno.test("estimate matches actual when counts are true (units deep-equal)", async () => {
+    // the chain is CONSTRUCTED count-true: 2 queries in, 2 items out — so
+    // the pre-run estimate and the settled usage agree EXACTLY (the same
+    // unit vocabulary, the same math target; one card row prices both)
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "done" } },
+            { status: 200, body: [{ id: "a" }, { id: "b" }] },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].endpoints[0].def.input = {
+                schema: { body: z.object({ queries: z.array(z.string()) }) },
+            };
+            connectors[0].endpoints[0].def.usage = {
+                estimate: presets.estimate.onePerQuery(["queries"]),
+            };
+        }),
+    );
+    const input = { body: { queries: ["a", "b"] } };
+    const estimated = loaded.estimate(input);
+    const actual = await loaded.run(input);
+    assertEquals(estimated.units, [{ amount: 2, unit: "RESULT" }]);
+    assertEquals(estimated.units, actual.usage.units);
+});
+
+Deno.test("estimate: pure (no IO) and `[]` without an estimate fn (the PER_CALL posture)", async () => {
+    let fetched = false;
+    const engine = new Engine({
+        transport: directTransport({
+            params: () => Promise.resolve({ apiKey: "k" }),
+            fetch: () => {
+                fetched = true;
+                return Promise.reject(new Error("estimate must not do IO"));
+            },
+        }),
+    });
+    const loaded = await engine.load(await demoUnit()); // no estimate fn
+    assertEquals(loaded.estimate({ body: { q: "x" } }), { units: [] });
+    assertEquals(fetched, false);
 });
 
 Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead config", async () => {
