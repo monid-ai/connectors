@@ -32,6 +32,7 @@ export default defineEndpoint({
     },
     input: { schema: { body: zFacebookProfilePostsScraperBody } },
     usage: {
+        model: { kind: "per_result" },
         /** CUSTOM estimate (v1: "no single estimationLabel is true here"):
          *  ONE actor, SIX modes, and NEWLINE-separated target textareas the
          *  shared array-multiplier presets cannot see. Detail/id modes →

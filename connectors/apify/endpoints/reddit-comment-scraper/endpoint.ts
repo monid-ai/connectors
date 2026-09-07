@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zRedditCommentScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * crawlerbros/reddit-comment-scraper — List Reddit Comments. Pure data; the async machinery
@@ -29,6 +28,14 @@ export default defineEndpoint({
         path: "/v2/acts/crawlerbros~reddit-comment-scraper/runs",
     },
     input: { schema: { body: zRedditCommentScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxComments per keyword — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["maxComments"],
+            ["keywords"],
+            3,
+        ),
+    },
 });

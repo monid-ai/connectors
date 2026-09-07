@@ -163,11 +163,10 @@
       entrypoint, default one CALL) + presets.estimate.* (v1
       EstimationLabel port, allow-lists as args)
 - [x] 10.g Apify backfill: provider state schema + $.data.* signal paths;
-      all 46 endpoints declare model/estimate (estimation.ts centralizes
-      the v1 allow-lists); facebook-profile-posts-scraper keeps its custom
-      estimate; linkedin-profile-search reads LIVE run-record rates
-      (finding 5 — constants fallback only) + per_unit PAGE model +
-      page-based estimate
+      all 46 endpoints declare model/estimate; facebook-profile-posts-
+      scraper keeps its custom estimate; linkedin-profile-search reads
+      LIVE run-record rates (finding 5 — constants fallback only) +
+      per_unit PAGE model + page-based estimate
 - [x] 10.h Fixture strategy v2: provider-level shared shape chains
       (run-succeeded / run-failed / start-rejected / pay-per-event) with
       {{request.url}}/{{request.origin}} bindings + required description;
@@ -185,3 +184,22 @@
 - [x] 10.l Verify: check + 117 tests green + lint + fmt + compile
       (minEngineVersion 0.3.0, 26 fnTable entries) + version:check + live
       drift guard
+
+## 11. Estimate revision: pinned input fields, no probing
+
+- [x] 11.a estimation.ts DELETED (allow-lists + apifyEstimate): the v1
+      field-probing was a workaround for UNPINNED actor inputs — v2
+      endpoints carry typed schemas, so estimates name their exact knobs
+- [x] 11.b All 42 per_result endpoints declare `model: {kind:
+      "per_result"}` explicitly + `presets.estimate.*` applied with their
+      OWN schema fields (probe order = arg order, only where a schema
+      genuinely has several knobs); provider-level model default removed
+- [x] 11.c Endpoints v1 mis-probed now estimate truthfully:
+      tiktok-video-scraper onePerQuery(postURLs), youtube-video-transcript
+      limitIsExact(max_videos, 1), amazon-reviews-extractor
+      perQueryPages(limit pages × products), facebook-events-scraper
+      maxEvents, linkedin-post-search maxPosts (v1 probed maxComments),
+      google-shopping-scraper limit; amazon-search-scraper gets a custom
+      inline estimate (per-item maxPages inside the input array)
+- [x] 11.d presets.estimate docstring reframed (fields = pinned schema
+      fields); design D17 + apify spec delta updated; 117 tests green

@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zLinkedinCompanyEmployeesBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-company-employees — List LinkedIn Company Employees. Pure data; the async machinery
@@ -30,6 +29,10 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-company-employees/runs",
     },
     input: { schema: { body: zLinkedinCompanyEmployeesBody } },
-    // v1 estimation label: LIMIT_IS_EXACT
-    usage: { estimate: apifyEstimate.limitIsExact() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxItems caps the run — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["maxItems"], 3),
+    },
 });

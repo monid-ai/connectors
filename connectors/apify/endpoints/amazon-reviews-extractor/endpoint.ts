@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zAmazonReviewsExtractorBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * web_wanderer/amazon-reviews-extractor — List Amazon Reviews (Extractor). Pure data; the async machinery
@@ -29,6 +28,16 @@ export default defineEndpoint({
         path: "/v2/acts/web_wanderer~amazon-reviews-extractor/runs",
     },
     input: { schema: { body: zAmazonReviewsExtractorBody } },
-    // v1 estimation label: LIMIT_IS_PAGES
-    usage: { estimate: apifyEstimate.limitIsPages() },
+    usage: {
+        model: { kind: "per_result" },
+        /** limit review-pages (~10 reviews each) per product — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryPages(
+            ["limit"],
+            [],
+            ["products"],
+            10,
+            3,
+        ),
+    },
 });

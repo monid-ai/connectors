@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zGoogleNewsScraperFastBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * data_xplorer/google-news-scraper-fast — Search Google News. Pure data; the async machinery
@@ -28,6 +27,13 @@ export default defineEndpoint({
         path: "/v2/acts/data_xplorer~google-news-scraper-fast/runs",
     },
     input: { schema: { body: zGoogleNewsScraperFastBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxArticles per keyword/topic — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(["maxArticles"], [
+            "keywords",
+            "topics",
+        ], 3),
+    },
 });

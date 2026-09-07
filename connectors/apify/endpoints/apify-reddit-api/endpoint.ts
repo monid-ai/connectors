@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zApifyRedditApiBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * practicaltools/apify-reddit-api — Reddit API. Pure data; the async machinery
@@ -31,6 +30,14 @@ export default defineEndpoint({
         path: "/v2/acts/practicaltools~apify-reddit-api/runs",
     },
     input: { schema: { body: zApifyRedditApiBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxItems per startUrl — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["maxItems"],
+            ["startUrls"],
+            3,
+        ),
+    },
 });

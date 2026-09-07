@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zFacebookCommentsScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/facebook-comments-scraper — List Facebook Comments. Pure data; the async machinery
@@ -27,6 +26,12 @@ export default defineEndpoint({
         path: "/v2/acts/apify~facebook-comments-scraper/runs",
     },
     input: { schema: { body: zFacebookCommentsScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** resultsLimit comments per post url — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(["resultsLimit"], [
+            "startUrls",
+        ], 3),
+    },
 });

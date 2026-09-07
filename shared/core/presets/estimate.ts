@@ -2,19 +2,23 @@ import type { UsageEstimateFn } from "../schema/hooks/mod.ts";
 import { preset } from "./preset.ts";
 
 /**
- * presets.estimate.* — usage.estimate presets: the v1 EstimationLabel
- * machinery (apify limit-resolver.ts) as parametric closed terms. The
- * FIELD ALLOW-LISTS ride as preset ARGS (data, not source): tuning a list
- * changes doc bytes, never the interned fn — and the v1 lesson stands
- * (field-name discovery centralised in the caller's one list, not every
- * endpoint file).
+ * presets.estimate.* — usage.estimate presets: the common input-derived
+ * count shapes (one-per-query, exact limit, per-query limit, pages…) as
+ * parametric closed terms. The FIELD NAMES ride as preset ARGS and are
+ * the ENDPOINT'S OWN pinned input-schema fields — v2 endpoints carry
+ * typed input schemas, so an estimate names its exact knobs
+ * (`limitIsExact(["maxItems"], 3)`). v1's allow-list PROBING
+ * (limit-resolver.ts: try 13 field names, first hit wins) was a
+ * WORKAROUND for unpinned actor inputs and is deliberately not ported;
+ * multi-field args exist only for endpoints whose schema genuinely has
+ * several knobs (probe order = arg order, first present wins).
  *
  * All presets read the caller's `input.body` (the request payload — where
  * actor-style vendors carry their knobs), never IO. Every preset returns
  * an estimated Usage in consolidate's units and NEVER throws on user
  * input: absent fields fall back to `fallback` (v1 FALLBACK_DEFAULT
  * posture). Each parametric fn is a CLOSED TERM (re-instantiated in an
- * empty scope), so the probe helpers are inlined per preset.
+ * empty scope), so the small helpers are inlined per preset.
  */
 export const estimate = {
     /** One flat CALL unit — PER_CALL endpoints (v1 basis PER_CALL). */

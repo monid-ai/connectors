@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zLinkedinProfilePostsBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-profile-posts — Pull LinkedIn Profile Posts. Pure data; the async machinery
@@ -29,6 +28,14 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-profile-posts/runs",
     },
     input: { schema: { body: zLinkedinProfilePostsBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxPosts (schema default 10) per target url — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["maxPosts"],
+            ["targetUrls"],
+            10,
+        ),
+    },
 });

@@ -51,18 +51,23 @@ entry per lifecycle fn and one consolidate entry.
 - **WHEN** the bundle is compiled
 - **THEN** every apify doc references the same lifecycle.start/poll/stop and consolidate fn ids
 
-### Requirement: Estimates port the v1 EstimationLabel table
-Every endpoint SHALL declare `usage.estimate` per its v1 label
-(connectors/apify/estimation.ts centralizes the field allow-lists as
-preset args — one list edit per vendor rename), except PER_CALL
-endpoints (the engine default one-CALL estimate is already exact — they
-declare `model: {kind: "per_call"}` instead); facebook-profile-posts-
-scraper keeps its v1 custom estimate (newline-separated targets ×
-max_posts).
+### Requirement: Per-endpoint model + estimate pinned to the input schema
+Every endpoint SHALL declare `usage.model` exactly matching its cost
+shape (per_result on dataset-item actors, per_call on flat actors,
+per_unit PAGE on linkedin-profile-search — NO provider default) and
+`usage.estimate` naming the endpoint's OWN input-schema fields via
+`presets.estimate.*` (e.g. tweet-scraper `limitIsExact(["maxItems"], 3)`,
+instagram-profile-scraper `onePerQuery(["usernames"])`). v1's allow-list
+field PROBING is NOT ported — inputs are pinned, so estimates read them
+directly; endpoints whose knobs no flat-field preset can see
+(amazon-search-scraper: per-item maxPages inside the `input` array;
+facebook-profile-posts-scraper: newline-separated targets × max_posts)
+declare custom inline estimates. PER_CALL endpoints declare no estimate
+(the engine default one-CALL is already exact).
 
-#### Scenario: Label parity
-- **WHEN** tweet-scraper (LIMIT_IS_EXACT) estimates {maxItems: 7}
-- **THEN** the estimate is 7 result units; absent limits fall back to 3 (v1 DEFAULT_ESTIMATED_RESULTS)
+#### Scenario: Exact-field estimate
+- **WHEN** tweet-scraper estimates {maxItems: 7}
+- **THEN** the estimate is 7 result units; absent maxItems falls back to 3 (v1 DEFAULT_ESTIMATED_RESULTS)
 
 ### Requirement: linkedin-profile-search bills pages from LIVE run-record rates
 The leaf-wise-override showcase SHALL read its PAY_PER_EVENT rates FROM

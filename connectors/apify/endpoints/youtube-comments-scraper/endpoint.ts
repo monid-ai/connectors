@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zYoutubeCommentsScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * streamers/youtube-comments-scraper — List YouTube Comments. Pure data; the async machinery
@@ -28,6 +27,14 @@ export default defineEndpoint({
         path: "/v2/acts/streamers~youtube-comments-scraper/runs",
     },
     input: { schema: { body: zYoutubeCommentsScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxComments per video url — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["maxComments"],
+            ["startUrls"],
+            3,
+        ),
+    },
 });

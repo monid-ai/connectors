@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zFacebookEventsScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/facebook-events-scraper — Search Facebook Events. Pure data; the async machinery
@@ -26,6 +25,13 @@ export default defineEndpoint({
         path: "/v2/acts/apify~facebook-events-scraper/runs",
     },
     input: { schema: { body: zFacebookEventsScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxEvents per query/url — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(["maxEvents"], [
+            "searchQueries",
+            "startUrls",
+        ], 3),
+    },
 });

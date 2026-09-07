@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zTiktokProfileScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apidojo/tiktok-profile-scraper — Get TikTok Profile. Pure data; the async machinery
@@ -30,6 +29,10 @@ export default defineEndpoint({
         path: "/v2/acts/apidojo~tiktok-profile-scraper/runs",
     },
     input: { schema: { body: zTiktokProfileScraperBody } },
-    // v1 estimation label: LIMIT_IS_EXACT
-    usage: { estimate: apifyEstimate.limitIsExact() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxItems caps the run — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["maxItems"], 3),
+    },
 });

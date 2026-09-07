@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zGoogleMapsScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * damilo/google-maps-scraper — Search Google Maps. Pure data; the async
@@ -28,6 +27,10 @@ export default defineEndpoint({
         path: "/v2/acts/damilo~google-maps-scraper/runs",
     },
     input: { schema: { body: zGoogleMapsScraperBody } },
-    // v1 estimation label: LIMIT_IS_EXACT
-    usage: { estimate: apifyEstimate.limitIsExact() },
+    usage: {
+        model: { kind: "per_result" },
+        /** max_results caps the run — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["max_results"], 3),
+    },
 });

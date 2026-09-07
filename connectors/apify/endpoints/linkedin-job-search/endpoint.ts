@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zLinkedinJobSearchBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-job-search — Search LinkedIn Jobs. Pure data; the async machinery
@@ -30,6 +29,14 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-job-search/runs",
     },
     input: { schema: { body: zLinkedinJobSearchBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxItems per location — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["maxItems"],
+            ["locations"],
+            3,
+        ),
+    },
 });

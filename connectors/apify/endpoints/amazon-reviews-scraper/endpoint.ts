@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zAmazonReviewsScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * axesso_data/amazon-reviews-scraper — List Amazon Reviews. Pure data; the async machinery
@@ -29,6 +28,10 @@ export default defineEndpoint({
         path: "/v2/acts/axesso_data~amazon-reviews-scraper/runs",
     },
     input: { schema: { body: zAmazonReviewsScraperBody } },
-    // v1 estimation label: ONE_PER_QUERY
-    usage: { estimate: apifyEstimate.onePerQuery() },
+    usage: {
+        model: { kind: "per_result" },
+        /** one result per input entry (one asin each) — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.onePerQuery(["input"]),
+    },
 });

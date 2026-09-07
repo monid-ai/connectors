@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zGoogleShoppingApifyBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * damilo/google-shopping-apify — Search Google Shopping (Apify). Pure data; the async machinery
@@ -28,6 +27,10 @@ export default defineEndpoint({
         path: "/v2/acts/damilo~google-shopping-apify/runs",
     },
     input: { schema: { body: zGoogleShoppingApifyBody } },
-    // v1 estimation label: LIMIT_IS_PAGES
-    usage: { estimate: apifyEstimate.limitIsPages() },
+    usage: {
+        model: { kind: "per_result" },
+        /** max_pages pages of num results each — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsPages(["max_pages"], ["num"], 0, 3),
+    },
 });

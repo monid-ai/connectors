@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zYoutubeScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * streamers/youtube-scraper — Pull YouTube Videos. Pure data; the async machinery
@@ -32,6 +31,13 @@ export default defineEndpoint({
         path: "/v2/acts/streamers~youtube-scraper/runs",
     },
     input: { schema: { body: zYoutubeScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxResults per url/query — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(["maxResults"], [
+            "startUrls",
+            "searchQueries",
+        ], 3),
+    },
 });

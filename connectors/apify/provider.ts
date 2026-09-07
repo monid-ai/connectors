@@ -269,9 +269,9 @@ export default defineProvider({
         },
     },
     usage: {
-        /** Default cost shape — most actors bill per dataset item; per-call
-         *  actors override with `{ kind: "per_call" }`. */
-        model: { kind: "per_result" },
+        // No provider-level model/estimate defaults: every ENDPOINT declares
+        // its own — the cost shape and the estimate fields are per-actor
+        // facts, pinned beside the input schema that defines them.
         consolidate: ({ data, utils }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
             const state = data.state ?? null;

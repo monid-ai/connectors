@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zYoutubeVideoTranscriptBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * starvibe/youtube-video-transcript — Get YouTube Transcript. Pure data;
@@ -28,6 +27,10 @@ export default defineEndpoint({
         path: "/v2/acts/starvibe~youtube-video-transcript/runs",
     },
     input: { schema: { body: zYoutubeVideoTranscriptBody } },
-    // v1 estimation label: ONE_PER_QUERY
-    usage: { estimate: apifyEstimate.onePerQuery() },
+    usage: {
+        model: { kind: "per_result" },
+        /** video-url mode returns 1; channel mode caps at max_videos — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["max_videos"], 1),
+    },
 });

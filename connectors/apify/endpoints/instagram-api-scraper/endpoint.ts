@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zInstagramApiScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/instagram-api-scraper — Instagram API. Pure data; the async machinery
@@ -29,6 +28,14 @@ export default defineEndpoint({
         path: "/v2/acts/apify~instagram-api-scraper/runs",
     },
     input: { schema: { body: zInstagramApiScraperBody } },
-    // v1 estimation label: PER_QUERY_LIMIT
-    usage: { estimate: apifyEstimate.perQueryLimit() },
+    usage: {
+        model: { kind: "per_result" },
+        /** resultsLimit posts per direct url (searchLimit in search mode) — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.perQueryLimit(
+            ["resultsLimit", "searchLimit"],
+            ["directUrls"],
+            3,
+        ),
+    },
 });

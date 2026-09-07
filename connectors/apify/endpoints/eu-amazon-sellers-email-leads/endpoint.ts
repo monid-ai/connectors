@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zEuAmazonSellersEmailLeadsBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * xmiso_scrapers/eu-amazon-sellers-email-leads — Find Amazon Sellers (EU). Pure data; the async machinery
@@ -29,6 +28,10 @@ export default defineEndpoint({
         path: "/v2/acts/xmiso_scrapers~eu-amazon-sellers-email-leads/runs",
     },
     input: { schema: { body: zEuAmazonSellersEmailLeadsBody } },
-    // v1 estimation label: LIMIT_IS_EXACT
-    usage: { estimate: apifyEstimate.limitIsExact() },
+    usage: {
+        model: { kind: "per_result" },
+        /** max_results caps the run — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["max_results"], 3),
+    },
 });

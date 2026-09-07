@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zGoogleShoppingScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * burbn/google-shopping-scraper — Search Google Shopping. Pure data; the async machinery
@@ -28,6 +27,10 @@ export default defineEndpoint({
         path: "/v2/acts/burbn~google-shopping-scraper/runs",
     },
     input: { schema: { body: zGoogleShoppingScraperBody } },
-    // v1 estimation label: LIMIT_IS_EXACT
-    usage: { estimate: apifyEstimate.limitIsExact() },
+    usage: {
+        model: { kind: "per_result" },
+        /** limit = products per call (schema default 10) — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.limitIsExact(["limit"], 10),
+    },
 });

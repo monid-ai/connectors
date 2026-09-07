@@ -1,6 +1,5 @@
 import { defineEndpoint } from "@shared/core";
 import { zAmazonSearchScraperBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * axesso_data/amazon-search-scraper — Search Amazon. Pure data; the async machinery
@@ -29,6 +28,29 @@ export default defineEndpoint({
         path: "/v2/acts/axesso_data~amazon-search-scraper/runs",
     },
     input: { schema: { body: zAmazonSearchScraperBody } },
-    // v1 estimation label: PER_QUERY_PAGE_LIMIT
-    usage: { estimate: apifyEstimate.perQueryPages() },
+    usage: {
+        model: { kind: "per_result" },
+        /** CUSTOM estimate: the page knob lives INSIDE the `input` array
+         *  items (one entry per keyword, each with its own maxPages) — no
+         *  flat-field preset can see it. Σ over items of (maxPages ?? 1)
+         *  × ~10 results/page. */
+        estimate: ({ data, utils }) => {
+            const items = utils.json.optionalGet(
+                data.input.body ?? null,
+                "$.input",
+            );
+            const list = Array.isArray(items) ? items : [];
+            let pages = 0;
+            for (const item of list) {
+                const n = item !== null && typeof item === "object" &&
+                        !Array.isArray(item)
+                    ? Number(item.maxPages)
+                    : NaN;
+                pages += Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
+            }
+            return {
+                units: [{ amount: Math.max(pages, 1) * 10, unit: "result" }],
+            };
+        },
+    },
 });

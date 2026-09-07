@@ -1,6 +1,5 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, presets } from "@shared/core";
 import { zLinkedinProfileSearchByNameBody } from "./schema/inputs.ts";
-import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-profile-search-by-name — Search LinkedIn Profiles (by Name). Pure data; the async machinery
@@ -28,6 +27,16 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-profile-search-by-name/runs",
     },
     input: { schema: { body: zLinkedinProfileSearchByNameBody } },
-    // v1 estimation label: DUAL_LIMIT (resultsPerPage 25)
-    usage: { estimate: apifyEstimate.dualLimit(25) },
+    usage: {
+        model: { kind: "per_result" },
+        /** maxItems wins; else maxPages x 25 profiles/page — the endpoint's OWN pinned input fields
+         *  (no probing: the schema is the source of truth). */
+        estimate: presets.estimate.dualLimit(
+            ["maxItems"],
+            ["maxPages"],
+            [],
+            25,
+            3,
+        ),
+    },
 });

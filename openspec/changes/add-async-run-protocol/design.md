@@ -378,11 +378,17 @@ its Temporal `endpointExecution` workflow.
 - **`usage.estimate`**: the 6th pure hook (v1 `paymentLifecycle.estimate`)
   — validated input → estimated `Usage`; engine entrypoint
   `estimate(runInput)` (no IO, no state); absent ⇒ one CALL unit (v1
-  PER_CALL base). Presets port the v1 EstimationLabel machinery
-  (`presets.estimate.*`: perCall, onePerQuery, limitIsExact,
-  perQueryLimit, limitIsPages, perQueryPages, dualLimit) with the FIELD
-  ALLOW-LISTS as preset ARGS — apify centralizes them once
-  (connectors/apify/estimation.ts, the v1 limit-resolver lesson).
+  PER_CALL base). Presets carry the count SHAPES (`presets.estimate.*`:
+  perCall, onePerQuery, limitIsExact, perQueryLimit, limitIsPages,
+  perQueryPages, dualLimit) applied with the ENDPOINT'S OWN pinned
+  input-schema fields as args (`limitIsExact(["maxItems"], 3)`). v1's
+  allow-list PROBING (limit-resolver.ts: try 13 field names against an
+  unknown input) was a WORKAROUND for unpinned actor inputs — v2 inputs
+  are typed per endpoint, so field discovery is deliberately NOT ported
+  (review: "we already have the input pinned; estimate directly matches
+  the input"). Likewise `usage.model` is declared per ENDPOINT (no
+  provider default) — the cost shape is a per-actor fact beside the
+  schema that defines it.
 - **Coded error classes** (same round): `JsonPathError`
   (PATH_SYNTAX/PATH_NOT_FOUND/TYPE_MISMATCH) and `CompileError`
   (SCHEMA_INVALID/HOOK_UNRESOLVED/STATE_SCHEMA_INVALID/DOC_MALFORMED),
