@@ -12,52 +12,117 @@ scope).
 - **WHEN** any hook fn calls ctx.logger.info
 - **THEN** the message routes to the host's EngineCtx.logger (no-op default)
 
+### Requirement: Run kinds defined once, UPPERCASE
+`RunKind = {RUNNING: "RUNNING", COMPLETED: "COMPLETED"}` (run/state.ts)
+SHALL be the ONE kind vocabulary shared by fn outcomes and engine results
+(v1 zProviderRunStatus convention). Kinds are HOST protocol verbs —
+append-only, engine minor bump to extend; endpoint-specific phases ride
+`state.stage`, never new kinds.
+
+#### Scenario: Fn outcome and engine result agree on kinds
+- **WHEN** a lifecycle fn returns kind "RUNNING"
+- **THEN** the engine result discriminates on the same literal
+
+### Requirement: Structured run state (zRunState / zStatePatch)
+`zRunState` SHALL be the structured envelope threaded between ticks:
+fn-owned `externalRunId?` (non-empty string — the vendor's run id, ↔ v1
+providerRunId), `stage?` (free-form dispatch marker), `data?` (Json bag)
+plus ENGINE-owned `timing` (`zRunTimingInFlight`: startedAt,
+startRequestMs, lastPolledAt?, attempts, pollMsTotal, deadlineAt — ISO
+strings, payload-safe). Lifecycle fns SHALL return `zStatePatch`
+(the three fn-owned fields only — no timing field exists to tamper with);
+merge is presence-based (`{}` keeps everything; `data` replaces
+wholesale).
+
+#### Scenario: Patch cannot carry timing
+- **WHEN** a fn outcome's state includes a `timing` key
+- **THEN** the strict patch schema rejects it (FN_CONTRACT)
+
+### Requirement: Settle-side timing report (zRunTiming)
+`zRunCompleted` SHALL carry a required `timing: zRunTiming`
+({startedAt, completedAt, attempts, startRequestMs, pollMsTotal,
+providerTotalMs}) — the provider slices of the v1 ClickHouse latency
+waterfall, present on sync AND async completions so hosts emit usage
+events uniformly.
+
+#### Scenario: Sync run reports timing
+- **WHEN** a declarative (no-lifecycle) run completes
+- **THEN** the result carries timing with attempts 0 and pollMsTotal 0
+
 ### Requirement: Lifecycle hook family contracts
 The schema SHALL define the effectful lifecycle hook family
 (`hooks/lifecycle.ts`): `LifecycleStartFn` (`ctx.data = {input, request}`),
 `LifecyclePollFn` and `LifecycleStopFn` (`ctx.data = {input, request,
-state}`), each async, each receiving `LifecycleUtils` = the pure ABI
-(`json`, `money`) plus `http` (zHttpCall: method + exactly one of url|path
-+ headers?/queryParams?/body?/requestMs?) and `request` (the default relay:
-zRequestOverrides — method/headers/queryParams/body/requestMs, never a
-target). The shared outcome union SHALL be `{kind: "running", state,
-pollAfterMs?} | {kind: "completed", httpStatus, providerHttpStatus?,
-output, state?}`.
+state: zRunState}` — fns READ engine timing, return patches), each async,
+each receiving `LifecycleUtils` = the pure ABI (`json`, `money`) plus
+`http` (zHttpCall: method + exactly one of https-only url | path +
+headers?/queryParams?/body?/requestMs? — ZERO defaults, headers ARE the
+outbound set) and `request` (the default relay: zRequestOverrides —
+presence-based overrides INCLUDING the target url|path, at most one).
+The shared outcome union SHALL be `{kind: RUNNING, state: zStatePatch,
+pollAfterMs?} | {kind: COMPLETED, httpStatus, providerHttpStatus?,
+output, state?: zStatePatch}`.
 
 #### Scenario: HttpCall shape is validated
-- **WHEN** a lifecycle fn calls utils.http with both `url` and `path` (or neither)
-- **THEN** the call is rejected (exactly one of url | path)
+- **WHEN** a lifecycle fn calls utils.http with both `url` and `path` (or neither, or an http:// url)
+- **THEN** the call is rejected
 
-### Requirement: Lifecycle def section, doc field, and fn-key closure
+### Requirement: Lifecycle def section, typed state, doc field, fn-key closure
 `zEndpointDef` and `zProviderDef` SHALL carry an optional
-`lifecycle: {start?, poll?, stop?}` section of fn carriers (all leaves
-`.optional()` per the D20 no-`.default()` rule). `zEndpointDoc` SHALL carry
-an optional `lifecycle: {start: FnRef, poll?: FnRef, stop?: FnRef}`;
-`fnKeysOf` SHALL include every lifecycle ref, so sealed units and the
-bundle fnTable closure cover the family.
+`lifecycle: {start?, poll?, stop?, state?}` section — `state` holds a LIVE
+zod schema (zSchemaCarrier) typing the fn-owned `data` bag. `zEndpointDoc`
+SHALL carry an optional `lifecycle: {start: FnRef, poll?: FnRef, stop?:
+FnRef, stateSchema?: JsonSchemaDoc}`; `fnKeysOf` SHALL include every
+lifecycle ref, so sealed units and the bundle fnTable closure cover the
+family.
 
 #### Scenario: Sealed unit closes over lifecycle fns
 - **WHEN** a doc with lifecycle {start, poll, stop} is sealed
 - **THEN** the unit's fns contain entries for all three refs
 
-### Requirement: Activated run-running result
-`zRunRunning` SHALL be `{kind: "running", state: Json, pollAfterMs:
-positive int, providerRunId?: string}` — ONE shape for both start and poll
-(providerRunId kept on poll ticks); `zRunStartResult`/`zRunPollResult` are
-aliases of `zRunResult`.
+### Requirement: Engine-side running result derived from the fn outcome
+`zRunRunning` SHALL be `zLifecycleRunning.extend({state: zRunState,
+pollAfterMs: positive int})` — ONE definition plus what the engine ADDS at
+the boundary (full state incl. timing; resolved cadence). No
+`providerRunId` field: the handle lives at `state.externalRunId`.
 
 #### Scenario: Running result round-trips
-- **WHEN** `{kind: "running", state: {runId: "r"}, pollAfterMs: 2000, providerRunId: "r"}` is parsed
+- **WHEN** a RUNNING result with full state (incl. timing) is parsed
 - **THEN** zRunResult accepts it
 
 ### Requirement: Envelope carries the final lifecycle state
 `zEnvelopeData` SHALL gain optional `state: Json` so `usage.consolidate`
-and `output.fromResponse` on lifecycle docs can read billing signals
-stashed during polling. Sync docs are unaffected (field absent).
+and `output.fromResponse`/`fromError` on lifecycle docs can read billing
+signals stashed during polling (under `$.data.*` in the structured
+state). Sync docs are unaffected (field absent).
 
 #### Scenario: Consolidate reads poll-stashed signals
-- **WHEN** a lifecycle run completes with state `{usageTotalUsd: 0.01}`
-- **THEN** the consolidate fn's `data.state` carries that value
+- **WHEN** a lifecycle run completes with state.data `{usageTotalUsd: 0.01}`
+- **THEN** the consolidate fn reads it at `$.data.usageTotalUsd`
+
+### Requirement: usage.model + usage.estimate
+`zUsageSection` SHALL gain `model?: zUsageModel` (rate-free cost-shape
+DATA: per_call | per_result | per_unit | unit_matrix | tiered, with
+`startWith: "call"` as the base-fee component and zModelSelector
+locations for matrix/tiered; no METERED — duration is per_unit
+SECOND/MINUTE) and `estimate?: zUsageEstimateFn` (the 6th pure hook:
+`{input} → Usage` in consolidate's units). `doc.usage` SHALL carry
+`model` inline (hash-covered) and `estimate` as a FnRef. Presets
+`presets.estimate.*` SHALL port the v1 EstimationLabel machinery with
+field allow-lists as ARGS.
+
+#### Scenario: Estimate preset applied
+- **WHEN** an endpoint declares presets.estimate.limitIsExact([...fields], 3)
+- **THEN** the compiled doc references one interned factory entry with the lists as args
+
+### Requirement: Coded JSON path errors
+`utils.json` lookups SHALL throw `JsonPathError` with `code`
+(PATH_SYNTAX | PATH_NOT_FOUND | TYPE_MISMATCH) and `retriable = false` —
+a deterministic fn bug catch sites can classify without string-matching.
+
+#### Scenario: Strict read on an absent path
+- **WHEN** json.num reads a missing path
+- **THEN** a JsonPathError with code PATH_NOT_FOUND (retriable false) is thrown
 
 ### Requirement: Timeouts gain the poll cadence
 `zTimeouts` (doc) and `zTimeoutsSection` (def) SHALL gain optional

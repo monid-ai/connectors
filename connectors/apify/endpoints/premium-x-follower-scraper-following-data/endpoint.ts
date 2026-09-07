@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zPremiumXFollowerScraperFollowingDataBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * kaitoeasyapi/premium-x-follower-scraper-following-data — Get X (Twitter) Followers. Pure data; the async machinery
@@ -30,4 +31,6 @@ export default defineEndpoint({
             "/v2/acts/kaitoeasyapi~premium-x-follower-scraper-following-data/runs",
     },
     input: { schema: { body: zPremiumXFollowerScraperFollowingDataBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

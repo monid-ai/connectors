@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zGoogleMapsReviewsScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * compass/google-maps-reviews-scraper — List Google Maps Reviews. Pure data; the async machinery
@@ -25,4 +26,6 @@ export default defineEndpoint({
         path: "/v2/acts/compass~google-maps-reviews-scraper/runs",
     },
     input: { schema: { body: zGoogleMapsReviewsScraperBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

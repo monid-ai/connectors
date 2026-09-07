@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zInstagramSearchScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/instagram-search-scraper — Search Instagram. Pure data; the async machinery
@@ -29,4 +30,6 @@ export default defineEndpoint({
         path: "/v2/acts/apify~instagram-search-scraper/runs",
     },
     input: { schema: { body: zInstagramSearchScraperBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

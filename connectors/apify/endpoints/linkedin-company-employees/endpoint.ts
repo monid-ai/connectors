@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zLinkedinCompanyEmployeesBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-company-employees — List LinkedIn Company Employees. Pure data; the async machinery
@@ -29,4 +30,6 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-company-employees/runs",
     },
     input: { schema: { body: zLinkedinCompanyEmployeesBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

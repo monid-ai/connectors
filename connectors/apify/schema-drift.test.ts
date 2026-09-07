@@ -10,8 +10,11 @@ import { liveSkip, testBundle } from "@shared/testing";
  *
  * The check is deliberately one-directional and loose (schemas are
  * non-strict passthrough, so drift cannot reject valid input): every
- * property the actor now REQUIRES must exist in the checked-in schema —
- * a missing required field is the drift that breaks callers.
+ * property the actor now REQUIRES must (a) exist in the checked-in schema
+ * AND (b) be REQUIRED by it (`live.required ⊆ compiled.required` — an
+ * optional→required flip is drift too: callers omitting the field would
+ * pass our validation and then 400 at the vendor). Both are the drift
+ * that breaks callers.
  */
 Deno.test({
     name: "apify schema drift guard (gated on APIFY_API_KEY)",
@@ -54,11 +57,21 @@ Deno.test({
             const compiled = doc.input.schema.body?.properties as
                 | Record<string, unknown>
                 | undefined;
+            const compiledRequired = new Set(
+                (doc.input.schema.body?.required ?? []) as string[],
+            );
             for (const required of live.required ?? []) {
                 if (!compiled || !(required in compiled)) {
                     failures.push(
                         `${doc.id}: actor now REQUIRES "${required}" — ` +
                             `re-run deno task apify:scaffold`,
+                    );
+                } else if (!compiledRequired.has(required)) {
+                    // finding 7: optional→required flip — the property
+                    // exists but our schema lets callers omit it
+                    failures.push(
+                        `${doc.id}: "${required}" flipped optional→required ` +
+                            `upstream — re-run deno task apify:scaffold`,
                     );
                 }
             }

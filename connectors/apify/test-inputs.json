@@ -1,0 +1,293 @@
+{
+    "amazon-product-details-scraper": {
+        "Params": [
+            {
+                "url": "https://www.amazon.com/dp/B08N5WRWNW"
+            }
+        ]
+    },
+    "amazon-reviews-extractor": {
+        "products": [
+            "https://www.amazon.com/dp/B08N5WRWNW"
+        ],
+        "limit": 2
+    },
+    "amazon-reviews-scraper": {
+        "input": [
+            {
+                "asin": "B08N5WRWNW",
+                "domainCode": "com",
+                "sortBy": "recent",
+                "maxPages": 1
+            }
+        ]
+    },
+    "amazon-search-scraper": {
+        "input": [
+            {
+                "keyword": "usb cable",
+                "domainCode": "com",
+                "sortBy": "relevanceblender",
+                "maxPages": 1
+            }
+        ]
+    },
+    "apify-reddit-api": {
+        "searches": [
+            "deno"
+        ],
+        "maxItems": 2,
+        "skipComments": true
+    },
+    "eu-amazon-sellers-email-leads": {
+        "max_results": 2
+    },
+    "facebook-ads-library-scraper": {
+        "urls": [
+            {
+                "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=nike&search_type=keyword_unordered"
+            }
+        ],
+        "count": 2
+    },
+    "facebook-comments-scraper": {
+        "startUrls": [
+            {
+                "url": "https://www.facebook.com/nasa/posts/10160622466121772"
+            }
+        ],
+        "resultsLimit": 2
+    },
+    "facebook-events-scraper": {
+        "searchQueries": [
+            "tech conference"
+        ],
+        "maxEvents": 2
+    },
+    "facebook-groups-scraper": {
+        "startUrls": [
+            {
+                "url": "https://www.facebook.com/groups/programmerhumor"
+            }
+        ],
+        "resultsLimit": 2
+    },
+    "facebook-pages-scraper": {
+        "startUrls": [
+            {
+                "url": "https://www.facebook.com/nasa"
+            }
+        ]
+    },
+    "facebook-profile-posts-scraper": {
+        "endpoint": "profile_posts_by_url",
+        "urls_text": "https://www.facebook.com/zuck",
+        "max_posts": 2
+    },
+    "facebook-reviews-scraper": {
+        "startUrls": [
+            {
+                "url": "https://www.facebook.com/Nike"
+            }
+        ],
+        "resultsLimit": 2
+    },
+    "google-maps-reviews-scraper": {
+        "placeIds": [
+            "ChIJj61dQgK6j4AR4GeTYWZsKWw"
+        ],
+        "maxReviews": 2
+    },
+    "google-maps-scraper": {
+        "query": "coffee shop",
+        "location": "Palo Alto, CA",
+        "max_results": 3
+    },
+    "google-news-scraper-fast": {
+        "keywords": [
+            "artificial intelligence"
+        ],
+        "maxArticles": 2
+    },
+    "google-shopping-apify": {
+        "query": "usb cable",
+        "country": "us",
+        "language": "en",
+        "num": "10",
+        "date_range": "anytime",
+        "max_pages": 1
+    },
+    "google-shopping-scraper": {
+        "searchQuery": "usb cable",
+        "limit": 10
+    },
+    "instagram-api-scraper": {
+        "directUrls": [
+            "https://www.instagram.com/instagram/"
+        ],
+        "resultsType": "posts",
+        "resultsLimit": 2
+    },
+    "instagram-hashtag-scraper": {
+        "hashtags": [
+            "coffee"
+        ],
+        "resultsLimit": 2
+    },
+    "instagram-post-scraper": {
+        "username": [
+            "instagram"
+        ],
+        "resultsLimit": 2
+    },
+    "instagram-profile-scraper": {
+        "usernames": [
+            "instagram"
+        ]
+    },
+    "instagram-search-scraper": {
+        "search": "coffee",
+        "searchType": "hashtag",
+        "searchLimit": 2
+    },
+    "linkedin-company-employees": {
+        "companies": [
+            "https://www.linkedin.com/company/microsoft"
+        ],
+        "profileScraperMode": "Short ($4 per 1k)",
+        "maxItems": 2
+    },
+    "linkedin-job-search": {
+        "jobTitles": [
+            "Software Engineer"
+        ],
+        "locations": [
+            "United States"
+        ],
+        "maxItems": 2
+    },
+    "linkedin-post-search": {
+        "searchQueries": [
+            "typescript"
+        ],
+        "maxPosts": 2
+    },
+    "linkedin-profile-posts": {
+        "targetUrls": [
+            "https://www.linkedin.com/in/satyanadella"
+        ],
+        "maxPosts": 2
+    },
+    "linkedin-profile-scraper": {
+        "profileUrls": [
+            "https://www.linkedin.com/in/satyanadella"
+        ]
+    },
+    "linkedin-profile-search": {
+        "profileScraperMode": "Short",
+        "searchQuery": "deno developer",
+        "maxItems": 2
+    },
+    "linkedin-profile-search-by-name": {
+        "profileScraperMode": "Short",
+        "firstName": "Satya",
+        "lastName": "Nadella",
+        "maxPages": 1
+    },
+    "linkedin-profile-search-by-services": {
+        "profileScraperMode": "Short",
+        "search": "plumber",
+        "maxItems": 2
+    },
+    "premium-x-follower-scraper-following-data": {
+        "user_names": [
+            "elonmusk"
+        ],
+        "maxFollowers": 200,
+        "maxFollowings": 200,
+        "getFollowers": true,
+        "getFollowing": false
+    },
+    "reddit-comment-scraper": {
+        "postUrls": [
+            "https://www.reddit.com/r/programming/comments/1g5x1wz/"
+        ],
+        "maxComments": 2
+    },
+    "reddit-scraper-lite": {
+        "searches": [
+            "deno"
+        ],
+        "maxItems": 2,
+        "skipComments": true,
+        "searchPosts": true,
+        "searchComments": false
+    },
+    "snapchat-scraper": {
+        "usernames": [
+            "snapchat"
+        ]
+    },
+    "snapchat-spotlight-scraper": {
+        "spotlightUrls": [
+            "https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYaXNyaGF3Y2pxAZL2N1WMAZL2NjV0AAAAAA"
+        ]
+    },
+    "tiktok-api": {
+        "profile_username": "tiktok"
+    },
+    "tiktok-comments-scraper-api": {
+        "listComments_awemeId": "7106594312292453675",
+        "listComments_count": 2
+    },
+    "tiktok-profile-scraper": {
+        "usernames": [
+            "tiktok"
+        ],
+        "maxItems": 2
+    },
+    "tiktok-scraper": {
+        "keywords": [
+            "coffee"
+        ],
+        "maxItems": 2
+    },
+    "tiktok-video-scraper": {
+        "postURLs": [
+            "https://www.tiktok.com/@tiktok/video/7106594312292453675"
+        ],
+        "resultsPerPage": 2
+    },
+    "tweet-scraper": {
+        "searchTerms": [
+            "monid.ai"
+        ],
+        "maxItems": 3,
+        "sort": "Latest"
+    },
+    "youtube-channel-business-email-scraper": {
+        "channels": [
+            "https://www.youtube.com/@mkbhd"
+        ]
+    },
+    "youtube-comments-scraper": {
+        "startUrls": [
+            {
+                "url": "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+            }
+        ],
+        "maxComments": 2
+    },
+    "youtube-scraper": {
+        "searchQueries": [
+            "deno tutorial"
+        ],
+        "maxResults": 2,
+        "maxResultsShorts": 0,
+        "maxResultStreams": 0
+    },
+    "youtube-video-transcript": {
+        "youtube_url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "language": "en"
+    }
+}

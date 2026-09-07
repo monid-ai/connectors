@@ -10,12 +10,12 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
  * Ported 1:1 from v1 (`linkedin/linkedin-profile-search.ts`):
  *   - Apify bills this PAY_PER_EVENT actor on TWO quanta: a per-search-page
  *     charge (all modes) + a per-profile charge in the Full modes ("Short"
- *     adds none). RATES REFRESHED at port time from the actor's live
- *     pricingPerEvent (recorded in the happy fixture): search-page $0.05,
- *     full-profile $0.0032, full-profile-with-email $0.008 — v1's constants
- *     ($0.10/$0.004/$0.01) had drifted, the exact re-verify trigger v1's
- *     decision record named. Re-verify again when a settle shows
- *     calculatedCost != actualCost.
+ *     adds none). RATES ARE READ LIVE from the run record's
+ *     pricingPerEvent.actorChargeEvents (search-page / full-profile /
+ *     full-profile-with-email eventPriceUsd) — v1's baked constants had
+ *     drifted ($0.10 vs the live $0.05 page rate), exactly the failure mode
+ *     run-record rates eliminate. The port-time observations ($0.05 /
+ *     $0.0032 / $0.008) remain as FALLBACK only.
  *   - Pages scraped is not reported, but IS reconstructible from the exact
  *     PAY_PER_EVENT total: pages = round((usageTotalUsd − profiles ×
  *     perProfileRate) / pageRate), clamped so a run that returned profiles is
@@ -60,7 +60,7 @@ export default defineEndpoint({
     input: { schema: { body: zLinkedinProfileSearchBody } },
     lifecycle: {
         // OVERRIDES the provider poll: same actor-run protocol, plus the
-        // page reconstruction stamped onto the output + state.
+        // page reconstruction stamped onto the output + state.data.
         poll: async ({ data, utils, logger }) => {
             const runId = String(
                 utils.json.get(data.state, "$.externalRunId"),
@@ -71,7 +71,7 @@ export default defineEndpoint({
             });
             if (res.status < 200 || res.status >= 300) {
                 return {
-                    kind: "completed",
+                    kind: "COMPLETED",
                     httpStatus: res.status,
                     output: res.body,
                 };
@@ -81,14 +81,14 @@ export default defineEndpoint({
                 "$.data.exitCode",
             );
             if (exitCode === undefined) {
-                return { kind: "running", state: data.state };
+                return { kind: "RUNNING", state: {} };
             }
             const status = utils.json.optionalGet(res.body, "$.data.status");
             if (exitCode === 0 && status === "SUCCEEDED") {
                 const datasetId = utils.json.optionalGet(
                     res.body,
                     "$.data.defaultDatasetId",
-                ) ?? utils.json.optionalGet(data.state, "$.datasetId");
+                ) ?? utils.json.optionalGet(data.state, "$.data.datasetId");
                 if (typeof datasetId !== "string" || datasetId === "") {
                     throw new Error("Apify run has no default dataset id");
                 }
@@ -99,7 +99,7 @@ export default defineEndpoint({
                 });
                 if (items.status < 200 || items.status >= 300) {
                     return {
-                        kind: "completed",
+                        kind: "COMPLETED",
                         httpStatus: items.status,
                         output: items.body,
                     };
@@ -109,6 +109,15 @@ export default defineEndpoint({
                     res.body,
                     "$.data.usageTotalUsd",
                 );
+                // LIVE RATES from the run record's charge events (finding 5:
+                // v1-style baked constants drift; the run record is truth) —
+                // port-time observations remain as fallback only.
+                const chargeEvents =
+                    "$.data.pricingInfo.pricingPerEvent.actorChargeEvents";
+                const pageRate = utils.json.optionalNum(
+                    res.body,
+                    chargeEvents + ".search-page.eventPriceUsd",
+                ) ?? 0.05;
                 // loose mode read (v1 `readScraperMode`): an unreadable mode
                 // degrades the math to the $0 per-profile rate, never fails
                 const mode = utils.json.optionalGet(
@@ -116,12 +125,18 @@ export default defineEndpoint({
                     "$.profileScraperMode",
                 );
                 const perProfile = mode === "Full"
-                    ? 0.0032
+                    ? (utils.json.optionalNum(
+                        res.body,
+                        chargeEvents + ".full-profile.eventPriceUsd",
+                    ) ?? 0.0032)
                     : mode === "Full + email search"
-                    ? 0.008
+                    ? (utils.json.optionalNum(
+                        res.body,
+                        chargeEvents + ".full-profile-with-email.eventPriceUsd",
+                    ) ?? 0.008)
                     : 0;
                 // v1 reconstructSearchPages: exact PAY_PER_EVENT total minus
-                // the profile charges, divided by the $0.10 page rate;
+                // the profile charges, divided by the LIVE page rate;
                 // clamped ≥1 when profiles came back, degraded to 0/1 on a
                 // missing usage total (money follows evidence)
                 const floor = profiles.length > 0 ? 1 : 0;
@@ -129,7 +144,7 @@ export default defineEndpoint({
                     ? Math.max(
                         Math.round(
                             (totalUsd - profiles.length * perProfile) /
-                                0.1,
+                                pageRate,
                         ),
                         floor,
                     )
@@ -145,20 +160,22 @@ export default defineEndpoint({
                     { profiles },
                 );
                 return {
-                    kind: "completed",
+                    kind: "COMPLETED",
                     httpStatus: 200,
                     output,
                     state: {
                         externalRunId: runId,
-                        datasetId,
-                        searchPages,
-                        profileCount: profiles.length,
-                        ...(typeof model === "string"
-                            ? { pricingModel: model }
-                            : {}),
-                        ...(totalUsd !== undefined
-                            ? { usageTotalUsd: totalUsd }
-                            : {}),
+                        data: {
+                            datasetId,
+                            searchPages,
+                            profileCount: profiles.length,
+                            ...(typeof model === "string"
+                                ? { pricingModel: model }
+                                : {}),
+                            ...(totalUsd !== undefined
+                                ? { usageTotalUsd: totalUsd }
+                                : {}),
+                        },
                     },
                 };
             }
@@ -168,7 +185,7 @@ export default defineEndpoint({
             );
             logger.warn("apify actor run failed", { runId, exitCode });
             return {
-                kind: "completed",
+                kind: "COMPLETED",
                 httpStatus: 500,
                 providerHttpStatus: 200,
                 output: {
@@ -180,6 +197,26 @@ export default defineEndpoint({
         },
     },
     usage: {
+        /** Page-basis billing: a per-page charge in every mode (profiles
+         *  ride as a second native measure — the cost signal in Full
+         *  modes; rates live in the catalog, not here). */
+        model: { kind: "per_unit", unit: "page" },
+        /** v1 DUAL_LIMIT (resultsPerPage 25): takePages, else
+         *  ceil(maxItems/25), else 1 page — in the SAME units consolidate
+         *  settles (pages + profiles). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const takePages = utils.json.optionalNum(body, "$.takePages");
+            const maxItems = utils.json.optionalNum(body, "$.maxItems");
+            const pages = takePages ??
+                (maxItems !== undefined ? Math.ceil(maxItems / 25) : 1);
+            return {
+                units: [
+                    { amount: pages, unit: "page" },
+                    { amount: maxItems ?? pages * 25, unit: "result" },
+                ],
+            };
+        },
         // OVERRIDES the provider consolidate: billing basis = SEARCH PAGES
         // (v1: a zero-profile run still bills its ≥1 charged pages);
         // profiles ride as a second native measure.
@@ -193,10 +230,13 @@ export default defineEndpoint({
                 data.output,
                 "$.profileCount",
             ) ?? 0;
-            const model = utils.json.optionalGet(state, "$.pricingModel");
+            const model = utils.json.optionalGet(
+                state,
+                "$.data.pricingModel",
+            );
             const totalUsd = utils.json.optionalNum(
                 state,
-                "$.usageTotalUsd",
+                "$.data.usageTotalUsd",
             );
             return {
                 usage: {
@@ -209,10 +249,10 @@ export default defineEndpoint({
                         : {}),
                     evidence: utils.json.pick(state, [
                         "$.externalRunId",
-                        "$.pricingModel",
-                        "$.usageTotalUsd",
-                        "$.searchPages",
-                        "$.profileCount",
+                        "$.data.pricingModel",
+                        "$.data.usageTotalUsd",
+                        "$.data.searchPages",
+                        "$.data.profileCount",
                     ]),
                 },
             };

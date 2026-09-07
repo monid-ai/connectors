@@ -10,6 +10,8 @@ import type {
     RunPollResult,
     RunResult,
     RunStartResult,
+    RunState,
+    Usage,
 } from "@shared/core";
 import type { Logger } from "@shared/logging";
 
@@ -30,7 +32,11 @@ export interface PreparedRequest {
     headers: Record<string, string>;
     query: Record<string, string>;
     body?: Json;
-    auth: {
+    /** ABSENT ⇒ the request egresses BARE (no credential injection) — the
+     *  same-origin credential rule (design D16): lifecycle fns targeting a
+     *  different origin than the doc's request never carry the provider's
+     *  credentials. */
+    auth?: {
         inject: { ref: FnRef; entry: FnEntry };
         credentials: JsonSchemaDoc;
     };
@@ -87,9 +93,13 @@ export interface ConnectorEngine {
  */
 export interface RunnableEndpoint {
     readonly doc: EndpointDoc;
+    /** Pre-run cost estimate — PURE (no IO, no state): validated input →
+     *  estimated Usage in consolidate's units. Absent usage.estimate on
+     *  the doc ⇒ one CALL unit. */
+    estimate(runInput: RunInput): Usage;
     start(runInput: RunInput): Promise<RunStartResult>;
-    poll(runInput: RunInput, state: Json): Promise<RunPollResult>;
-    stop(runInput: RunInput, state: Json): Promise<void>;
+    poll(runInput: RunInput, state: RunState): Promise<RunPollResult>;
+    stop(runInput: RunInput, state: RunState): Promise<void>;
     run(
         runInput: RunInput,
         opts?: { signal?: AbortSignal },

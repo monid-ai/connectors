@@ -29,6 +29,36 @@ import { FnInterner } from "./fns.ts";
 const SC = contractConfig.schema;
 const CC = contractConfig.compiler;
 
+/**
+ * CompileError — every compiler rejection, coded so build tooling (and
+ * tests) can branch on WHY without string-matching. `retriable = false` by
+ * construction: a compile failure is deterministic — the same repo bytes
+ * fail the same way.
+ */
+export const CompileErrorCode = {
+    /** A zod schema is not JSON-Schema representable. */
+    SCHEMA_INVALID: "SCHEMA_INVALID",
+    /** A required hook resolved nowhere (endpoint ?? provider). */
+    HOOK_UNRESOLVED: "HOOK_UNRESOLVED",
+    /** lifecycle.state failed JSON Schema conversion / is dead config. */
+    STATE_SCHEMA_INVALID: "STATE_SCHEMA_INVALID",
+    /** Structural def problems: bad baseUrl, dead config, size, vocabulary. */
+    DOC_MALFORMED: "DOC_MALFORMED",
+} as const;
+export type CompileErrorCode = keyof typeof CompileErrorCode;
+
+export class CompileError extends Error {
+    readonly retriable = false;
+    constructor(
+        readonly code: CompileErrorCode,
+        message: string,
+        options?: { cause?: unknown },
+    ) {
+        super(`[${code}] ${message}`, options);
+        this.name = "CompileError";
+    }
+}
+
 export interface CompileOptions {
     /** Toolchain provenance — never gates (engine gates on minEngineVersion + specVersion). */
     compilerVersion: string;
@@ -49,7 +79,11 @@ function semverMax(versions: string[]): string {
     return format(max);
 }
 
-function toJsonSchema(schema: z.ZodType, label: string): Record<string, Json> {
+function toJsonSchema(
+    schema: z.ZodType,
+    label: string,
+    code: CompileErrorCode = CompileErrorCode.SCHEMA_INVALID,
+): Record<string, Json> {
     try {
         const jsonSchema = z.toJSONSchema(schema, {
             target: `draft-${SC.jsonSchemaDialect}` as "draft-2020-12",
@@ -57,8 +91,10 @@ function toJsonSchema(schema: z.ZodType, label: string): Record<string, Json> {
         });
         return pruneUndefined(jsonSchema) as Record<string, Json>;
     } catch (error) {
-        throw new Error(
+        throw new CompileError(
+            code,
             `${label}: zod schema is not JSON-Schema representable: ${error}`,
+            { cause: error },
         );
     }
 }
@@ -161,7 +197,8 @@ export async function compileBundle(
             // ---- request: baseUrl fallback, key-wise header merge ---------
             const baseUrl = def.request.baseUrl ?? provider.request?.baseUrl;
             if (baseUrl === undefined) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: no baseUrl — set request.baseUrl on the endpoint ` +
                         `or request.baseUrl on the provider`,
                 );
@@ -175,7 +212,8 @@ export async function compileBundle(
             // fixed query param belongs in the endpoint def, not the baseUrl.
             const parsedBase = new URL(baseUrl);
             if (parsedBase.search !== "" || parsedBase.hash !== "") {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: baseUrl must not contain a query string or ` +
                         `fragment (got ${baseUrl})`,
                 );
@@ -210,7 +248,8 @@ export async function compileBundle(
                 `${providerFile}#lifecycle.stop`,
             );
             if ((lifecyclePoll || lifecycleStop) && !lifecycleStart) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
                     `${where}: lifecycle.poll/stop without lifecycle.start — ` +
                         `start must resolve (endpoint ?? provider) whenever any ` +
                         `lifecycle phase does`,
@@ -240,12 +279,37 @@ export async function compileBundle(
                 )
                 : undefined;
 
+            // TYPED STATE (lifecycle.state → doc.lifecycle.stateSchema):
+            // resolved leaf-wise like the phase fns; a declared state
+            // schema without a resolved start is dead config.
+            const lifecycleState = resolve(
+                def.lifecycle?.state,
+                `${endpointFile}#lifecycle.state`,
+                provider.lifecycle?.state,
+                `${providerFile}#lifecycle.state`,
+            );
+            if (lifecycleState && !lifecycleStart) {
+                throw new CompileError(
+                    CompileErrorCode.STATE_SCHEMA_INVALID,
+                    `${where}: lifecycle.state is dead config — no resolved ` +
+                        `lifecycle.start`,
+                );
+            }
+            const stateSchema = lifecycleState
+                ? toJsonSchema(
+                    lifecycleState.value,
+                    `${where}: lifecycle.state`,
+                    CompileErrorCode.STATE_SCHEMA_INVALID,
+                )
+                : undefined;
+
             // pollMs is meaningful only for pollable docs: an ENDPOINT-level
             // pollMs on a doc without a resolved poll is dead config (a
             // provider-level pollMs is a legitimate default over a mixed
             // sync/async endpoint set and is simply not emitted).
             if (def.timeouts?.pollMs !== undefined && !lifecyclePoll) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: timeouts.pollMs is dead config — the endpoint ` +
                         `has no resolved lifecycle.poll`,
                 );
@@ -270,7 +334,8 @@ export async function compileBundle(
                 `${providerFile}#auth.inject`,
             );
             if (!inject) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
                     `${where}: auth.inject must resolve — declare it on the endpoint ` +
                         `or the provider (e.g. presets.auth.header("x-api-key"))`,
                 );
@@ -335,7 +400,8 @@ export async function compileBundle(
                 `${providerFile}#usage.consolidate`,
             );
             if (!consolidate) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
                     `${where}: usage.consolidate must resolve — declare it on the endpoint ` +
                         `or the provider; every endpoint must be able to settle. ` +
                         `Use presets.usage.perCall() for flat billing.`,
@@ -346,6 +412,22 @@ export async function compileBundle(
                 consolidate.label,
                 SC.fnAbiSince,
             );
+
+            // ---- usage.model (inline DATA) + usage.estimate (hook) --------
+            const usageModel = def.usage?.model ?? provider.usage?.model;
+            const estimateFn = resolve(
+                def.usage?.estimate,
+                `${endpointFile}#usage.estimate`,
+                provider.usage?.estimate,
+                `${providerFile}#usage.estimate`,
+            );
+            const estimateRef = estimateFn
+                ? await interner.intern(
+                    estimateFn.value,
+                    estimateFn.label,
+                    SC.fnAbiSince,
+                )
+                : undefined;
 
             // ---- input/output schemas: leaf-wise fallback -----------------
             const schemaLeaf = (
@@ -364,6 +446,7 @@ export async function compileBundle(
                 fromResponseRef,
                 fromErrorRef,
                 consolidateRef,
+                estimateRef,
                 lifecycleStartRef,
                 lifecyclePollRef,
                 lifecycleStopRef,
@@ -422,12 +505,15 @@ export async function compileBundle(
                 },
                 usage: {
                     consolidate: consolidateRef as unknown as Json,
+                    model: usageModel as unknown as Json,
+                    estimate: estimateRef as unknown as Json,
                 },
                 lifecycle: lifecycleStartRef
                     ? {
                         start: lifecycleStartRef as unknown as Json,
                         poll: lifecyclePollRef as unknown as Json,
                         stop: lifecycleStopRef as unknown as Json,
+                        stateSchema: stateSchema as unknown as Json,
                     }
                     : undefined,
                 timeouts,
@@ -442,7 +528,8 @@ export async function compileBundle(
 
             const size = stableStringify(docWithoutHash).length;
             if (size > CC.docSizeFailBytes) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: doc size ${size} > ${CC.docSizeFailBytes}`,
                 );
             }
@@ -511,7 +598,8 @@ function parseCategories(
 ): void {
     const result = zCategories.safeParse(categories);
     if (!result.success) {
-        throw new Error(
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
             `${where}: unknown category — add it to connectors/categories.ts (closed ` +
                 `vocabulary): ${result.error.issues[0]?.message}`,
         );

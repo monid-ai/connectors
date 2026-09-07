@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zAmazonSearchScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * axesso_data/amazon-search-scraper — Search Amazon. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/axesso_data~amazon-search-scraper/runs",
     },
     input: { schema: { body: zAmazonSearchScraperBody } },
+    // v1 estimation label: PER_QUERY_PAGE_LIMIT
+    usage: { estimate: apifyEstimate.perQueryPages() },
 });

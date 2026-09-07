@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zSnapchatSpotlightScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * tri_angle/snapchat-spotlight-scraper — Get Snapchat Spotlight. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/tri_angle~snapchat-spotlight-scraper/runs",
     },
     input: { schema: { body: zSnapchatSpotlightScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

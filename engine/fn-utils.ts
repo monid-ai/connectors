@@ -7,6 +7,7 @@ import {
     type HookLogger,
     type HttpResult,
     type Json,
+    JsonPathError,
     type JsonUtil,
     type LifecycleRequestInfo,
     type LifecycleUtils,
@@ -31,7 +32,10 @@ function lastSegment(path: string): string {
  *  absent (undefined), present (the value). */
 function lookup(value: Json, path: string): Json | undefined {
     if (!PATH_PATTERN.test(path)) {
-        throw new Error(`invalid path syntax: ${path}`);
+        throw new JsonPathError(
+            "PATH_SYNTAX",
+            `invalid path syntax: ${path}`,
+        );
     }
     return getPath(value, path);
 }
@@ -81,7 +85,8 @@ export const jsonUtil: JsonUtil = {
     get: (value, path) => {
         const found = lookup(value, path);
         if (found === undefined) {
-            throw new Error(
+            throw new JsonPathError(
+                "PATH_NOT_FOUND",
                 `json.get: nothing at ${path} (use optionalGet if absence is expected)`,
             );
         }
@@ -91,12 +96,14 @@ export const jsonUtil: JsonUtil = {
     num: (value, path) => {
         const found = lookup(value, path);
         if (found === undefined) {
-            throw new Error(
+            throw new JsonPathError(
+                "PATH_NOT_FOUND",
                 `json.num: nothing at ${path} (use optionalNum if absence is expected)`,
             );
         }
         if (typeof found !== "number" || !Number.isFinite(found)) {
-            throw new Error(
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
                 `json.num: value at ${path} is not a finite number`,
             );
         }
@@ -106,7 +113,8 @@ export const jsonUtil: JsonUtil = {
         const found = lookup(value, path);
         if (found === undefined) return undefined;
         if (typeof found !== "number" || !Number.isFinite(found)) {
-            throw new Error(
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
                 `json.optionalNum: value at ${path} is not a finite number`,
             );
         }
@@ -115,12 +123,16 @@ export const jsonUtil: JsonUtil = {
     len: (value, path) => {
         const found = lookup(value, path);
         if (found === undefined) {
-            throw new Error(
+            throw new JsonPathError(
+                "PATH_NOT_FOUND",
                 `json.len: nothing at ${path} (use optionalLen if absence is expected)`,
             );
         }
         if (!Array.isArray(found)) {
-            throw new Error(`json.len: value at ${path} is not an array`);
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
+                `json.len: value at ${path} is not an array`,
+            );
         }
         return found.length;
     },
@@ -128,7 +140,8 @@ export const jsonUtil: JsonUtil = {
         const found = lookup(value, path);
         if (found === undefined) return undefined;
         if (!Array.isArray(found)) {
-            throw new Error(
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
                 `json.optionalLen: value at ${path} is not an array`,
             );
         }
@@ -174,20 +187,25 @@ export const fnUtils = Object.freeze({ json: jsonUtil, money: moneyUtil });
 /**
  * `ctx.utils` for the LIFECYCLE hook family — the pure ABI plus the two
  * effect capabilities, bound PER INVOCATION (they need this tick's derived
- * input + substituted request). Auth is injected by the transport at
- * egress on both — fns never see credentials.
+ * input + substituted request). The two differ ONLY in defaults:
  *
- *   - `http(call)` — the RAW, explicit capability (v1 `client.request`):
- *     `method` + exactly one of `url`|`path` required; `path` resolves
- *     against the doc request URL's ORIGIN (v1 apiPath semantics); only
- *     given fields are sent (`headers` merge OVER the doc's request
- *     headers; `requestMs` overrides the per-request timeout).
+ *   - `http(call)` — the RAW, ZERO-defaults capability (v1
+ *     `client.request`): `method` + exactly one of `url`|`path` required;
+ *     `path` resolves against the doc request URL's ORIGIN (v1 apiPath
+ *     semantics); `headers` ARE the complete outbound header set (no
+ *     doc-header merge); `requestMs` overrides the per-request timeout.
  *   - `request(overrides?)` — the DEFAULT RELAY: executes THE endpoint's
  *     compiled request, initialized from data.request + the caller input
  *     (method/url/headers from the request; `body ?? input.body`;
- *     `queryParams ?? input.queryParams`), any field overridable per call.
- *     `utils.request()` alone sends exactly what the declarative sync
- *     pipeline would.
+ *     `queryParams ?? input.queryParams`), with a PRESENCE-BASED override
+ *     merge — including the target (`url`|`path`), so `request` can do
+ *     anything `http` can. `utils.request()` alone sends exactly what the
+ *     declarative sync pipeline would.
+ *
+ * SAME-ORIGIN CREDENTIAL RULE (design D16): credentials are injected at
+ * egress ONLY when the target origin equals the doc request's origin —
+ * cross-origin calls (both capabilities) go out BARE. Fns never see
+ * credentials either way.
  *
  * Responses come back sniff-decoded `{status, body}`; vendor non-2xx is
  * DATA (returned); transport failures throw EXECUTION_FAILED (retriable)
@@ -214,16 +232,23 @@ export function makeLifecycleUtils(opts: {
         body?: Json;
         requestMs?: number;
     }): Promise<HttpResult> => {
+        // D16 — same-origin credential rule: auth travels only when the
+        // target shares the doc request's origin; else the request is BARE.
+        const sameOrigin = new URL(parts.url).origin === origin;
         const prepared: PreparedRequest = {
             method: parts.method,
             url: parts.url,
-            headers: { ...doc.request.headers, ...parts.headers },
+            headers: { ...parts.headers },
             query: parts.query,
             body: parts.body,
-            auth: {
-                inject: { ref: doc.auth.inject, entry: injectEntry },
-                credentials: doc.auth.credentials,
-            },
+            ...(sameOrigin
+                ? {
+                    auth: {
+                        inject: { ref: doc.auth.inject, entry: injectEntry },
+                        credentials: doc.auth.credentials,
+                    },
+                }
+                : {}),
             provider: doc.provider,
             timeouts: {
                 requestMs: parts.requestMs ?? doc.timeouts.requestMs,
@@ -269,8 +294,11 @@ export function makeLifecycleUtils(opts: {
             const o = parsed.data;
             return execute({
                 method: o.method ?? requestInfo.method,
-                url: requestInfo.url,
-                headers: o.headers,
+                // presence-based target override: url | path | the
+                // compiled request's own url
+                url: o.url ??
+                    (o.path !== undefined ? origin + o.path : requestInfo.url),
+                headers: { ...requestInfo.headers, ...o.headers },
                 query: toScalarQuery(
                     doc.id,
                     o.queryParams ?? input.queryParams ?? {},

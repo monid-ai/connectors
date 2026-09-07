@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zFacebookGroupsScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/facebook-groups-scraper — Pull Facebook Group Posts. Pure data; the async machinery
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/apify~facebook-groups-scraper/runs",
     },
     input: { schema: { body: zFacebookGroupsScraperBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

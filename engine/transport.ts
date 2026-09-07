@@ -44,8 +44,20 @@ export function directTransport(opts: {
     const doFetch = opts.fetch ?? fetch;
     return {
         async execute(req: PreparedRequest): Promise<TransportResponse> {
-            const params = await resolveParams(req.provider);
-            const authed = await applyAuth(req, params);
+            // No auth block ⇒ the request egresses BARE (same-origin
+            // credential rule, design D16) — credentials are never even
+            // resolved for it.
+            const authed = req.auth
+                ? await applyAuth(
+                    { ...req, auth: req.auth },
+                    await resolveParams(req.provider),
+                )
+                : {
+                    url: req.url,
+                    headers: { ...req.headers },
+                    query: { ...req.query },
+                    ...(req.body !== undefined ? { body: req.body } : {}),
+                };
 
             const url = new URL(authed.url);
             for (const [key, value] of Object.entries(authed.query)) {

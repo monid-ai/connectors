@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zFacebookReviewsScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/facebook-reviews-scraper — List Facebook Reviews. Pure data; the async machinery
@@ -25,4 +26,6 @@ export default defineEndpoint({
         path: "/v2/acts/apify~facebook-reviews-scraper/runs",
     },
     input: { schema: { body: zFacebookReviewsScraperBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

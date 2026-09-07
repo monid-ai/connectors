@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zTiktokVideoScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * clockworks/tiktok-video-scraper — Get TikTok Video. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/clockworks~tiktok-video-scraper/runs",
     },
     input: { schema: { body: zTiktokVideoScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

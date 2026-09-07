@@ -299,12 +299,107 @@ its Temporal `endpointExecution` workflow.
   correlate via `state.externalRunId` (↔ v1 providerRunId). A rigid state
   schema stays rejected — it would fight the imperative-fn design.
 
+## D15 — Structured run state: patches, engine timing, typed `state.data`
+
+- Context: review round on PR #2 — state should record timing the way
+  monid-services does (usage events to ClickHouse), the typed-state
+  extension was approved ("so let's do that"), and kinds should follow the
+  v1 UPPERCASE convention.
+- **`zRunState` replaces the opaque Json handle** (run/state.ts): a
+  structured envelope `{externalRunId?, stage?, data?, timing}`, split by
+  OWNERSHIP: fns return `zStatePatch` (the three fn-owned fields;
+  presence-based merge — `{}` keeps everything, `data` replaces
+  wholesale), the ENGINE stamps `timing` (fns structurally cannot tamper:
+  the patch has no timing field). D14's "a rigid state schema stays
+  rejected" is SUPERSEDED for the envelope (the bag stays free-form
+  unless typed, below).
+- **Engine-owned timing rides state** (`zRunTimingInFlight`: startedAt,
+  startRequestMs, lastPolledAt, attempts, pollMsTotal, deadlineAt — ISO
+  strings, payload-safe): the engine is invoked STATELESSLY per tick, so
+  state is the only cross-tick carrier; the engine measures (it holds the
+  injected clock and wraps the transport — clean provider slices, no host
+  queue overhead), state stores, and `RunCompleted.timing` reports at
+  settle (`zRunTiming` incl. providerTotalMs) — mapping 1:1 onto the v1
+  ClickHouse waterfall's provider slices (t_provider_start_request_ms /
+  t_provider_polling_ms / t_provider_total_ms). Host slices
+  (queue/gate/save…) stay host-measured, exactly as in v1. Sync runs
+  report timing too (attempts 0) — no lifecycle special case for usage
+  events. `deadlineAt` = startedAt + timeouts.runMs, recorded so hosts
+  enforce the SAME budget `run()`'s loop enforces.
+- **Typed state — `lifecycle.state`**: defs may declare a zod schema for
+  the fn-owned `data` bag; the compiler saves it as JSON Schema at
+  `doc.lifecycle.stateSchema` (hash-covered, catalog-visible — hosted
+  mode has no def source, so the doc must carry it) and the engine
+  validates `state.data` on EVERY boundary: after each start/poll return
+  (FN_CONTRACT) and before each poll/stop invocation (INVALID_INPUT —
+  host-side corruption is the caller's fault). The live zod object doubles
+  as the author's compile-time type; the doc schema is the runtime
+  authority. Apify declares it once at provider level.
+- **UPPERCASE kinds, defined once**: `RunKind = {RUNNING, COMPLETED}`
+  (v1 zProviderRunStatus convention), shared by fn outcomes and engine
+  results; `zRunRunning = zLifecycleRunning.extend({state: zRunState,
+  pollAfterMs: required})` — the two shapes differ EXACTLY by what the
+  engine adds at the boundary. Endpoint-level kinds REJECTED: a kind is a
+  host protocol verb; endpoint phases ride `state.stage` (D13).
+
+## D16 — Egress hygiene: same-origin credentials + https-only
+
+- Context: PR #2 findings 8 (credential scope) and 9 (plaintext targets).
+- **Same-origin credential rule**: `utils.http`/`utils.request` inject the
+  provider's credentials ONLY when the target origin equals the doc
+  request's origin — cross-origin calls egress BARE
+  (`PreparedRequest.auth` optional; transports skip injection entirely,
+  credentials are never even resolved). Fns can still reach other hosts
+  (dataset CDNs, signed URLs) — they just never carry the vendor key
+  there.
+- **https-only**: `zHttpCall.url` and the request-override target take
+  `z.url({protocol: /^https$/})` — a plaintext absolute target is a fn
+  bug (FN_CONTRACT), not a policy knob.
+- **`utils.request` gains the target** (supersedes D14's "deliberately NOT
+  url/path"): review settled that `request` can do ANYTHING `http` can —
+  the two differ only in DEFAULTS (request = the compiled request's,
+  presence-based overrides incl. `url`|`path`; http = zero defaults, the
+  doc-header merge removed: `headers` ARE the outbound set).
+
+## D17 — usage.model + usage.estimate (pre-run cost, rate-free shapes)
+
+- Context: review requirement — pre-run estimates in the SAME units as
+  consolidate, plus a rate-free declaration of the vendor's cost shape.
+- **`usage.model`** (usage/model.ts): inline DATA on the doc (never a fn)
+  — `per_call | per_result | per_unit | unit_matrix | tiered`, mirroring
+  v1's authoring-legal price kinds. METERED dropped (v1 deprecated it in
+  place — duration is `per_unit` with SECOND/MINUTE); BY_PERIOD out of
+  run scope; no "composite" kind (matrix/tiered ARE the composites, and
+  `zUsage.units` is already an array). `startWith: "call"` keeps the
+  base-fee-then-meter shape (v1 PER_RESULT.flatFee / Apify actor-start).
+  matrix/tiered stay DISTINCT (admission-time variant reject vs
+  settle-time quantity metering with `offset`). Rates live in the
+  catalog, never the doc.
+- **`usage.estimate`**: the 6th pure hook (v1 `paymentLifecycle.estimate`)
+  — validated input → estimated `Usage`; engine entrypoint
+  `estimate(runInput)` (no IO, no state); absent ⇒ one CALL unit (v1
+  PER_CALL base). Presets port the v1 EstimationLabel machinery
+  (`presets.estimate.*`: perCall, onePerQuery, limitIsExact,
+  perQueryLimit, limitIsPages, perQueryPages, dualLimit) with the FIELD
+  ALLOW-LISTS as preset ARGS — apify centralizes them once
+  (connectors/apify/estimation.ts, the v1 limit-resolver lesson).
+- **Coded error classes** (same round): `JsonPathError`
+  (PATH_SYNTAX/PATH_NOT_FOUND/TYPE_MISMATCH) and `CompileError`
+  (SCHEMA_INVALID/HOOK_UNRESOLVED/STATE_SCHEMA_INVALID/DOC_MALFORMED),
+  both `retriable = false`; a lifecycle fn's escaped `retriable === false`
+  throw classifies FN_CONTRACT (deterministic bug — retry cannot succeed),
+  NOT the blanket EXECUTION_FAILED.
+- Consequence: breaking hook ABI revision — ENGINE_VERSION 0.3.0;
+  fn_abi_since/async_since 0.3.0 (every doc floors there).
+
 ## Concepts delta
 
 | Term | Definition |
 | --- | --- |
-| **Lifecycle** (`lifecycle.start/poll/stop`) | The effectful hook family — the async run protocol. Start replaces declarative execution (request = data into it); poll = one status tick (running ∣ completed envelope); stop = best-effort abort. Leaf-wise per phase. |
-| **Provider runtime** (`utils.http` + `utils.request`) | v1 `ProviderRuntime` re-homed as host ABI, bound per invocation: `http` = raw explicit calls (path resolves against the request origin); `request` = the default relay over the compiled request + caller input, field-overridable. Auth injected at the transport on both; sniff-decoded `{status, body}`; non-2xx returned, transport failures throw EXECUTION_FAILED. |
-| **Outcome** | A lifecycle fn's return: `running{state, pollAfterMs?}` ∣ `completed{httpStatus, providerHttpStatus?, output, state?}` — the completed arm IS the raw envelope the settle pipeline consumes. |
-| **State** | The opaque Json handle threaded between ticks by value — ids + billing signals only, hard-capped (`schema.state_max_bytes`). ONE reserved key: `externalRunId` (the vendor's run id — v1's `providerRunId`); the rest is fn-owned (v1's `metadata`). |
+| **Lifecycle** (`lifecycle.start/poll/stop` + `lifecycle.state`) | The effectful hook family — the async run protocol. Start replaces declarative execution (request = data into it); poll = one status tick (RUNNING ∣ COMPLETED envelope); stop = best-effort abort; `state` = the OPTIONAL zod schema typing the fn-owned `data` bag (compiled to `doc.lifecycle.stateSchema`, engine-validated per tick). Leaf-wise per phase. |
+| **Provider runtime** (`utils.http` + `utils.request`) | v1 `ProviderRuntime` re-homed as host ABI, bound per invocation: `http` = raw ZERO-defaults calls (path resolves against the request origin; headers ARE the outbound set); `request` = the default relay over the compiled request + caller input, presence-based overrides INCLUDING the target — request can do anything http can, they differ only in defaults. Same-origin credential rule + https-only on both (D16); sniff-decoded `{status, body}`; non-2xx returned, transport failures throw EXECUTION_FAILED. |
+| **Outcome** | A lifecycle fn's return: `RUNNING{state: patch, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?: patch}` — the completed arm IS the raw envelope the settle pipeline consumes; state patches merge presence-based over the previous state. |
+| **State** (`zRunState`) | The STRUCTURED envelope threaded between ticks by value: fn-owned `externalRunId`/`stage`/`data` (ids + billing signals, typed when the doc declares `lifecycle.state`) + ENGINE-owned `timing` (the v1 providerRun clock — feeds the ClickHouse provider slices). Hard-capped (`schema.state_max_bytes`). |
+| **Timing** (`zRunTiming`) | The settle-side provider-timing report on every RunCompleted (async AND sync): startedAt/completedAt/attempts/startRequestMs/pollMsTotal/providerTotalMs → t_provider_* usage-event slices. Engine-stamped; hosts keep measuring their own slices. |
+| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage in consolidate's units, engine-executed with no IO (`estimate(runInput)`); `usage.model` is the rate-free cost-shape declaration beside it. |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |

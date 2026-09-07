@@ -1,5 +1,6 @@
 {
     "name": "happy",
+    "description": "recorded chain for octen#extract, scenario 'happy' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {

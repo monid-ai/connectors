@@ -2,6 +2,7 @@ import { z } from "zod";
 import { zHttpMethod } from "../common/http.ts";
 import { type Json, zJson } from "../json/type.ts";
 import { zRunInput } from "../run/input.ts";
+import { RunKind, zRunState, zStatePatch } from "../run/state.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
 
 /**
@@ -38,18 +39,19 @@ import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
 // ---------------------------------------------------------------------------
 
 /**
- * One HTTP call issued by a lifecycle fn. CONSTRUCTED FROM the doc's request
- * + auth, per-call overridable: `path` resolves against the doc request
- * URL's origin (v1 `apiPath` semantics); an absolute `url` may target any
- * host ("fns can do whatever they want" — egress hygiene is transport/Relay
- * policy in hosted mode). `headers` merge OVER the doc's request headers;
- * `requestMs` overrides the doc's per-request timeout. Auth is ALWAYS
- * injected by the transport and is not overridable (custody).
+ * One HTTP call issued by a lifecycle fn — ZERO defaults: every field sent
+ * is a field stated here. `path` resolves against the doc request URL's
+ * origin (v1 `apiPath` semantics); an absolute `url` may target any HTTPS
+ * host, but credentials are injected ONLY for same-origin targets (design
+ * D16 — the same-origin credential rule; cross-origin calls go out bare).
+ * `headers` ARE the complete outbound header set (no doc-header merge);
+ * `requestMs` overrides the doc's per-request timeout. Auth injection is
+ * transport-side and not overridable (custody).
  */
 export const zHttpCall = z.strictObject({
     method: zHttpMethod,
-    /** Absolute target. Exactly one of `url` | `path`. */
-    url: z.url().optional(),
+    /** Absolute HTTPS target. Exactly one of `url` | `path`. */
+    url: z.url({ protocol: /^https$/ }).optional(),
     /** Resolved against the doc request URL's origin. */
     path: z.string().regex(/^\//, "path must start with /").optional(),
     headers: z.record(z.string(), z.string()).optional(),
@@ -77,18 +79,27 @@ export type LifecycleHttpFn = (call: HttpCall) => Promise<HttpResult>;
  * "default HTTP relay" as a callable): it executes THE endpoint's compiled
  * request, initialized from `data.request` + the caller input —
  * method/url/headers from the compiled request, `body ?? input.body`,
- * `queryParams ?? input.queryParams` — with any field here overriding per
- * call. `utils.request()` alone sends exactly what the declarative sync
- * pipeline would. Targeting a DIFFERENT url/path is deliberately not an
- * override — that is what `utils.http` is for.
+ * `queryParams ?? input.queryParams` — with a PRESENCE-BASED merge: any
+ * field here overrides per call, absent fields fall through. That includes
+ * the TARGET (`url` | `path` — at most one): `utils.request` can do
+ * anything `utils.http` can; the difference is defaults (request = the
+ * compiled request's, http = none). Same-origin credential rule (D16) and
+ * https-only apply identically.
  */
 export const zRequestOverrides = z.strictObject({
     method: zHttpMethod.optional(),
+    /** Absolute HTTPS target override. At most one of `url` | `path`. */
+    url: z.url({ protocol: /^https$/ }).optional(),
+    /** Path override, resolved against the doc request URL's origin. */
+    path: z.string().regex(/^\//, "path must start with /").optional(),
     headers: z.record(z.string(), z.string()).optional(),
     queryParams: z.record(z.string(), zJson).optional(),
     body: zJson.optional(),
     requestMs: z.number().int().positive().optional(),
-});
+}).refine(
+    (o) => o.url === undefined || o.path === undefined,
+    { message: "at most one of url | path" },
+);
 export type RequestOverrides = z.infer<typeof zRequestOverrides>;
 
 export type LifecycleRequestFn = (
@@ -133,11 +144,13 @@ export const zLifecycleStartData = z.strictObject({
 export type LifecycleStartData = z.infer<typeof zLifecycleStartData>;
 
 /** ctx.data for lifecycle.poll / lifecycle.stop — plus the threaded state
- *  (the opaque Json handle the previous tick returned). */
+ *  (the FULL structured RunState: the previous tick's fn-owned fields +
+ *  the engine-owned timing, which fns may READ — adaptive cadence off
+ *  attempts/deadlineAt — but not write; they return zStatePatch). */
 export const zLifecycleTickData = z.strictObject({
     input: zRunInput,
     request: zLifecycleRequestInfo,
-    state: zJson,
+    state: zRunState,
 });
 export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
 
@@ -146,20 +159,20 @@ export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
 // ---------------------------------------------------------------------------
 
 /**
- * A run still in flight. `state` carries IDENTITY + BILLING SIGNALS (run
- * ids, dataset ids, pricing fields, attempt counters) — never payloads: it
- * travels BY VALUE every tick (Temporal payloads, run records, fixtures) and
- * the engine caps its serialized size (config schema.state_max_bytes →
- * FN_CONTRACT). ONE reserved state key: `externalRunId` — the vendor's own
- * run/job id, the correlation handle hosts read (teardown, webhooks);
- * when present it must be a non-empty string (engine-enforced,
- * FN_CONTRACT). Everything else in state is fn-owned. `pollAfterMs`
- * overrides the doc's `timeouts.pollMs` for the NEXT tick only (adaptive
- * cadence).
+ * A run still in flight. `state` is the fn-owned PATCH (zStatePatch):
+ * `externalRunId` (the vendor's run/job id — the correlation handle hosts
+ * read: teardown, webhooks), `stage` (dispatch marker) and `data` (billing
+ * signals: dataset ids, pricing fields — never payloads). Presence-based
+ * merge over the previous state; `state: {}` keeps everything. The engine
+ * stamps `timing` itself, validates `data` against the doc's
+ * `lifecycle.stateSchema` when declared, and caps the WHOLE merged state's
+ * serialized size (config schema.state_max_bytes → FN_CONTRACT).
+ * `pollAfterMs` overrides the doc's `timeouts.pollMs` for the NEXT tick
+ * only (adaptive cadence).
  */
 export const zLifecycleRunning = z.strictObject({
-    kind: z.literal("running"),
-    state: zJson,
+    kind: z.literal(RunKind.RUNNING),
+    state: zStatePatch,
     pollAfterMs: z.number().int().positive().optional(),
 });
 
@@ -170,16 +183,16 @@ export const zLifecycleRunning = z.strictObject({
  * ours/theirs pair — design D12) is stated ONLY when the fn SYNTHESIZED
  * `httpStatus` (e.g. a failed actor: httpStatus 500, providerHttpStatus
  * 200 — the upstream exchange itself succeeded); absent = relayed
- * verbatim. `state` (absent = previous tick's) rides into the settle
- * envelope so usage.consolidate can read billing signals stashed during
- * polling.
+ * verbatim. `state` is a final fn-owned PATCH (absent = keep the previous
+ * tick's fields); the MERGED state rides into the settle envelope so
+ * usage.consolidate can read billing signals stashed during polling.
  */
 export const zLifecycleCompleted = z.strictObject({
-    kind: z.literal("completed"),
+    kind: z.literal(RunKind.COMPLETED),
     httpStatus: z.number().int(),
     providerHttpStatus: z.number().int().optional(),
     output: zJson,
-    state: zJson.optional(),
+    state: zStatePatch.optional(),
 });
 
 export const zLifecycleOutcome = z.discriminatedUnion("kind", [

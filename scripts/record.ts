@@ -12,11 +12,13 @@
  *
  * FIXTURE DIET (default ON, `--no-trim` opts out): recorded RESPONSE bodies
  * pass through the deterministic trim (arrays capped, long strings
- * truncated — see shared/testing/fixtures.ts) BEFORE writing. The wire
- * chain (requests/urls/statuses) is untouched, so replay matching is
- * unaffected; only the consumed payload bulk shrinks. NOTE: the printed
- * usage below reflects the LIVE (untrimmed) responses — replay assertions
- * must count the trimmed fixture's reality.
+ * truncated) AND the PII scrub (emails/phones → structural placeholders —
+ * see shared/testing/fixtures.ts) BEFORE writing. The wire chain
+ * (requests/urls/statuses) is untouched, so replay matching is unaffected;
+ * only the consumed payload bulk shrinks. NOTE: the printed usage below
+ * reflects the LIVE (untrimmed) responses — replay assertions must count
+ * the trimmed fixture's reality. Recordings are RAW MATERIAL: shared
+ * committed chains (fixture strategy v2) are hand-minimized from them.
  *
  * Input flags mirror engine:run: zRunInput's fields in CLI kebab-case.
  */
@@ -26,6 +28,7 @@ import { type Json, type RunInput, sealUnit } from "@shared/core";
 import {
     type RecordedCall,
     runEndpoint,
+    scrubCalls,
     trimCalls,
     zFixture,
 } from "@shared/testing";
@@ -97,7 +100,10 @@ const fixturePath = join(
 );
 const fixture = zFixture.parse({
     name: scenario,
-    calls: options.trim === false ? sink : trimCalls(sink),
+    description: `raw recording (${endpointId}, scenario ${scenario}) — ` +
+        `hand-minimize into a shared chain before committing`,
+    // scrub ALWAYS runs (PII never lands, even with --no-trim)
+    calls: scrubCalls(options.trim === false ? sink : trimCalls(sink)),
 });
 await Deno.mkdir(join(fixturePath, ".."), { recursive: true });
 await Deno.writeTextFile(fixturePath, JSON.stringify(fixture, null, 4) + "\n");

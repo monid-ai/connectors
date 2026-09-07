@@ -11,6 +11,7 @@ import { zEndpointMeta } from "../meta/endpoint.ts";
 import { zJsonSchemaDoc } from "./json-schema-doc.ts";
 import { zFnRef } from "../fn-table/ref.ts";
 import { zTimeouts } from "../sections/timeouts.ts";
+import { zUsageModel } from "../usage/model.ts";
 
 /**
  * zEndpointDoc — the COMPILED artifact: pure, flat, strict RFC 8259 JSON,
@@ -60,6 +61,12 @@ export const zEndpointDoc = z.strictObject({
         /** THE settle fn: RAW envelope → {usage, output?} — REQUIRED,
          *  resolved endpoint ?? provider at compile. */
         consolidate: zFnRef,
+        /** Rate-free cost-shape declaration — inline DATA (hash-covered),
+         *  never a fn: catalogs price from it without executing anything. */
+        model: zUsageModel.optional(),
+        /** Pre-run estimate hook: validated input → estimated Usage in
+         *  consolidate's units. Absent ⇒ engine defaults to one CALL. */
+        estimate: zFnRef.optional(),
     }),
     /**
      * Async run protocol (engine ≥ config schema.async_since). When present
@@ -71,6 +78,9 @@ export const zEndpointDoc = z.strictObject({
         start: zFnRef,
         poll: zFnRef.optional(),
         stop: zFnRef.optional(),
+        /** JSON Schema of the fn-owned `state.data` bag — engine-validated
+         *  per tick (typed state, resolved endpoint ?? provider). */
+        stateSchema: zJsonSchemaDoc.optional(),
     }).optional(),
     timeouts: zTimeouts,
     /** Hash of the stable serialization (minus this field) — covers $fn ids. */
@@ -85,6 +95,7 @@ export function fnKeysOf(doc: EndpointDoc): string[] {
     if (doc.output.fromResponse) keys.push(doc.output.fromResponse.$fn.key);
     if (doc.output.fromError) keys.push(doc.output.fromError.$fn.key);
     keys.push(doc.usage.consolidate.$fn.key);
+    if (doc.usage.estimate) keys.push(doc.usage.estimate.$fn.key);
     if (doc.lifecycle) {
         keys.push(doc.lifecycle.start.$fn.key);
         if (doc.lifecycle.poll) keys.push(doc.lifecycle.poll.$fn.key);

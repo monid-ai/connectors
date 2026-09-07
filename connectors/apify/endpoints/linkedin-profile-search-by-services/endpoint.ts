@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zLinkedinProfileSearchByServicesBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-profile-search-by-services — Search LinkedIn Profiles (by Services). Pure data; the async machinery
@@ -29,4 +30,6 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-profile-search-by-services/runs",
     },
     input: { schema: { body: zLinkedinProfileSearchByServicesBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

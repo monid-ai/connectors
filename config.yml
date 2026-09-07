@@ -20,11 +20,14 @@ schema:
     # over-pin every doc to the newest engine).
     doc_format_since: "0.1.0" # oldest engine understanding the doc format (minEngineVersion floor)
     # 0.2.0: the hook ctx gained `logger` as its third member ({data, utils,
-    # logger}) — 0.1.0 engines never shipped and never passed it, so 0.2.0
-    # is honestly the oldest engine understanding the current ABI. Every
-    # compiled doc floors here.
-    fn_abi_since: "0.2.0" # engine release of the current hook ABI; stamped as fn entries' `api`
-    async_since: "0.2.0" # engine release of the lifecycle (async) hook family; stamped as lifecycle fn entries' `api`
+    # logger}). 0.3.0: structured run state (zRunState — fn patches, engine
+    # timing, typed lifecycle.state), UPPERCASE run kinds, the usage.estimate
+    # hook + usage.model, zero-default utils.http / full-capability
+    # utils.request, and the same-origin credential rule — a breaking hook
+    # ABI revision, so 0.3.0 is honestly the oldest engine understanding the
+    # current ABI. Every compiled doc floors here.
+    fn_abi_since: "0.3.0" # engine release of the current hook ABI; stamped as fn entries' `api`
+    async_since: "0.3.0" # engine release of the lifecycle (async) hook family; stamped as lifecycle fn entries' `api`
     state_max_bytes: 65536 # hard engine cap on serialized lifecycle state (ids + billing signals, never payloads)
 
 compiler:

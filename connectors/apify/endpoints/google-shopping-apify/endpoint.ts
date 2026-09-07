@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zGoogleShoppingApifyBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * damilo/google-shopping-apify — Search Google Shopping (Apify). Pure data; the async machinery
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/damilo~google-shopping-apify/runs",
     },
     input: { schema: { body: zGoogleShoppingApifyBody } },
+    // v1 estimation label: LIMIT_IS_PAGES
+    usage: { estimate: apifyEstimate.limitIsPages() },
 });

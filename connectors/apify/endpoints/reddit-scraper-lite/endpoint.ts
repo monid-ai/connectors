@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zRedditScraperLiteBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * trudax/reddit-scraper-lite — Pull Reddit Posts. Pure data; the async machinery
@@ -24,4 +25,6 @@ export default defineEndpoint({
         path: "/v2/acts/trudax~reddit-scraper-lite/runs",
     },
     input: { schema: { body: zRedditScraperLiteBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

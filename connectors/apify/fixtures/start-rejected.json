@@ -1,0 +1,18 @@
+{
+    "name": "start-rejected",
+    "description": "Apify API rejects the START call (404 actor-not-found envelope). Vendor non-2xx is DATA: the run completes as a 404 provider error, zero usage forced, output.fromError digests {error: {type, message}} keeping the raw body.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": {
+                        "type": "actor-not-found",
+                        "message": "Actor was not found"
+                    }
+                }
+            }
+        }
+    ]
+}

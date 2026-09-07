@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zGoogleShoppingScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * burbn/google-shopping-scraper — Search Google Shopping. Pure data; the async machinery
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/burbn~google-shopping-scraper/runs",
     },
     input: { schema: { body: zGoogleShoppingScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

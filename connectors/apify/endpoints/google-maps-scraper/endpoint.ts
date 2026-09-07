@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zGoogleMapsScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * damilo/google-maps-scraper — Search Google Maps. Pure data; the async
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/damilo~google-maps-scraper/runs",
     },
     input: { schema: { body: zGoogleMapsScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

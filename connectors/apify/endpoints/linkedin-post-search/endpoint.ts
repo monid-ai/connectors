@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zLinkedinPostSearchBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-post-search — Search LinkedIn Posts. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-post-search/runs",
     },
     input: { schema: { body: zLinkedinPostSearchBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

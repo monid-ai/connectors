@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zSnapchatScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * automation-lab/snapchat-scraper — Get Snapchat Profile. Pure data; the async machinery
@@ -31,4 +32,6 @@ export default defineEndpoint({
         path: "/v2/acts/automation-lab~snapchat-scraper/runs",
     },
     input: { schema: { body: zSnapchatScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

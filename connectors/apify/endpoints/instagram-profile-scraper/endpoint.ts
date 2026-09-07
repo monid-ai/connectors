@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zInstagramProfileScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apify/instagram-profile-scraper — Get Instagram Profile. Pure data; the
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/apify~instagram-profile-scraper/runs",
     },
     input: { schema: { body: zInstagramProfileScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

@@ -24,4 +24,7 @@ export default defineEndpoint({
         path: "/v2/acts/scraptik~tiktok-comments-scraper-api/runs",
     },
     input: { schema: { body: zTiktokCommentsScraperApiBody } },
+    /** Flat per-run pricing (v1 PER_CALL) — the engine default
+     *  estimate (one CALL) is already exact. */
+    usage: { model: { kind: "per_call" } },
 });

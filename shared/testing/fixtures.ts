@@ -5,14 +5,20 @@ import { type Json, zJson } from "@shared/core";
  * HTTP fixture: recorded {req, res} pairs served in order during replay.
  * Headers are NEVER recorded — credentials cannot leak into fixtures.
  *
- * FIXTURES ARE TRIMMED RECORDINGS (fixture-diet policy, design D11 of
- * add-async-run-protocol): the wire CHAIN is byte-real — requests, order,
- * urls, statuses untouched (replay matches REQUESTS only, so trimming can
- * never cause a replay mismatch) — but RESPONSE bodies are shrunk at record
- * time by the deterministic `trimJson` pass (arrays capped, long strings
- * truncated). ~99% of raw recorded bytes are repeated payload no test
- * asserts on; the real shapes and vendor quirks survive. `record --no-trim`
- * opts out; the fixture-size lint (fixture-size.test.ts) bounds files.
+ * FIXTURES ARE MINIMAL SHARED CHAINS (fixture strategy v2): committed DATA
+ * files at PROVIDER level (`connectors/<provider>/fixtures/<shape>.json`) —
+ * one hand-minimized chain per lifecycle SHAPE (run-succeeded, run-failed,
+ * start-rejected, pay-per-event…), each stating what it exercises in
+ * `description`. Call urls may carry `{{request.url}}` / `{{request.origin}}`
+ * placeholders, bound at replay time from the endpoint's compiled request —
+ * so ONE chain serves every endpoint of the provider.
+ *
+ * Recording heritage (fixture diet, design D11): chains derive from real
+ * recordings — requests, order, statuses untouched (replay matches
+ * REQUESTS only) — with RESPONSE bodies shrunk by the deterministic
+ * `trimJson` pass (arrays capped, long strings truncated) and PII redacted
+ * by `scrubJson` (structural placeholders; keys/shape intact). The
+ * fixture-size lint (fixture-size.test.ts) bounds files.
  */
 export const zRecordedCall = z.object({
     req: z.object({
@@ -29,6 +35,9 @@ export type RecordedCall = z.infer<typeof zRecordedCall>;
 
 export const zFixture = z.object({
     name: z.string().min(1),
+    /** What lifecycle shape this chain exercises — every fixture says why
+     *  it exists (fixture strategy v2). */
+    description: z.string().min(1),
     calls: z.array(zRecordedCall).min(1),
 }).strict();
 export type Fixture = z.infer<typeof zFixture>;
@@ -76,8 +85,57 @@ export function trimCalls(calls: RecordedCall[]): RecordedCall[] {
     }));
 }
 
-/** Serve recorded calls in order; fail loudly on mismatch or exhaustion. */
-export function replayFetch(fixture: Fixture): typeof fetch {
+/**
+ * The PII scrub pass (fixture strategy v2): value-level redaction on string
+ * LEAVES — email-shaped substrings → `user@example.com`, E.164-ish phone
+ * substrings → `+15550000000` — recursively, keys and structure untouched.
+ * Deliberately conservative (regex leaves, no key heuristics): recordings
+ * are for SHAPE, and shape survives redaction. Applied by the recorder
+ * after `trimJson`; shared committed chains are additionally hand-checked.
+ */
+export function scrubJson(value: Json): Json {
+    if (typeof value === "string") {
+        return value
+            .replace(
+                /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
+                "user@example.com",
+            )
+            .replace(/\+\d{7,15}/g, "+15550000000");
+    }
+    if (Array.isArray(value)) return value.map(scrubJson);
+    if (value !== null && typeof value === "object") {
+        const out: Record<string, Json> = {};
+        for (const [key, item] of Object.entries(value)) {
+            out[key] = scrubJson(item);
+        }
+        return out;
+    }
+    return value;
+}
+
+/** trim + scrub over a recorded chain (response bodies only). */
+export function scrubCalls(calls: RecordedCall[]): RecordedCall[] {
+    return calls.map((call) => ({
+        req: call.req,
+        res: { status: call.res.status, body: scrubJson(call.res.body) },
+    }));
+}
+
+/**
+ * Serve recorded calls in order; fail loudly on mismatch or exhaustion.
+ * `bindings` substitute `{{key}}` placeholders in recorded urls before
+ * compare (e.g. `{{request.url}}` → the endpoint's compiled request url) —
+ * how one shared chain serves every endpoint of a provider.
+ */
+export function replayFetch(
+    fixture: Fixture,
+    bindings: Record<string, string> = {},
+): typeof fetch {
+    const bind = (template: string): string =>
+        template.replace(
+            /\{\{([A-Za-z_][\w.-]*)\}\}/g,
+            (whole, key: string) => bindings[key] ?? whole,
+        );
     let index = 0;
     return (
         input: URL | RequestInfo,
@@ -97,10 +155,11 @@ export function replayFetch(fixture: Fixture): typeof fetch {
                 ),
             );
         }
-        if (call.req.method !== method || call.req.url !== url) {
+        const expectedUrl = bind(call.req.url);
+        if (call.req.method !== method || expectedUrl !== url) {
             return Promise.reject(
                 new Error(
-                    `replay(${fixture.name}): call ${index} expected ${call.req.method} ${call.req.url}, ` +
+                    `replay(${fixture.name}): call ${index} expected ${call.req.method} ${expectedUrl}, ` +
                         `engine issued ${method} ${url}`,
                 ),
             );

@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zTweetScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apidojo/tweet-scraper — Search Tweets on X. Pure data; the async
@@ -29,4 +30,6 @@ export default defineEndpoint({
         path: "/v2/acts/apidojo~tweet-scraper/runs",
     },
     input: { schema: { body: zTweetScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

@@ -11,9 +11,16 @@ import {
     type LifecycleUtils,
     type RunCompleted,
     type RunInput,
+    RunKind,
     type RunPollResult,
     type RunStartResult,
+    type RunState,
+    type RunTiming,
+    type RunTimingInFlight,
+    type StatePatch,
+    type Usage,
     zeroUsage,
+    zRunState,
     zSealedUnit,
 } from "@shared/core";
 import type { Logger } from "@shared/logging";
@@ -117,9 +124,19 @@ export class LoadedEndpoint implements RunnableEndpoint {
 
     // ---- Temporal-activity-shaped: stateless, strict-JSON in/out, no sleeps ----
 
+    /** Pre-run cost estimate (v1 paymentLifecycle.estimate): validated
+     *  input → estimated Usage in consolidate's units — PURE, no IO, no
+     *  state. Absent estimate fn ⇒ one CALL unit (the v1 PER_CALL base). */
+    estimate(runInput: RunInput): Usage {
+        const input = this.deriveInput(runInput);
+        if (this.fns.usageEstimate) return this.fns.usageEstimate({ input });
+        return { units: [{ amount: 1, unit: "call" }] };
+    }
+
     async start(runInput: RunInput): Promise<RunStartResult> {
         const doc = this.doc;
         const input = this.deriveInput(runInput);
+        const t0 = this.now();
 
         // LIFECYCLE mode: the start fn replaces the declarative execution —
         // the compiled request rides in as DATA (ctx.data.request).
@@ -129,7 +146,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 { input, request },
                 this.utilsFor(input, request),
             );
-            return this.fromOutcome(outcome, input, undefined);
+            return this.fromOutcome(outcome, input, undefined, t0);
         }
 
         // DECLARATIVE mode (sync): one request, engine-executed.
@@ -138,40 +155,66 @@ export class LoadedEndpoint implements RunnableEndpoint {
         // 2. transport: injection + egress inside the port  → EXECUTION_FAILED (retriable)
         const response = await this.ctx.transport.execute(request);
         // 3. sniffing decode: JSON if it parses, else the faithful raw string
-        return this.settle(input, response.status, sniffDecode(response));
+        const completedAt = this.now();
+        return this.settle(
+            input,
+            response.status,
+            sniffDecode(response),
+            undefined,
+            undefined,
+            {
+                startedAt: t0.toISOString(),
+                completedAt: completedAt.toISOString(),
+                attempts: 0,
+                startRequestMs: Math.max(
+                    0,
+                    completedAt.getTime() - t0.getTime(),
+                ),
+                pollMsTotal: 0,
+                providerTotalMs: Math.max(
+                    0,
+                    completedAt.getTime() - t0.getTime(),
+                ),
+            },
+        );
     }
 
     /**
      * One poll tick. The caller's input is RE-DERIVED deterministically
      * (validate + input.toRequest) so lifecycle fns see the same input as
      * start — under Temporal each tick is a separate activity holding the
-     * payload by value anyway.
+     * payload by value anyway. The threaded `state` is RE-VALIDATED on the
+     * way in (zRunState + the doc's stateSchema — defense against
+     * host-side payload corruption).
      */
-    async poll(runInput: RunInput, state: Json): Promise<RunPollResult> {
+    async poll(runInput: RunInput, state: RunState): Promise<RunPollResult> {
         if (!this.fns.lifecyclePoll) {
             throw new EngineError(
                 EngineErrorCode.NOT_ASYNC,
                 `${this.doc.id} has no lifecycle.poll — not a pollable endpoint`,
             );
         }
+        const prevState = this.parseThreadedState(state);
         const input = this.deriveInput(runInput);
         const request = this.requestInfo(input);
+        const t0 = this.now();
         const outcome = await this.fns.lifecyclePoll(
-            { input, request, state },
+            { input, request, state: prevState },
             this.utilsFor(input, request),
         );
-        return this.fromOutcome(outcome, input, state);
+        return this.fromOutcome(outcome, input, prevState, t0);
     }
 
     /** Best-effort, idempotent teardown: no lifecycle.stop ⇒ no-op; with one,
      *  EVERY failure is swallowed (cleanup never masks the run outcome). */
-    async stop(runInput: RunInput, state: Json): Promise<void> {
+    async stop(runInput: RunInput, state: RunState): Promise<void> {
         if (!this.fns.lifecycleStop) return;
         try {
+            const prevState = this.parseThreadedState(state);
             const input = this.deriveInput(runInput);
             const request = this.requestInfo(input);
             await this.fns.lifecycleStop(
-                { input, request, state },
+                { input, request, state: prevState },
                 this.utilsFor(input, request),
             );
         } catch (error) {
@@ -190,11 +233,10 @@ export class LoadedEndpoint implements RunnableEndpoint {
         opts?: { signal?: AbortSignal },
     ): Promise<RunCompleted> {
         const doSleep = this.ctx.sleep ?? sleep;
-        const now = this.ctx.now ?? (() => new Date());
-        const deadline = now().getTime() + this.doc.timeouts.runMs;
+        const deadline = this.now().getTime() + this.doc.timeouts.runMs;
         let tick = await this.start(runInput);
-        while (tick.kind === "running") {
-            if (now().getTime() > deadline) {
+        while (tick.kind === RunKind.RUNNING) {
+            if (this.now().getTime() > deadline) {
                 await this.stop(runInput, tick.state);
                 throw new EngineError(
                     EngineErrorCode.TIMEOUT,
@@ -229,20 +271,102 @@ export class LoadedEndpoint implements RunnableEndpoint {
         };
     }
 
-    /** Map a lifecycle outcome to a run result (running gates + settle). */
+    /** The engine's clock — injectable via EngineCtx.now (testability). */
+    private now(): Date {
+        return (this.ctx.now ?? (() => new Date()))();
+    }
+
+    /** Re-validate a host-threaded state on the way in: zRunState + the
+     *  doc's stateSchema. A corrupt payload is the CALLER's fault, not a
+     *  fn contract breach → INVALID_INPUT. */
+    private parseThreadedState(state: RunState): RunState {
+        const parsed = zRunState.safeParse(state);
+        if (!parsed.success) {
+            throw new EngineError(
+                EngineErrorCode.INVALID_INPUT,
+                `${this.doc.id}: threaded run state invalid: ${
+                    formatZodError(parsed.error)
+                }`,
+            );
+        }
+        const schema = this.doc.lifecycle?.stateSchema;
+        if (schema && parsed.data.data !== undefined) {
+            const check = validateAgainst(schema, parsed.data.data);
+            if (!check.ok) {
+                throw new EngineError(
+                    EngineErrorCode.INVALID_INPUT,
+                    `${this.doc.id}: threaded state.data ${check.message}`,
+                );
+            }
+        }
+        return parsed.data;
+    }
+
+    /** Presence-based patch merge: a present field replaces, an absent
+     *  field inherits from the previous state (`{}` keeps everything);
+     *  `data` replaces WHOLESALE when present. */
+    private mergePatch(
+        patch: StatePatch | undefined,
+        prev: RunState | undefined,
+    ): StatePatch {
+        const externalRunId = patch?.externalRunId ?? prev?.externalRunId;
+        const stage = patch?.stage ?? prev?.stage;
+        const data = patch?.data ?? prev?.data;
+        return {
+            ...(externalRunId !== undefined ? { externalRunId } : {}),
+            ...(stage !== undefined ? { stage } : {}),
+            ...(data !== undefined ? { data } : {}),
+        };
+    }
+
+    /** ENGINE-owned timing advance — fns cannot tamper (they return
+     *  patches, which have no timing field). First tick initializes;
+     *  every poll tick stamps lastPolledAt and accumulates. */
+    private advanceTiming(
+        prev: RunTimingInFlight | undefined,
+        t0: Date,
+        tickMs: number,
+    ): RunTimingInFlight {
+        if (!prev) {
+            return {
+                startedAt: t0.toISOString(),
+                startRequestMs: tickMs,
+                attempts: 0,
+                pollMsTotal: 0,
+                deadlineAt: new Date(t0.getTime() + this.doc.timeouts.runMs)
+                    .toISOString(),
+            };
+        }
+        return {
+            ...prev,
+            lastPolledAt: t0.toISOString(),
+            attempts: prev.attempts + 1,
+            pollMsTotal: prev.pollMsTotal + tickMs,
+        };
+    }
+
+    /** Map a lifecycle outcome to a run result (running gates + settle).
+     *  `t0` is when THIS tick began — its duration is measured here. */
     private fromOutcome(
         outcome: LifecycleOutcome,
         input: RunInput,
-        prevState: Json | undefined,
+        prevState: RunState | undefined,
+        t0: Date,
     ): RunStartResult {
-        if (outcome.kind === "running") {
+        const completedAt = this.now();
+        const tickMs = Math.max(0, completedAt.getTime() - t0.getTime());
+        const fnFields = this.mergePatch(outcome.state, prevState);
+        const timing = this.advanceTiming(prevState?.timing, t0, tickMs);
+
+        if (outcome.kind === RunKind.RUNNING) {
             if (!this.fns.lifecyclePoll) {
                 throw new EngineError(
                     EngineErrorCode.CONTRACT_VIOLATION,
-                    `${this.doc.id}: lifecycle returned "running" but the doc has no lifecycle.poll`,
+                    `${this.doc.id}: lifecycle returned RUNNING but the doc has no lifecycle.poll`,
                 );
             }
-            this.assertState(outcome.state);
+            const state: RunState = { ...fnFields, timing };
+            this.assertState(state);
             const pollAfterMs = outcome.pollAfterMs ??
                 this.doc.timeouts.pollMs;
             if (pollAfterMs === undefined) {
@@ -251,15 +375,36 @@ export class LoadedEndpoint implements RunnableEndpoint {
                     `${this.doc.id}: pollable doc carries no timeouts.pollMs`,
                 );
             }
-            return { kind: "running", state: outcome.state, pollAfterMs };
+            return { kind: RunKind.RUNNING, state, pollAfterMs };
         }
-        if (outcome.state !== undefined) this.assertState(outcome.state);
+
+        // COMPLETED — the merged final state rides into the settle envelope
+        // (billing signals stashed during polling stay readable); absent
+        // entirely when nothing was ever stashed (sync-in-one-tick).
+        const hasState = outcome.state !== undefined ||
+            prevState !== undefined;
+        const finalState: RunState | undefined = hasState
+            ? { ...fnFields, timing }
+            : undefined;
+        if (finalState !== undefined) this.assertState(finalState);
+        const startedAtMs = Date.parse(timing.startedAt);
         return this.settle(
             input,
             outcome.httpStatus,
             outcome.output,
-            outcome.state ?? prevState,
+            finalState,
             outcome.providerHttpStatus,
+            {
+                startedAt: timing.startedAt,
+                completedAt: completedAt.toISOString(),
+                attempts: timing.attempts,
+                startRequestMs: timing.startRequestMs,
+                pollMsTotal: timing.pollMsTotal,
+                providerTotalMs: Math.max(
+                    0,
+                    completedAt.getTime() - startedAtMs,
+                ),
+            },
         );
     }
 
@@ -276,8 +421,9 @@ export class LoadedEndpoint implements RunnableEndpoint {
         input: RunInput,
         httpStatus: number,
         raw: Json,
-        state?: Json,
-        providerHttpStatus?: number,
+        state: RunState | undefined,
+        providerHttpStatus: number | undefined,
+        timing: RunTiming,
     ): RunCompleted {
         const doc = this.doc;
         const isProviderError = !(httpStatus >= 200 && httpStatus < 300);
@@ -321,7 +467,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
         }
         // flat, kind-discriminated (no nested result to unwrap)
         return {
-            kind: "completed",
+            kind: RunKind.COMPLETED,
             httpStatus,
             ...(providerHttpStatus !== undefined &&
                     providerHttpStatus !== httpStatus
@@ -330,15 +476,37 @@ export class LoadedEndpoint implements RunnableEndpoint {
             output,
             usage,
             isProviderError,
+            timing,
         };
     }
 
-    /** State discipline, fail-closed: the HARD size cap (config
-     *  schema.state_max_bytes — state travels BY VALUE every tick, ids +
-     *  billing signals, never payloads) and the ONE reserved key —
-     *  `state.externalRunId` (the vendor's run id, THE correlation handle
-     *  hosts read) must be a non-empty string when present. */
-    private assertState(state: Json): void {
+    /** State discipline, fail-closed (FN_CONTRACT — the fn wrote it):
+     *  the structural contract (zRunState — externalRunId non-empty when
+     *  present, engine-owned timing shape), the TYPED-state check (the
+     *  doc's lifecycle.stateSchema over the fn-owned `data` bag, when
+     *  declared), and the HARD size cap (config schema.state_max_bytes —
+     *  state travels BY VALUE every tick, ids + billing signals, never
+     *  payloads). */
+    private assertState(state: RunState): void {
+        const parsed = zRunState.safeParse(state);
+        if (!parsed.success) {
+            throw new EngineError(
+                EngineErrorCode.FN_CONTRACT,
+                `${this.doc.id}: lifecycle state invalid: ${
+                    formatZodError(parsed.error)
+                }`,
+            );
+        }
+        const schema = this.doc.lifecycle?.stateSchema;
+        if (schema && state.data !== undefined) {
+            const check = validateAgainst(schema, state.data);
+            if (!check.ok) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${this.doc.id}: lifecycle state.data ${check.message}`,
+                );
+            }
+        }
         const bytes = new TextEncoder().encode(JSON.stringify(state)).length;
         const max = contractConfig.schema.stateMaxBytes;
         if (bytes > max) {
@@ -347,19 +515,6 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 `${this.doc.id}: lifecycle state is ${bytes} bytes (max ${max}) — ` +
                     `state carries ids + billing signals, never payloads`,
             );
-        }
-        if (
-            state !== null && typeof state === "object" &&
-            !Array.isArray(state) && "externalRunId" in state
-        ) {
-            const id = (state as Record<string, Json>).externalRunId;
-            if (typeof id !== "string" || id === "") {
-                throw new EngineError(
-                    EngineErrorCode.FN_CONTRACT,
-                    `${this.doc.id}: state.externalRunId is reserved for the ` +
-                        `vendor's run id and must be a non-empty string`,
-                );
-            }
         }
     }
 }

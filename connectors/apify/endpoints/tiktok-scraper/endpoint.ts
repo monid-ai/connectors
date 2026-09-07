@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zTiktokScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apidojo/tiktok-scraper — Pull TikTok Posts. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/apidojo~tiktok-scraper/runs",
     },
     input: { schema: { body: zTiktokScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zTiktokProfileScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * apidojo/tiktok-profile-scraper — Get TikTok Profile. Pure data; the async machinery
@@ -29,4 +30,6 @@ export default defineEndpoint({
         path: "/v2/acts/apidojo~tiktok-profile-scraper/runs",
     },
     input: { schema: { body: zTiktokProfileScraperBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

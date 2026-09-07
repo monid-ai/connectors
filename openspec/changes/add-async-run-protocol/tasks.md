@@ -132,3 +132,56 @@
       end-to-end through the engine (the record path IS the live proof)
 - [x] 8.4 `deno task version:check` (post-commit) — engine minor bump
       covers the new contract paths
+
+## 10. Structured state + estimate round (D15–D17, PR #2 findings)
+
+- [x] 10.a `run/state.ts`: RunKind (UPPERCASE, defined once) + zRunState
+      (fn-owned externalRunId/stage/data + ENGINE-owned timing) +
+      zStatePatch (presence-based merge; `{}` keeps everything);
+      zRunRunning derived via `.extend`; RunCompleted gains required
+      `timing: zRunTiming` (sync runs too — attempts 0)
+- [x] 10.b Engine: advanceTiming (engine-stamped, fns cannot tamper),
+      parseThreadedState (INVALID_INPUT on host corruption), assertState
+      (zRunState + stateSchema + size cap → FN_CONTRACT), settle stamps
+      the provider slices (t_provider_* parity), deadlineAt = runMs budget
+- [x] 10.c Typed state: `lifecycle.state` (zSchemaCarrier) →
+      `doc.lifecycle.stateSchema` (leaf-wise, hash-covered); engine
+      validates state.data on EVERY boundary; apify declares it once at
+      provider level
+- [x] 10.d Error classes: JsonPathError (PATH_SYNTAX/PATH_NOT_FOUND/
+      TYPE_MISMATCH) + CompileError (SCHEMA_INVALID/HOOK_UNRESOLVED/
+      STATE_SCHEMA_INVALID/DOC_MALFORMED), both retriable=false; lifecycle
+      catch classifies retriable===false throws as FN_CONTRACT
+- [x] 10.e utils split (supersedes the D14 target rule): request gains the
+      presence-based target override (url|path); http goes zero-defaults
+      (doc-header merge removed); https-only absolute targets; SAME-ORIGIN
+      credential rule (PreparedRequest.auth optional — cross-origin egress
+      is BARE) — findings 8+9
+- [x] 10.f usage.model (rate-free shapes; METERED dropped per v1
+      deprecation; startWith keeps the base-fee component; matrix/tiered
+      distinct) + usage.estimate (6th pure hook, engine estimate()
+      entrypoint, default one CALL) + presets.estimate.* (v1
+      EstimationLabel port, allow-lists as args)
+- [x] 10.g Apify backfill: provider state schema + $.data.* signal paths;
+      all 46 endpoints declare model/estimate (estimation.ts centralizes
+      the v1 allow-lists); facebook-profile-posts-scraper keeps its custom
+      estimate; linkedin-profile-search reads LIVE run-record rates
+      (finding 5 — constants fallback only) + per_unit PAGE model +
+      page-based estimate
+- [x] 10.h Fixture strategy v2: provider-level shared shape chains
+      (run-succeeded / run-failed / start-rejected / pay-per-event) with
+      {{request.url}}/{{request.origin}} bindings + required description;
+      per-endpoint apify fixtures/tests DELETED (the PII purge — findings
+      1+4); scrubJson always-on in the recorder; test-inputs.json (one
+      valid input per endpoint); lifecycle.test.ts iterates all 46
+- [x] 10.i Drift guard: live.required ⊆ compiled.required (optional→
+      required flips — finding 7); verified live against all 46 actors
+- [x] 10.j Versions: ENGINE_VERSION 0.3.0; fn_abi_since/async_since 0.3.0
+      (breaking hook ABI); version-check CONTRACT_PATHS extended
+      (state/estimate/model/usage-section)
+- [x] 10.k Docs: design D15 (structured state/timing/typed data/kinds),
+      D16 (egress hygiene), D17 (model/estimate/error codes); spec deltas
+      rewritten to the implemented surface; Concepts delta refreshed
+- [x] 10.l Verify: check + 117 tests green + lint + fmt + compile
+      (minEngineVersion 0.3.0, 26 fnTable entries) + version:check + live
+      drift guard

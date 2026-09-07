@@ -1,5 +1,6 @@
 {
     "name": "empty",
+    "description": "recorded chain for octen#extract, scenario 'empty' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {

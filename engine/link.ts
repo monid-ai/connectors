@@ -7,6 +7,7 @@ import {
     type Consolidated,
     type EndpointDoc,
     type EnvelopeData,
+    type EstimateData,
     type FnEntry,
     FnEntryKind,
     fnKey,
@@ -27,8 +28,11 @@ import {
     type OutputFromResponseFn,
     type RunInput,
     type ToRequestData,
+    type Usage,
     UsageConsolidateContract,
     type UsageConsolidateFn,
+    UsageEstimateContract,
+    type UsageEstimateFn,
     zLifecycleOutcome,
     zLifecycleStartData,
     zLifecycleTickData,
@@ -56,6 +60,8 @@ export interface LinkedFns {
     fromError?: (data: EnvelopeData) => Json;
     /** THE settle fn: raw envelope → {usage, output?}. */
     usageConsolidate: (data: EnvelopeData) => Consolidated;
+    /** Pre-run estimate: validated input → estimated Usage (pure, no IO). */
+    usageEstimate?: (data: EstimateData) => Usage;
     /** Lifecycle (async) family — effectful, so `utils` (http/request bound
      *  to THIS invocation's input + request) is passed per call. */
     lifecycleStart?: (
@@ -185,6 +191,10 @@ function wrapContract<
  *   - EngineErrors thrown inside the fn (utils.http transport failures →
  *     EXECUTION_FAILED, malformed http calls → FN_CONTRACT) propagate
  *     UNTOUCHED — their taxonomy is already correct.
+ *   - A thrown error carrying `retriable === false` (JsonPathError,
+ *     CompileError, other engine-recognized deterministic failures) →
+ *     FN_CONTRACT: a deterministic fn bug — retrying cannot succeed, so
+ *     the blanket retriable mapping below must not absorb it.
  *   - Any other uncaught throw → EXECUTION_FAILED (retriable) — the
  *     monid-services ProviderError posture: an unhandled failure inside a
  *     lifecycle fn is an execution failure, not a contract breach.
@@ -217,6 +227,16 @@ function wrapLifecycle<D>(
             ) => unknown)({ data: checked.data, utils, logger });
         } catch (error) {
             if (error instanceof EngineError) throw error;
+            if (
+                typeof error === "object" && error !== null &&
+                (error as { retriable?: unknown }).retriable === false
+            ) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${label}: ${hookName} hit a deterministic fault: ${error}`,
+                    { cause: error },
+                );
+            }
             throw new EngineError(
                 EngineErrorCode.EXECUTION_FAILED,
                 `${label}: ${hookName} failed: ${error}`,
@@ -307,6 +327,24 @@ export async function linkFns(
             logger,
         ),
     };
+    if (doc.usage.estimate) {
+        linked.usageEstimate = wrapContract<
+            EstimateData,
+            Usage,
+            UsageEstimateFn
+        >(
+            UsageEstimateContract,
+            await resolveFn(
+                doc.usage.estimate,
+                fns,
+                engineVersion,
+                `${doc.id}#usage.estimate`,
+            ),
+            doc.id,
+            "usage.estimate",
+            logger,
+        );
+    }
     if (doc.input.toRequest) {
         linked.toRequest = wrapContract<
             ToRequestData,

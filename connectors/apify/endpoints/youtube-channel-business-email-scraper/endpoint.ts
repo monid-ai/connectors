@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zYoutubeChannelBusinessEmailScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * dataovercoffee/youtube-channel-business-email-scraper — Find YouTube Channel Emails. Pure data; the async machinery
@@ -31,4 +32,6 @@ export default defineEndpoint({
             "/v2/acts/dataovercoffee~youtube-channel-business-email-scraper/runs",
     },
     input: { schema: { body: zYoutubeChannelBusinessEmailScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

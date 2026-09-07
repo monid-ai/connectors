@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zLinkedinProfileScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * dev_fusion/linkedin-profile-scraper — Get LinkedIn Profile.
@@ -33,4 +34,6 @@ export default defineEndpoint({
         path: "/v2/acts/dev_fusion~linkedin-profile-scraper/runs",
     },
     input: { schema: { body: zLinkedinProfileScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

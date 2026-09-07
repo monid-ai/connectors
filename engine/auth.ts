@@ -21,7 +21,7 @@ import { validateAgainst } from "./validate.ts";
  *      only the RETURNED (contract-validated) request egresses.
  */
 export async function applyAuth(
-    req: PreparedRequest,
+    req: PreparedRequest & { auth: NonNullable<PreparedRequest["auth"]> },
     params: Record<string, string>,
 ): Promise<HttpRequestParts> {
     const check = validateAgainst(req.auth.credentials, params);

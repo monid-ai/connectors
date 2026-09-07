@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zFacebookAdsLibraryScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * curious_coder/facebook-ads-library-scraper — Search Facebook Ads. Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/curious_coder~facebook-ads-library-scraper/runs",
     },
     input: { schema: { body: zFacebookAdsLibraryScraperBody } },
+    // v1 estimation label: PER_QUERY_LIMIT
+    usage: { estimate: apifyEstimate.perQueryLimit() },
 });

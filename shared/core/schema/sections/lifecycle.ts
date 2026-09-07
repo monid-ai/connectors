@@ -4,6 +4,7 @@ import {
     zLifecycleStartFn,
     zLifecycleStopFn,
 } from "../hooks/lifecycle.ts";
+import { zSchemaCarrier } from "../hooks/ctx.ts";
 
 /**
  * Lifecycle section — SHARED by EndpointDef and ProviderDef (one shape, both
@@ -27,5 +28,16 @@ export const zLifecycleSection = z.strictObject({
     start: zLifecycleStartFn.optional(),
     poll: zLifecyclePollFn.optional(),
     stop: zLifecycleStopFn.optional(),
+    /**
+     * Zod schema of the fn-owned `state.data` bag — the TYPED state
+     * extension: compiled to JSON Schema at `doc.lifecycle.stateSchema`
+     * (hash-covered, catalog-visible) and engine-validated on EVERY tick
+     * boundary (after each start/poll return: FN_CONTRACT; before each
+     * poll/stop invocation: defense against host-side corruption). The
+     * live zod object doubles as the author's compile-time type
+     * (`z.infer`); the doc schema is the runtime authority. Absent ⇒
+     * `data` stays free-form Json (size cap only).
+     */
+    state: zSchemaCarrier.optional(),
 });
 export type LifecycleSection = z.infer<typeof zLifecycleSection>;

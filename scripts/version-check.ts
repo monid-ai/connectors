@@ -26,7 +26,11 @@ const CONTRACT_PATHS = [
     "shared/core/schema/usage/monetary.ts", // MonetaryValue + MoneyUtil (the ABI)
     "shared/core/schema/run/input.ts", // RunInput (caller-facing shape)
     "shared/core/schema/run/result.ts", // RunResult/RunCompleted (result contract)
-    "shared/core/schema/json/util.ts", // JsonUtil interface (the ABI)
+    "shared/core/schema/run/state.ts", // RunKind + zRunState/zStatePatch/timing
+    "shared/core/schema/hooks/estimate.ts", // usage.estimate hook contract
+    "shared/core/schema/usage/model.ts", // zUsageModel (rate-free cost shapes)
+    "shared/core/schema/sections/usage.ts", // usage def section (model/estimate)
+    "shared/core/schema/json/util.ts", // JsonUtil interface (the ABI) + JsonPathError
     "config.yml", // contract constants
 ];
 

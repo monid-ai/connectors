@@ -4,6 +4,8 @@ export {
     type RecordedCall,
     recordingFetch,
     replayFetch,
+    scrubCalls,
+    scrubJson,
     TRIM_ARRAY_CAP,
     TRIM_STRING_CAP,
     trimCalls,

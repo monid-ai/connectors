@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zLinkedinProfileSearchByNameBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * harvestapi/linkedin-profile-search-by-name — Search LinkedIn Profiles (by Name). Pure data; the async machinery
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/harvestapi~linkedin-profile-search-by-name/runs",
     },
     input: { schema: { body: zLinkedinProfileSearchByNameBody } },
+    // v1 estimation label: DUAL_LIMIT (resultsPerPage 25)
+    usage: { estimate: apifyEstimate.dualLimit(25) },
 });

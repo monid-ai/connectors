@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zEuAmazonSellersEmailLeadsBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * xmiso_scrapers/eu-amazon-sellers-email-leads — Find Amazon Sellers (EU). Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/xmiso_scrapers~eu-amazon-sellers-email-leads/runs",
     },
     input: { schema: { body: zEuAmazonSellersEmailLeadsBody } },
+    // v1 estimation label: LIMIT_IS_EXACT
+    usage: { estimate: apifyEstimate.limitIsExact() },
 });

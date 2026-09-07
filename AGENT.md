@@ -53,22 +53,26 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   hashing is RFC 8785. Double-compile must be byte-identical.
 - **Closed-term fns**: hook functions have no imports/captures (TS-AST linted;
   whitelisted pure globals only). All IO flows through the engine's ONE
-  transport port — the four pure hooks do no IO at all; the three lifecycle
-  hooks are effectful-by-capability via `utils.http` (auth injected at egress,
-  fns never see credentials). Cosmetic edits must not change a fn hash
-  (normalization guarantees this).
-- **Hooks (seven)**: four PURE — `auth.inject`, `input.toRequest`,
-  `usage.consolidate`, `output.fromResponse` — plus the EFFECTFUL lifecycle
+  transport port — the pure hooks do no IO at all; the three lifecycle hooks are
+  effectful-by-capability via `utils.http`/`utils.request` (auth injected at
+  egress ONLY for same-origin targets — D16; fns never see credentials).
+  Cosmetic edits must not change a fn hash (normalization guarantees this).
+- **Hooks (nine)**: six PURE — `auth.inject`, `input.toRequest`,
+  `usage.consolidate`, `usage.estimate` (pre-run cost, no IO),
+  `output.fromResponse`, `output.fromError` — plus the EFFECTFUL lifecycle
   family — `lifecycle.start`/`poll`/`stop` (async run protocol; monid-services
-  `runLifecycle`-shaped, `utils.http`/`log` in ctx). One fallback rule: endpoint
-  ?? provider ?? config default, leaf-wise, closest wins.
+  `runLifecycle`-shaped). One fallback rule: endpoint ?? provider ?? config
+  default, leaf-wise, closest wins.
 - **Async protocol**: `request` stays REQUIRED and is DATA into the lifecycle
   (`ctx.data.request`); `lifecycle.start` (when present) replaces the engine's
-  declarative execution and returns `running{state}` |
-  `completed{httpStatus, output, state?}`. State is ids + billing signals only
-  (engine-capped, `schema.state_max_bytes`); `timeouts.pollMs` is the cadence
-  default, per-tick `pollAfterMs` overrides. Docs with a lifecycle floor at
-  `schema.async_since`; sync docs are never over-pinned.
+  declarative execution and returns `RUNNING{state: patch}` |
+  `COMPLETED{httpStatus, output, state?: patch}` (RunKind, UPPERCASE). State is
+  STRUCTURED (`zRunState`): fn-owned `externalRunId`/`stage`/`data` (ids +
+  billing signals; typed per doc via `lifecycle.state` → `stateSchema`) +
+  ENGINE-owned `timing` (the ClickHouse provider slices; `RunCompleted.timing`
+  reports at settle, sync runs included) — engine-capped
+  (`schema.state_max_bytes`). `timeouts.pollMs` is the cadence default, per-tick
+  `pollAfterMs` overrides. Every doc floors at `schema.fn_abi_since`.
 - **Billing before presentation**: `usage.consolidate` is REQUIRED and runs on
   the RAW response envelope BEFORE `fromResponse` — presentation changes can
   never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;
@@ -81,10 +85,12 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
 - **Tests run the artifact**: `testSealedUnit(id)` compiles the whole repo and
   tests the sealed unit (doc + its fn entries), replaying `fixtures/*.json`.
   Live tests gate on `<PROVIDER>_API_KEY`; synthetic fixtures carry a
-  `synthetic-` filename prefix until real recordings exist. Fixtures are TRIMMED
-  recordings (D11): `record` caps response arrays/strings by default (wire chain
-  untouched — replay matches requests only); the fixture-size lint bounds files
-  (warn 32 KiB / fail 128 KiB).
+  `synthetic-` filename prefix until real recordings exist. Fixtures are MINIMAL
+  SHARED CHAINS (fixture strategy v2): provider-level
+  `connectors/<provider>/fixtures/<shape>.json` with a required `description`
+  and `{{request.url}}`/`{{request.origin}}` bindings — one chain serves every
+  endpoint. `record` trims (arrays/strings capped) and ALWAYS scrubs PII; the
+  fixture-size lint bounds files (warn 32 KiB / fail 128 KiB).
 
 ## OpenSpec workflow
 

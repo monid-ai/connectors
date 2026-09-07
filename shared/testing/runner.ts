@@ -78,9 +78,16 @@ export async function runEndpoint(
             if (!opts.fixture) {
                 throw new Error("replay mode requires a fixture");
             }
+            // shared-chain bindings (fixture strategy v2): fixture urls may
+            // carry {{request.url}}/{{request.origin}} placeholders, bound
+            // from THIS endpoint's compiled request
+            const requestUrl = opts.unit.doc.request.url;
             transport = directTransport({
                 params: () => Promise.resolve({ apiKey: "test-key" }),
-                fetch: replayFetch(opts.fixture),
+                fetch: replayFetch(opts.fixture, {
+                    "request.url": requestUrl,
+                    "request.origin": new URL(requestUrl).origin,
+                }),
             });
             break;
         }

@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zAmazonProductDetailsScraperBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * delicious_zebu/amazon-product-details-scraper — Get Amazon Product. Pure data; the async machinery
@@ -27,4 +28,6 @@ export default defineEndpoint({
         path: "/v2/acts/delicious_zebu~amazon-product-details-scraper/runs",
     },
     input: { schema: { body: zAmazonProductDetailsScraperBody } },
+    // v1 estimation label: ONE_PER_QUERY
+    usage: { estimate: apifyEstimate.onePerQuery() },
 });

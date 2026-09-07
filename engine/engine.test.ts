@@ -1,6 +1,6 @@
 import { assert, assertEquals, assertRejects, assertThrows } from "@std/assert";
 import { z } from "zod";
-import type { ConnectorSource, SealedUnit } from "@shared/core";
+import type { ConnectorSource, RunState, SealedUnit } from "@shared/core";
 import {
     defineEndpoint,
     defineProvider,
@@ -100,6 +100,23 @@ function jsonTransport(
 
 const clone = (unit: SealedUnit): SealedUnit =>
     JSON.parse(JSON.stringify(unit));
+
+/** A well-formed threaded state for direct poll/stop calls in tests —
+ *  engine-shaped timing + the given fn-owned fields. */
+function testState(
+    fields: Omit<RunState, "timing"> = {},
+): RunState {
+    return {
+        ...fields,
+        timing: {
+            startedAt: "2026-01-01T00:00:00.000Z",
+            startRequestMs: 5,
+            attempts: 0,
+            pollMsTotal: 0,
+            deadlineAt: "2026-01-01T00:05:00.000Z",
+        },
+    };
+}
 
 async function expectCode(promise: Promise<unknown>, code: EngineErrorCode) {
     const error = await assertRejects(() => promise);
@@ -336,7 +353,7 @@ Deno.test("NOT_ASYNC: poll on a sync endpoint", async () => {
     });
     const loaded = await engine.load(await demoUnit());
     await expectCode(
-        loaded.poll({ body: { q: "x" } }, null),
+        loaded.poll({ body: { q: "x" } }, testState()),
         EngineErrorCode.NOT_ASYNC,
     );
 });
@@ -613,15 +630,18 @@ function asyncConnector(): ConnectorSource[] {
                     const res = await utils.request();
                     if (res.status < 200 || res.status >= 300) {
                         return {
-                            kind: "completed",
+                            kind: "COMPLETED",
                             httpStatus: res.status,
                             output: res.body,
                         };
                     }
                     const jobId = utils.json.get(res.body, "$.jobId");
+                    if (typeof jobId !== "string") {
+                        throw new Error("vendor returned no jobId");
+                    }
                     return {
-                        kind: "running",
-                        state: { externalRunId: String(jobId) },
+                        kind: "RUNNING",
+                        state: { externalRunId: jobId },
                     };
                 },
                 poll: async ({ data, utils }) => {
@@ -634,19 +654,20 @@ function asyncConnector(): ConnectorSource[] {
                     });
                     if (res.status < 200 || res.status >= 300) {
                         return {
-                            kind: "completed",
+                            kind: "COMPLETED",
                             httpStatus: res.status,
                             output: res.body,
                         };
                     }
                     const status = utils.json.get(res.body, "$.status");
                     if (status === "running") {
-                        return { kind: "running", state: data.state };
+                        // `{}` — presence-based merge keeps the prior state
+                        return { kind: "RUNNING", state: {} };
                     }
                     if (status === "failed") {
                         // in-body vendor failure → synthesized 500 (error-as-data)
                         return {
-                            kind: "completed",
+                            kind: "COMPLETED",
                             httpStatus: 500,
                             output: { message: "job failed" },
                         };
@@ -657,19 +678,19 @@ function asyncConnector(): ConnectorSource[] {
                     });
                     if (items.status < 200 || items.status >= 300) {
                         return {
-                            kind: "completed",
+                            kind: "COMPLETED",
                             httpStatus: items.status,
                             output: items.body,
                         };
                     }
                     const usd = utils.json.optionalNum(res.body, "$.usd");
                     return {
-                        kind: "completed",
+                        kind: "COMPLETED",
                         httpStatus: 200,
                         output: items.body,
                         state: {
                             externalRunId: jobId,
-                            ...(usd !== undefined ? { usd } : {}),
+                            ...(usd !== undefined ? { data: { usd } } : {}),
                         },
                     };
                 },
@@ -687,7 +708,7 @@ function asyncConnector(): ConnectorSource[] {
                 consolidate: ({ data, utils }) => {
                     const usd = utils.json.optionalNum(
                         data.state ?? null,
-                        "$.usd",
+                        "$.data.usd",
                     );
                     return {
                         usage: {
@@ -731,11 +752,11 @@ async function asyncUnit(
 
 const INSTANT_SLEEP = { sleep: () => Promise.resolve() };
 
-Deno.test("lifecycle: compiled doc carries lifecycle refs, pollMs, and the 0.2.0 floor", async () => {
+Deno.test("lifecycle: compiled doc carries lifecycle refs, pollMs, and the 0.3.0 floor", async () => {
     const unit = await asyncUnit();
     assert(unit.doc.lifecycle);
     assertEquals(unit.doc.timeouts.pollMs, 5);
-    assertEquals(unit.doc.minEngineVersion, "0.2.0");
+    assertEquals(unit.doc.minEngineVersion, "0.3.0");
     // the sealed unit closes over all three lifecycle fns
     assert(unit.fns[unit.doc.lifecycle.start.$fn.key]);
     assert(unit.fns[unit.doc.lifecycle.poll!.$fn.key]);
@@ -755,10 +776,14 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     });
     const loaded = await engine.load(await asyncUnit());
     const result = await loaded.run({ body: { q: "hi" } });
-    assertEquals(result.kind, "completed");
+    assertEquals(result.kind, "COMPLETED");
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
+    // ENGINE-stamped provider timing (t_provider_* slices): a start tick +
+    // two poll ticks were measured
+    assertEquals(result.timing.attempts, 2);
+    assert(result.timing.providerTotalMs >= 0);
     // cost came from STATE stashed at the poll tick (settle reads the state)
     assertEquals(result.usage.cost, {
         currency: "USD",
@@ -775,17 +800,69 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     ]);
 });
 
-Deno.test("lifecycle: start returns running with state (externalRunId) + doc pollMs", async () => {
+Deno.test("lifecycle: start returns RUNNING with state (externalRunId + engine timing) + doc pollMs", async () => {
+    // deterministic clock: each read advances 100ms
+    let fakeMs = 0;
     const engine = new Engine({
         transport: scriptTransport([{ status: 201, body: { jobId: "j9" } }]),
+        now: () => new Date(fakeMs += 100),
     });
     const loaded = await engine.load(await asyncUnit());
     const tick = await loaded.start({ body: { q: "x" } });
     assertEquals(tick, {
-        kind: "running",
-        state: { externalRunId: "j9" },
+        kind: "RUNNING",
+        state: {
+            externalRunId: "j9",
+            // ENGINE-owned: stamped at t0 (100ms), tick measured 100ms,
+            // deadline = startedAt + runMs (5s)
+            timing: {
+                startedAt: new Date(100).toISOString(),
+                startRequestMs: 100,
+                attempts: 0,
+                pollMsTotal: 0,
+                deadlineAt: new Date(100 + 5_000).toISOString(),
+            },
+        },
         pollAfterMs: 5,
     });
+});
+
+Deno.test("lifecycle: poll advances engine timing (attempts, pollMsTotal, lastPolledAt)", async () => {
+    let fakeMs = 0;
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j9" } },
+            { status: 200, body: { status: "running" } },
+        ]),
+        now: () => new Date(fakeMs += 100),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const started = await loaded.start({ body: { q: "x" } });
+    assert(started.kind === "RUNNING");
+    const polled = await loaded.poll({ body: { q: "x" } }, started.state);
+    assert(polled.kind === "RUNNING");
+    // fn returned `{}` — externalRunId inherited via the presence merge
+    assertEquals(polled.state.externalRunId, "j9");
+    assertEquals(polled.state.timing.attempts, 1);
+    assertEquals(polled.state.timing.pollMsTotal, 100);
+    assertEquals(polled.state.timing.lastPolledAt, new Date(300).toISOString());
+    // start-tick facts survive untouched
+    assertEquals(polled.state.timing.startedAt, new Date(100).toISOString());
+    assertEquals(polled.state.timing.startRequestMs, 100);
+});
+
+Deno.test("lifecycle: corrupt threaded state fails closed on the way in (INVALID_INPUT)", async () => {
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 200, body: {} }]),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    await expectCode(
+        loaded.poll(
+            { body: { q: "x" } },
+            { externalRunId: "j1" } as unknown as RunState, // timing missing
+        ),
+        EngineErrorCode.INVALID_INPUT,
+    );
 });
 
 Deno.test("lifecycle: reserved state.externalRunId must be a non-empty string", async () => {
@@ -796,13 +873,15 @@ Deno.test("lifecycle: reserved state.externalRunId must be a non-empty string", 
         await asyncUnit((connectors) => {
             connectors[0].provider.lifecycle!.start = async ({ utils }) => {
                 const res = await utils.request();
-                return {
-                    kind: "running",
-                    // number where the reserved key demands a string
+                // JSON round-trip launders the type — the RUNTIME value is a
+                // number where the reserved key demands a string (closed
+                // terms are plain JS, no TS casts available)
+                return JSON.parse(JSON.stringify({
+                    kind: "RUNNING",
                     state: {
                         externalRunId: utils.json.get(res.body, "$.jobId"),
                     },
-                };
+                }));
             };
         }),
     );
@@ -859,7 +938,7 @@ Deno.test("lifecycle: fn-synthesized status carries providerHttpStatus (ours/the
                 );
                 await utils.http({ method: "GET", path: "/jobs/" + jobId });
                 return {
-                    kind: "completed",
+                    kind: "COMPLETED",
                     httpStatus: 500, // OURS (synthesized: the JOB failed)
                     providerHttpStatus: 200, // THEIRS (the poll call succeeded)
                     output: { message: "job failed" },
@@ -918,15 +997,17 @@ Deno.test("lifecycle: per-tick pollAfterMs override wins over the doc default", 
                     url: data.request.url,
                 });
                 return {
-                    kind: "running",
-                    state: { jobId: utils.json.get(res.body, "$.jobId") },
+                    kind: "RUNNING",
+                    state: {
+                        data: { jobId: utils.json.get(res.body, "$.jobId") },
+                    },
                     pollAfterMs: 7,
                 };
             };
         }),
     );
     const tick = await loaded.start({ body: { q: "x" } });
-    assert(tick.kind === "running");
+    assert(tick.kind === "RUNNING");
     assertEquals(tick.pollAfterMs, 7);
 });
 
@@ -959,7 +1040,10 @@ Deno.test("lifecycle: oversized state fails closed (FN_CONTRACT, state_max_bytes
                     method: data.request.method,
                     url: data.request.url,
                 });
-                return { kind: "running", state: { blob: "x".repeat(70_000) } };
+                return {
+                    kind: "RUNNING",
+                    state: { data: { blob: "x".repeat(70_000) } },
+                };
             };
         }),
     );
@@ -970,15 +1054,30 @@ Deno.test("lifecycle: oversized state fails closed (FN_CONTRACT, state_max_bytes
 });
 
 Deno.test("lifecycle: uncaught fn throw → EXECUTION_FAILED (retriable), not FN_CONTRACT", async () => {
-    // start reads $.jobId strictly; a 2xx body without it throws inside the fn
+    // a 2xx body with a NON-STRING jobId hits the fn's own `throw new
+    // Error(...)` — an UNKNOWN throw stays retriable
     const engine = new Engine({
-        transport: scriptTransport([{ status: 200, body: { nope: true } }]),
+        transport: scriptTransport([{ status: 200, body: { jobId: 42 } }]),
     });
     const loaded = await engine.load(await asyncUnit());
     const error = await assertRejects(() => loaded.start({ body: { q: "x" } }));
     assert(error instanceof EngineError);
     assertEquals(error.code, EngineErrorCode.EXECUTION_FAILED);
     assertEquals(error.retriable, true);
+});
+
+Deno.test("lifecycle: escaped JsonPathError → FN_CONTRACT (deterministic, retriable=false)", async () => {
+    // start reads $.jobId strictly; a 2xx body WITHOUT it throws a
+    // JsonPathError (retriable=false) inside the fn — a deterministic fn
+    // bug must NOT be absorbed by the retriable EXECUTION_FAILED mapping
+    const engine = new Engine({
+        transport: scriptTransport([{ status: 200, body: { nope: true } }]),
+    });
+    const loaded = await engine.load(await asyncUnit());
+    const error = await assertRejects(() => loaded.start({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.FN_CONTRACT);
+    assertEquals(error.retriable, false);
 });
 
 Deno.test("lifecycle: junk outcome → FN_CONTRACT", async () => {
@@ -1004,7 +1103,7 @@ Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => 
         transport: scriptTransport([{ status: 409, body: {} }], seen),
     });
     const loaded = await engine.load(await asyncUnit());
-    await loaded.stop({ body: { q: "x" } }, { externalRunId: "j1" });
+    await loaded.stop({ body: { q: "x" } }, testState({ externalRunId: "j1" }));
     assertEquals(seen, [{
         method: "POST",
         url: "https://api.asyncdemo.test/jobs/j1/abort",
@@ -1012,7 +1111,10 @@ Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => 
     // transport-level failure is swallowed too
     const engine2 = new Engine({ transport: scriptTransport([]) });
     const loaded2 = await engine2.load(await asyncUnit());
-    await loaded2.stop({ body: { q: "x" } }, { externalRunId: "j1" });
+    await loaded2.stop(
+        { body: { q: "x" } },
+        testState({ externalRunId: "j1" }),
+    );
 });
 
 Deno.test("lifecycle: run() timeout stops the vendor job then throws TIMEOUT", async () => {
@@ -1089,14 +1191,16 @@ Deno.test("lifecycle: utils.http per-call header/query overrides + auth still in
                     body: data.input.body ?? {},
                 });
                 return {
-                    kind: "running",
-                    state: { jobId: utils.json.get(res.body, "$.jobId") },
+                    kind: "RUNNING",
+                    state: {
+                        data: { jobId: utils.json.get(res.body, "$.jobId") },
+                    },
                 };
             };
         }),
     );
     const tick = await loaded.start({ body: { q: "x" } });
-    assert(tick.kind === "running");
+    assert(tick.kind === "RUNNING");
     assertEquals(headersSeen[0]["x-extra"], "yes");
     assertEquals(headersSeen[0]["x-demo-key"], "k"); // auth injected by the transport
 });
@@ -1126,11 +1230,11 @@ Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead co
 
 Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not async machinery", async () => {
     const bundle = await compileBundle(demoConnector(), COMPILE_OPTS);
-    // 0.2.0 via fn_abi_since (the {data, utils, logger} ctx) — NOT because
-    // of anything async: sync docs carry no lifecycle surface at all
+    // 0.3.0 via fn_abi_since (the structured-state/estimate ABI) — NOT
+    // because of anything async: sync docs carry no lifecycle surface
     assertEquals(
         bundle.endpoints["demo#search"].minEngineVersion,
-        "0.2.0",
+        "0.3.0",
     );
     assertEquals(bundle.endpoints["demo#search"].lifecycle, undefined);
     assertEquals(bundle.endpoints["demo#search"].timeouts.pollMs, undefined);

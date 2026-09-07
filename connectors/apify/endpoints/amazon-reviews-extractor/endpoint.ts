@@ -1,5 +1,6 @@
 import { defineEndpoint } from "@shared/core";
 import { zAmazonReviewsExtractorBody } from "./schema/inputs.ts";
+import { apifyEstimate } from "../../estimation.ts";
 
 /**
  * web_wanderer/amazon-reviews-extractor — List Amazon Reviews (Extractor). Pure data; the async machinery
@@ -28,4 +29,6 @@ export default defineEndpoint({
         path: "/v2/acts/web_wanderer~amazon-reviews-extractor/runs",
     },
     input: { schema: { body: zAmazonReviewsExtractorBody } },
+    // v1 estimation label: LIMIT_IS_PAGES
+    usage: { estimate: apifyEstimate.limitIsPages() },
 });

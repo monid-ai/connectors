@@ -1,0 +1,69 @@
+{
+    "name": "pay-per-event",
+    "description": "A PAY_PER_EVENT actor run: the terminal poll carries usageTotalUsd + the LIVE pricingPerEvent.actorChargeEvents rate card. The page rate here ($0.02) DELIBERATELY differs from the baked fallback ($0.05): usageTotalUsd $0.04 reconstructs to 2 search pages only if the LIVE rate is read (finding 5 — the fallback would yield round(0.04/0.05)=1). Provider consolidate reads cost = usageTotalUsd.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "DS1",
+                        "usageTotalUsd": 0.04,
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventPriceUsd": 0.02
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/datasets/DS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    { "id": "profile-1", "name": "Profile One" },
+                    { "id": "profile-2", "name": "Profile Two" }
+                ]
+            }
+        }
+    ]
+}
