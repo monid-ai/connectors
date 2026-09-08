@@ -135,3 +135,27 @@ export async function compileToOutput(
     await Deno.writeTextFile(keyPath, key);
     return { bundle, outputPath, cacheHit: false };
 }
+
+/**
+ * Locate an endpoint's SOURCE directory under
+ * `connectors/<provider>/endpoints/**` — endpoints may sit inside GROUP
+ * directories (the platform grouping, e.g. apify/endpoints/amazon/…), so
+ * path construction by name alone is not enough. The LEAF directory name
+ * is the endpoint identity; returns the absolute leaf path or undefined.
+ */
+export async function findEndpointDir(
+    provider: string,
+    endpoint: string,
+): Promise<string | undefined> {
+    const endpointsDir = join(REPO_ROOT, "connectors", provider, "endpoints");
+    for await (
+        const entry of walk(endpointsDir, {
+            includeFiles: true,
+            match: [/endpoint\.ts$/],
+        })
+    ) {
+        const dir = entry.path.slice(0, -"/endpoint.ts".length);
+        if (dir.endsWith(`/${endpoint}`)) return dir;
+    }
+    return undefined;
+}

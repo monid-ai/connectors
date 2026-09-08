@@ -22,6 +22,52 @@ export interface ConnectorSource {
     endpoints: { name: string; def: EndpointDef }[];
 }
 
+/** Is this directory an endpoint LEAF (carries an endpoint.ts)? */
+async function isEndpointLeaf(dir: string): Promise<boolean> {
+    try {
+        const stat = await Deno.stat(join(dir, "endpoint.ts"));
+        return stat.isFile;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Collect endpoint defs under `dir`, recursing through GROUP directories
+ * (the monid-services layout: `endpoints/<platform>/<endpoint>/` — e.g.
+ * apify groups by platform: amazon/, facebook/, x/, …). A directory
+ * containing `endpoint.ts` is a LEAF and its NAME is the endpoint
+ * identity (`<provider>#<leaf>` — group dirs are organizational only and
+ * never part of identity); any other directory is a group and is walked.
+ */
+async function collectEndpoints(
+    dir: string,
+    where: string,
+): Promise<{ name: string; def: EndpointDef }[]> {
+    const endpoints: { name: string; def: EndpointDef }[] = [];
+    for await (const entry of Deno.readDir(dir)) {
+        if (!entry.isDirectory || entry.name.startsWith(".")) continue;
+        const path = join(dir, entry.name);
+        if (await isEndpointLeaf(path)) {
+            const endpointModule = await import(
+                toFileUrl(join(path, "endpoint.ts")).href
+            );
+            const def = endpointModule.default as EndpointDef;
+            if (!def) {
+                throw new Error(
+                    `${where}/${entry.name}/endpoint.ts has no default export`,
+                );
+            }
+            endpoints.push({ name: entry.name, def });
+        } else {
+            endpoints.push(
+                ...await collectEndpoints(path, `${where}/${entry.name}`),
+            );
+        }
+    }
+    return endpoints;
+}
+
 /**
  * NO FILTER by design: compilation is always WHOLE-REPO → one cached bundle;
  * "load part of the tree" was a premature optimization (the compile cache
@@ -53,23 +99,23 @@ export async function loadConnectorDefs(
             );
         }
 
-        const endpoints: { name: string; def: EndpointDef }[] = [];
-        const endpointsDir = join(connectorsDir, folder, "endpoints");
-        for await (const endpointEntry of Deno.readDir(endpointsDir)) {
-            if (
-                !endpointEntry.isDirectory || endpointEntry.name.startsWith(".")
-            ) continue;
-            const name = endpointEntry.name;
-            const endpointModule = await import(
-                toFileUrl(join(endpointsDir, name, "endpoint.ts")).href
-            );
-            const def = endpointModule.default as EndpointDef;
-            if (!def) {
+        const endpoints = await collectEndpoints(
+            join(connectorsDir, folder, "endpoints"),
+            `connectors/${folder}/endpoints`,
+        );
+        // LEAF names are the identity — a name duplicated across groups
+        // would silently collide to one doc id; fail loudly here (the one
+        // place that still sees the filesystem).
+        const seen = new Set<string>();
+        for (const endpoint of endpoints) {
+            if (seen.has(endpoint.name)) {
                 throw new Error(
-                    `connectors/${folder}/endpoints/${name}/endpoint.ts has no default export`,
+                    `connectors/${folder}: duplicate endpoint name ` +
+                        `"${endpoint.name}" across group directories — leaf ` +
+                        `names are the identity and must be unique`,
                 );
             }
-            endpoints.push({ name, def });
+            seen.add(endpoint.name);
         }
         sources.push({ provider, endpoints });
     }

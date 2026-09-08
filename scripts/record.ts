@@ -6,7 +6,9 @@
  * runs the endpoint LIVE once (env <NAME>_API_KEY) through the engine with a
  * wrapped fetch, captures the request/response pairs (headers NEVER recorded
  * — credentials cannot leak), and writes
- * connectors/<provider>/endpoints/<endpoint>/fixtures/<scenario>.json.
+ * <endpoint>/fixtures/<scenario>.json inside the endpoint's SOURCE dir,
+ * which is located by WALKING connectors/<provider>/endpoints/ — endpoints
+ * may sit inside platform group directories (apify: amazon/, x/, …).
  * From then on `deno task test` replays that vendor shape with zero network
  * and zero keys.
  *
@@ -32,7 +34,7 @@ import {
     trimCalls,
     zFixture,
 } from "@shared/testing";
-import { compileToOutput, parseEndpointId, REPO_ROOT } from "./lib.ts";
+import { compileToOutput, findEndpointDir, parseEndpointId } from "./lib.ts";
 
 function parseJson(flag: string, raw: string): Json {
     try {
@@ -89,15 +91,17 @@ const unit = sealUnit(bundle, endpointId);
 const sink: RecordedCall[] = [];
 const result = await runEndpoint({ unit, input, mode: "record", sink });
 
-const fixturePath = join(
-    REPO_ROOT,
-    "connectors",
+const endpointDir = await findEndpointDir(
     selector.provider,
-    "endpoints",
     selector.endpoint,
-    "fixtures",
-    `${scenario}.json`,
 );
+if (!endpointDir) {
+    throw new Error(
+        `no source dir for ${endpointId} under connectors/` +
+            `${selector.provider}/endpoints/ (grouped or flat)`,
+    );
+}
+const fixturePath = join(endpointDir, "fixtures", `${scenario}.json`);
 const fixture = zFixture.parse({
     name: scenario,
     description: `raw recording (${endpointId}, scenario ${scenario}) — ` +

@@ -16,6 +16,7 @@
 import { Command } from "@cliffy/command";
 import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
+import { findEndpointDir } from "./lib.ts";
 
 const BASE = "https://api.apify.com";
 
@@ -119,7 +120,12 @@ await new Command()
         "--name <name:string>",
         "endpoint folder name (default: actor name)",
     )
-    .action(async ({ name }, actorId) => {
+    .option(
+        "--group <group:string>",
+        "platform group directory for a NEW endpoint (amazon, facebook, x, …); " +
+            "existing endpoints are refreshed in place",
+    )
+    .action(async ({ name, group }, actorId) => {
         const token = Deno.env.get("APIFY_API_KEY");
         if (!token) throw new Error("APIFY_API_KEY is required");
         const pathId = actorId.replace("/", "~");
@@ -143,10 +149,21 @@ await new Command()
 
         const endpointName = name ?? actor.name ?? actorId.split("/")[1];
         const schemaName = `z${pascalCase(endpointName)}Body`;
-        const dir = join(
+        // existing endpoints refresh IN PLACE (found by walking the group
+        // dirs); a NEW endpoint needs its platform group named
+        const existing = await findEndpointDir("apify", endpointName);
+        if (!existing && !group) {
+            throw new Error(
+                `new endpoint ${endpointName}: pass --group <platform> ` +
+                    `(amazon, facebook, google, instagram, linkedin, ` +
+                    `reddit, snapchat, tiktok, x, youtube, …)`,
+            );
+        }
+        const dir = existing ? join(existing, "schema") : join(
             "connectors",
             "apify",
             "endpoints",
+            group!,
             endpointName,
             "schema",
         );
