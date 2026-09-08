@@ -19,7 +19,7 @@ Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "CREDIT" }]);
+    assertEquals(result.usage.counts, { "CREDIT": 0 });
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 0,
@@ -48,6 +48,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "credit");
+        assertEquals(Object.keys(result.usage.counts), ["CREDIT"]);
     },
 });

@@ -53,7 +53,7 @@ export default defineProvider({
                 utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
             return {
                 usage: {
-                    units: [{ amount: credits, unit: "CREDIT" }],
+                    counts: { "CREDIT": credits },
                     cost: utils.money.fromDollars(credits / 20),
                     evidence: utils.json.pick(data.output, [
                         "$.credits_consumed",

@@ -1,22 +1,27 @@
 /**
  * deno task apify:pricing   (requires APIFY_API_KEY)
  *
- * The PRICING drift guard — the survey behind design D18, repeatable: for
- * every apify doc, fetch the actor's CURRENT published pricing
+ * The PRICING drift guard — the survey behind designs D18/D19, repeatable:
+ * for every apify doc, fetch the actor's CURRENT published pricing
  * (`GET /v2/acts/{id}` → pricingInfos[latest]) and check the declared
- * `usage.model` still matches the published charge-event SHAPE:
+ * `usage.model` against the published charge events on TWO levels:
  *
- *   - published FLAT events  = names matching /start/ or `request`
- *     (the run-scoped charges)      → the model must carry a flat
- *     component (PER_CALL, or a COMPOSITE with one)
- *   - published METERED events = everything else (per item/page/profile…)
- *     → the model must carry a metered component (PER_UNIT/VARIANT, or a
- *     COMPOSITE with one)
+ *   1. SHAPE (all docs): published FLAT events (names matching /start/ or
+ *      `request` — the run-scoped charges) → the model must carry a flat
+ *      component; published METERED events (per item/page/profile…) → the
+ *      model must carry a metered component.
+ *   2. EXACT ids (composite docs, design D19): every declared component id
+ *      MUST appear among the actor's published `actorChargeEvents` keys —
+ *      component ids are the vendor's event names VERBATIM, so a vendor
+ *      rename/removal fails NAMING the id instead of silently breaking
+ *      the broker's per-event join. The reverse direction stays
+ *      shape-level only: published add-on events we deliberately don't
+ *      bill (filter-applied, video-download…) must not fail the guard.
  *
  * RATES are deliberately NOT checked — apify event prices are tiered by
  * OUR subscription plan (verified: eventTieredPricingUsd FREE→DIAMOND),
  * so rates live in the hosted rate card; reconciling card vs reported
- * cost is a services-side alert. Exit 1 on any shape mismatch or pricing
+ * cost is a services-side alert. Exit 1 on any mismatch or pricing
  * REGIME change (pricingModel ≠ PAY_PER_EVENT) — the pricing counterpart
  * of the schema drift guard.
  */
@@ -39,15 +44,16 @@ function declaredShape(
         case "PER_CALL":
             return { flat: true, metered: false };
         case "PER_UNIT":
-        case "VARIANT":
             return { flat: false, metered: true };
-        case "COMPOSITE":
+        case "COMPOSITE": {
+            const components = Object.values(model.components);
             return {
-                flat: model.components
+                flat: components
                     .some((component) => component.kind === "PER_CALL"),
-                metered: model.components
+                metered: components
                     .some((component) => component.kind === "PER_UNIT"),
             };
+        }
     }
 }
 
@@ -99,22 +105,39 @@ for (const doc of docs) {
         metered: events.some((name) => !FLAT_EVENT.test(name)),
     };
     const declared = declaredShape(doc.usage.model);
-    const ok = published.flat === declared.flat &&
+    const shapeOk = published.flat === declared.flat &&
         published.metered === declared.metered;
+    // EXACT id check (design D19): declared component ids ⊆ published
+    // event names — the reverse stays shape-level (unmodeled add-ons ok).
+    const missingIds = doc.usage.model?.kind === "COMPOSITE"
+        ? Object.keys(doc.usage.model.components)
+            .filter((id) => !events.includes(id))
+        : [];
+    const ok = shapeOk && missingIds.length === 0;
     console.log(
         `${ok ? "ok  " : "DRIFT"} ${doc.id.padEnd(50)} events=[${
             events.join(",")
         }] published(flat=${published.flat},metered=${published.metered}) ` +
             `declared(${
                 doc.usage.model?.kind ?? "none"
-            }: flat=${declared.flat},metered=${declared.metered})`,
+            }: flat=${declared.flat},metered=${declared.metered})` +
+            (missingIds.length > 0
+                ? ` MISSING ids=[${missingIds.join(",")}]`
+                : ""),
     );
-    if (!ok) {
+    if (!shapeOk) {
         failures.push(
             `${doc.id}: model shape drift — published flat=${published.flat}/` +
                 `metered=${published.metered}, declared ${
                     doc.usage.model?.kind ?? "none"
                 }`,
+        );
+    }
+    if (missingIds.length > 0) {
+        failures.push(
+            `${doc.id}: component id(s) [${missingIds.join(", ")}] not in ` +
+                `the actor's published charge events [${events.join(", ")}] ` +
+                `— vendor renamed/removed the event, or the id is stale`,
         );
     }
 }

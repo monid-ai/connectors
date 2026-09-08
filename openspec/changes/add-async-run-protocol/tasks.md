@@ -241,3 +241,40 @@
 - [x] 12.g Docs: design D18 + Concepts delta (Model row, Estimate row);
       spec deltas refreshed; version-check paths (model/ files,
       zod-util); 122 tests green, live pricing survey green
+
+## 13. Component ids: keyed composite + keyed counts (D19)
+
+- [x] 13.a Schema: `zCompositeModel.components` array → id-keyed map
+      (`Record<zComponentId, zScalarUsageModel>`, ≥2 refine; old ≤1-PER_CALL
+      / distinct-units constraints deleted — the key disambiguates);
+      scalars gain optional `description`; VARIANT kind DELETED
+      (selector.ts/variant.ts removed, kind enum shrunk)
+- [x] 13.b `zUsage.units: Measure[]` → `zUsage.counts:
+      Record<string, number>` (zMeasure deleted; zeroUsage/defaultUsage/
+      presets.usage.perCall → `{counts: {}}`); composite → component-id
+      keys, leaf PER_UNIT → the unit, PER_CALL/error → `{}`
+- [x] 13.c Generic keying: `data.model` rides into the consolidate
+      envelope + estimate ctx; apify provider consolidate and every
+      `presets.estimate.*` derive their key from it (leaf → unit,
+      composite → sole metered component id)
+- [x] 13.d Enforcement: compiler rejects ≥2-metered composites without
+      doc-level consolidate + estimate (HOOK_UNRESOLVED); engine
+      `validateUsage` on settle + estimate returns (FN_CONTRACT)
+- [x] 13.e Backfill: 17 apify composites keyed by live-surveyed
+      charge-event names (codemod); octen search/broad-search keyed by
+      response fields (broad-search gains the required doc estimate);
+      re-models — tiktok-comments (2 flat components), exa#search
+      (base-plus-overage: `call` + `additional_result`, offset counting
+      max(0, n−10)), linkedin-profile-search (3 published events,
+      mode-keyed fns)
+- [x] 13.f Drift guard v2: declared component ids ⊆ published
+      actorChargeEvents keys (rename/removal fails naming the id;
+      unmodeled add-ons stay shape-level)
+- [x] 13.g Tests: compiler ≥2-metered rejection; engine validateUsage
+      (unknown key / flat key / wrong leaf key / `{}` passes) + generic
+      keying via data.model; lifecycle card invariant re-keyed (subset
+      rule for mode-selected composites) + linkedin mode spot checks;
+      exa interning test updated (settle fns legitimately diverged)
+- [x] 13.h Docs: design D19 + Concepts delta (Model/Estimate/Counts);
+      spec deltas (schema/engine/compiler/apify); AGENT.md; version-check
+      paths (selector/variant removed)

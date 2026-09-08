@@ -23,9 +23,11 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
  *   - The poll override stamps the reconstruction ONTO the output
  *     (`{searchPages, profileCount, profiles}`) — the counts users are
  *     billed on are the counts they can see.
- *   - The consolidate override settles units = search pages (a successful
- *     zero-profile run still scraped ≥1 charged page — page-basis keeps it
- *     billable) + profiles as a second measure.
+ *   - The consolidate override settles counts keyed by the actor's OWN
+ *     charge events (design D19): "search-page" (a successful zero-profile
+ *     run still scraped ≥1 charged page — page-basis keeps it billable)
+ *     plus the profile count under the MODE-selected component
+ *     ("full-profile" / "full-profile-with-email"; "Short" adds none).
  *
  * NOT ported (hosted concerns): the tiered price card, the maxItems/
  * takePages admission estimate (an unbounded run means ~2,500 profiles per
@@ -197,29 +199,65 @@ export default defineEndpoint({
         },
     },
     usage: {
-        /** Page-basis billing: a per-page charge in every mode (profiles
-         *  ride as a second native measure — the cost signal in Full
-         *  modes; rates live in the catalog, not here). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.PAGE },
+        /** The actor's EXACT published charge events as keyed components
+         *  (design D19; verified live): a per-page charge in every mode,
+         *  plus a per-profile charge whose RATE is selected by the input's
+         *  profileScraperMode — a select-one is just a composite whose fn
+         *  populates only the selected key ("Short" adds none). THREE
+         *  metered components ⇒ the compiler requires this doc to own both
+         *  fns (the generic keying can't choose). */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                "search-page": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    description: "search pages scraped (charged in every mode)",
+                },
+                "full-profile": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    description: "profiles enriched in 'Full' mode",
+                },
+                "full-profile-with-email": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    description:
+                        "profiles enriched in 'Full + email search' mode",
+                },
+            },
+        },
         /** v1 DUAL_LIMIT (resultsPerPage 25): takePages, else
-         *  ceil(maxItems/25), else 1 page — in the SAME units consolidate
-         *  settles (pages + profiles). */
+         *  ceil(maxItems/25), else 1 page — with the profile count keyed
+         *  by the mode the pinned input SELECTS ("Short": page rate only). */
         estimate: ({ data, utils }) => {
             const body = data.input.body ?? null;
             const takePages = utils.json.optionalNum(body, "$.takePages");
             const maxItems = utils.json.optionalNum(body, "$.maxItems");
             const pages = takePages ??
                 (maxItems !== undefined ? Math.ceil(maxItems / 25) : 1);
+            const mode = utils.json.optionalGet(
+                body,
+                "$.profileScraperMode",
+            );
+            const profileKey = mode === "Full"
+                ? "full-profile"
+                : mode === "Full + email search"
+                ? "full-profile-with-email"
+                : undefined;
             return {
-                units: [
-                    { amount: pages, unit: "PAGE" },
-                    { amount: maxItems ?? pages * 25, unit: "RESULT" },
-                ],
+                counts: {
+                    "search-page": pages,
+                    ...(profileKey !== undefined
+                        ? { [profileKey]: maxItems ?? pages * 25 }
+                        : {}),
+                },
             };
         },
         // OVERRIDES the provider consolidate: billing basis = SEARCH PAGES
         // (v1: a zero-profile run still bills its ≥1 charged pages);
-        // profiles ride as a second native measure.
+        // profiles land under the MODE-selected component key, so the
+        // broker prices them at exactly the vendor's per-event rate.
         consolidate: ({ data, utils }) => {
             const state = data.state ?? null;
             const pages = utils.json.optionalNum(
@@ -230,6 +268,15 @@ export default defineEndpoint({
                 data.output,
                 "$.profileCount",
             ) ?? 0;
+            const mode = utils.json.optionalGet(
+                data.input.body ?? null,
+                "$.profileScraperMode",
+            );
+            const profileKey = mode === "Full"
+                ? "full-profile"
+                : mode === "Full + email search"
+                ? "full-profile-with-email"
+                : undefined;
             const model = utils.json.optionalGet(
                 state,
                 "$.data.pricingModel",
@@ -240,10 +287,12 @@ export default defineEndpoint({
             );
             return {
                 usage: {
-                    units: [
-                        { amount: pages, unit: "PAGE" },
-                        { amount: profiles, unit: "RESULT" },
-                    ],
+                    counts: {
+                        "search-page": pages,
+                        ...(profileKey !== undefined && profiles > 0
+                            ? { [profileKey]: profiles }
+                            : {}),
+                    },
                     ...(model === "PAY_PER_EVENT"
                         ? { cost: utils.money.fromDollars(totalUsd ?? 0) }
                         : {}),

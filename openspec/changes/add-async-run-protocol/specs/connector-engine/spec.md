@@ -101,25 +101,52 @@ resolve the credential). Absolute targets SHALL be https-only
 ### Requirement: Pre-run estimate entrypoint
 `estimate(runInput)` SHALL derive the input (validate + toRequest) and
 run the linked `usage.estimate` fn — PURE, no IO, no state; absent
-estimate ⇒ `{units: []}` (nothing countable to predict — the PER_CALL
-posture: the flat charge is fully described by the model + success). A
-standalone command (`deno task engine:estimate`) SHALL print the model +
-estimated units, loading against a transport that rejects every call.
+estimate ⇒ `{counts: {}}` (nothing countable to predict — the PER_CALL
+posture: the flat charge is fully described by the model + success). The
+doc's own `usage.model` SHALL ride into the estimate ctx (`data.model`)
+so generic presets derive their counts key, and the returned counts are
+validated against the model exactly like settled ones (see the counts
+discipline requirement). A standalone command
+(`deno task engine:estimate`) SHALL print the model + estimated counts,
+loading against a transport that rejects every call.
 
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
 - **THEN** it returns the estimated Usage without touching the wire
 
-### Requirement: The card invariant — estimate and settle share units
+### Requirement: The card invariant — estimate and settle share counts KEYS
 For a doc with a metered `usage.model`, estimate() AND the settled usage
-SHALL each report a measure of every billed unit (PER_UNIT's unit; a
-COMPOSITE's PER_UNIT component units) — one card row prices both ends.
-On a count-true chain (the estimate's counted input equals the produced
-output) the estimated units SHALL deep-equal the settled units.
+SHALL key their counts by the model's billed keys (a leaf PER_UNIT's
+unit; a COMPOSITE's metered component ids) — one card row prices both
+ends. A multi-metered composite MAY promise/settle a SUBSET of its keys
+(input-selected components — linkedin's mode picks which profile rate
+bills; design D19), but never a key outside the model. On a count-true
+chain (the estimate's counted input equals the produced output) the
+estimated counts SHALL deep-equal the settled counts.
 
 #### Scenario: Count-true chain agrees exactly
 - **WHEN** 2 queries produce a 2-item chain and the estimate counts queries
-- **THEN** estimate(input).units deep-equals run(input).usage.units
+- **THEN** estimate(input).counts deep-equals run(input).usage.counts
+
+### Requirement: Counts ↔ model discipline (validateUsage)
+The engine SHALL validate consolidate output at settle AND the estimate
+fn's return against the doc's model, fail-closed as FN_CONTRACT: a
+COMPOSITE doc's counts keys must each name a PER_UNIT component in
+`model.components` (flat components never appear); a leaf PER_UNIT doc's
+single key must equal the model's unit; PER_CALL / model-less docs may
+count nothing (`{}` only). `{counts: {}}` passes everywhere. The doc's
+model SHALL ride into the consolidate envelope (`data.model`) so a
+GENERIC provider consolidate keys its count with zero per-doc code (leaf
+→ the unit; composite → the sole metered component id — single-valued by
+the compiler's ≥2-metered rule).
+
+#### Scenario: Unknown key fails closed
+- **WHEN** a consolidate returns counts keyed by a name not in the composite's components
+- **THEN** the run fails FN_CONTRACT naming the key and the declared components
+
+#### Scenario: Flat components never appear in counts
+- **WHEN** a consolidate keys a count by a PER_CALL component id
+- **THEN** the run fails FN_CONTRACT — the flat charge is model + success, never a count
 
 ### Requirement: Zero usage forced on every non-2xx envelope
 The settle pipeline SHALL force zero usage whenever the envelope's

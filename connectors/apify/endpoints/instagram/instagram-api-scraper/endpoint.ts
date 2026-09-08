@@ -33,10 +33,13 @@ export default defineEndpoint({
             // verified actor-start charge event + per-item metering (survey
             // — caught by `deno task apify:pricing` on first run)
             kind: UsageModelKind.COMPOSITE,
-            components: [
-                { kind: UsageModelKind.PER_CALL },
-                { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-            ],
+            // component ids = the actor's charge-event names, VERBATIM
+            // (live survey) — the broker card row key and the join key for
+            // the stashed run-record rates (design D19)
+            components: {
+                "actor-start": { kind: UsageModelKind.PER_CALL },
+                "result": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+            },
         },
         /** resultsLimit posts per direct url (searchLimit in search mode) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */

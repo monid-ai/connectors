@@ -415,6 +415,33 @@ export async function compileBundle(
 
             // ---- usage.model (inline DATA) + usage.estimate (hook) --------
             const usageModel = def.usage?.model ?? provider.usage?.model;
+            // ≥2 METERED components ⇒ only DOC-owned fns can know which
+            // component a count belongs to — a GENERIC provider consolidate
+            // keys by "the sole PER_UNIT component" and would have no basis
+            // to choose between two (design D19). Reject at build time, not
+            // at the first live run.
+            if (usageModel?.kind === "COMPOSITE") {
+                const metered = Object.values(usageModel.components)
+                    .filter((component) => component.kind === "PER_UNIT");
+                if (metered.length >= 2) {
+                    if (def.usage?.consolidate === undefined) {
+                        throw new CompileError(
+                            CompileErrorCode.HOOK_UNRESOLVED,
+                            `${where}: ${metered.length} metered components — ` +
+                                `a doc-level usage.consolidate must key its ` +
+                                `own counts (the generic provider fn cannot ` +
+                                `choose between them)`,
+                        );
+                    }
+                    if (def.usage?.estimate === undefined) {
+                        throw new CompileError(
+                            CompileErrorCode.HOOK_UNRESOLVED,
+                            `${where}: ≥2 metered components require a ` +
+                                `doc-level usage.estimate too (same keying)`,
+                        );
+                    }
+                }
+            }
             const estimateFn = resolve(
                 def.usage?.estimate,
                 `${endpointFile}#usage.estimate`,

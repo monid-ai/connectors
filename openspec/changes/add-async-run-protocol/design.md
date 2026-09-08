@@ -470,10 +470,94 @@ its Temporal `endpointExecution` workflow.
   markers, the linkedin precedent) + itemized `usage.evidence`
   arithmetic. No black-box counts.
 - Follow-ups: exa re-model to credits (confirm per-response reporting
-  first); linkedin-profile-search-by-name/-by-services billing basis
-  review (they publish the search-page event family but bill per RESULT
-  today, v1 parity); add-on events as extra COMPOSITE components where
-  estimate fidelity warrants.
+  first — SUPERSEDED by D19: exa#search re-modeled base-plus-overage);
+  linkedin-profile-search-by-name/-by-services billing basis review (they
+  publish the search-page event family but bill per RESULT today, v1
+  parity); add-on events as extra COMPOSITE components where estimate
+  fidelity warrants.
+
+## D19 — Component ids: keyed composite, keyed counts, fns own conditions
+
+- Context: the broker needs (1) CORRESPONDENCE — which model component a
+  settled quantity belongs to — and (2) EXACT per-event price matching
+  against vendor cards. D18's anonymous composite array made both
+  positional/by-unit, its constraints (≤1 PER_CALL, distinct units)
+  forbade the models vendors actually publish (tiktok-comments' two flat
+  events; linkedin's two same-unit profile rates), and exa#search's real
+  card (base covers the FIRST 10 results + per-result overage, v1 TIERED
+  with `selector.offset: 10`) was mis-modeled as plain PER_UNIT·RESULT.
+- **Composite components = a MAP keyed by component id**
+  (`components: Record<zComponentId, zScalarUsageModel>`, ≥2 entries; the
+  old constraints DELETED — the key disambiguates; id uniqueness
+  structural). Leaf models stay IMPLIED and untouched — the map is
+  composite-only, structure only where charges combine. For apify the id
+  is the vendor's charge-event name VERBATIM (actor-start, comment,
+  search-page… — live-surveyed): one string joins doc ↔ counts ↔ broker
+  card row ↔ drift guard ↔ the stashed run-record rates
+  (`state.data.pricingPerEvent[id]`). octen/exa components use
+  response-field / our names (`full_content_tokens`, `call`,
+  `additional_result`).
+- **`usage.units: Measure[]` → `usage.counts: Record<string, number>`**
+  (zMeasure DELETED; `cost`/`evidence` unchanged) — ONE simple map for
+  every model type: composite → component id keys (metered only; a flat
+  component never appears — model + success covers it); leaf PER_UNIT →
+  ONE implied key, the model's unit (`{"RESULT": 10}`); PER_CALL / error
+  settle → `{}` (the canonical "nothing counted" — zeroUsage/defaultUsage/
+  presets.usage.perCall/the no-estimate engine default all return
+  `{counts: {}}`). Broker math is a blind fold over the card:
+  `PER_CALL row → success × rate; metered row → rate × counts[key] ?? 0`.
+- **Fns own ALL conditions, offsets, and selection** — the model only
+  ENUMERATES chargeable components; every v1 price type maps in with NO
+  new kind:
+  - v1 TIERED (verified from source: "bills its default and ADDS every
+    tier whose `when` matches" — summed conditional lines, NOT
+    select-one): a gated line is a component whose count is 0 when the
+    feature is off — octen's `full_content.enable` gate became "the
+    token count is absent" (no gate in the model).
+  - v1 PER_UNIT_MATRIX (the actual select-one/OR): a composite whose fn
+    populates ONLY the selected key — linkedin-profile-search's
+    `profileScraperMode` picks `full-profile` vs
+    `full-profile-with-email` ("Short" selects none). **The VARIANT kind
+    is DELETED** (selector.ts/variant.ts removed; zero docs used it) —
+    the algebra SHRANK: `Model = PER_CALL | PER_UNIT | COMPOSITE{id →
+    leaf}`.
+  - v1 offset (exa: base covers first 10): a COUNTING rule —
+    `counts["additional_result"] = max(0, results − 10)` in
+    consolidate/estimate, never a model shape.
+  Rationale vs declarative model gates: gates re-introduce v1's matcher
+  mini-DSL (loose-match rules, `offset`, `in: body/output`), duplicate
+  truth (DSL vs fn), and buy only zero-code estimates — which presets
+  already provide by reading the same pinned-input fields.
+- **Optional `description` on scalars** — a human note on what a derived
+  count means ("results above the 10 included in the base fee");
+  documentation only, never a join key. Price-line display names live on
+  the broker CARD rows.
+- **Generic keying**: the doc's own `model` rides into the consolidate
+  envelope AND the estimate ctx (`data.model`), so GENERIC provider fns
+  and presets derive their key with zero per-doc code — leaf → the unit,
+  composite → the sole PER_UNIT component id.
+- **Enforcement, left-shifted**: COMPILE — a composite with ≥2 metered
+  components MUST declare doc-level consolidate + estimate (the generic
+  fn can't choose a key; exactly one doc trips it: linkedin); RUN — thin
+  engine `validateUsage` on consolidate output and estimate returns
+  (composite → keys name metered components; leaf → key = unit;
+  PER_CALL/no-model → `{}` only; FN_CONTRACT), exercised in CI by every
+  fixture-chain replay. TS literal-key generics: deliberately deferred.
+- **Drift guard v2**: `apify:pricing` additionally asserts every declared
+  component id ∈ the actor's published `actorChargeEvents` keys — a
+  vendor rename/removal fails NAMING the id; the reverse direction stays
+  shape-level (unmodeled add-on events must not fail the guard).
+- **Broker contract (offer ≠ model)**: the model is vendor COST truth
+  (full fidelity, always); the card is PRICE policy — rows key into
+  component ids with NO completeness requirement, so v1's "omit the flat
+  fee" simplification (optional `PerResultPrice.flatFee`) becomes a card
+  decision: fold `actor-start` into the metered rate, or offer flat
+  per-call pricing over a metered model. cost(run) from model + stashed
+  live rates stays exact per event either way; margin = price − cost.
+- Re-models this round: tiktok-comments-scraper-api (collapsed PER_CALL →
+  two flat components), exa#search (PER_UNIT·RESULT → base-plus-overage),
+  linkedin-profile-search (PER_UNIT·PAGE → the three published events,
+  mode-keyed fns).
 
 ## Concepts delta
 
@@ -484,6 +568,7 @@ its Temporal `endpointExecution` workflow.
 | **Outcome** | A lifecycle fn's return: `RUNNING{state: patch, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?: patch}` — the completed arm IS the raw envelope the settle pipeline consumes; state patches merge presence-based over the previous state. |
 | **State** (`zRunState`) | The STRUCTURED envelope threaded between ticks by value: fn-owned `externalRunId`/`stage`/`data` (ids + billing signals, typed when the doc declares `lifecycle.state`) + ENGINE-owned `timing` (the v1 providerRun clock — feeds the ClickHouse provider slices). Hard-capped (`schema.state_max_bytes`). |
 | **Timing** (`zRunTiming`) | The settle-side provider-timing report on every RunCompleted (async AND sync): startedAt/completedAt/attempts/startRequestMs/pollMsTotal/providerTotalMs → t_provider_* usage-event slices. Engine-stamped; hosts keep measuring their own slices. |
-| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage in consolidate's units, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{units: []}` (the PER_CALL posture). |
-| **Model** (`usage.model`) | The rate-free billing ALGEBRA on the doc: LEAF (PER_CALL flat / PER_UNIT metered), AND (COMPOSITE of scalars), SELECT (VARIANT — request coordinates pick the card row). Rates and tier schedules live in the services rate card (D18). |
+| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage with consolidate's counts KEYS, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{counts: {}}` (the PER_CALL posture). `data.model` rides in so presets derive their key (D19). |
+| **Model** (`usage.model`) | The rate-free billing ALGEBRA on the doc: LEAF (PER_CALL flat / PER_UNIT metered) and AND (COMPOSITE — scalar components KEYED BY ID; for apify the vendor's charge-event names verbatim). Conditions/offsets/selection are COUNTING rules owned by the fns, never model shapes (D19 — VARIANT deleted). Rates and tier schedules live in the services rate card (D18). |
+| **Counts** (`usage.counts`) | The settled/estimated quantities as ONE keyed map for every model type: component id (composite) / the model's unit (leaf PER_UNIT) / `{}` (PER_CALL, error settles). The key is the join across counts ↔ broker card row ↔ drift guard ↔ stashed vendor rates (D19). |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |

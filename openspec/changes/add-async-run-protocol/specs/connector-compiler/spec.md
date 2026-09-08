@@ -36,6 +36,17 @@ fnKeysOf/minEngineVersion inputs.
 - **WHEN** a provider declares model per_result and an endpoint declares per_call
 - **THEN** that endpoint's doc carries per_call
 
+### Requirement: ≥2 metered components require DOC-level fns
+A COMPOSITE model with two or more PER_UNIT components SHALL fail
+compilation (HOOK_UNRESOLVED) unless the ENDPOINT itself declares
+`usage.consolidate` AND `usage.estimate` — a generic provider fn keys its
+count by "the sole metered component" and has no basis to choose between
+two (design D19). Rejected at build time, never at the first live run.
+
+#### Scenario: Multi-metered composite without doc fns
+- **WHEN** an endpoint declares two PER_UNIT components and inherits the provider consolidate
+- **THEN** compilation fails naming the metered-component count and the missing doc-level fn
+
 ### Requirement: Coded compile errors (CompileError)
 Every compiler rejection SHALL be a `CompileError` with `code`
 (SCHEMA_INVALID | HOOK_UNRESOLVED | STATE_SCHEMA_INVALID | DOC_MALFORMED)

@@ -60,7 +60,8 @@ export default defineEndpoint({
             const amount = isPostMode
                 ? n * cap + (mode === "profile_posts_by_url" ? n : 0)
                 : n;
-            return { units: [{ amount, unit: "RESULT" }] };
+            // leaf PER_UNIT·RESULT doc: the counts key is the model's unit
+            return { counts: { "RESULT": amount } };
         },
     },
 });

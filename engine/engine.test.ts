@@ -53,15 +53,15 @@ function demoConnector(): ConnectorSource[] {
                     }),
                 },
                 usage: {
+                    model: { kind: "PER_UNIT", unit: "RESULT" },
                     consolidate: ({ data, utils }) => ({
                         usage: {
-                            units: [{
-                                amount: utils.json.len(
+                            counts: {
+                                "RESULT": utils.json.len(
                                     data.output,
                                     "$.results",
                                 ),
-                                unit: "RESULT",
-                            }],
+                            },
                         },
                     }),
                 },
@@ -192,7 +192,7 @@ Deno.test("happy path: auth injected, usage computed, output validated", async (
     const loaded = await engine.load(await demoUnit());
     const result = await loaded.run({ body: { q: "hi" } });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 2, unit: "RESULT" }]);
+    assertEquals(result.usage.counts, { "RESULT": 2 });
     assertEquals(seen.url, "https://api.demo.test/search");
     assertEquals(seen.headers?.["x-demo-key"], "k"); // injected inside the transport
 });
@@ -259,7 +259,7 @@ Deno.test("vendor non-2xx is DATA: zero usage, raw body, no throw", async () => 
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 429);
-    assertEquals(result.usage.units, []);
+    assertEquals(result.usage.counts, {});
     assertEquals(result.output, { error: "slow down" });
 });
 
@@ -334,7 +334,7 @@ Deno.test("FN_CONTRACT: fn that throws fails closed", async () => {
 
 Deno.test("FN_CONTRACT: strict json.len on a missing path fails closed (never bills 0)", async () => {
     const connectors = demoConnector();
-    // typo'd path — strict len must throw, not settle at 0 units
+    // typo'd path — strict len must throw, not settle at count 0
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
     const engine = new Engine({
         transport: jsonTransport(200, { items: [{ id: "a" }] }),
@@ -415,13 +415,13 @@ Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", asy
         request: { method: "POST", path: "/search" },
         input: { schema: { body: z.object({ q: z.string().min(1) }) } },
         usage: {
+            model: { kind: "PER_UNIT", unit: "RESULT" },
             // ONE settle fn: extract usage AND absorb the billing field
             consolidate: ({ data, utils }) => ({
                 usage: {
-                    units: [{
-                        amount: utils.json.len(data.output, "$.results"),
-                        unit: "RESULT",
-                    }],
+                    counts: {
+                        "RESULT": utils.json.len(data.output, "$.results"),
+                    },
                     cost: utils.money.fromDollars(
                         utils.json.num(data.output, "$.costDollars.total"),
                     ),
@@ -468,14 +468,14 @@ Deno.test("usage.consolidate: absent output = unchanged payload", async () => {
     const loaded = await engine.load(await demoUnit());
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.output, { results: [{ id: "a" }], extra: true });
-    assertEquals(result.usage.units, [{ amount: 1, unit: "RESULT" }]);
+    assertEquals(result.usage.counts, { "RESULT": 1 });
 });
 
 Deno.test("FN_CONTRACT: bad OUTPUT half of the settle pair fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         consolidate: ((_ctx: never) => ({
-            usage: { units: [] },
+            usage: { counts: {} },
             output: () => 1, // not Json — the pair contract rejects it
         })) as never,
     };
@@ -705,6 +705,7 @@ function asyncConnector(): ConnectorSource[] {
                 },
             },
             usage: {
+                model: { kind: "PER_UNIT", unit: "RESULT" },
                 consolidate: ({ data, utils }) => {
                     const usd = utils.json.optionalNum(
                         data.state ?? null,
@@ -712,12 +713,11 @@ function asyncConnector(): ConnectorSource[] {
                     );
                     return {
                         usage: {
-                            units: [{
-                                amount: Array.isArray(data.output)
+                            counts: {
+                                "RESULT": Array.isArray(data.output)
                                     ? data.output.length
                                     : 0,
-                                unit: "RESULT",
-                            }],
+                            },
                             ...(usd !== undefined
                                 ? { cost: utils.money.fromDollars(usd) }
                                 : {}),
@@ -779,7 +779,7 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     assertEquals(result.kind, "COMPLETED");
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    assertEquals(result.usage.units, [{ amount: 3, unit: "RESULT" }]);
+    assertEquals(result.usage.counts, { "RESULT": 3 });
     // ENGINE-stamped provider timing (t_provider_* slices): a start tick +
     // two poll ticks were measured
     assertEquals(result.timing.attempts, 2);
@@ -913,7 +913,7 @@ Deno.test("lifecycle: output.fromError digests provider-error envelopes (zero us
     );
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, []);
+    assertEquals(result.usage.counts, {});
     assertEquals(result.output, {
         message: "slow down",
         raw: { error: { message: "slow down" } },
@@ -963,7 +963,7 @@ Deno.test("lifecycle: vendor non-2xx at start is DATA — zero usage, no throw",
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 429);
-    assertEquals(result.usage.units, []);
+    assertEquals(result.usage.counts, {});
     assertEquals(result.output, { error: "slow down" });
 });
 
@@ -979,7 +979,7 @@ Deno.test("lifecycle: in-body vendor failure → fn-synthesized 500, zero usage"
     const result = await loaded.run({ body: { q: "x" } });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 500);
-    assertEquals(result.usage.units, []);
+    assertEquals(result.usage.counts, {});
     assertEquals(result.output, { message: "job failed" });
 });
 
@@ -1209,10 +1209,10 @@ Deno.test("lifecycle: utils.http per-call header/query overrides + auth still in
 // estimate — pure entrypoint, and estimate-vs-actual comparability
 // ---------------------------------------------------------------------------
 
-Deno.test("estimate matches actual when counts are true (units deep-equal)", async () => {
+Deno.test("estimate matches actual when counts are true (counts deep-equal)", async () => {
     // the chain is CONSTRUCTED count-true: 2 queries in, 2 items out — so
     // the pre-run estimate and the settled usage agree EXACTLY (the same
-    // unit vocabulary, the same math target; one card row prices both)
+    // counts KEYS, the same math target; one card row prices both)
     const engine = new Engine({
         transport: scriptTransport([
             { status: 201, body: { jobId: "j1" } },
@@ -1234,11 +1234,11 @@ Deno.test("estimate matches actual when counts are true (units deep-equal)", asy
     const input = { body: { queries: ["a", "b"] } };
     const estimated = loaded.estimate(input);
     const actual = await loaded.run(input);
-    assertEquals(estimated.units, [{ amount: 2, unit: "RESULT" }]);
-    assertEquals(estimated.units, actual.usage.units);
+    assertEquals(estimated.counts, { "RESULT": 2 });
+    assertEquals(estimated.counts, actual.usage.counts);
 });
 
-Deno.test("estimate: pure (no IO) and `[]` without an estimate fn (the PER_CALL posture)", async () => {
+Deno.test("estimate: pure (no IO) and `{}` without an estimate fn (the PER_CALL posture)", async () => {
     let fetched = false;
     const engine = new Engine({
         transport: directTransport({
@@ -1250,8 +1250,152 @@ Deno.test("estimate: pure (no IO) and `[]` without an estimate fn (the PER_CALL 
         }),
     });
     const loaded = await engine.load(await demoUnit()); // no estimate fn
-    assertEquals(loaded.estimate({ body: { q: "x" } }), { units: [] });
+    assertEquals(loaded.estimate({ body: { q: "x" } }), { counts: {} });
     assertEquals(fetched, false);
+});
+
+// ---------------------------------------------------------------------------
+// counts ↔ model discipline (design D19) — validateUsage at settle + estimate
+// ---------------------------------------------------------------------------
+
+/** demoUnit with a mutated usage block (model/consolidate/estimate). */
+async function usageUnit(
+    usage: ConnectorSource["endpoints"][number]["def"]["usage"],
+): Promise<SealedUnit> {
+    const connectors = demoConnector();
+    connectors[0].endpoints[0].def.usage = usage;
+    delete connectors[0].endpoints[0].def.output; // free-form outputs
+    const bundle = await compileBundle(connectors, COMPILE_OPTS);
+    return sealUnit(bundle, "demo#search");
+}
+
+Deno.test("FN_CONTRACT: counts key on a doc with nothing countable (PER_CALL)", async () => {
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: { kind: "PER_CALL" },
+            consolidate: () => ({ usage: { counts: { "RESULT": 1 } } }),
+        }),
+    );
+    await expectCode(
+        loaded.run({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("FN_CONTRACT: leaf PER_UNIT counts must key the model's unit", async () => {
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: { kind: "PER_UNIT", unit: "RESULT" },
+            consolidate: () => ({ usage: { counts: { "TOKEN": 5 } } }),
+        }),
+    );
+    await expectCode(
+        loaded.run({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("FN_CONTRACT: composite counts key must name a METERED component", async () => {
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    // "start" is PER_CALL — flat components never appear in counts
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "COMPOSITE",
+                components: {
+                    "start": { kind: "PER_CALL" },
+                    "item": { kind: "PER_UNIT", unit: "RESULT" },
+                },
+            },
+            consolidate: () => ({ usage: { counts: { "start": 1 } } }),
+        }),
+    );
+    await expectCode(
+        loaded.run({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("composite settle: counts keyed by component id pass; {} always passes", async () => {
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "COMPOSITE",
+                components: {
+                    "start": { kind: "PER_CALL" },
+                    "item": { kind: "PER_UNIT", unit: "RESULT" },
+                },
+            },
+            consolidate: () => ({ usage: { counts: { "item": 7 } } }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.usage.counts, { "item": 7 });
+
+    const empty = await engine.load(
+        await usageUnit({
+            model: { kind: "PER_CALL" },
+            consolidate: () => ({ usage: { counts: {} } }),
+        }),
+    );
+    assertEquals(
+        (await empty.run({ body: { q: "x" } })).usage.counts,
+        {},
+    );
+});
+
+Deno.test("FN_CONTRACT: estimate counts are validated like settled ones", async () => {
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: { kind: "PER_UNIT", unit: "RESULT" },
+            consolidate: () => ({ usage: { counts: {} } }),
+            estimate: () => ({ counts: { "nope": 1 } }),
+        }),
+    );
+    assertThrows(
+        () => loaded.estimate({ body: { q: "x" } }),
+        EngineError,
+        "FN_CONTRACT",
+    );
+});
+
+Deno.test("generic keying: presets derive the counts key from data.model", async () => {
+    // leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id
+    const engine = new Engine({ transport: jsonTransport(200, {}) });
+    const composite = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "COMPOSITE",
+                components: {
+                    "actor-start": { kind: "PER_CALL" },
+                    "comment": { kind: "PER_UNIT", unit: "RESULT" },
+                },
+            },
+            consolidate: presets.usage.perResult("$.results"),
+            estimate: presets.estimate.limitIsExact(["q"], 3),
+        }),
+    );
+    assertEquals(
+        composite.estimate({ body: { q: "x" } }).counts,
+        { "comment": 3 },
+    );
+    const leafEngine = new Engine({
+        transport: jsonTransport(200, { results: [{ id: "a" }] }),
+    });
+    const leaf = await leafEngine.load(
+        await usageUnit({
+            model: { kind: "PER_UNIT", unit: "RESULT" },
+            consolidate: presets.usage.perResult("$.results"),
+        }),
+    );
+    assertEquals(
+        (await leaf.run({ body: { q: "x" } })).usage.counts,
+        { "RESULT": 1 },
+    );
 });
 
 Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead config", async () => {

@@ -223,6 +223,68 @@ Deno.test("usage.consolidate is REQUIRED: endpoint ?? provider, neither fails", 
     );
 });
 
+Deno.test("≥2 metered components require DOC-level consolidate + estimate (design D19)", async () => {
+    const model = {
+        kind: "COMPOSITE",
+        components: {
+            "page": { kind: "PER_UNIT", unit: "PAGE" },
+            "profile": { kind: "PER_UNIT", unit: "RESULT" },
+        },
+    } as const;
+    // generic (provider) consolidate can't choose a key between two
+    // metered components — build fails, not the first live run
+    await assertRejects(
+        () =>
+            compileBundle(
+                source([{
+                    name: "search",
+                    def: makeEndpoint({ usage: { model } }),
+                }]),
+                OPTS,
+            ),
+        Error,
+        "metered components",
+    );
+    // a doc-level consolidate alone is not enough — the estimate keys too
+    await assertRejects(
+        () =>
+            compileBundle(
+                source([{
+                    name: "search",
+                    def: makeEndpoint({
+                        usage: {
+                            model,
+                            consolidate: () => ({
+                                usage: { counts: { "page": 1 } },
+                            }),
+                        },
+                    }),
+                }]),
+                OPTS,
+            ),
+        Error,
+        "doc-level usage.estimate",
+    );
+    // both declared ⇒ compiles
+    const bundle = await compileBundle(
+        source([{
+            name: "search",
+            def: makeEndpoint({
+                usage: {
+                    model,
+                    consolidate: () => ({ usage: { counts: { "page": 1 } } }),
+                    estimate: () => ({ counts: { "page": 1 } }),
+                },
+            }),
+        }]),
+        OPTS,
+    );
+    assertEquals(
+        bundle.endpoints["demo#search"].usage.model,
+        model,
+    );
+});
+
 Deno.test("auth.inject is REQUIRED: endpoint ?? provider, neither fails", async () => {
     await assertRejects(
         () =>
@@ -568,11 +630,12 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     // every entry declares its ABI floor
     assertEquals(authEntry.api, "0.3.0");
 
-    // interning across endpoints: contents shares the settle fn + auth
+    // interning across endpoints: contents shares the provider auth fn;
+    // the settle fns diverged with the search re-model (design D19 —
+    // base-plus-overage offset counting), so each has its own entry
     const contents = bundle.endpoints["exa#contents"];
-    assertEquals(
-        contents.usage.consolidate.$fn.key,
-        doc.usage.consolidate.$fn.key,
+    assert(
+        contents.usage.consolidate.$fn.key !== doc.usage.consolidate.$fn.key,
     );
     assertEquals(contents.auth.inject.$fn.key, doc.auth.inject.$fn.key);
 

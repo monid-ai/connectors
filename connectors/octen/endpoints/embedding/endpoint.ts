@@ -27,13 +27,12 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
         consolidate: ({ data, utils }) => ({
             usage: {
-                units: [{
-                    amount: utils.json.optionalNum(
+                counts: {
+                    "TOKEN": utils.json.optionalNum(
                         data.output,
                         "$.meta.usage.input_tokens",
                     ) ?? 0,
-                    unit: "TOKEN",
-                }],
+                },
                 evidence: utils.json.pick(data.output, ["$.meta.usage"]),
             },
             output: utils.json.omit(data.output, ["usage"]),

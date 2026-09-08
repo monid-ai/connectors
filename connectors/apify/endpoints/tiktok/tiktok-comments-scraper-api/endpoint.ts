@@ -24,9 +24,25 @@ export default defineEndpoint({
         path: "/v2/acts/scraptik~tiktok-comments-scraper-api/runs",
     },
     input: { schema: { body: zTiktokCommentsScraperApiBody } },
-    /** Flat per-run pricing (survey: the `request` charge event) — the
-     *  run is the product: nothing to count, so no estimate fn (the
-     *  engine default `{units: []}` is already exact) and the settle
-     *  reports no measures. */
-    usage: { model: { kind: UsageModelKind.PER_CALL } },
+    /** TWO flat charge events (survey: `apify-actor-start` + `request`) —
+     *  keyed components make both representable instead of collapsing them
+     *  into one PER_CALL (design D19; the old ≤1-PER_CALL constraint is
+     *  gone). Still nothing to count: no estimate fn (the engine default
+     *  `{counts: {}}` is already exact) and the settle reports no counts —
+     *  both flat components bill off the model + success. */
+    usage: {
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    description: "run start fee",
+                },
+                "request": {
+                    kind: UsageModelKind.PER_CALL,
+                    description: "per-run request fee",
+                },
+            },
+        },
+    },
 });

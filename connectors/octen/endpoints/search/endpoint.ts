@@ -26,13 +26,22 @@ export default defineEndpoint({
     request: { method: "POST", path: "/search" },
     input: { schema: { body: zOctenSearchBody } },
     usage: {
-        /** Flat call fee AND gated full-content tokens (AND = COMPOSITE). */
+        /** Flat call fee AND gated full-content tokens (AND = COMPOSITE).
+         *  Component ids spelled like octen's response fields (design D19)
+         *  — no gate in the model: with full_content off the token count
+         *  is simply absent (bills 0). */
         model: {
             kind: UsageModelKind.COMPOSITE,
-            components: [
-                { kind: UsageModelKind.PER_CALL },
-                { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
-            ],
+            components: {
+                "call": { kind: UsageModelKind.PER_CALL },
+                "full_content_tokens": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.TOKEN,
+                    description:
+                        "full-content extraction tokens (only charged " +
+                        "when full_content.enable is set)",
+                },
+            },
         },
         consolidate: ({ data, utils }) => {
             const tokens = utils.json.optionalNum(
@@ -41,14 +50,13 @@ export default defineEndpoint({
             );
             return {
                 usage: {
-                    units: [
-                        // the flat call component is MODEL-declared
-                        // (COMPOSITE [PER_CALL, PER_UNIT·TOKEN]) — never a
-                        // measure (design D18)
+                    // the flat "call" component is MODEL-declared — never a
+                    // count (design D18)
+                    counts: {
                         ...(tokens !== undefined
-                            ? [{ amount: tokens, unit: "TOKEN" as const }]
-                            : []),
-                    ],
+                            ? { "full_content_tokens": tokens }
+                            : {}),
+                    },
                     evidence: utils.json.pick(data.output, ["$.meta.usage"]),
                 },
                 output: utils.json.omit(data.output, ["usage"]),

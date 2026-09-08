@@ -74,15 +74,20 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   (`schema.state_max_bytes`). `timeouts.pollMs` is the cadence default, per-tick
   `pollAfterMs` overrides. Every doc floors at `schema.fn_abi_since`.
 - **Rate-free billing shapes**: `usage.model` declares the billing ALGEBRA per
-  endpoint — LEAF (`PER_CALL` flat / `PER_UNIT` metered), AND (`COMPOSITE` of
-  scalars), SELECT (`VARIANT`) — never a rate: vendor prices are
-  account/tier-dependent (apify event prices tier by subscription plan), so
-  rates live in the hosted rate card. `usage.units` holds COUNTABLE measures
-  only (UPPERCASE values; CALL is not a unit — a flat charge is model + success,
-  and `{units: []}` is the canonical "nothing counted").
-  `deno task engine:estimate` prints an endpoint's pre-run estimate;
-  `deno task apify:pricing` guards model-shape drift against live published
-  pricing (D18).
+  endpoint — LEAF (`PER_CALL` flat / `PER_UNIT` metered) and AND (`COMPOSITE`
+  with components KEYED BY ID — for apify the vendor's charge-event names
+  VERBATIM) — never a rate: vendor prices are account/tier-dependent (apify
+  event prices tier by subscription plan), so rates live in the hosted rate
+  card. Conditions/offsets/selection are COUNTING rules owned by
+  consolidate/estimate, never model shapes (D19 — no VARIANT/TIERED kinds).
+  `usage.counts` is ONE keyed map for every model type: component id (composite,
+  metered only) / the model's unit (leaf) / `{}` (PER_CALL, error settles — the
+  canonical "nothing counted"); the key joins counts ↔ broker card row ↔ drift
+  guard ↔ stashed vendor rates. ≥2 metered components require doc-level fns
+  (compile-checked); the engine validates counts against the model at settle AND
+  estimate (FN_CONTRACT). `deno task engine:estimate` prints an endpoint's
+  pre-run estimate; `deno task apify:pricing` guards model shape + exact
+  component ids against live published pricing (D18/D19).
 - **Billing before presentation**: `usage.consolidate` is REQUIRED and runs on
   the RAW response envelope BEFORE `fromResponse` — presentation changes can
   never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;

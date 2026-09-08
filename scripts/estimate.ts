@@ -6,8 +6,8 @@
  * seal the endpoint, load it, and print `estimate()`'s Usage as JSON.
  * PURE by construction — the injected transport REJECTS every call (proof
  * that estimating does no IO), and no credential is needed. This is the
- * transparency tool: anyone can ask "what would this input cost in units?"
- * without running anything; the hosted rate card turns the units into $.
+ * transparency tool: anyone can ask "what would this input count?" without
+ * running anything; the hosted rate card turns the keyed counts into $.
  *
  * Flags mirror engine:run — zRunInput's fields in CLI kebab-case.
  */

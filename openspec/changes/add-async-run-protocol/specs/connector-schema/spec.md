@@ -104,34 +104,56 @@ state). Sync docs are unaffected (field absent).
 `Unit` SHALL hold only COUNTABLE quantities (RESULT, TOKEN, CHARACTER,
 SECOND, MINUTE, CREDIT, PAGE) with UPPERCASE keys AND values (the repo
 enum rule; lowercase is display-only). CALL SHALL NOT be a unit: a flat
-charge is the PER_CALL model kind, never a measure. `zUsage.units` MAY be
-EMPTY — the canonical "nothing counted": PER_CALL settles, all zero/error
-paths (`zeroUsage()`/`defaultUsage()` return `{units: []}`,
-`presets.usage.perCall()` settles `{usage: {units: []}}`).
+charge is the PER_CALL model kind, never a count.
 
-#### Scenario: Zero is unit-agnostic
+### Requirement: usage.counts — ONE keyed map for every model type
+`zUsage.counts` SHALL be a plain `Record<string, number>` (zMeasure is
+DELETED — design D19) whose key names WHAT is counted: the component id
+for a COMPOSITE doc (metered components only — a flat component never
+appears; model + success covers it); the model's unit for a leaf
+PER_UNIT doc (`{"RESULT": 10}`); `{}` for PER_CALL docs and every
+zero/error path (`zeroUsage()`/`defaultUsage()` return `{counts: {}}`,
+`presets.usage.perCall()` settles `{usage: {counts: {}}}`). The key is
+the join across counts, the broker card row, the drift guard and (apify)
+the vendor's own charge-event names — per-event prices match exactly.
+
+#### Scenario: Zero counts nothing
 - **WHEN** a provider error forces zero usage
-- **THEN** the settled usage is `{units: []}` — no fake measure of any unit
+- **THEN** the settled usage is `{counts: {}}` — no fake count of any kind
+
+#### Scenario: Composite counts key the component
+- **WHEN** facebook-comments-scraper settles 23 dataset items
+- **THEN** the usage is `{counts: {"comment": 23}}` — the actor's charge-event name verbatim
 
 ### Requirement: usage.model — the rate-free billing ALGEBRA
-`zUsageModel` SHALL be the discriminated union of three orthogonal
-operators, one kind per file under `usage/model/` with the runtime kind
-enum DERIVED from the union (extractZodDiscriminatorKeys — the v1
-zPriceTypes pattern; a literal-typed authoring const is kept in sync by a
-load-time staleness guard):
-- LEAF: `PER_CALL` ({kind} only — billed 1 iff success, no measure) and
-  `PER_UNIT` ({kind, unit} — metered per N of unit; pure, no base-fee
-  side pocket);
-- AND: `COMPOSITE` ({kind, components: scalars, min 2}) — the SUM of
-  scalar components; at most one PER_CALL, distinct PER_UNIT units, no
-  nesting (the v1 leaf rule);
-- SELECT: `VARIANT` ({kind, unit, selectors}) — request coordinates pick
-  WHICH card row prices the unit (request-side zModelSelector only).
-No TIERED kind: volume schedules are services card-row shapes, invisible
-to a rate-free doc. No rate field anywhere: apify event prices are tiered
-by OUR subscription plan (verified), so rates are services config.
-`zUsageSection` carries `model?` (and `estimate?`); `doc.usage` carries
-`model` inline (hash-covered) and `estimate` as a FnRef.
+`zUsageModel` SHALL be the discriminated union of two operators, one kind
+per file under `usage/model/` with the runtime kind enum DERIVED from the
+union (extractZodDiscriminatorKeys — the v1 zPriceTypes pattern; a
+literal-typed authoring const is kept in sync by a load-time staleness
+guard):
+- LEAF: `PER_CALL` ({kind, description?} — billed 1 iff success, no
+  count) and `PER_UNIT` ({kind, unit, description?} — metered per N of
+  unit; pure, no base-fee side pocket). `description` is a human note on
+  what a derived count means; documentation only, never a join key.
+- AND: `COMPOSITE` ({kind, components: `Record<componentId, scalar>`,
+  min 2}) — scalar components KEYED BY ID (design D19): id uniqueness is
+  structural, and the old constraints (≤1 PER_CALL, distinct PER_UNIT
+  units) are DELETED — the key disambiguates, so two flat rates
+  (tiktok-comments) and two same-unit rates (linkedin) are representable.
+  No nesting.
+No VARIANT kind (deleted — design D19) and no TIERED kind: conditions,
+offsets and input-selection are COUNTING rules owned by the
+consolidate/estimate fns (a gated line counts 0 when off; a select-one
+populates only the selected key; exa's base-covers-first-10 is
+`max(0, n − 10)`); volume schedules are services card-row shapes. No
+rate field anywhere: apify event prices are tiered by OUR subscription
+plan (verified), so rates are services config. `zUsageSection` carries
+`model?` (and `estimate?`); `doc.usage` carries `model` inline
+(hash-covered) and `estimate` as a FnRef.
+
+#### Scenario: Same-unit components are legal, keyed
+- **WHEN** a composite declares full-profile and full-profile-with-email (both RESULT)
+- **THEN** the model validates — the ids disambiguate what the old distinct-unit rule forbade
 
 #### Scenario: Composite constraints enforced
 - **WHEN** a model declares COMPOSITE with two PER_CALL components (or two PER_UNIT components of the same unit)

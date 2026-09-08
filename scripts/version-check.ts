@@ -29,12 +29,10 @@ const CONTRACT_PATHS = [
     "shared/core/schema/run/state.ts", // RunKind + zRunState/zStatePatch/timing
     "shared/core/schema/hooks/estimate.ts", // usage.estimate hook contract
     "shared/core/schema/zod-util.ts", // extractZodDiscriminatorKeys (derived enums)
-    "shared/core/schema/usage/model/selector.ts", // the rate-free model algebra —
-    "shared/core/schema/usage/model/per-call.ts", //   one kind per file (D18)
-    "shared/core/schema/usage/model/per-unit.ts",
+    "shared/core/schema/usage/model/per-call.ts", // the rate-free model algebra —
+    "shared/core/schema/usage/model/per-unit.ts", //   one kind per file (D18/D19)
     "shared/core/schema/usage/model/scalar.ts",
     "shared/core/schema/usage/model/composite.ts",
-    "shared/core/schema/usage/model/variant.ts",
     "shared/core/schema/usage/model/mod.ts",
     "shared/core/schema/sections/usage.ts", // usage def section (model/estimate)
     "shared/core/schema/json/util.ts", // JsonUtil interface (the ABI) + JsonPathError

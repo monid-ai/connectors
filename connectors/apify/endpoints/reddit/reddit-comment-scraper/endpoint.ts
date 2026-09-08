@@ -32,10 +32,16 @@ export default defineEndpoint({
         model: {
             // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
-            components: [
-                { kind: UsageModelKind.PER_CALL },
-                { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-            ],
+            // component ids = the actor's charge-event names, VERBATIM
+            // (live survey) — the broker card row key and the join key for
+            // the stashed run-record rates (design D19)
+            components: {
+                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
+                "apify-default-dataset-item": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                },
+            },
         },
         /** maxComments per keyword — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */

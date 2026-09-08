@@ -3,32 +3,37 @@ import { extractZodDiscriminatorKeys } from "../../zod-util.ts";
 import { PER_CALL_MODEL_KIND, zPerCallModel } from "./per-call.ts";
 import { PER_UNIT_MODEL_KIND, zPerUnitModel } from "./per-unit.ts";
 import { COMPOSITE_MODEL_KIND, zCompositeModel } from "./composite.ts";
-import { VARIANT_MODEL_KIND, zVariantModel } from "./variant.ts";
 
 /**
  * usage.model — the RATE-FREE billing-shape ALGEBRA: WHAT an endpoint's
  * consumption looks like, never what it costs (rates live in the hosted
  * rate card, keyed by endpoint + OUR account tier — verified necessary:
- * apify event prices are tiered by subscription plan). Three orthogonal
- * operators (design D18):
+ * apify event prices are tiered by subscription plan). Two operators
+ * (designs D18 + D19):
  *
  *   - LEAF:      PER_CALL (flat — the run is the product, billed 1 iff
- *                success, no measure) and PER_UNIT (metered — billed per
+ *                success, no count) and PER_UNIT (metered — billed per
  *                N of `unit`).
- *   - AND:       COMPOSITE — the sum of scalar components (flat start fee
- *                AND per-item metering).
- *   - SELECT:    VARIANT — request coordinates pick WHICH card row prices
- *                the unit (exactly one active).
+ *   - AND:       COMPOSITE — the sum of scalar components, KEYED BY
+ *                COMPONENT ID (flat start fee AND per-item metering).
  *
- * Deliberately absent: TIERED — volume schedules ("first 1k tokens at X")
- * are a shape of the services CARD ROW, invisible to a rate-free doc; the
- * doc's only job is naming the quantities, which PER_UNIT/COMPOSITE do.
+ * Grammar, closed and total: "a simple charge, or a keyed sum of simple
+ * charges". Deliberately absent — every v1 price type maps in WITHOUT a
+ * new kind, because FNS OWN ALL CONDITIONS (design D19):
+ *   - TIERED ("default + gated add-on lines, SUMMED"): a gated line is a
+ *     composite component whose count is 0 when the feature is off — the
+ *     `when` gate becomes counting logic, not a model shape.
+ *   - PER_UNIT_MATRIX / VARIANT ("input options pick ONE cell"): a
+ *     select-one is a composite whose fn populates ONLY the selected key
+ *     (linkedin's profileScraperMode). The VARIANT kind is deleted.
+ *   - volume schedules ("first 1k tokens at X"): a shape of the services
+ *     CARD ROW; base-covers-first-N (exa) is a composite with an OFFSET
+ *     counting rule (counts["additional_result"] = max(0, n − 10)).
  */
 export const zUsageModel = z.discriminatedUnion("kind", [
     zPerCallModel,
     zPerUnitModel,
     zCompositeModel,
-    zVariantModel,
 ]);
 export type UsageModel = z.infer<typeof zUsageModel>;
 
@@ -49,7 +54,6 @@ export const UsageModelKind = {
     PER_CALL: PER_CALL_MODEL_KIND,
     PER_UNIT: PER_UNIT_MODEL_KIND,
     COMPOSITE: COMPOSITE_MODEL_KIND,
-    VARIANT: VARIANT_MODEL_KIND,
 } as const;
 export type UsageModelKind =
     (typeof UsageModelKind)[keyof typeof UsageModelKind];
@@ -66,9 +70,7 @@ if (
     );
 }
 
-export * from "./selector.ts";
 export * from "./per-call.ts";
 export * from "./per-unit.ts";
 export * from "./scalar.ts";
 export * from "./composite.ts";
-export * from "./variant.ts";

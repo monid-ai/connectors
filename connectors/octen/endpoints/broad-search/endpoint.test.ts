@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("octen#broad-search happy (recorded): receipt queries are the result units", async () => {
+Deno.test("octen#broad-search happy (recorded): receipt queries are the counted results", async () => {
     const unit = await testSealedUnit("octen#broad-search");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -21,10 +21,10 @@ Deno.test("octen#broad-search happy (recorded): receipt queries are the result u
     assertEquals(result.httpStatus, 200);
     // settled on the RECEIPT's num_search_queries (2), not the request's
     // max_queries fallback; the token tier reports 0 (present in receipt)
-    assertEquals(result.usage.units, [
-        { amount: 2, unit: "RESULT" },
-        { amount: 0, unit: "TOKEN" },
-    ]);
+    assertEquals(result.usage.counts, {
+        "receipt_queries": 2,
+        "full_content_tokens": 0,
+    });
     assertEquals(result.usage.evidence?.usage, {
         num_search_queries: 2,
         full_content_tokens: 0,
@@ -52,6 +52,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "result");
+        assertEquals(typeof result.usage.counts["receipt_queries"], "number");
     },
 });

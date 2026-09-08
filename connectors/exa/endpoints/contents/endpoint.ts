@@ -4,8 +4,9 @@ import { zExaContentsBody } from "./schema/inputs.ts";
 /**
  * Exa /contents — clean page content for known URLs.
  *
- * usage.consolidate is byte-identical to search's — the compiler interns
- * both to the SAME fnTable entry (content addressing).
+ * Plain per-result metering (no base fee — unlike /search's
+ * base-plus-overage): a leaf PER_UNIT doc, counts keyed by the model's
+ * unit (design D19).
  */
 export default defineEndpoint({
     meta: {
@@ -34,10 +35,9 @@ export default defineEndpoint({
             );
             return {
                 usage: {
-                    units: [{
-                        amount: utils.json.len(data.output, "$.results"),
-                        unit: "RESULT",
-                    }],
+                    counts: {
+                        "RESULT": utils.json.len(data.output, "$.results"),
+                    },
                     ...(total !== undefined
                         ? { cost: utils.money.fromDollars(total) }
                         : {}),

@@ -26,13 +26,36 @@ export default defineEndpoint({
     request: { method: "POST", path: "/broad-search" },
     input: { schema: { body: zOctenBroadSearchBody } },
     usage: {
-        /** Receipt queries AND gated full-content tokens (AND = COMPOSITE). */
+        /** Receipt queries AND gated full-content tokens (AND = COMPOSITE).
+         *  Component ids spelled like octen's response fields (design D19).
+         *  TWO metered components ⇒ the compiler requires this doc to own
+         *  both fns (the generic keying can't choose between them). */
         model: {
             kind: UsageModelKind.COMPOSITE,
-            components: [
-                { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-                { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
-            ],
+            components: {
+                "receipt_queries": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    description: "executed sub-query searches",
+                },
+                "full_content_tokens": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.TOKEN,
+                    description:
+                        "full-content extraction tokens (only charged " +
+                        "when search_options.full_content.enable is set)",
+                },
+            },
+        },
+        /** Queries = the requested max_queries ?? the vendor default 5 (the
+         *  v1 fallback rule). Tokens are NOT promisable from the input
+         *  (page-content-sized) — omitted, settle trues them up. */
+        estimate: ({ data, utils }) => {
+            const queries = utils.json.optionalNum(
+                data.input.body ?? {},
+                "$.max_queries",
+            ) ?? 5;
+            return { counts: { "receipt_queries": queries } };
         },
         consolidate: ({ data, utils }) => {
             const queries = utils.json.optionalNum(
@@ -49,12 +72,12 @@ export default defineEndpoint({
             );
             return {
                 usage: {
-                    units: [
-                        { amount: queries, unit: "RESULT" as const },
+                    counts: {
+                        "receipt_queries": queries,
                         ...(tokens !== undefined
-                            ? [{ amount: tokens, unit: "TOKEN" as const }]
-                            : []),
-                    ],
+                            ? { "full_content_tokens": tokens }
+                            : {}),
+                    },
                     evidence: utils.json.pick(data.output, ["$.meta.usage"]),
                 },
                 output: utils.json.omit(data.output, ["usage"]),

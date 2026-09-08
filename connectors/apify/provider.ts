@@ -22,7 +22,7 @@ import { defineProvider, presets } from "@shared/core";
  *   - stop: best-effort POST /v2/actor-runs/{id}/abort — non-2xx expected
  *     for already-terminal runs (logged, ignored; the engine swallows the
  *     rest).
- *   - usage.consolidate (ONE fn for every endpoint): units = dataset item
+ *   - usage.consolidate (ONE fn for every endpoint): count = dataset item
  *     count; cost = the v1 `actualCostFromPricing` math over the
  *     poll-stashed `state.data` signals (PRICE_PER_DATASET_ITEM: perUnit ×
  *     items; PAY_PER_EVENT: usageTotalUsd; other models → no cost,
@@ -275,6 +275,20 @@ export default defineProvider({
         consolidate: ({ data, utils }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
             const state = data.state ?? null;
+            // counts KEY from the doc's OWN model (design D19): leaf → the
+            // unit; composite → the sole metered component id — which for
+            // apify is the actor's charge-event name VERBATIM, so counts,
+            // card and vendor truth join on one string. Single-valued by
+            // the compiler's ≥2-metered rule (multi-metered actors declare
+            // their own fns).
+            const usageModel = data.model;
+            const key = usageModel?.kind === "PER_UNIT"
+                ? usageModel.unit
+                : usageModel?.kind === "COMPOSITE"
+                ? Object.entries(usageModel.components)
+                    .find(([, component]) => component.kind === "PER_UNIT")
+                    ?.[0]
+                : undefined;
             const model = utils.json.optionalGet(
                 state,
                 "$.data.pricingModel",
@@ -296,7 +310,7 @@ export default defineProvider({
                 : undefined;
             return {
                 usage: {
-                    units: [{ amount: items, unit: "RESULT" }],
+                    counts: key === undefined ? {} : { [key]: items },
                     ...(cost !== undefined ? { cost } : {}),
                     evidence: utils.json.pick(state, [
                         "$.externalRunId",

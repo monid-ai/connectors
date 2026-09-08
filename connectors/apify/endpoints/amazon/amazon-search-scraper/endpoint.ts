@@ -48,9 +48,8 @@ export default defineEndpoint({
                     : NaN;
                 pages += Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
             }
-            return {
-                units: [{ amount: Math.max(pages, 1) * 10, unit: "RESULT" }],
-            };
+            // leaf PER_UNIT·RESULT doc: the counts key is the model's unit
+            return { counts: { "RESULT": Math.max(pages, 1) * 10 } };
         },
     },
 });

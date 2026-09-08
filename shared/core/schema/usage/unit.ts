@@ -1,12 +1,13 @@
 import { z } from "zod";
 
 /**
- * Unit — counted quantities a run can consume: the PER_UNIT/VARIANT model
- * unit vocabulary AND the `zUsage.units` measure vocabulary (one and the
- * same — there is no measure that isn't countable). CALL is deliberately
- * NOT here: "one flat call" is the PER_CALL model KIND, fully described by
- * the model + the run's success flag — it needs no measure, so giving it
- * one was a second spelling of the same fact (design D18).
+ * Unit — counted quantities a run can consume: the PER_UNIT model unit
+ * vocabulary, and therefore the implied `usage.counts` KEY of a leaf
+ * PER_UNIT doc (design D19 — composite docs key counts by component id
+ * instead). CALL is deliberately NOT here: "one flat call" is the
+ * PER_CALL model KIND, fully described by the model + the run's success
+ * flag — it needs no count, so giving it one was a second spelling of
+ * the same fact (design D18).
  *
  * UPPERCASE canonical values (the repo enum rule: uppercase keys AND
  * values for every closed vocabulary); lowercase rendering is a DISPLAY
@@ -28,10 +29,3 @@ export const Unit = {
 export type Unit = (typeof Unit)[keyof typeof Unit];
 
 export const zUnit = z.enum(Object.values(Unit) as [Unit, ...Unit[]]);
-
-/** A number and what it counts, together. */
-export const zMeasure = z.object({
-    amount: z.number().nonnegative(), // v4 z.number() already rejects NaN/±Infinity (.finite() deprecated)
-    unit: zUnit,
-}).strict();
-export type Measure = z.infer<typeof zMeasure>;

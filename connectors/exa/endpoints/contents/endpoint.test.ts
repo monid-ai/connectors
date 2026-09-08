@@ -26,7 +26,7 @@ Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
     });
 
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "RESULT" }]);
+    assertEquals(result.usage.counts, { "RESULT": 1 });
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 1_000,
@@ -46,19 +46,21 @@ Deno.test("exa#contents provider error: zero usage", async () => {
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, []);
+    assertEquals(result.usage.counts, {});
 });
 
-Deno.test("interning: search and contents share the settle fn + auth entries", async () => {
+Deno.test("interning: search and contents share auth; settle fns DIVERGED with the re-model", async () => {
     const bundle = await testBundle();
     const search = bundle.endpoints["exa#search"];
     const contents = bundle.endpoints["exa#contents"];
-    // byte-identical ad-hoc settle fns → ONE fnTable entry
-    assertEquals(
-        search.usage.consolidate.$fn.key,
-        contents.usage.consolidate.$fn.key,
+    // the settle fns were byte-identical (one interned entry) until the
+    // search re-model (design D19: base-plus-overage offset counting) —
+    // now each carries its own content-addressed entry
+    assert(
+        search.usage.consolidate.$fn.key !==
+            contents.usage.consolidate.$fn.key,
     );
-    // and both share the provider auth fn
+    // both still share the provider auth fn (content addressing at work)
     assertEquals(search.auth.inject.$fn.key, contents.auth.inject.$fn.key);
 });
 
@@ -77,6 +79,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "result");
+        assertEquals(Object.keys(result.usage.counts), ["RESULT"]);
     },
 });
