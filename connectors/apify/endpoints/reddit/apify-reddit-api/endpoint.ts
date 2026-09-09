@@ -49,8 +49,7 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
-            // the actor's charge-event this leaf line joins to
-            vendor: "item_returned",
+            // vendor charge event: "item_returned"
             // survey-pinned GOLD-tier event price
             consumes: { credit: "default", amount: 0.002 },
         },

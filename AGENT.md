@@ -127,11 +127,17 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   before any hook) or REQUIRED at the binding site (`zBody.required({...})` in
   endpoint.ts; schema files stay actor-faithful). The engine validates fn counts
   against the model at settle AND estimate (FN_CONTRACT) before the fold.
-  `deno task engine:estimate` prints just the answer — `{credits, evidence}`;
-  `deno task apify:pricing` (survey v3) guards model shape + the `vendor ?? id`
-  join + PINNED GOLD-TIER RATES against live published pricing between runs
-  (D18/D19/D24/D26), and the D27 mismatch signal cross-checks the same rates on
-  EVERY run.
+  `deno task engine:estimate` prints just the answer — `{credits, evidence}`.
+  **Drift vs tests (D28)**: `deno task drift [--provider] [--fix]` is THE
+  vendor-world guard — per-provider suites (scripts/drift/) poll published
+  surfaces; the apify suite checks pricing (regime/shape/derived join/pinned
+  GOLD-tier rates) AND input schemas (live.required ⊆ compiled.required) in one
+  pass, scheduled weekly (.github/workflows/drift.yml). Fix policy: `--fix`
+  re-scaffolds drifted schemas (generated; git diff reviews) and writes rate
+  drift to .output/drift-repin.json — pinned amounts are never auto-rewritten.
+  Providers without a machine-readable surface are guarded by test:live + the
+  D27 per-run mismatch signal (the runner says so). The D27 mismatch signal also
+  cross-checks apify's pinned rates on EVERY run.
 - **Typed authoring (D19a/D23)**: `defineEndpoint` is generic over the model,
   the input body schema, and the lifecycle state schema — counts keys narrow to
   the model's LITERAL metered keys, `data.input.body` is `z.output` of the doc's

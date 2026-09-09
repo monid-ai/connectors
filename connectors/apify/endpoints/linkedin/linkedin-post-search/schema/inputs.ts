@@ -4,8 +4,8 @@ import { z } from "zod";
  * harvestapi/linkedin-post-search — actor input schema, scaffolded from the actor's PUBLISHED
  * input schema (GET /v2/acts/harvestapi~linkedin-post-search/builds/default →
  * actorDefinition.input) on 2026-09-05 via scripts/apify-scaffold.ts; curated
- * by hand thereafter (re-run the script to refresh; the live-gated
- * schema-drift test flags divergence). Non-strict by policy: the actor
+ * by hand thereafter (re-run the script to refresh; the drift suite
+ * flags divergence — deno task drift). Non-strict by policy: the actor
  * accepts supersets — unknown fields pass through.
  */
 export const zLinkedinPostSearchBody = z.object({

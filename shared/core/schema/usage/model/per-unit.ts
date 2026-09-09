@@ -24,11 +24,6 @@ export const zPerUnitModel = z.strictObject({
     /** The line's draw against a declared credit system — the def IS the
      *  rate card (design D26). */
     consumes: zConsumes,
-    /** The VENDOR's native name for this line when it differs from our
-     *  id (apify's hyphenated charge events: id `actor_start`, vendor
-     *  "actor-start") — the verbatim join key for drift guards and
-     *  reconciliation; defaults to the line id when omitted. */
-    vendor: z.string().min(1).optional(),
     /** OPTIONAL short display name for billing surfaces (e.g. "reviews",
      *  "extra results"). Rendering is services-side with the KEY as
      *  fallback: `${label ?? key} × ${count}` (design D24). */

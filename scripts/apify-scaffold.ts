@@ -7,8 +7,9 @@
  * and generate the endpoint folder's `schema/inputs.ts` as STATIC zod —
  * reviewed, curated, committed; deterministic thereafter (the v2 bundle is a
  * pure function of repo content — v1's runtime schema fetch cannot exist
- * here). Refresh = re-run this script; drift surfaces in the live-gated
- * schema-drift test, never in the deterministic build.
+ * here). Refresh = re-run this script (or `deno task drift --fix`, which
+ * targets it at the drifted set); drift surfaces in the drift suite,
+ * never in the deterministic build.
  *
  * Requires APIFY_API_KEY. Generated zod is NON-STRICT (plain z.object):
  * actors accept supersets; unknown fields pass through.
@@ -186,8 +187,8 @@ await new Command()
  * ${actorId} — actor input schema, scaffolded from the actor's PUBLISHED
  * input schema (GET /v2/acts/${pathId}/builds/default →
  * actorDefinition.input) on ${today} via scripts/apify-scaffold.ts; curated
- * by hand thereafter (re-run the script to refresh; the live-gated
- * schema-drift test flags divergence). Non-strict by policy: the actor
+ * by hand thereafter (re-run the script to refresh; the drift suite
+ * flags divergence — deno task drift). Non-strict by policy: the actor
  * accepts supersets — unknown fields pass through.
  */
 export const ${schemaName} = ${body};

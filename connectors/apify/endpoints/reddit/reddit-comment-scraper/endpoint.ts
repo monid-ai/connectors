@@ -45,15 +45,14 @@ export default defineEndpoint({
         model: {
             // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
-            // component ids are OUR snake_case keys (the broker card row
-            // key); `vendor:` pins the actor's charge-event name verbatim
-            // — the join key for the stashed run-record rates (design
-            // D19/D26)
+            // component ids are OUR snake_case keys (the broker card
+            // row key) — the actor's charge-event names normalize
+            // onto them (strip apify- prefix, kebab/camel → snake):
+            // the drift guard's derived join (design D28)
             components: {
                 actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    vendor: "apify-actor-start",
                     // survey-pinned GOLD-tier event price
                     consumes: { credit: "default", amount: 0.05 },
                 },
@@ -61,7 +60,6 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "comments",
-                    vendor: "apify-default-dataset-item",
                     consumes: { credit: "default", amount: 0.001 },
                 },
             },

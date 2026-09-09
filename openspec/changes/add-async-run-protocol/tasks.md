@@ -461,3 +461,25 @@
       apify chains claim 0.01 vs per-doc folds)
 - [x] 19.f Docs: design D27, spec deltas (schema/engine/apify), AGENT.md;
       stale comment sweep; version stays 0.0.1
+
+## 20. D28: one drift command + derived join (vendor field removed)
+
+- [x] 20.a scripts/drift.ts runner (--provider/--fix, exit 1, per-provider
+      coverage statements) + scripts/drift/contract.ts + apify suite
+      (pricing regime/shape/join/rates + input-schema required-⊆ check,
+      one poll per actor); apify:pricing task + schema-drift.test.ts
+      retired; `drift` task added
+- [x] 20.b Fix policy: --fix re-scaffolds drifted schemas (generated;
+      git-diff-reviewed) + writes .output/drift-repin.json for rate
+      drift (hand-pinned, never auto-applied)
+- [x] 20.c vendor field removed from zPerUnit/zPerCall + all 46 docs
+      (leaf lines keep a naming comment); suite joins by
+      normalizeEventName (strip apify- prefix, kebab/camel → snake) for
+      composite lines + amount-existence for leaf lines; degradations
+      recorded in D28
+- [x] 20.d .github/workflows/drift.yml (weekly cron + dispatch,
+      APIFY_API_KEY secret) — first repo workflow
+- [x] 20.e Tests: normalizeEventName pinned against the fleet's naming
+      styles; 164 green; live drift 46/46 with the derived join
+- [x] 20.f Docs: design D28; spec deltas (apify survey requirement →
+      unified suite; vendor-join language); AGENT.md drift note

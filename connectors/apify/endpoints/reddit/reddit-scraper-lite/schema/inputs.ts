@@ -4,8 +4,8 @@ import { z } from "zod";
  * trudax/reddit-scraper-lite — actor input schema, scaffolded from the actor's PUBLISHED
  * input schema (GET /v2/acts/trudax~reddit-scraper-lite/builds/default →
  * actorDefinition.input) on 2026-09-05 via scripts/apify-scaffold.ts; curated
- * by hand thereafter (re-run the script to refresh; the live-gated
- * schema-drift test flags divergence). Non-strict by policy: the actor
+ * by hand thereafter (re-run the script to refresh; the drift suite
+ * flags divergence — deno task drift). Non-strict by policy: the actor
  * accepts supersets — unknown fields pass through.
  */
 export const zRedditScraperLiteBody = z.object({

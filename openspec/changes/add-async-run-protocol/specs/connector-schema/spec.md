@@ -204,9 +204,11 @@ surveyed live; credit → money stays the ONE services-side fact).
 PER_UNIT carries optional `every` (int ≥ 1, `.default(1)` MATERIALIZED
 at parse — the define generic constrains on `UsageModelSeed` = z.input,
 since seed and output diverge on the default): `amount` buys `every`
-units, folded in whole increments. Optional `vendor` carries the
-vendor's native line name when it differs from OUR snake_case id
-(revises D19's verbatim-key rule — the join is `vendor ?? id`).
+units, folded in whole increments. Line ids are OURS — snake_case,
+MINTED from the vendor's native names by one transform (revises D19's
+verbatim-key rule); drift guards DERIVE the join by re-applying the
+transform to live names at check time (design D28 — the interim
+`vendor` field is deleted: it carried no information the id doesn't).
 `usage.credits` sits BESIDE the model — `Record<creditId, {label?,
 description?}>`, resolved provider ?? endpoint (OPPOSITE of hooks: the
 pool is a provider-wide fact; single-pool providers use id `default`).

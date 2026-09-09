@@ -16,10 +16,6 @@ export const zPerCallModel = z.strictObject({
     /** The line's flat draw against a declared credit system — the def IS
      *  the rate card (design D26). */
     consumes: zConsumes,
-    /** The VENDOR's native name for this line when it differs from our
-     *  id (apify: id `actor_start`, vendor "actor-start") — the verbatim
-     *  join key for drift guards; defaults to the line id. */
-    vendor: z.string().min(1).optional(),
     /** OPTIONAL short display name for billing surfaces (e.g. "base fee").
      *  Rendering is services-side with the KEY as fallback (design D24). */
     label: z.string().min(1).max(40).optional(),

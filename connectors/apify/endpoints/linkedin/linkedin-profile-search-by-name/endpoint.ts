@@ -58,7 +58,6 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.PAGE,
                     label: "search pages",
-                    vendor: "search-page",
                     description: "search pages scraped (charged in every mode)",
                     // survey-pinned GOLD-tier event price
                     consumes: { credit: "default", amount: 0.003 },
@@ -67,7 +66,6 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "short profiles",
-                    vendor: "main-profile",
                     description: "profiles returned in 'Short' mode",
                     consumes: { credit: "default", amount: 0.0015 },
                 },
@@ -75,7 +73,6 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "full profiles",
-                    vendor: "full-profile",
                     description: "profiles enriched in 'Full' mode",
                     consumes: { credit: "default", amount: 0.003 },
                 },
@@ -83,7 +80,6 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "profiles with email",
-                    vendor: "full-profile-with-email",
                     description:
                         "profiles enriched in 'Full + email search' mode",
                     consumes: { credit: "default", amount: 0.01 },

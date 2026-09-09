@@ -20,7 +20,7 @@
         "version:check": "deno run --allow-read --allow-run=git scripts/version-check.ts",
         "apify:scaffold": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com scripts/apify-scaffold.ts",
         "engine:estimate": "deno run --allow-read --allow-write --allow-env scripts/estimate.ts",
-        "apify:pricing": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com scripts/apify-pricing-survey.ts"
+        "drift": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com --allow-run=deno,git scripts/drift.ts"
     },
     "imports": {
         "@cliffy/command": "jsr:@cliffy/command@^1.2.1",

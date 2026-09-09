@@ -1090,3 +1090,47 @@ tinyfish: provider fns die (model alone). octen: strips hoisted to one
 provider consolidate; four evidence renames. `engine:estimate` prints
 just the answer — `{credits, evidence}` (model and pools live on the
 doc).
+
+## D28 — One drift command; the vendor field dies for a derived join
+
+**1. Drift vs tests, made structural.** TESTS answer "is our code
+right?"; DRIFT answers "has the vendor's world moved out from under our
+pinned defs?" — a repricing failing `deno task test` looks like our bug
+and isn't. The two apify guards that lived in different vehicles
+(`apify:pricing` task + the `schema-drift.test.ts` live test) merge into
+ONE command, `deno task drift [--provider] [--fix]`: a generic runner
+(scripts/drift.ts) over per-provider SUITES (scripts/drift/<provider>.ts
+— NOT connectors/, which stays closed-term defs the compiler consumes).
+The apify suite polls each actor once and checks pricing (regime, shape,
+line join, GOLD-tier rates) AND input schemas (live.required ⊆
+compiled.required — the caller-breaking direction only). A suite exists
+only where the vendor publishes a machine-readable surface; for the
+rest, the runner PRINTS the coverage story per provider (guarded by
+test:live response shapes + the D27 run-time mismatch signal) — explicit,
+never silent. Scheduled: .github/workflows/drift.yml (weekly cron +
+dispatch, APIFY_API_KEY secret) — the repo's first workflow.
+
+**2. The fix policy — generated vs pinned.** `--fix` rewrites GENERATED
+artifacts only: schema drift re-runs the scaffold codegen for the
+drifted actors (git diff is the review gate). HAND-PINNED assertions
+stay alarm-only: rates are reviewed claims about what we're willing to
+pay — auto-rewriting `consumes.amount` from live prices would be exactly
+the silent repricing the guard exists to catch. Instead the suite emits
+`.output/drift-repin.json` (doc → line → pinned vs live): applying it is
+mechanical but deliberate.
+
+**3. vendor dies; the join is DERIVED (revises D26).** The `vendor`
+field was dead at runtime — no fn read it; its one consumer was the
+survey's line↔event join. But composite line ids were MINTED from the
+vendor names by one deterministic transform, so the suite applies the
+SAME transform to the LIVE names at check time
+(`normalizeEventName`: strip the `apify-` prefix, kebab/dot/camelCase →
+snake — unit-pinned against every naming style the fleet publishes) and
+the field carries no information the id doesn't. Leaf lines (id = the
+unit — no name relationship) fall back to AMOUNT-EXISTENCE: the pinned
+amount must appear among the actor's live prices. Accepted degradations,
+eyes open: a leaf rename reports as "rate vanished" (not "renamed"), and
+a same-price collision can mask a single leaf repricing
+(facebook-pages publishes two events at 0.0054). Docs keep a
+`// vendor charge event: "…"` COMMENT on leaf lines where the reader
+would otherwise have no trail from RESULT to the vendor's row.
