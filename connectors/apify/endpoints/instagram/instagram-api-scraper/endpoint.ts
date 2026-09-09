@@ -23,6 +23,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/apify/instagram-api-scraper",
         categories: ["instagram"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/apify/instagram-api-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/apify~instagram-api-scraper/runs",

@@ -37,9 +37,8 @@ if (!token) {
 const FLAT_EVENT = /(^|[-_])start($|[-_])|^request$/;
 
 function declaredShape(
-    model: UsageModel | undefined,
+    model: UsageModel,
 ): { flat: boolean; metered: boolean } {
-    if (!model) return { flat: false, metered: false };
     switch (model.kind) {
         case "PER_CALL":
             return { flat: true, metered: false };
@@ -54,6 +53,10 @@ function declaredShape(
                     .some((component) => component.kind === "PER_UNIT"),
             };
         }
+        default:
+            // EXHAUSTIVENESS: a new model kind fails `deno task check` here
+            model satisfies never;
+            throw new Error("unknown model kind");
     }
 }
 
@@ -109,7 +112,7 @@ for (const doc of docs) {
         published.metered === declared.metered;
     // EXACT id check (design D19): declared component ids ⊆ published
     // event names — the reverse stays shape-level (unmodeled add-ons ok).
-    const missingIds = doc.usage.model?.kind === "COMPOSITE"
+    const missingIds = doc.usage.model.kind === "COMPOSITE"
         ? Object.keys(doc.usage.model.components)
             .filter((id) => !events.includes(id))
         : [];
@@ -118,9 +121,7 @@ for (const doc of docs) {
         `${ok ? "ok  " : "DRIFT"} ${doc.id.padEnd(50)} events=[${
             events.join(",")
         }] published(flat=${published.flat},metered=${published.metered}) ` +
-            `declared(${
-                doc.usage.model?.kind ?? "none"
-            }: flat=${declared.flat},metered=${declared.metered})` +
+            `declared(${doc.usage.model.kind}: flat=${declared.flat},metered=${declared.metered})` +
             (missingIds.length > 0
                 ? ` MISSING ids=[${missingIds.join(",")}]`
                 : ""),
@@ -128,9 +129,7 @@ for (const doc of docs) {
     if (!shapeOk) {
         failures.push(
             `${doc.id}: model shape drift — published flat=${published.flat}/` +
-                `metered=${published.metered}, declared ${
-                    doc.usage.model?.kind ?? "none"
-                }`,
+                `metered=${published.metered}, declared ${doc.usage.model.kind}`,
         );
     }
     if (missingIds.length > 0) {

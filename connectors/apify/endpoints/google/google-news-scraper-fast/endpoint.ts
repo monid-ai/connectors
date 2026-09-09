@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/data_xplorer/google-news-scraper-fast",
         categories: ["news-search"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/data_xplorer/google-news-scraper-fast",
     request: {
         method: "POST",
         path: "/v2/acts/data_xplorer~google-news-scraper-fast/runs",

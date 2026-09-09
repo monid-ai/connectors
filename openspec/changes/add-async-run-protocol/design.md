@@ -634,6 +634,40 @@ its Temporal `endpointExecution` workflow.
   poll each dropped `state: {}` from their keep-running arms; every
   other return was already whole-state.
 
+## D22 — Endpoint PUBLIC identity: the def's native path, not the folder
+
+- Context (review): "each endpoint should have a public endpoint, most
+  likely request.path (see monid-services); even a customized name must be
+  DEFINED somewhere — not the file name". The old id minted
+  `provider#<folder leaf>` — identity conjured from the filesystem.
+- **`zEndpointDef.endpoint`** — a native PATH (`zEndpointPath`,
+  leading-`/`), v1 parity (`"/search"`, `"/v1/company/enrichment"`,
+  `"/apidojo/tweet-scraper"`). ABSENT ⇒ `request.path` with trailing
+  slashes stripped (the default covers exa/octen/akta verbatim); declared
+  only where the native path is transport plumbing (apify: the actor slug
+  path, mechanically derived from `/v2/acts/{owner}~{name}/runs` and
+  PINNED in each def for readability — 46 backfilled) or empty (tinyfish:
+  per-endpoint baseUrls, `request.path` is "/").
+- **Doc id = `provider#` + the endpoint path minus its leading slash**
+  (`exa#search`, `akta#v1/company/search`,
+  `apify#apidojo/tweet-scraper`): the FIRST `#` splits provider from
+  endpoint unambiguously. The compiled doc also carries `endpoint`
+  verbatim (the catalog/broker-facing name). Uniqueness per provider is a
+  compile check (duplicate identity = DOC_MALFORMED).
+- Folder names are ORGANIZATIONAL only (the group-dir rule finished the
+  thought): the loader keeps a folder-shape lint but never mints identity;
+  `findEndpointDir` resolves identity → source dir by matching the pinned
+  `endpoint` field, then the default request.path, then the leaf name.
+- Type layer landed with it (design D19a's deferred piece, review-approved):
+  `defineEndpoint` is generic over the model (`const M`) and the input
+  body schema — counts keys narrow to the model's literal metered keys
+  (typo/flat-key/preset-on-flat-doc are typecheck errors; proven by
+  ts-expect-error tests), and `data.input.body` is `z.output` of the
+  doc's OWN schema (direct property access, sound because validateInput
+  runs the same schema first). The runtime twin `countsMismatch` lives
+  beside the usage schema (ONE exhaustive switch with a
+  `satisfies never` default; the engine wraps violations in FN_CONTRACT).
+
 ## Concepts delta
 
 | Term | Definition |

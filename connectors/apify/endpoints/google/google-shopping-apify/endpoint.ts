@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/damilo/google-shopping-apify",
         categories: ["google-shopping"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/damilo/google-shopping-apify",
     request: {
         method: "POST",
         path: "/v2/acts/damilo~google-shopping-apify/runs",

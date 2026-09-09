@@ -28,7 +28,7 @@ const INPUTS = JSON.parse(
 ) as Record<string, RunInput["body"]>;
 
 /** Endpoints whose consolidate is NOT the provider default. */
-const CUSTOM_BILLING = new Set(["linkedin-profile-search"]);
+const CUSTOM_BILLING = new Set(["harvestapi/linkedin-profile-search"]);
 
 const endpointIds = async (): Promise<string[]> => {
     const bundle = await testBundle();
@@ -80,7 +80,7 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ite
 
 Deno.test("apify: actor failure chain — synthesized 500, zero usage, digested error", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/run-failed.json`);
-    const id = "apify#tweet-scraper";
+    const id = "apify#apidojo/tweet-scraper";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -98,7 +98,7 @@ Deno.test("apify: actor failure chain — synthesized 500, zero usage, digested 
 
 Deno.test("apify: start-rejected chain — vendor 404 is DATA, digested", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/start-rejected.json`);
-    const id = "apify#google-maps-scraper";
+    const id = "apify#damilo/google-maps-scraper";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -113,9 +113,9 @@ Deno.test("apify: start-rejected chain — vendor 404 is DATA, digested", async 
     assertEquals(output.type, "actor-not-found");
 });
 
-Deno.test("apify#linkedin-profile-search: pages reconstructed from LIVE run-record rates (finding 5)", async () => {
+Deno.test("apify#harvestapi/linkedin-profile-search: pages reconstructed from LIVE run-record rates (finding 5)", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
-    const id = "apify#linkedin-profile-search";
+    const id = "apify#harvestapi/linkedin-profile-search";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -140,7 +140,7 @@ Deno.test("apify#linkedin-profile-search: pages reconstructed from LIVE run-reco
 
 Deno.test("apify: PAY_PER_EVENT chain settles cost = usageTotalUsd for provider-default billing", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
-    const id = "apify#instagram-profile-scraper";
+    const id = "apify#apify/instagram-profile-scraper";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -203,6 +203,10 @@ function billedKeys(model: UsageModel): string[] {
             return Object.entries(model.components)
                 .filter(([, component]) => component.kind === "PER_UNIT")
                 .map(([id]) => id);
+        default:
+            // EXHAUSTIVENESS: a new model kind fails `deno task check` here
+            model satisfies never;
+            throw new Error("unknown model kind");
     }
 }
 
@@ -284,7 +288,7 @@ Deno.test("apify settles: the card invariant + estimate accuracy (shared chain)"
 Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     // LIMIT_IS_EXACT: maxItems IS the count (leaf doc → unit-keyed)
     assertEquals(
-        (await estimateFor("apify#tweet-scraper", {
+        (await estimateFor("apify#apidojo/tweet-scraper", {
             searchTerms: ["a"],
             maxItems: 7,
         })).counts,
@@ -292,14 +296,14 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     );
     // ONE_PER_QUERY: one per multiplier entry
     assertEquals(
-        (await estimateFor("apify#instagram-profile-scraper", {
+        (await estimateFor("apify#apify/instagram-profile-scraper", {
             usernames: ["a", "b", "c"],
         })).counts,
         { "RESULT": 3 },
     );
     // PER_QUERY_LIMIT: limit × queries
     assertEquals(
-        (await estimateFor("apify#youtube-scraper", {
+        (await estimateFor("apify#streamers/youtube-scraper", {
             searchQueries: ["x", "y"],
             maxResults: 4,
         })).counts,
@@ -307,13 +311,15 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     );
     // FALLBACK_DEFAULT (v1 DEFAULT_ESTIMATED_RESULTS = 3) when nothing probes
     assertEquals(
-        (await estimateFor("apify#tweet-scraper", { searchTerms: ["a"] }))
+        (await estimateFor("apify#apidojo/tweet-scraper", {
+            searchTerms: ["a"],
+        }))
             .counts,
         { "RESULT": 3 },
     );
     // flat-only endpoints: the engine default — nothing countable, `{}`
     assertEquals(
-        (await estimateFor("apify#tiktok-api", {
+        (await estimateFor("apify#scraptik/tiktok-api", {
             type: "SEARCH",
             region: "US",
             url: "https://www.tiktok.com/@tiktok",
@@ -324,7 +330,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     // linkedin-profile-search (maxItems 2 → ceil(2/25) = 1 page): "Short"
     // mode bills pages ONLY — no profile component selected (design D19)
     assertEquals(
-        (await estimateFor("apify#linkedin-profile-search", {
+        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Short",
             searchQuery: "deno developer",
             maxItems: 2,
@@ -333,7 +339,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     );
     // the mode SELECTS the profile component: "Full" ⇒ full-profile
     assertEquals(
-        (await estimateFor("apify#linkedin-profile-search", {
+        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Full",
             searchQuery: "deno developer",
             maxItems: 2,
@@ -342,7 +348,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
     );
     // …and "Full + email search" ⇒ full-profile-with-email
     assertEquals(
-        (await estimateFor("apify#linkedin-profile-search", {
+        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Full + email search",
             searchQuery: "deno developer",
             maxItems: 2,
@@ -356,7 +362,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
 // ---------------------------------------------------------------------------
 
 Deno.test("apify typed state: a poll fed corrupt state.data fails closed (INVALID_INPUT)", async () => {
-    const unit = await testSealedUnit("apify#tweet-scraper");
+    const unit = await testSealedUnit("apify#apidojo/tweet-scraper");
     const engine = new Engine({
         transport: directTransport({
             params: () => Promise.resolve({ apiKey: "test-key" }),
@@ -366,7 +372,7 @@ Deno.test("apify typed state: a poll fed corrupt state.data fails closed (INVALI
     const loaded = await engine.load(unit);
     let threw = false;
     try {
-        await loaded.poll(inputFor("apify#tweet-scraper"), {
+        await loaded.poll(inputFor("apify#apidojo/tweet-scraper"), {
             externalRunId: "RUN1",
             data: { datasetId: 42 } as never, // schema says string
             timing: {

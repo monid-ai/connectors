@@ -754,7 +754,7 @@ async function asyncUnit(
     const connectors = asyncConnector();
     mutate?.(connectors);
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
-    return sealUnit(bundle, "asyncdemo#job");
+    return sealUnit(bundle, "asyncdemo#jobs");
 }
 
 const INSTANT_SLEEP = { sleep: () => Promise.resolve() };

@@ -8,14 +8,31 @@ export type ProviderName = z.infer<typeof zProviderName>;
 
 export const zEndpointName = z.string().regex(
     /^[a-z0-9][a-z0-9-]*$/,
-    "endpoint name must be lowercase kebab-case",
+    "endpoint FOLDER name must be lowercase kebab-case",
 );
 export type EndpointName = z.infer<typeof zEndpointName>;
 
-/** "<provider>#<endpoint>" — always INFERRED from folders, never authored. */
+/**
+ * The PUBLIC endpoint identity — a NATIVE path (design D22, v1 parity:
+ * `"/search"`, `"/v1/company/enrichment"`, `"/apidojo/tweet-scraper"`).
+ * Defaults to `request.path` (trailing slashes stripped); declared
+ * explicitly only when the native path is transport plumbing (apify's
+ * `/v2/acts/{owner}~{name}/runs` → the actor slug path) or empty
+ * (tinyfish's per-endpoint baseUrls). Folder names are ORGANIZATIONAL
+ * only — identity lives in the def, never the filesystem.
+ */
+export const zEndpointPath = z.string().regex(
+    /^\/[a-z0-9][a-z0-9._~-]*(?:\/[a-z0-9][a-z0-9._~-]*)*$/,
+    "endpoint must be a lowercase native path like /search or /owner/name",
+);
+export type EndpointPath = z.infer<typeof zEndpointPath>;
+
+/** "<provider>#<endpoint-path minus its leading slash>" — e.g.
+ *  "exa#search", "apify#apidojo/tweet-scraper". Everything left of the
+ *  FIRST "#" is the provider; the rest is the endpoint path. */
 export const zEndpointId = z.string().regex(
-    /^[a-z0-9][a-z0-9-]*#[a-z0-9][a-z0-9-]*$/,
-    "endpoint id must be <provider>#<endpoint>",
+    /^[a-z0-9][a-z0-9-]*#[a-z0-9][a-z0-9._~-]*(?:\/[a-z0-9][a-z0-9._~-]*)*$/,
+    "endpoint id must be <provider>#<endpoint-path-sans-slash>",
 );
 export type EndpointId = z.infer<typeof zEndpointId>;
 

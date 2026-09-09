@@ -1,4 +1,4 @@
-import type { UsageConsolidateFn } from "../schema/hooks/mod.ts";
+import type { PortableConsolidateFn } from "../schema/endpoint/typed.ts";
 import { preset } from "./preset.ts";
 
 /**
@@ -18,7 +18,7 @@ export const usage = {
      *  the settle reports NO counts (design D18). */
     perCall: preset(
         "usage.perCall",
-        (): UsageConsolidateFn => () => ({
+        (): PortableConsolidateFn => () => ({
             usage: { counts: {} },
         }),
     ),
@@ -26,7 +26,7 @@ export const usage = {
      *  keyed by the doc's model. */
     perResult: preset(
         "usage.perResult",
-        (path: string): UsageConsolidateFn => ({ data, utils }) => {
+        (path: string): PortableConsolidateFn => ({ data, utils }) => {
             let key;
             switch (data.model.kind) {
                 case "PER_UNIT":

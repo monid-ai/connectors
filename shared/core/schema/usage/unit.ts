@@ -22,7 +22,7 @@ export const Unit = {
     SECOND: "SECOND",
     MINUTE: "MINUTE",
     CREDIT: "CREDIT",
-    /** A charged page of results (apify#linkedin-profile-search bills per
+    /** A charged page of results (apify#harvestapi/linkedin-profile-search bills per
      *  search page scraped, independent of profiles found on it). */
     PAGE: "PAGE",
 } as const;

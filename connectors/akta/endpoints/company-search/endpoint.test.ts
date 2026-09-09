@@ -10,7 +10,7 @@ import {
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
 Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0", async () => {
-    const unit = await testSealedUnit("akta#company-search");
+    const unit = await testSealedUnit("akta#v1/company/search");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
         unit,
@@ -37,7 +37,7 @@ Deno.test({
     name: "akta#company-search live (gated on AKTA_API_KEY)",
     ignore: liveSkip("akta"),
     fn: async () => {
-        const unit = await testSealedUnit("akta#company-search");
+        const unit = await testSealedUnit("akta#v1/company/search");
         const result = await runEndpoint({
             unit,
             input: { queryParams: { query: "canva" } },

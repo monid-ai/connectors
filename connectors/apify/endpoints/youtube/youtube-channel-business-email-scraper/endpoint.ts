@@ -25,6 +25,9 @@ export default defineEndpoint({
             "https://apify.com/dataovercoffee/youtube-channel-business-email-scraper",
         categories: ["youtube"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/dataovercoffee/youtube-channel-business-email-scraper",
     request: {
         method: "POST",
         path:

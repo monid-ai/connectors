@@ -182,3 +182,40 @@ a deterministic fn bug catch sites can classify without string-matching.
 #### Scenario: Sync docs never carry pollMs
 - **WHEN** a doc without lifecycle.poll is compiled
 - **THEN** its timeouts lack `pollMs`
+
+### Requirement: Endpoint PUBLIC identity — the def's native path (D22)
+`zEndpointDef` SHALL carry an optional `endpoint` field: a native PATH
+(leading `/`, lowercase segments) that IS the public endpoint identity.
+Absent ⇒ `request.path` with trailing slashes stripped. The compiled doc
+SHALL carry the resolved `endpoint` and derive
+`id = provider# + endpoint.slice(1)` — folder names are organizational
+only and never mint identity. apify docs pin the actor slug path
+(`/{owner}/{name}`, derived from `/v2/acts/{owner}~{name}/runs`);
+tinyfish pins explicitly (its `request.path` is "/").
+
+#### Scenario: Default identity from the native path
+- **WHEN** exa#search declares no endpoint field and request.path "/search"
+- **THEN** the doc compiles with endpoint "/search" and id "exa#search"
+
+#### Scenario: Pinned identity for transport-plumbing paths
+- **WHEN** an apify def pins endpoint "/apidojo/tweet-scraper"
+- **THEN** the doc id is "apify#apidojo/tweet-scraper" (the actor's own slug, v1 parity)
+
+### Requirement: Typed authoring — model keys and input bodies (D19a/D22)
+`defineEndpoint` SHALL be generic over the declared model and the input
+body schema (types only; zod stays the runtime truth): the doc's own
+consolidate/estimate return counts keyed by the model's LITERAL metered
+keys (a typo'd key, a flat-component key, or a counting preset on a flat
+doc fails the typecheck — the flat doc's estimate slot is `never`), and
+`data.input.body` is typed by the doc's OWN input schema (sound: the
+engine validates the same schema before any hook). The runtime twin
+`countsMismatch` SHALL live beside the usage schema as ONE exhaustive
+switch (`satisfies never` default) shared by the engine and tests.
+
+#### Scenario: Typo'd counts key fails the typecheck
+- **WHEN** a composite doc's estimate returns counts keyed "commnet"
+- **THEN** `deno task check` fails at the doc site (proven by ts-expect-error tests)
+
+#### Scenario: Counting preset on a flat doc fails the typecheck
+- **WHEN** a PER_CALL doc declares estimate: presets.estimate.limitIsExact(…)
+- **THEN** `deno task check` fails — nothing is assignable to the `never` slot

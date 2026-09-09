@@ -3,6 +3,7 @@ import { contractConfig } from "../../config.ts";
 import {
     zDocHash,
     zEndpointId,
+    zEndpointPath,
     zProviderName,
     zSemverString,
 } from "../common/ids.ts";
@@ -23,7 +24,11 @@ import { zUsageModel } from "../usage/model/mod.ts";
 export const zEndpointDoc = z.strictObject({
     /** Doc FORMAT version (config.yml schema.spec_version) — semver. */
     specVersion: z.literal(contractConfig.schema.specVersion),
-    id: zEndpointId, // "exa#search" — inferred, never authored
+    id: zEndpointId, // "<provider>#<endpoint sans slash>" — derived, never authored
+    /** The PUBLIC endpoint identity as a native path (design D22) — the
+     *  catalog/broker-facing name; `id` is `provider#` + this minus its
+     *  leading slash. */
+    endpoint: zEndpointPath,
     provider: zProviderName,
     /** Compiler-derived: semverMax(doc_format_since, api of every $fn). */
     minEngineVersion: zSemverString,

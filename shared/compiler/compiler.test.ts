@@ -56,16 +56,21 @@ function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
 }
 
 function makeEndpoint(overrides: Partial<EndpointDefSeed> = {}) {
-    return defineEndpoint({
-        meta: {
-            displayName: "Demo Search",
-            summary: "Searches.",
-            categories: ["demo-cat"],
-        },
-        request: { method: "POST", path: "/search" },
-        input: { schema: { body: z.object({ q: z.string() }) } },
-        ...overrides,
-    });
+    // the factory splices ARBITRARY seed fragments (that is its job), so it
+    // deliberately bypasses defineEndpoint's typed generics via the cast —
+    // runtime validation (parseSchema) still applies in full
+    return defineEndpoint(
+        {
+            meta: {
+                displayName: "Demo Search",
+                summary: "Searches.",
+                categories: ["demo-cat"],
+            },
+            request: { method: "POST", path: "/search" },
+            input: { schema: { body: z.object({ q: z.string() }) } },
+            ...overrides,
+        } as Parameters<typeof defineEndpoint>[0],
+    );
 }
 
 function source(
@@ -163,7 +168,12 @@ Deno.test("compile produces doc maps + interned table; ids inferred; closure hol
     const bundle = await compileBundle(
         source([
             { name: "search", def: makeEndpoint() },
-            { name: "other", def: makeEndpoint() },
+            {
+                name: "other",
+                def: makeEndpoint({
+                    request: { method: "POST", path: "/other" },
+                }),
+            },
         ]),
         OPTS,
     );
@@ -431,7 +441,7 @@ Deno.test("baseUrl path prefixes survive resolution (concatenation, not URL-reso
         OPTS,
     );
     assertEquals(
-        bundle.endpoints["demo#search"].request.url,
+        bundle.endpoints["demo#v1/search"].request.url,
         "https://api.demo.test/api/v1/search",
     );
 });

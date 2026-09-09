@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/junglee/free-amazon-product-scraper",
         categories: ["amazon"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/delicious_zebu/amazon-product-details-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/delicious_zebu~amazon-product-details-scraper/runs",

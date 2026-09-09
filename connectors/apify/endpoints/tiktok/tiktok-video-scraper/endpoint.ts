@@ -23,6 +23,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/clockworks/tiktok-video-scraper",
         categories: ["tiktok"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/clockworks/tiktok-video-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/clockworks~tiktok-video-scraper/runs",

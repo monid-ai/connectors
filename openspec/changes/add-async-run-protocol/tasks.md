@@ -278,3 +278,36 @@
 - [x] 13.h Docs: design D19 + Concepts delta (Model/Estimate/Counts);
       spec deltas (schema/engine/compiler/apify); AGENT.md; version-check
       paths (selector/variant removed)
+
+## 14. Review round 2: version reset, whole-state, billing hardening, identity
+
+- [x] 14.a Version reset to the 0.0.1 pre-release floor (engine,
+      doc_format_since/fn_abi_since/async_since); version:check relaxed
+      to must-differ-from-base
+- [x] 14.b Review fixes (13 threads triaged; 11 fixed, #15 declined —
+      manual review posture, #19 moot — VARIANT deleted): pricingPerEvent
+      projected to {eventPriceUsd} (state-size cap); utils.request body
+      override presence-based; run() naps capped by the remaining budget;
+      recorder scrubs request bodies + placeholder-identity convention
+      (Feiyou Guo / Steve Jobs); compiler-boundary parseSchema failures
+      coded DOC_MALFORMED; scaffold tag-strip to a fixpoint (CodeQL)
+- [x] 14.c D21 whole-state outcomes: zStatePatch/mergePatch deleted;
+      Outcome.state present = the COMPLETE next fn-state, absent = carry
+      forward; RUNNING.state optional
+- [x] 14.d D19a billing hardening: usage.model REQUIRED (endpoint ??
+      provider, compile error); presets diet (sharable-only, single-field
+      args; perQueryPages/limitIsPages/dualLimit deleted, 9 docs inline);
+      actor-default knobs as schema .default() materialized by
+      validateInput (cloned body, ajv useDefaults); estimate-fidelity
+      fixes #9/#10/#11
+- [x] 14.e D22 endpoint identity: zEndpointDef.endpoint (native path,
+      default request.path); id = provider# + path sans slash; 46 apify
+      slugs pinned + tinyfish; test-inputs rekeyed; findEndpointDir
+      resolves identity → source dir
+- [x] 14.f Typed authoring (D19a type layer): defineEndpoint generic over
+      model + body schema; MeteredKeyOf/TypedUsage/Typed ctxs; portable
+      preset types; ts-expect-error proofs; countsMismatch shared switch
+      (satisfies-never exhaustive) replacing the engine if-chain
+- [x] 14.g Docs: D19a/D20/D21/D22 design notes; schema/compiler/engine/
+      apify/testing spec deltas; AGENT.md; 132 tests green; live pricing
+      survey green (46/46)

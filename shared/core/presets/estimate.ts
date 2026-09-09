@@ -1,4 +1,4 @@
-import type { UsageEstimateFn } from "../schema/hooks/mod.ts";
+import type { PortableEstimateFn } from "../schema/endpoint/typed.ts";
 import { preset } from "./preset.ts";
 
 /**
@@ -30,7 +30,7 @@ export const estimate = {
     /** ONE_PER_QUERY: one result per entry of the query array, min 1. */
     onePerQuery: preset(
         "estimate.onePerQuery",
-        (queryField: string): UsageEstimateFn => ({ data }) => {
+        (queryField: string): PortableEstimateFn => ({ data }) => {
             let key;
             switch (data.model.kind) {
                 case "PER_UNIT":
@@ -60,7 +60,7 @@ export const estimate = {
      *  `fallback`. */
     limitIsExact: preset(
         "estimate.limitIsExact",
-        (limitField: string, fallback: number): UsageEstimateFn =>
+        (limitField: string, fallback: number): PortableEstimateFn =>
         (
             { data },
         ) => {
@@ -99,7 +99,7 @@ export const estimate = {
             limitField: string,
             queryField: string,
             fallback: number,
-        ): UsageEstimateFn =>
+        ): PortableEstimateFn =>
         ({ data }) => {
             let key;
             switch (data.model.kind) {

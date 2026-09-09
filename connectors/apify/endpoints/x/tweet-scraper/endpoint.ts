@@ -24,6 +24,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/apidojo/tweet-scraper",
         categories: ["twitter"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/apidojo/tweet-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/apidojo~tweet-scraper/runs",

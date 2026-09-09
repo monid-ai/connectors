@@ -1,6 +1,7 @@
 import { greaterThan, parse as parseSemver } from "@std/semver";
 import {
     contractConfig,
+    countsMismatch,
     type EndpointDoc,
     type EnvelopeData,
     type FnState,
@@ -509,47 +510,19 @@ export class LoadedEndpoint implements RunnableEndpoint {
 
     /** Counts ↔ model discipline (design D19), fail-closed (FN_CONTRACT —
      *  a doc fn wrote the counts; the type + loader gates already forced
-     *  correct authorship, so this is the LIVE-DATA residue). One rule
-     *  per doc class:
-     *  - COMPOSITE → every key names a PER_UNIT component in
-     *    `model.components` (a flat component never appears — model +
-     *    success covers it);
-     *  - leaf PER_UNIT → the single implied key is the model's unit;
-     *  - PER_CALL / no model → `{}` only (a doc that counts must declare
-     *    what is countable).
-     *  Applied to consolidate output at settle AND to the estimate fn's
-     *  return — `{counts: {}}` passes everywhere. */
+     *  correct authorship, so this is the LIVE-DATA residue). The RULES
+     *  live beside the schema they interpret — shared/core's exhaustive
+     *  `countsMismatch` switch (also used by test card-invariant helpers
+     *  and, later, the services broker); the engine owns only the error
+     *  type. Applied to consolidate output at settle AND to the estimate
+     *  fn's return — `{counts: {}}` passes everywhere. */
     private validateUsage(usage: Usage): void {
-        const model = this.doc.usage.model;
-        for (const key of Object.keys(usage.counts)) {
-            if (model === undefined || model.kind === "PER_CALL") {
-                throw new EngineError(
-                    EngineErrorCode.FN_CONTRACT,
-                    `${this.doc.id}: counts key "${key}" — the doc declares ` +
-                        `nothing countable (${model?.kind ?? "no model"})`,
-                );
-            }
-            if (model.kind === "PER_UNIT") {
-                if (key !== model.unit) {
-                    throw new EngineError(
-                        EngineErrorCode.FN_CONTRACT,
-                        `${this.doc.id}: counts key "${key}" — a leaf ` +
-                            `PER_UNIT doc keys its count by the model's ` +
-                            `unit ("${model.unit}")`,
-                    );
-                }
-                continue;
-            }
-            const declared = model.components[key];
-            if (declared === undefined || declared.kind !== "PER_UNIT") {
-                throw new EngineError(
-                    EngineErrorCode.FN_CONTRACT,
-                    `${this.doc.id}: counts key "${key}" names no metered ` +
-                        `component (components: ${
-                            Object.keys(model.components).join(", ")
-                        })`,
-                );
-            }
+        const problem = countsMismatch(this.doc.usage.model, usage.counts);
+        if (problem !== undefined) {
+            throw new EngineError(
+                EngineErrorCode.FN_CONTRACT,
+                `${this.doc.id}: ${problem}`,
+            );
         }
     }
 

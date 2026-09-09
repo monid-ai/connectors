@@ -23,6 +23,9 @@ export default defineEndpoint({
             "https://apify.com/xmiso_scrapers/eu-amazon-sellers-email-leads",
         categories: ["amazon", "company-enrichment"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/xmiso_scrapers/eu-amazon-sellers-email-leads",
     request: {
         method: "POST",
         path: "/v2/acts/xmiso_scrapers~eu-amazon-sellers-email-leads/runs",

@@ -23,6 +23,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/curious_coder/facebook-ads-library-scraper",
         categories: ["facebook"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/curious_coder/facebook-ads-library-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/curious_coder~facebook-ads-library-scraper/runs",

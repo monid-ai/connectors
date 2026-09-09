@@ -26,6 +26,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/cleansyntax/facebook-profile-posts-scraper",
         categories: [],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/cleansyntax/facebook-profile-posts-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/cleansyntax~facebook-profile-posts-scraper/runs",

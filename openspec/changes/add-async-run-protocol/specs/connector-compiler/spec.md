@@ -89,3 +89,15 @@ The closed-term lint SHALL additionally whitelist `encodeURIComponent`,
 #### Scenario: Wire-path escaping lints clean
 - **WHEN** a lifecycle fn uses encodeURIComponent in a path expression
 - **THEN** the closed-term lint passes
+
+### Requirement: Identity derivation + uniqueness (D22)
+The compiler SHALL derive each doc's identity from the def
+(`endpoint ?? request.path` with trailing slashes stripped, validated as
+a native path), stamp it on the doc (`endpoint`), mint
+`id = provider# + endpoint.slice(1)`, and REJECT duplicate identities per
+provider (DOC_MALFORMED). Folder names are validated for shape only and
+never enter the id.
+
+#### Scenario: Duplicate identity rejected
+- **WHEN** two endpoint defs resolve to the same endpoint path
+- **THEN** compilation fails DOC_MALFORMED naming the colliding id

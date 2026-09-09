@@ -24,6 +24,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/harvestapi/linkedin-job-search",
         categories: ["linkedin", "jobs"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/harvestapi/linkedin-job-search",
     request: {
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-job-search/runs",

@@ -24,6 +24,9 @@ export default defineEndpoint({
             "https://apify.com/kaitoeasyapi/premium-x-follower-scraper-following-data",
         categories: ["twitter"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/kaitoeasyapi/premium-x-follower-scraper-following-data",
     request: {
         method: "POST",
         path:

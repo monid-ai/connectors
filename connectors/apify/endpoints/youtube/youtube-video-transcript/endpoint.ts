@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/starvibe/youtube-video-transcript",
         categories: ["youtube"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/starvibe/youtube-video-transcript",
     request: {
         method: "POST",
         path: "/v2/acts/starvibe~youtube-video-transcript/runs",

@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/streamers/youtube-comments-scraper",
         categories: ["youtube"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/streamers/youtube-comments-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/streamers~youtube-comments-scraper/runs",

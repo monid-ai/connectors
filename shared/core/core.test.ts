@@ -5,12 +5,16 @@ import { z } from "zod";
 import {
     assertPureJson,
     contractConfig,
+    defineEndpoint,
     docHash,
     fnKey,
     getPath,
     parseSchema,
+    presets,
     pruneUndefined,
     stableStringify,
+    Unit,
+    UsageModelKind,
     ValidationError,
     zeroUsage,
     zJson,
@@ -160,4 +164,138 @@ Deno.test("loadConnectorDefs: folder != provider.name fails loudly", async () =>
     } finally {
         await Deno.remove(dir, { recursive: true });
     }
+});
+
+// ---------------------------------------------------------------------------
+// the TYPE layer (design D19a): model-keyed counts + schema-typed bodies —
+// the ts-expect-error directives below PROVE the narrowing (each fails
+// `deno task check` whenever the generics stop rejecting what they must)
+// ---------------------------------------------------------------------------
+
+Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", () => {
+    const meta = {
+        displayName: "Typed",
+        summary: "Types.",
+        categories: ["demo-cat"],
+    };
+    const request = { method: "POST", path: "/x" } as const;
+    const body = z.object({
+        q: z.string(),
+        maxItems: z.number().optional(),
+    });
+
+    // POSITIVE control — literal component keys + typed body access compile:
+    const good = defineEndpoint({
+        meta,
+        request,
+        input: { schema: { body } },
+        usage: {
+            model: {
+                kind: UsageModelKind.COMPOSITE,
+                components: {
+                    "actor-start": { kind: UsageModelKind.PER_CALL },
+                    "comment": {
+                        kind: UsageModelKind.PER_UNIT,
+                        unit: Unit.RESULT,
+                    },
+                },
+            },
+            consolidate: ({ data }) => ({
+                usage: {
+                    // typed body: direct property access, no JSONPath
+                    counts: { "comment": data.input.body.maxItems ?? 1 },
+                },
+            }),
+            estimate: ({ data }) => ({
+                counts: { "comment": data.input.body.maxItems ?? 1 },
+            }),
+        },
+    });
+    assert(good.meta.displayName === "Typed");
+
+    // NEGATIVE controls — each line MUST be a typecheck error:
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: {
+                    kind: UsageModelKind.COMPOSITE,
+                    components: {
+                        "actor-start": { kind: UsageModelKind.PER_CALL },
+                        "comment": {
+                            kind: UsageModelKind.PER_UNIT,
+                            unit: Unit.RESULT,
+                        },
+                    },
+                },
+                // @ts-expect-error — typo'd key: not a metered component
+                estimate: () => ({
+                    counts: { "commnet": 1 },
+                }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: {
+                    kind: UsageModelKind.COMPOSITE,
+                    components: {
+                        "actor-start": { kind: UsageModelKind.PER_CALL },
+                        "comment": {
+                            kind: UsageModelKind.PER_UNIT,
+                            unit: Unit.RESULT,
+                        },
+                    },
+                },
+                // @ts-expect-error — flat component: never a count (D18)
+                estimate: () => ({
+                    counts: { "actor-start": 1 },
+                }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_CALL },
+                // @ts-expect-error — a COUNTING preset on a flat doc: the
+                // estimate slot is `never` ("unsupported" = un-writable)
+                estimate: presets.estimate.limitIsExact("maxItems", 3),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                consolidate: ({ data }) => ({
+                    usage: {
+                        // @ts-expect-error — the body schema has no such field
+                        counts: { "RESULT": data.input.body.nope ?? 1 },
+                    },
+                }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                // @ts-expect-error — a leaf doc keys by its unit, not TOKEN
+                estimate: () => ({
+                    counts: { "TOKEN": 1 },
+                }),
+            },
+        }));
 });

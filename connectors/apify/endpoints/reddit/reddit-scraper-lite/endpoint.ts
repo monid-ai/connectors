@@ -19,6 +19,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/trudax/reddit-scraper-lite",
         categories: ["reddit"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/trudax/reddit-scraper-lite",
     request: {
         method: "POST",
         path: "/v2/acts/trudax~reddit-scraper-lite/runs",

@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/scraptik/tiktok-api",
         categories: ["tiktok"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/scraptik/tiktok-api",
     request: {
         method: "POST",
         path: "/v2/acts/scraptik~tiktok-api/runs",

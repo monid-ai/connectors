@@ -22,6 +22,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/apify/facebook-groups-scraper",
         categories: ["facebook"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/apify/facebook-groups-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/apify~facebook-groups-scraper/runs",

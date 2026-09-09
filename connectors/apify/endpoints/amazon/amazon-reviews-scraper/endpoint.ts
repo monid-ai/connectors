@@ -23,6 +23,9 @@ export default defineEndpoint({
         docsUrl: "https://apify.com/axesso_data/amazon-reviews-scraper",
         categories: ["amazon"],
     },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/axesso_data/amazon-reviews-scraper",
     request: {
         method: "POST",
         path: "/v2/acts/axesso_data~amazon-reviews-scraper/runs",

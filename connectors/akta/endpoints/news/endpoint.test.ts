@@ -33,7 +33,7 @@ Deno.test("akta: provider-level hooks interned ONCE across all six endpoints", a
 });
 
 Deno.test("akta#news happy (recorded): credits are the native unit; arrays go comma-separated", async () => {
-    const unit = await testSealedUnit("akta#news");
+    const unit = await testSealedUnit("akta#v1/news");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
         unit,
@@ -65,7 +65,7 @@ Deno.test("akta#news happy (recorded): credits are the native unit; arrays go co
 });
 
 Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits", async () => {
-    const unit = await testSealedUnit("akta#news");
+    const unit = await testSealedUnit("akta#v1/news");
     const fixture = await loadFixture(`${fixturesDir}empty.json`);
     const result = await runEndpoint({
         unit,
@@ -81,7 +81,7 @@ Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits"
 });
 
 Deno.test("akta#news: impossible calendar dates rejected by the compiled schema", async () => {
-    const unit = await testSealedUnit("akta#news");
+    const unit = await testSealedUnit("akta#v1/news");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     // z.iso.date() compiles calendar-aware: month/day bounds + leap years
     for (
@@ -128,7 +128,7 @@ Deno.test("akta#news: impossible calendar dates rejected by the compiled schema"
 });
 
 Deno.test("akta#news provider error (recorded 401): zero usage", async () => {
-    const unit = await testSealedUnit("akta#news");
+    const unit = await testSealedUnit("akta#v1/news");
     const fixture = await loadFixture(`${fixturesDir}provider-error.json`);
     const result = await runEndpoint({
         unit,
@@ -145,7 +145,7 @@ Deno.test({
     name: "akta#news live (gated on AKTA_API_KEY)",
     ignore: liveSkip("akta"),
     fn: async () => {
-        const unit = await testSealedUnit("akta#news");
+        const unit = await testSealedUnit("akta#v1/news");
         const result = await runEndpoint({
             unit,
             input: { queryParams: { query: "warehouse automation", limit: 2 } },

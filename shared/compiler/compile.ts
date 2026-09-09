@@ -20,6 +20,7 @@ import {
     zEndpointDef,
     zEndpointDoc,
     zEndpointName,
+    zEndpointPath,
     zProviderDef,
     zProviderDoc,
 } from "@shared/core";
@@ -209,7 +210,24 @@ export async function compileBundle(
                 `connectors/${providerName}/endpoints/${endpointName}`;
             const endpointFile = `${where}/endpoint.ts`;
             const def = parseDoc(zEndpointDef, rawDef, endpointFile);
-            const id = `${providerName}#${endpointName}`;
+
+            // ---- PUBLIC identity (design D22): the def's `endpoint` path
+            // ?? request.path (trailing slashes stripped) — folder names
+            // are ORGANIZATIONAL only, never identity. id = provider# +
+            // the path minus its leading slash ("apify#apidojo/tweet-scraper").
+            const endpointPath = parseDoc(
+                zEndpointPath,
+                def.endpoint ?? def.request.path.replace(/\/+$/, ""),
+                `${endpointFile}#endpoint (?? request.path)`,
+            );
+            const id = `${providerName}#${endpointPath.slice(1)}`;
+            if (endpoints[id] !== undefined) {
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
+                    `${where}: duplicate endpoint identity ${id} — two defs ` +
+                        `resolve to the same endpoint path`,
+                );
+            }
 
             // ---- meta: leaf-wise fallback (docsUrl/categories) ------------
             const categories = def.meta.categories ?? provider.meta.categories;
@@ -521,6 +539,7 @@ export async function compileBundle(
             const docWithoutHash = pruneUndefined({
                 specVersion: SC.specVersion,
                 id,
+                endpoint: endpointPath,
                 provider: providerName,
                 minEngineVersion,
                 meta,
