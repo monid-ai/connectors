@@ -303,7 +303,10 @@ export function makeLifecycleUtils(opts: {
                     doc.id,
                     o.queryParams ?? input.queryParams ?? {},
                 ),
-                body: o.body ?? input.body,
+                // PRESENCE-based body override (not ??): body is zJson and
+                // null IS valid JSON — `{body: null}` must override with
+                // null, never fall back to the caller input (PR #2 finding)
+                body: "body" in o && o.body !== undefined ? o.body : input.body,
                 requestMs: o.requestMs,
             });
         },

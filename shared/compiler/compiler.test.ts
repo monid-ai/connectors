@@ -21,6 +21,8 @@ import {
 } from "@shared/core";
 import {
     compileBundle,
+    CompileError,
+    CompileErrorCode,
     lintClosedTerm,
     normalizeFnSource,
 } from "@shared/compiler";
@@ -196,6 +198,30 @@ Deno.test("compile produces doc maps + interned table; ids inferred; closure hol
         compilerVersion: "0.1.0",
         builtWithEngineVersion: "0.1.0",
     });
+});
+
+Deno.test("coded rejections: a malformed def at the compiler boundary is DOC_MALFORMED", async () => {
+    // hand-built sources bypass defineEndpoint's author-time validation —
+    // the COMPILER boundary must still emit a coded CompileError (build
+    // tooling branches on WHY), never parseSchema's raw ValidationError
+    const malformed = {
+        meta: {
+            displayName: "Bad",
+            summary: "Bad.",
+            categories: ["demo-cat"],
+        },
+        request: { method: "POST", path: "/x", baseUrl: "not a url" },
+        input: { schema: {} },
+    } as unknown as ReturnType<typeof makeEndpoint>;
+    const error = await assertRejects(() =>
+        compileBundle(
+            source([{ name: "search", def: malformed }]),
+            OPTS,
+        )
+    );
+    assert(error instanceof CompileError);
+    assertEquals(error.code, CompileErrorCode.DOC_MALFORMED);
+    assert(error.cause !== undefined, "ValidationError preserved as cause");
 });
 
 Deno.test("usage.consolidate is REQUIRED: endpoint ?? provider, neither fails", async () => {

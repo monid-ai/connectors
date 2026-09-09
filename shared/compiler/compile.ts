@@ -14,6 +14,7 @@ import {
     type ProviderDoc,
     pruneUndefined,
     stableStringify,
+    ValidationError,
     zBundle,
     zDefaultCredentials,
     zEndpointDef,
@@ -56,6 +57,31 @@ export class CompileError extends Error {
     ) {
         super(`[${code}] ${message}`, options);
         this.name = "CompileError";
+    }
+}
+
+/** parseSchema at the COMPILER boundary: every compiler rejection must be
+ *  a coded CompileError (build tooling branches on WHY without
+ *  string-matching), so def-shape failures — e.g. a malformed baseUrl —
+ *  rethrow as DOC_MALFORMED with the ValidationError preserved as cause.
+ *  Author-time `defineEndpoint` keeps throwing ValidationError: that IS
+ *  the authoring surface, correctly uncoded (PR #2 finding). */
+function parseDoc<T extends z.ZodType>(
+    schema: T,
+    input: unknown,
+    context: string,
+): z.output<T> {
+    try {
+        return parseSchema(schema, input, context);
+    } catch (error) {
+        if (error instanceof ValidationError) {
+            throw new CompileError(
+                CompileErrorCode.DOC_MALFORMED,
+                error.message,
+                { cause: error },
+            );
+        }
+        throw error;
     }
 }
 
@@ -155,7 +181,7 @@ export async function compileBundle(
 
     // intake validation — zod-first end to end even for hand-built sources
     const intake = connectors.map((connector) =>
-        parseSchema(zProviderDef, connector.provider, "provider def")
+        parseDoc(zProviderDef, connector.provider, "provider def")
     );
     // DETERMINISM: input order (filesystem enumeration) is platform-dependent,
     // and iteration order decides fnTable insertion (first occurrence wins
@@ -174,7 +200,7 @@ export async function compileBundle(
         const sortedEndpoints = [...connector.endpoints]
             .sort((a, b) => a.name.localeCompare(b.name)); // determinism (see above)
         for (const { name: endpointName, def: rawDef } of sortedEndpoints) {
-            parseSchema(
+            parseDoc(
                 zEndpointName,
                 endpointName,
                 `connectors/${providerName}/endpoints/${endpointName} (folder name)`,
@@ -182,7 +208,7 @@ export async function compileBundle(
             const where =
                 `connectors/${providerName}/endpoints/${endpointName}`;
             const endpointFile = `${where}/endpoint.ts`;
-            const def = parseSchema(zEndpointDef, rawDef, endpointFile);
+            const def = parseDoc(zEndpointDef, rawDef, endpointFile);
             const id = `${providerName}#${endpointName}`;
 
             // ---- meta: leaf-wise fallback (docsUrl/categories) ------------
@@ -547,7 +573,7 @@ export async function compileBundle(
             }) as Record<string, Json>;
 
             const hash = await docHash(docWithoutHash);
-            const doc = parseSchema(
+            const doc = parseDoc(
                 zEndpointDoc,
                 { ...docWithoutHash, hash },
                 where,
@@ -579,7 +605,7 @@ export async function compileBundle(
             ),
             meta: provider.meta as unknown as Json,
         }) as Record<string, Json>;
-        providers[providerName] = parseSchema(zProviderDoc, {
+        providers[providerName] = parseDoc(zProviderDoc, {
             ...providerWithoutHash,
             hash: await docHash(providerWithoutHash),
         }, providerFile);
@@ -594,7 +620,7 @@ export async function compileBundle(
     }
 
     // ---- bundle assembly — cross-doc invariants live in zBundle.superRefine
-    const bundle = parseSchema(zBundle, {
+    const bundle = parseDoc(zBundle, {
         catalogVersion: opts.catalogVersion,
         generatedAt: opts.generatedAt,
         minEngineVersion: semverMax(allDocs.map((doc) => doc.minEngineVersion)),

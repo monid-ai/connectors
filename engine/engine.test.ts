@@ -1117,6 +1117,77 @@ Deno.test("lifecycle: stop runs the fn and swallows every failure", async () => 
     );
 });
 
+Deno.test("utils.request: {body: null} overrides PRESENCE-based (never falls back to the input)", async () => {
+    // null is valid JSON — a present body override must egress, even null
+    const seen: Array<{ body?: string }> = [];
+    const engine = new Engine({
+        transport: directTransport({
+            params: () => Promise.resolve({ apiKey: "k" }),
+            fetch: (_url, init) => {
+                seen.push({
+                    body: (init as RequestInit | undefined)?.body as
+                        | string
+                        | undefined,
+                });
+                return Promise.resolve(
+                    new Response(JSON.stringify({ jobId: "j1" }), {
+                        status: 201,
+                    }),
+                );
+            },
+        }),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.start = async ({ utils }) => {
+                await utils.request({ body: null });
+                return { kind: "RUNNING", state: { externalRunId: "j1" } };
+            };
+        }),
+    );
+    await loaded.start({ body: { q: "x" } });
+    // the egressed body is JSON null — NOT the caller's {q: "x"}
+    assertEquals(seen[0]?.body, "null");
+});
+
+Deno.test("lifecycle: a long pollAfterMs cannot oversleep the run budget", async () => {
+    // the fn requests a 1-hour nap; the run budget is 3.5s — the sleep must
+    // be capped at the remaining budget so TIMEOUT fires on time
+    const sleeps: number[] = [];
+    let fakeMs = 0;
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: {} }, // the abort
+        ]),
+        sleep: (ms) => {
+            sleeps.push(ms);
+            return Promise.resolve();
+        },
+        now: () => new Date(fakeMs += 1_000),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.timeouts = {
+                requestMs: 1_000,
+                runMs: 3_500,
+                pollMs: 3_600_000, // the doc asks for hour-long naps
+            };
+        }),
+    );
+    const error = await assertRejects(() => loaded.run({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.TIMEOUT);
+    // every sleep was capped by the remaining budget, never the raw hour
+    assert(sleeps.length > 0);
+    for (const ms of sleeps) {
+        assert(ms <= 3_500, `sleep ${ms}ms exceeded the 3500ms budget`);
+    }
+});
+
 Deno.test("lifecycle: run() timeout stops the vendor job then throws TIMEOUT", async () => {
     const seen: Array<{ method: string; url: string }> = [];
     // deterministic clock: each read advances 1s — runMs 3500 expires after

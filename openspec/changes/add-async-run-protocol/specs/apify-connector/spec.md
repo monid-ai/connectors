@@ -11,8 +11,11 @@ non-2xx as data, throws on a 2xx without a run id, else parks with
 `{externalRunId, data: {datasetId}}`; poll GETs `/v2/actor-runs/{id}` (no
 exitCode → RUNNING with a `{}` patch; SUCCEEDED → fetch
 `/v2/datasets/{id}/items` and stash pricingModel / pricePerUnitUsd /
-usageTotalUsd / the VERBATIM pricingPerEvent.actorChargeEvents rate card
-in `state.data`; failure → synthesized 500 with providerHttpStatus 200
+usageTotalUsd / the pricingPerEvent.actorChargeEvents rates in
+`state.data` — keyed by the VERBATIM event names but PROJECTED to
+`{eventPriceUsd}` per event (the raw card carries marketing text and
+per-plan tier tables; serialized state above the engine cap fails the
+run); failure → synthesized 500 with providerHttpStatus 200
 and the statusMessage); stop POSTs `/abort` best-effort. ONE provider
 `output.fromError` SHALL digest error envelopes (`{message, type?, raw}`
 — raw preserved). ONE provider consolidate SHALL settle: counts = the

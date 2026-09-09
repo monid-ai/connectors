@@ -39,10 +39,17 @@ function quote(text: string): string {
 }
 
 /** Trim actor field docs to a single describe()-sized line (they can carry
- *  whole HTML paragraphs). */
+ *  whole HTML paragraphs). Tag stripping loops to a FIXPOINT — a single
+ *  pass leaves reassembled tags behind (`<scr<b>ipt>` → `<script>`;
+ *  CodeQL: incomplete multi-character sanitization). */
 function describeOf(node: JsonSchemaNode): string {
     const raw = node.description ?? node.title ?? "";
-    const clean = raw.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+    let stripped = raw;
+    for (let prev = ""; prev !== stripped;) {
+        prev = stripped;
+        stripped = stripped.replace(/<[^>]*>?/g, "");
+    }
+    const clean = stripped.replace(/\s+/g, " ").trim();
     if (clean === "") return "";
     const short = clean.length > 300 ? `${clean.slice(0, 297)}...` : clean;
     return `.describe(${quote(short)})`;

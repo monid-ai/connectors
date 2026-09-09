@@ -74,10 +74,11 @@ The engine SHALL bind both PER INVOCATION (this tick's derived input +
 substituted request). `http`: ZERO defaults — `path` resolves against the
 request URL's origin; `headers` ARE the complete outbound set (no
 doc-header merge). `request(overrides?)`: the default relay —
-method/url/headers from the compiled request, `body ?? input.body`,
-`queryParams ?? input.queryParams`, presence-based overrides INCLUDING
-the target (`url`|`path`) — `request` can do anything `http` can, they
-differ only in defaults; `utils.request()` alone sends exactly what the
+method/url/headers from the compiled request, PRESENCE-based overrides
+for body / queryParams AND the target (`url`|`path`) — a PRESENT
+`body: null` overrides with null (never falls back to the caller input;
+null is valid JSON), an ABSENT field inherits — `request` can do anything
+`http` can, they differ only in defaults; `utils.request()` alone sends exactly what the
 declarative pipeline would. Responses are sniff-decoded `{status, body}`;
 vendor non-2xx is RETURNED; transport failures throw EXECUTION_FAILED
 (retriable); malformed call/override shapes throw FN_CONTRACT. ctx.logger
@@ -86,6 +87,10 @@ routes to EngineCtx.logger (silent no-op default).
 #### Scenario: Auth injected on same-origin fn calls
 - **WHEN** a lifecycle fn issues utils.http({method, path}) with extra headers
 - **THEN** the egressed request carries the injected credential AND the fn's headers
+
+#### Scenario: Null body override is presence-based
+- **WHEN** a lifecycle fn calls utils.request({body: null})
+- **THEN** the egressed request carries a null body, not the caller input's body
 
 ### Requirement: Same-origin credential rule (D16)
 Credentials SHALL be injected ONLY when the call's target origin equals
@@ -188,9 +193,15 @@ value only when it differs from httpStatus.
 `stop` SHALL be a no-op without lifecycle.stop; with one it SHALL run the
 fn and swallow EVERY failure. `run()` SHALL sleep via the injectable
 `EngineCtx.sleep`, read time via `EngineCtx.now`, honor per-tick
-pollAfterMs, and on runMs expiry fire best-effort stop then throw TIMEOUT
-(the same budget `state.timing.deadlineAt` records for hosts).
+pollAfterMs CAPPED BY THE REMAINING runMs BUDGET (a fn-requested long nap
+must not delay timeout handling), and on runMs expiry fire best-effort
+stop then throw TIMEOUT (the same budget `state.timing.deadlineAt`
+records for hosts).
 
 #### Scenario: Timeout aborts the vendor job
 - **WHEN** run() exceeds timeouts.runMs while polling
 - **THEN** the vendor abort is attempted and TIMEOUT is thrown
+
+#### Scenario: A long pollAfterMs cannot oversleep the budget
+- **WHEN** a poll tick requests pollAfterMs far beyond the remaining runMs
+- **THEN** the sleep is capped at the remaining budget and TIMEOUT fires on time

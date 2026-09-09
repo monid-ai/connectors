@@ -64,13 +64,16 @@ export default defineProvider({
             pricePerUnitUsd: z.number().optional(),
             usageTotalUsd: z.number().optional(),
             /** The run record's LIVE pricingPerEvent.actorChargeEvents,
-             *  stashed VERBATIM (eventName → {eventPriceUsd, …}) — the
-             *  settle-side rate source for PAY_PER_EVENT actors (constants
-             *  are fallback only; read e.g.
-             *  `$.data.pricingPerEvent.search-page.eventPriceUsd`). */
+             *  keyed by the VERBATIM event names but PROJECTED to
+             *  `{eventPriceUsd}` per event — the settle-side rate source
+             *  for PAY_PER_EVENT actors (constants are fallback only; read
+             *  e.g. `$.data.pricingPerEvent.search-page.eventPriceUsd`).
+             *  Projection, not the raw card: charge events carry marketing
+             *  text and per-plan tier tables, and serialized state above
+             *  schema.state_max_bytes fails the run (PR #2 finding). */
             pricingPerEvent: z.record(
                 z.string(),
-                z.looseObject({ eventPriceUsd: z.number().optional() }),
+                z.strictObject({ eventPriceUsd: z.number() }),
             ).optional(),
             /** linkedin-profile-search reconstruction (page-basis billing). */
             searchPages: z.number().int().nonnegative().optional(),
@@ -171,9 +174,11 @@ export default defineProvider({
                     res.body,
                     "$.data.usageTotalUsd",
                 );
-                // LIVE per-event rates — the run record's actorChargeEvents
-                // VERBATIM: the settle-side rate source for PAY_PER_EVENT
-                // actors (constants are fallback only)
+                // LIVE per-event rates — the run record's actorChargeEvents,
+                // keyed by the VERBATIM event names but PROJECTED to the one
+                // number reconciliation joins on (eventPriceUsd): the raw
+                // card carries marketing text + per-plan tier tables, and
+                // serialized state above the engine cap fails the run
                 const events = utils.json.optionalGet(
                     res.body,
                     "$.data.pricingInfo.pricingPerEvent.actorChargeEvents",
@@ -198,7 +203,24 @@ export default defineProvider({
                             ...(events !== undefined && events !== null &&
                                     typeof events === "object" &&
                                     !Array.isArray(events)
-                                ? { pricingPerEvent: events }
+                                ? {
+                                    pricingPerEvent: Object.fromEntries(
+                                        Object.entries(events).flatMap(
+                                            ([name, event]) => {
+                                                const usd = utils.json
+                                                    .optionalNum(
+                                                        event,
+                                                        "$.eventPriceUsd",
+                                                    );
+                                                return usd !== undefined
+                                                    ? [[name, {
+                                                        eventPriceUsd: usd,
+                                                    }]]
+                                                    : [];
+                                            },
+                                        ),
+                                    ),
+                                }
                                 : {}),
                         },
                     },

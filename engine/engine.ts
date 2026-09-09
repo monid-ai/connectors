@@ -255,7 +255,14 @@ export class LoadedEndpoint implements RunnableEndpoint {
                     `${this.doc.id} exceeded runMs ${this.doc.timeouts.runMs}`,
                 );
             }
-            await doSleep(tick.pollAfterMs, opts?.signal);
+            // cap the nap by the remaining budget: a fn requesting a long
+            // pollAfterMs must not delay TIMEOUT + best-effort stop past
+            // runMs (the loop re-checks the deadline before the next poll)
+            const remaining = deadline - this.now().getTime();
+            await doSleep(
+                Math.min(tick.pollAfterMs, Math.max(remaining, 0)),
+                opts?.signal,
+            );
             tick = await this.poll(runInput, tick.state);
         }
         return tick;

@@ -113,10 +113,21 @@ export function scrubJson(value: Json): Json {
     return value;
 }
 
-/** trim + scrub over a recorded chain (response bodies only). */
+/** Scrub over a recorded chain — REQUEST bodies included: request payloads
+ *  are exactly where caller-supplied PII lives, and replay matches calls by
+ *  method + URL only, so scrubbing the body is replay-safe (PR #2 finding).
+ *  The URL is deliberately KEPT verbatim — the replay matcher and the
+ *  `{{request.url}}` fixture binding depend on it; recorded inputs come
+ *  from the curated test-inputs table, which follows the placeholder
+ *  identity convention (consented or public-figure names only). */
 export function scrubCalls(calls: RecordedCall[]): RecordedCall[] {
     return calls.map((call) => ({
-        req: call.req,
+        req: {
+            ...call.req,
+            ...(call.req.body !== undefined
+                ? { body: scrubJson(call.req.body) }
+                : {}),
+        },
         res: { status: call.res.status, body: scrubJson(call.res.body) },
     }));
 }
