@@ -27,20 +27,26 @@ import {
  * The envelope data shape is shared with usage.consolidate.
  */
 
-/** ctx.data for post-response hooks — the validated input + decoded output.
- *  `state` is present only for lifecycle (async) runs: the final threaded
- *  state, so settle fns can read billing signals stashed during polling
- *  (e.g. Apify's pricing fields ride the poll response, not the dataset).
- *  `model` is the DOC'S OWN usage.model (REQUIRED on every doc): a GENERIC
- *  provider consolidate keys its `usage.counts` by looking the component
- *  id up here — leaf → the unit, composite → the sole PER_UNIT component
- *  (single-valued by the loader's ≥2-metered rule) — with zero per-doc
- *  code (design D19). */
+/** ctx.data for post-response hooks — the validated input + decoded
+ *  output, plus two PROVENANCE-NAMED groups (the ctx path says where a
+ *  fact comes from):
+ *   - `lifecycle.state` — present only for lifecycle (async) runs that
+ *     produced state: the final threaded state, so settle fns can read
+ *     billing signals stashed during polling (e.g. Apify's pricing fields
+ *     ride the poll response, not the dataset).
+ *   - `usage.model` — the DOC'S OWN usage.model (REQUIRED on every doc):
+ *     a GENERIC provider consolidate keys its `usage.counts` by looking
+ *     the component id up here — leaf → the unit, composite → the sole
+ *     PER_UNIT component (single-valued by the loader's ≥2-metered rule)
+ *     — with zero per-doc code (design D19). */
 export const zEnvelopeData = z.strictObject({
     input: zRunInput,
     output: zOutputByConstruction,
-    state: zJson.optional(),
-    model: zUsageModel,
+    /** Async-run facts — absent for declarative runs and for lifecycle
+     *  runs that never set state. */
+    lifecycle: z.strictObject({ state: zJson }).optional(),
+    /** The doc's own usage section facts. */
+    usage: z.strictObject({ model: zUsageModel }),
 });
 export type EnvelopeData = z.infer<typeof zEnvelopeData>;
 

@@ -144,13 +144,14 @@ export const zLifecycleStartData = z.strictObject({
 export type LifecycleStartData = z.infer<typeof zLifecycleStartData>;
 
 /** ctx.data for lifecycle.poll / lifecycle.stop — plus the threaded state
- *  (the FULL structured RunState: the previous tick's fn-owned fields +
- *  the engine-owned timing, which fns may READ — adaptive cadence off
+ *  at its provenance-named path `data.lifecycle.state` (the FULL
+ *  structured RunState: the previous tick's fn-owned fields + the
+ *  engine-owned timing, which fns may READ — adaptive cadence off
  *  attempts/deadlineAt — but not write; they return zFnState). */
 export const zLifecycleTickData = z.strictObject({
     input: zRunInput,
     request: zLifecycleRequestInfo,
-    state: zRunState,
+    lifecycle: z.strictObject({ state: zRunState }),
 });
 export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
 

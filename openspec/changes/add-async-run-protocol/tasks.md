@@ -311,3 +311,26 @@
 - [x] 14.g Docs: D19a/D20/D21/D22 design notes; schema/compiler/engine/
       apify/testing spec deltas; AGENT.md; 132 tests green; live pricing
       survey green (46/46)
+
+## 15. D23: typed estimates everywhere, provenance-named ctx paths
+
+- [x] 15.a Estimate presets deleted (field args were unchecked strings;
+      generic presets can't recover the check — eager factory calls);
+      30 call sites converted to typed inline fns; dead transform.*/
+      usage.perResult removed (≥2-sites rule); auth.* + usage.perCall
+      kept (provider seams)
+- [x] 15.b Fleet sweep: 16 pre-existing inline estimates off utils.json
+      body probing onto direct typed access (dead `body ?? null` guards
+      deleted; schema defaults read directly); premium-x-follower made
+      mode-aware (fidelity fix)
+- [x] 15.c Ctx renames: `data.model` → `data.usage.model`,
+      `data.state` → `data.lifecycle.state` (schemas, engine assembly,
+      provider + endpoint fns, tests, specs)
+- [x] 15.d Typed lifecycle state: defineEndpoint generic over
+      `lifecycle.state`; the fn-owned `state.data` bag typed at read
+      (tick/envelope ctxs) AND write (outcome state) sites; raw vendor
+      output stays Json (utils.json is its idiom); ts-expect-error
+      proofs + typed-poll positive control
+- [x] 15.e Docs: design D23; schema/engine/apify spec deltas; AGENT.md
+      typed-authoring section; 133 tests green; estimate spot checks
+      byte-identical; live pricing survey green

@@ -17,7 +17,12 @@
 import type { z } from "zod";
 import type { Json } from "../json/type.ts";
 import type { FnUtils, HookLogger } from "../hooks/ctx.ts";
+import type {
+    LifecycleRequestInfo,
+    LifecycleUtils,
+} from "../hooks/lifecycle.ts";
 import type { RunInput } from "../run/input.ts";
+import type { FnState, RunState } from "../run/state.ts";
 import type { UsageModel } from "../usage/model/mod.ts";
 import type { MonetaryValue } from "../usage/monetary.ts";
 
@@ -50,13 +55,25 @@ export type TypedUsage<K extends string> = {
 /** RunInput with the body typed by the doc's OWN schema. */
 export type TypedRunInput<B> = Omit<RunInput, "body"> & { body: B };
 
-/** The consolidate/fromResponse envelope ctx, body-typed. */
-export interface TypedEnvelopeCtx<B> {
+/**
+ * RunState / FnState with the fn-owned `data` bag typed by the doc's OWN
+ * `lifecycle.state` schema (design D23 addendum) — SOUND like the body:
+ * the engine validates `state.data` against `doc.lifecycle.stateSchema`
+ * on every boundary before a fn sees it. No declared schema ⇒ `Json`
+ * (exactly today's shape — no regression).
+ */
+export type TypedRunState<SD> = Omit<RunState, "data"> & { data?: SD };
+export type TypedFnState<SD> = Omit<FnState, "data"> & { data?: SD };
+
+/** The consolidate/fromResponse envelope ctx, body- and state-typed. Ctx
+ *  paths name their PROVENANCE: `data.lifecycle.state` (the async run's
+ *  final threaded state), `data.usage.model` (the doc's own model). */
+export interface TypedEnvelopeCtx<B, SD = Json> {
     data: {
         input: TypedRunInput<B>;
         output: Json;
-        state?: Json;
-        model: UsageModel;
+        lifecycle?: { state: TypedRunState<SD> };
+        usage: { model: UsageModel };
     };
     utils: FnUtils;
     logger: HookLogger;
@@ -67,11 +84,53 @@ export interface TypedEnvelopeCtx<B> {
 export interface TypedEstimateCtx<B> {
     data: {
         input: TypedRunInput<B>;
-        model: UsageModel;
+        usage: { model: UsageModel };
     };
     utils: FnUtils;
     logger: HookLogger;
 }
+
+/**
+ * Lifecycle fn ctxs + outcomes, body- and state-typed (design D23
+ * addendum). The tick ctx reads the WHOLE RunState at
+ * `data.lifecycle.state` (fn-owned fields + engine-owned timing); the
+ * outcome's `state` is the fn-owned WHOLE next state (design D21) with
+ * its `data` bag checked against the doc's declared `lifecycle.state`
+ * schema AT THE WRITE SITE — a poll fn stashing a mis-shaped billing
+ * signal fails `deno task check`, not just the runtime gate.
+ */
+export interface TypedLifecycleStartCtx<B> {
+    data: {
+        input: TypedRunInput<B>;
+        request: LifecycleRequestInfo;
+    };
+    utils: LifecycleUtils;
+    logger: HookLogger;
+}
+
+export interface TypedLifecycleTickCtx<B, SD = Json> {
+    data: {
+        input: TypedRunInput<B>;
+        request: LifecycleRequestInfo;
+        lifecycle: { state: TypedRunState<SD> };
+    };
+    utils: LifecycleUtils;
+    logger: HookLogger;
+}
+
+export type TypedLifecycleOutcome<SD = Json> =
+    | {
+        kind: "RUNNING";
+        state?: TypedFnState<SD>;
+        pollAfterMs?: number;
+    }
+    | {
+        kind: "COMPLETED";
+        httpStatus: number;
+        providerHttpStatus?: number;
+        output: Json;
+        state?: TypedFnState<SD>;
+    };
 
 /**
  * The PORTABLE fn shape the remaining consolidate preset returns:
@@ -84,8 +143,8 @@ export type PortableConsolidateFn = (ctx: {
     data: {
         input: Omit<RunInput, "body"> & { body?: unknown };
         output: Json;
-        state?: Json;
-        model: UsageModel;
+        lifecycle?: { state: unknown };
+        usage: { model: UsageModel };
     };
     utils: FnUtils;
     logger: HookLogger;

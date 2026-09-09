@@ -117,7 +117,7 @@ export default defineProvider({
         },
         poll: async ({ data, utils, logger }) => {
             const runId = String(
-                utils.json.get(data.state, "$.externalRunId"),
+                utils.json.get(data.lifecycle.state, "$.externalRunId"),
             );
             const res = await utils.http({
                 method: "GET",
@@ -145,7 +145,11 @@ export default defineProvider({
                 const datasetId = utils.json.optionalGet(
                     res.body,
                     "$.data.defaultDatasetId",
-                ) ?? utils.json.optionalGet(data.state, "$.data.datasetId");
+                ) ??
+                    utils.json.optionalGet(
+                        data.lifecycle.state,
+                        "$.data.datasetId",
+                    );
                 if (typeof datasetId !== "string" || datasetId === "") {
                     throw new Error("Apify run has no default dataset id");
                 }
@@ -249,7 +253,7 @@ export default defineProvider({
         },
         stop: async ({ data, utils, logger }) => {
             const runId = String(
-                utils.json.get(data.state, "$.externalRunId"),
+                utils.json.get(data.lifecycle.state, "$.externalRunId"),
             );
             const res = await utils.http({
                 method: "POST",
@@ -297,7 +301,7 @@ export default defineProvider({
         // facts, pinned beside the input schema that defines them.
         consolidate: ({ data, utils }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
-            const state = data.state ?? null;
+            const state = data.lifecycle?.state ?? null;
             // counts KEY from the doc's OWN model (design D19): leaf → the
             // unit; composite → the sole metered component id — which for
             // apify is the actor's charge-event name VERBATIM, so counts,
@@ -305,12 +309,12 @@ export default defineProvider({
             // the compiler's ≥2-metered rule (multi-metered actors declare
             // their own fns).
             let key;
-            switch (data.model.kind) {
+            switch (data.usage.model.kind) {
                 case "PER_UNIT":
-                    key = data.model.unit;
+                    key = data.usage.model.unit;
                     break;
                 case "COMPOSITE":
-                    key = Object.entries(data.model.components)
+                    key = Object.entries(data.usage.model.components)
                         .find(([, component]) => component.kind === "PER_UNIT")
                         ?.[0];
                     break;

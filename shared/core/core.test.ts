@@ -298,4 +298,138 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
                 }),
             },
         }));
+    // Renamed ctx paths (D23 addendum): facts live under their provenance —
+    // the OLD flat paths are compile errors everywhere.
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                estimate: ({ data }) => ({
+                    counts: {
+                        // @ts-expect-error — data.model moved to data.usage.model
+                        "RESULT": data.model.kind === "PER_UNIT" ? 1 : 2,
+                    },
+                }),
+            },
+        }));
+});
+
+Deno.test("typed lifecycle.state: the declared schema types reads AND writes", () => {
+    const meta = {
+        displayName: "Typed state",
+        summary: "State types.",
+        categories: ["demo-cat"],
+    };
+    const request = { method: "POST", path: "/x" } as const;
+    const body = z.object({ q: z.string() });
+    const stateData = z.object({
+        datasetId: z.string(),
+        usd: z.number().optional(),
+    });
+
+    // POSITIVE control — a poll that reads the typed bag and writes a
+    // conforming next state compiles (state.data = z.output of the doc's
+    // OWN lifecycle.state schema; sound: engine-validated every tick):
+    const good = defineEndpoint({
+        meta,
+        request,
+        input: { schema: { body } },
+        usage: {
+            model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+            consolidate: ({ data }) => ({
+                usage: {
+                    counts: {
+                        "RESULT": data.lifecycle?.state.data?.usd !== undefined
+                            ? 1
+                            : 0,
+                    },
+                },
+            }),
+        },
+        lifecycle: {
+            state: stateData,
+            start: async ({ utils }) => {
+                const r = await utils.request();
+                return {
+                    kind: "RUNNING",
+                    state: {
+                        externalRunId: "run-1",
+                        data: { datasetId: String(r.status) },
+                    },
+                };
+            },
+            poll: async ({ data, utils }) => {
+                // typed READ: the threaded bag has the declared shape
+                const id = data.lifecycle.state.data?.datasetId ?? "none";
+                const r = await utils.http({
+                    method: "GET",
+                    path: `/jobs/${id}`,
+                });
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: r.status,
+                    output: r.body,
+                    // typed WRITE: a conforming whole-state
+                    state: { data: { datasetId: id, usd: 0.1 } },
+                };
+            },
+        },
+    });
+    void good;
+
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                consolidate: () => ({ usage: { counts: {} } }),
+            },
+            lifecycle: {
+                state: stateData,
+                // @ts-expect-error — mis-shaped state bag (datasetID,
+                // typo-cased): the WRITE site fails check, not just the
+                // runtime tick gate
+                start: async ({ utils }) => {
+                    await utils.request();
+                    return {
+                        kind: "RUNNING",
+                        state: { data: { datasetID: "typo-cased" } },
+                    };
+                },
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                consolidate: ({ data }) => ({
+                    usage: {
+                        counts: {
+                            // @ts-expect-error — no such field on the
+                            // declared state bag (typed READ at settle)
+                            "RESULT": data.lifecycle?.state.data?.nope ?? 0,
+                        },
+                    },
+                }),
+            },
+            lifecycle: {
+                state: stateData,
+                start: async ({ utils }) => {
+                    const r = await utils.request();
+                    return {
+                        kind: "COMPLETED",
+                        httpStatus: r.status,
+                        output: r.body,
+                    };
+                },
+            },
+        }));
 });

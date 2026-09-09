@@ -19,7 +19,7 @@ run); failure → synthesized 500 with providerHttpStatus 200
 and the statusMessage); stop POSTs `/abort` best-effort. ONE provider
 `output.fromError` SHALL digest error envelopes (`{message, type?, raw}`
 — raw preserved). ONE provider consolidate SHALL settle: counts = the
-dataset item count keyed via the doc's own model on `data.model` (leaf →
+dataset item count keyed via the doc's own model on `data.usage.model` (leaf →
 the unit; composite → the sole metered component id, i.e. the actor's
 charge-event name — design D19); cost = PRICE_PER_DATASET_ITEM (perUnit ×
 items) or PAY_PER_EVENT (usageTotalUsd), else absent; evidence = the
@@ -64,13 +64,13 @@ actors with a verified actor-start charge event; 2 PER_CALL actors
 (`request`-event: tiktok-api, tiktok-comments-scraper-api); PER_UNIT·PAGE
 on linkedin-profile-search. instagram-hashtag/post are SURVEY-CORRECTED
 from v1's per-call to metered. Models reference `UsageModelKind.*` /
-`Unit.*` consts, never raw strings. `usage.estimate` names the endpoint's
-OWN input-schema fields via `presets.estimate.*` (v1's allow-list probing
-is NOT ported — inputs are pinned). Presets are SHARED terms with
-SINGLE-field args (D19 addendum: a preset earns its existence by ≥2 call
-sites); every oddly-shaped counting rule is an inline fn on its doc
-(multi-knob or multi-multiplier docs, comma-separated terms, page×size
-math, mode-aware caps). Estimate-driving knobs whose ACTOR publishes a
+`Unit.*` consts, never raw strings. `usage.estimate` is a TYPED INLINE
+fn on every doc (design D23 — estimate presets deleted): it reads the
+endpoint's OWN input-schema fields by direct typed property access
+(v1's allow-list probing is NOT ported, and `utils.json` never touches
+`data.input.body`), and its counts key is the doc's literal metered key
+— field typos and foreign keys fail `deno task check`. Estimate-driving
+knobs whose ACTOR publishes a
 server default pin it as a schema `.default(…)` — materialized into the
 validated body before any hook, so the estimate reads the same effective
 value the vendor applies (tiktok-video-scraper resultsPerPage 1 /

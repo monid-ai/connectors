@@ -90,6 +90,17 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   estimate (FN_CONTRACT). `deno task engine:estimate` prints an endpoint's
   pre-run estimate; `deno task apify:pricing` guards model shape + exact
   component ids against live published pricing (D18/D19).
+- **Typed authoring (D19a/D23)**: `defineEndpoint` is generic over the model,
+  the input body schema, and the lifecycle state schema — counts keys narrow to
+  the model's LITERAL metered keys, `data.input.body` is `z.output` of the doc's
+  OWN schema, and the fn-owned `state.data` bag is typed at read AND write sites
+  when `lifecycle.state` is declared. The rule: TYPED where a doc-declared,
+  engine-validated schema exists (body, lifecycle.state); Json where raw (vendor
+  output, error envelopes) — worked with `utils.json`. There are NO estimate
+  presets — a typed inline fn on the doc IS the typed preset (preset field args
+  were unchecked strings); presets survive only at provider seams
+  (`presets.auth.*`, `presets.usage.perCall`). Ctx facts live at
+  provenance-named paths: `data.usage.model`, `data.lifecycle.state`.
 - **Billing before presentation**: `usage.consolidate` is REQUIRED and runs on
   the RAW response envelope BEFORE `fromResponse` — presentation changes can
   never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;

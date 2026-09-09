@@ -98,7 +98,7 @@ state). Sync docs are unaffected (field absent).
 
 #### Scenario: Consolidate reads poll-stashed signals
 - **WHEN** a lifecycle run completes with state.data `{usageTotalUsd: 0.01}`
-- **THEN** the consolidate fn reads it at `$.data.usageTotalUsd`
+- **THEN** the consolidate fn reads it off `data.lifecycle.state` at `$.data.usageTotalUsd` (or via the typed bag when the doc declares `lifecycle.state`)
 
 ### Requirement: Unit vocabulary — countables only, UPPERCASE, no CALL
 `Unit` SHALL hold only COUNTABLE quantities (RESULT, TOKEN, CHARACTER,
@@ -161,9 +161,9 @@ is chargeable); `doc.usage` carries the resolved `model` REQUIRED inline
 - **WHEN** a model declares COMPOSITE with two PER_CALL components (or two PER_UNIT components of the same unit)
 - **THEN** the schema rejects it
 
-#### Scenario: Estimate preset applied
-- **WHEN** an endpoint declares presets.estimate.limitIsExact([...fields], 3)
-- **THEN** the compiled doc references one interned factory entry with the fields as args
+#### Scenario: Typed inline estimate compiled
+- **WHEN** an endpoint declares an inline estimate reading `data.input.body.maxItems ?? 3`
+- **THEN** the compiled doc references one interned fn entry (kind "fn"), and a typo'd field name fails `deno task check` at the doc site
 
 ### Requirement: Coded JSON path errors
 `utils.json` lookups SHALL throw `JsonPathError` with `code`
@@ -201,21 +201,59 @@ tinyfish pins explicitly (its `request.path` is "/").
 - **WHEN** an apify def pins endpoint "/apidojo/tweet-scraper"
 - **THEN** the doc id is "apify#apidojo/tweet-scraper" (the actor's own slug, v1 parity)
 
-### Requirement: Typed authoring — model keys and input bodies (D19a/D22)
-`defineEndpoint` SHALL be generic over the declared model and the input
-body schema (types only; zod stays the runtime truth): the doc's own
-consolidate/estimate return counts keyed by the model's LITERAL metered
-keys (a typo'd key, a flat-component key, or a counting preset on a flat
-doc fails the typecheck — the flat doc's estimate slot is `never`), and
-`data.input.body` is typed by the doc's OWN input schema (sound: the
-engine validates the same schema before any hook). The runtime twin
-`countsMismatch` SHALL live beside the usage schema as ONE exhaustive
-switch (`satisfies never` default) shared by the engine and tests.
+### Requirement: Typed authoring — model keys, input bodies, lifecycle state (D19a/D22/D23)
+`defineEndpoint` SHALL be generic over the declared model, the input body
+schema, AND the lifecycle state schema (types only; zod stays the runtime
+truth): the doc's own consolidate/estimate return counts keyed by the
+model's LITERAL metered keys (a typo'd key, a flat-component key, or a
+counting fn on a flat doc fails the typecheck — the flat doc's estimate
+slot is `never`); `data.input.body` is typed by the doc's OWN input
+schema; and the fn-owned `state.data` bag is typed by the doc's OWN
+`lifecycle.state` schema at BOTH the read sites (`data.lifecycle.state`
+in tick/envelope ctxs) and the write sites (lifecycle outcome `state`) —
+sound in every case because the engine validates the same schema on the
+same boundary before a fn sees the value. Raw vendor output SHALL stay
+`Json` (no doc-declared schema describes the raw envelope — billing
+anchors to it BEFORE fromResponse; `utils.json` is its idiom). The
+runtime twin `countsMismatch` SHALL live beside the usage schema as ONE
+exhaustive switch (`satisfies never` default) shared by the engine and
+tests.
 
 #### Scenario: Typo'd counts key fails the typecheck
 - **WHEN** a composite doc's estimate returns counts keyed "commnet"
 - **THEN** `deno task check` fails at the doc site (proven by ts-expect-error tests)
 
-#### Scenario: Counting preset on a flat doc fails the typecheck
-- **WHEN** a PER_CALL doc declares estimate: presets.estimate.limitIsExact(…)
+#### Scenario: Counting fn on a flat doc fails the typecheck
+- **WHEN** a PER_CALL doc declares any counting estimate fn
 - **THEN** `deno task check` fails — nothing is assignable to the `never` slot
+
+#### Scenario: Mis-shaped state write fails the typecheck
+- **WHEN** a doc declares `lifecycle.state: z.object({datasetId: z.string()})` and its poll returns `state: {data: {datasetID: "x"}}`
+- **THEN** `deno task check` fails at the write site (not just the runtime tick gate)
+
+### Requirement: No estimate presets — the typed inline fn IS the typed preset (D23)
+`presets.estimate.*` SHALL NOT exist: preset field args were unchecked
+strings and the portable ctx erased the body typing, and generic presets
+cannot recover the field check (the factory call is eager — the doc's
+types aren't in scope when the field arg binds). Every estimate SHALL be
+a typed inline fn on its doc. Presets survive ONLY at provider-seam
+slots where no doc-local typing is lost: `presets.auth.*` (credential
+injection) and `presets.usage.perCall` (the canonical flat settle,
+`{counts: {}}` by construction). Estimate fns SHALL NOT probe
+`data.input.body` via `utils.json` — direct typed access only.
+
+#### Scenario: Fleet grep is clean
+- **WHEN** endpoint estimate fns are grepped for utils.json body probing
+- **THEN** there are no hits — utils.json appears only where raw vendor output or own RunState is the subject
+
+### Requirement: Ctx facts live at provenance-named paths (D23 addendum)
+Hook ctx data SHALL group derived facts under the def section they come
+from: the doc's model at `data.usage.model` (estimate + envelope ctxs),
+the threaded run state at `data.lifecycle.state` (tick ctxs: the FULL
+RunState, required; envelope ctxs: optional — present only for async
+runs that produced state). The old flat paths (`data.model`,
+`data.state`) SHALL NOT exist.
+
+#### Scenario: Envelope carries the state under lifecycle
+- **WHEN** an async run settles with final state
+- **THEN** consolidate reads it at `data.lifecycle.state` (absent for declarative runs)

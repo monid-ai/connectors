@@ -119,8 +119,9 @@ resolve the credential). Absolute targets SHALL be https-only
 run the linked `usage.estimate` fn — PURE, no IO, no state; absent
 estimate ⇒ `{counts: {}}` (nothing countable to predict — the PER_CALL
 posture: the flat charge is fully described by the model + success). The
-doc's own `usage.model` SHALL ride into the estimate ctx (`data.model`)
-so generic presets derive their counts key, and the returned counts are
+doc's own `usage.model` SHALL ride into the estimate ctx
+(`data.usage.model` — provenance-named, design D23) so provider-seam fns
+can derive a counts key generically, and the returned counts are
 validated against the model exactly like settled ones (see the counts
 discipline requirement). A standalone command
 (`deno task engine:estimate`) SHALL print the model + estimated counts,
@@ -151,7 +152,9 @@ COMPOSITE doc's counts keys must each name a PER_UNIT component in
 `model.components` (flat components never appear); a leaf PER_UNIT doc's
 single key must equal the model's unit; PER_CALL / model-less docs may
 count nothing (`{}` only). `{counts: {}}` passes everywhere. The doc's
-model SHALL ride into the consolidate envelope (`data.model`) so a
+model SHALL ride into the consolidate envelope (`data.usage.model` —
+provenance-named, design D23; the final async state rides beside it at
+`data.lifecycle.state`) so a
 GENERIC provider consolidate keys its count with zero per-doc code (leaf
 → the unit; composite → the sole metered component id — single-valued by
 the compiler's ≥2-metered rule).

@@ -20,13 +20,16 @@ import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
  * counts keys are the model's literal metered keys, so field typos and
  * foreign keys fail `deno task check`.
  *
- * `model` mirrors the envelope ctx: the doc's own usage.model, so generic
- * presets derive their counts KEY (leaf → unit, composite → the sole
- * metered component id) without per-doc arguments.
+ * `usage.model` mirrors the envelope ctx: the doc's own usage.model,
+ * GROUPED under the section it comes from (`data.usage.model` — the ctx
+ * path says the provenance), so a generic provider-seam fn can derive its
+ * counts KEY (leaf → unit, composite → the sole metered component id)
+ * without per-doc arguments.
  */
 export const zEstimateData = z.strictObject({
     input: zRunInput,
-    model: zUsageModel,
+    /** The doc's own usage section facts — `data.usage.model`. */
+    usage: z.strictObject({ model: zUsageModel }),
 });
 export type EstimateData = z.infer<typeof zEstimateData>;
 

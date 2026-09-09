@@ -137,7 +137,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
         if (this.fns.usageEstimate) {
             const usage = this.fns.usageEstimate({
                 input,
-                model: this.doc.usage.model,
+                usage: { model: this.doc.usage.model },
             });
             this.validateUsage(usage);
             return usage;
@@ -211,7 +211,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
         const request = this.requestInfo(input);
         const t0 = this.now();
         const outcome = await this.fns.lifecyclePoll(
-            { input, request, state: prevState },
+            { input, request, lifecycle: { state: prevState } },
             this.utilsFor(input, request),
         );
         return this.fromOutcome(outcome, input, prevState, t0);
@@ -226,7 +226,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
             const input = this.deriveInput(runInput);
             const request = this.requestInfo(input);
             await this.fns.lifecycleStop(
-                { input, request, state: prevState },
+                { input, request, lifecycle: { state: prevState } },
                 this.utilsFor(input, request),
             );
         } catch (error) {
@@ -458,18 +458,19 @@ export class LoadedEndpoint implements RunnableEndpoint {
             output = this.fns.fromError({
                 input,
                 output: raw,
-                ...(state !== undefined ? { state } : {}),
-                model: doc.usage.model,
+                ...(state !== undefined ? { lifecycle: { state } } : {}),
+                usage: { model: doc.usage.model },
             });
         }
         if (!isProviderError) {
             const envelope: EnvelopeData = {
                 input,
                 output: raw,
-                ...(state !== undefined ? { state } : {}),
-                // the doc's OWN model rides along so a GENERIC provider
-                // consolidate can key its counts (design D19)
-                model: doc.usage.model,
+                ...(state !== undefined ? { lifecycle: { state } } : {}),
+                // the doc's OWN model rides along (at its provenance path
+                // data.usage.model) so a GENERIC provider consolidate can
+                // key its counts (design D19)
+                usage: { model: doc.usage.model },
             };
             const settled = this.fns.usageConsolidate(envelope);
             this.validateUsage(settled.usage);
@@ -479,8 +480,8 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 output = this.fns.fromResponse({
                     input,
                     output,
-                    ...(state !== undefined ? { state } : {}),
-                    model: doc.usage.model,
+                    ...(state !== undefined ? { lifecycle: { state } } : {}),
+                    usage: { model: doc.usage.model },
                 });
             }
             if (doc.output.schema) {

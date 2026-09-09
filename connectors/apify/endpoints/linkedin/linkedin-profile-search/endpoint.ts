@@ -68,7 +68,7 @@ export default defineEndpoint({
         // page reconstruction stamped onto the output + state.data.
         poll: async ({ data, utils, logger }) => {
             const runId = String(
-                utils.json.get(data.state, "$.externalRunId"),
+                utils.json.get(data.lifecycle.state, "$.externalRunId"),
             );
             const res = await utils.http({
                 method: "GET",
@@ -94,7 +94,11 @@ export default defineEndpoint({
                 const datasetId = utils.json.optionalGet(
                     res.body,
                     "$.data.defaultDatasetId",
-                ) ?? utils.json.optionalGet(data.state, "$.data.datasetId");
+                ) ??
+                    utils.json.optionalGet(
+                        data.lifecycle.state,
+                        "$.data.datasetId",
+                    );
                 if (typeof datasetId !== "string" || datasetId === "") {
                     throw new Error("Apify run has no default dataset id");
                 }
@@ -124,12 +128,10 @@ export default defineEndpoint({
                     res.body,
                     chargeEvents + ".search-page.eventPriceUsd",
                 ) ?? 0.05;
-                // loose mode read (v1 `readScraperMode`): an unreadable mode
-                // degrades the math to the $0 per-profile rate, never fails
-                const mode = utils.json.optionalGet(
-                    data.input.body ?? null,
-                    "$.profileScraperMode",
-                );
+                // typed mode read (D23): the body is z.output of the doc's
+                // own schema — profileScraperMode is a required enum, so
+                // the v1 "unreadable mode" degradation path is dead
+                const mode = data.input.body.profileScraperMode;
                 const perProfile = mode === "Full"
                     ? (utils.json.optionalNum(
                         res.body,
@@ -259,7 +261,7 @@ export default defineEndpoint({
         // profiles land under the MODE-selected component key, so the
         // broker prices them at exactly the vendor's per-event rate.
         consolidate: ({ data, utils }) => {
-            const state = data.state ?? null;
+            const state = data.lifecycle?.state ?? null;
             const pages = utils.json.optionalNum(
                 data.output,
                 "$.searchPages",

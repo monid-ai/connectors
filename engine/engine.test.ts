@@ -652,7 +652,7 @@ function asyncConnector(): ConnectorSource[] {
                 },
                 poll: async ({ data, utils }) => {
                     const jobId = String(
-                        utils.json.get(data.state, "$.externalRunId"),
+                        utils.json.get(data.lifecycle.state, "$.externalRunId"),
                     );
                     const res = await utils.http({
                         method: "GET",
@@ -703,7 +703,7 @@ function asyncConnector(): ConnectorSource[] {
                 },
                 stop: async ({ data, utils }) => {
                     const jobId = String(
-                        utils.json.get(data.state, "$.externalRunId"),
+                        utils.json.get(data.lifecycle.state, "$.externalRunId"),
                     );
                     await utils.http({
                         method: "POST",
@@ -715,7 +715,7 @@ function asyncConnector(): ConnectorSource[] {
                 model: { kind: "PER_UNIT", unit: "RESULT" },
                 consolidate: ({ data, utils }) => {
                     const usd = utils.json.optionalNum(
-                        data.state ?? null,
+                        data.lifecycle?.state ?? null,
                         "$.data.usd",
                     );
                     return {
@@ -877,7 +877,7 @@ Deno.test("lifecycle: whole-state semantics — present replaces WHOLESALE, abse
                 { data, utils },
             ) => {
                 const jobId = String(
-                    utils.json.get(data.state, "$.externalRunId"),
+                    utils.json.get(data.lifecycle.state, "$.externalRunId"),
                 );
                 const res = await utils.http({
                     method: "GET",
@@ -1005,7 +1005,7 @@ Deno.test("lifecycle: fn-synthesized status carries providerHttpStatus (ours/the
                 { data, utils },
             ) => {
                 const jobId = String(
-                    utils.json.get(data.state, "$.externalRunId"),
+                    utils.json.get(data.lifecycle.state, "$.externalRunId"),
                 );
                 await utils.http({ method: "GET", path: "/jobs/" + jobId });
                 return {
@@ -1518,18 +1518,18 @@ Deno.test("FN_CONTRACT: estimate counts are validated like settled ones", async 
     );
 });
 
-Deno.test("generic keying: provider-seam fns derive the counts key from data.model", async () => {
+Deno.test("generic keying: provider-seam fns derive the counts key from data.usage.model", async () => {
     // leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id.
     // The generic idiom survives ONLY at the provider seam (apify's shared
     // consolidate) — doc-local fns hardcode their literal key (design D23).
     const keyedConsolidate = (ctx: {
-        data: { output: unknown; model: unknown };
+        data: { output: unknown; usage: { model: unknown } };
         utils: unknown;
     }) => {
         const { len } = (ctx.utils as {
             json: { len: (v: unknown, p: string) => number };
         }).json;
-        const model = ctx.data.model as
+        const model = ctx.data.usage.model as
             | { kind: "PER_UNIT"; unit: string }
             | {
                 kind: "COMPOSITE";
@@ -1567,8 +1567,8 @@ Deno.test("generic keying: provider-seam fns derive the counts key from data.mod
                 },
             },
             consolidate: keyedConsolidate,
-            estimate: ({ data }: { data: { model: unknown } }) => {
-                const model = data.model as {
+            estimate: ({ data }: { data: { usage: { model: unknown } } }) => {
+                const model = data.usage.model as {
                     kind: string;
                     components?: Record<string, { kind: string }>;
                 };

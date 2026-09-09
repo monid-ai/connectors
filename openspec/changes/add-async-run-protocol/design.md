@@ -668,6 +668,55 @@ its Temporal `endpointExecution` workflow.
   beside the usage schema (ONE exhaustive switch with a
   `satisfies never` default; the engine wraps violations in FN_CONTRACT).
 
+## D23 — No estimate presets; typed where declared, Json where raw
+
+**Decision**: delete `presets.estimate.*` (onePerQuery / limitIsExact /
+perQueryLimit) — every estimate is a TYPED INLINE fn on its doc. And type
+everything a doc-declared, engine-validated schema exists for; keep raw
+vendor data `Json` deliberately. Ctx facts move to provenance-named
+paths: `data.usage.model`, `data.lifecycle.state`.
+
+**Why the presets had to go** (review finding): they bypassed the D19a
+type layer from BOTH sides — the field args were unchecked strings
+(`limitIsExact("maxItmes", 3)` compiled and silently became
+always-fallback) and the portable ctx (`body?: unknown`) erased the
+input typing. "Typed generic presets" cannot fix this: the factory call
+is EAGER, so TS must resolve the type params from the call's args alone
+— the doc's body/model types aren't in scope when the field arg binds.
+Explicit type args would work but out-verbose the inline fn while
+duplicating declarations the doc already carries; a lazily-generic
+returned fn gets the ctx inferred at assignment, but the field arg bound
+BEFORE the type param existed. Structurally out of inference's reach —
+so the inline fn IS the typed preset: exact input type in
+(`data.input.body` = z.output of the doc's own schema), exact model keys
+out (`MeteredKeyOf`). The ≥2-call-sites rule then also killed the dead
+`transform.strip/pick` and `usage.perResult`; `presets.auth.*` and
+`presets.usage.perCall` survive as provider-seam slots with no doc-local
+typing to lose.
+
+**The typing rule** (this answers "why is output not typed" once):
+- TYPED — anything a doc-declared schema describes AND the engine
+  validates on the same boundary before the fn sees it: the input body
+  (validateInput, defaults materialized) and the fn-owned `state.data`
+  bag (`lifecycle.state` → stateSchema, checked every tick). State is
+  typed at READ sites (`data.lifecycle.state` in tick + envelope ctxs)
+  and WRITE sites (lifecycle outcome `state`) — a poll stashing a
+  mis-shaped billing signal fails `deno task check`.
+- JSON — raw vendor output and error envelopes: the settle pipeline is
+  `consolidate(RAW) → fromResponse → output.schema`, billing anchors to
+  the raw payload BEFORE any projection, and `output.schema` describes a
+  DIFFERENT value (the post-fromResponse product) — typing raw reads by
+  it would claim a shape the runtime never checks there. `utils.json` is
+  the idiom for raw; typed fromResponse RETURNS were considered and
+  dropped (little over the runtime gate, couples doc types to
+  vendor-shaped output).
+- RENAMED — ctx paths say their provenance: `data.usage.model` (was
+  `data.model`), `data.lifecycle.state` (was `data.state`; required in
+  tick ctxs, optional in envelopes — present only for async runs that
+  produced state). Estimate fns never probe `data.input.body` via
+  utils.json (fleet-swept; grep-clean), and dead `body ?? null` guards
+  died with the sweep.
+
 ## Concepts delta
 
 | Term | Definition |
@@ -677,7 +726,7 @@ its Temporal `endpointExecution` workflow.
 | **Outcome** | A lifecycle fn's return: `RUNNING{state?, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?}` — the completed arm IS the raw envelope the settle pipeline consumes. WHOLE-STATE semantics (D21): a present `state` is the complete next fn-state (replaces wholesale); absent carries the previous forward — no field merge. |
 | **State** (`zRunState`) | The STRUCTURED envelope threaded between ticks by value: fn-owned `externalRunId`/`stage`/`data` (ids + billing signals, typed when the doc declares `lifecycle.state`) + ENGINE-owned `timing` (the v1 providerRun clock — feeds the ClickHouse provider slices). Hard-capped (`schema.state_max_bytes`). |
 | **Timing** (`zRunTiming`) | The settle-side provider-timing report on every RunCompleted (async AND sync): startedAt/completedAt/attempts/startRequestMs/pollMsTotal/providerTotalMs → t_provider_* usage-event slices. Engine-stamped; hosts keep measuring their own slices. |
-| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage with consolidate's counts KEYS, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{counts: {}}` (the PER_CALL posture). `data.model` rides in so presets derive their key (D19). |
+| **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage with consolidate's counts KEYS, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{counts: {}}` (the PER_CALL posture). `data.usage.model` rides in for provider-seam generic keying (D19/D23). |
 | **Model** (`usage.model`) | The rate-free billing ALGEBRA on the doc: LEAF (PER_CALL flat / PER_UNIT metered) and AND (COMPOSITE — scalar components KEYED BY ID; for apify the vendor's charge-event names verbatim). Conditions/offsets/selection are COUNTING rules owned by the fns, never model shapes (D19 — VARIANT deleted). Rates and tier schedules live in the services rate card (D18). |
 | **Counts** (`usage.counts`) | The settled/estimated quantities as ONE keyed map for every model type: component id (composite) / the model's unit (leaf PER_UNIT) / `{}` (PER_CALL, error settles). The key is the join across counts ↔ broker card row ↔ drift guard ↔ stashed vendor rates (D19). |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |
