@@ -63,9 +63,6 @@ export const zEndpointDoc = z.strictObject({
         schema: zJsonSchemaDoc.optional(),
     }),
     usage: z.strictObject({
-        /** THE settle fn: RAW envelope → {usage, output?} — REQUIRED,
-         *  resolved endpoint ?? provider at compile. */
-        consolidate: zFnRef,
         /** The billing-shape + RATE-CARD declaration (design D26) —
          *  inline DATA (hash-covered), never a fn: catalogs and the
          *  broker price from it without executing anything. REQUIRED
@@ -76,9 +73,20 @@ export const zEndpointDoc = z.strictObject({
          *  references one of these ids (compile-checked). `{}` for FREE
          *  docs. */
         credits: zCredits,
-        /** Pre-run estimate hook: validated input → the QUANTITY promise
-         *  per metered line — REQUIRED (the billing triple, D25). */
+        /** Pre-run quantities promise: validated input → `{counts}` per
+         *  metered line — REQUIRED (resolved endpoint ?? provider;
+         *  compiler-synthesized `() => ({counts:{}})` for models with no
+         *  metered lines — design D27). */
         estimate: zFnRef,
+        /** Post-run quantities settle: RAW envelope → `{counts}` —
+         *  REQUIRED (same resolution + synthesis rule as estimate). */
+        evidence: zFnRef,
+        /** The vendor-meter fn: lifts the vendor's own consumed-credits
+         *  number out of the payload (`{credits, output?}`) — OPTIONAL
+         *  (not every vendor reports one), resolved endpoint ?? provider.
+         *  A resolved claim WINS over the derived fold at settle
+         *  (design D27). */
+        consolidate: zFnRef.optional(),
     }),
     /**
      * Async run protocol (engine ≥ config schema.async_since). When present
@@ -106,8 +114,9 @@ export function fnKeysOf(doc: EndpointDoc): string[] {
     if (doc.input.toRequest) keys.push(doc.input.toRequest.$fn.key);
     if (doc.output.fromResponse) keys.push(doc.output.fromResponse.$fn.key);
     if (doc.output.fromError) keys.push(doc.output.fromError.$fn.key);
-    keys.push(doc.usage.consolidate.$fn.key);
-    if (doc.usage.estimate) keys.push(doc.usage.estimate.$fn.key);
+    keys.push(doc.usage.estimate.$fn.key);
+    keys.push(doc.usage.evidence.$fn.key);
+    if (doc.usage.consolidate) keys.push(doc.usage.consolidate.$fn.key);
     if (doc.lifecycle) {
         keys.push(doc.lifecycle.start.$fn.key);
         if (doc.lifecycle.poll) keys.push(doc.lifecycle.poll.$fn.key);

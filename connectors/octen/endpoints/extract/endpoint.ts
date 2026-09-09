@@ -62,16 +62,13 @@ export default defineEndpoint({
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.urls.length },
         }),
-        consolidate: ({ data, utils }) => ({
-            usage: {
-                counts: {
-                    "RESULT": utils.json.optionalNum(
-                        data.output,
-                        "$.meta.usage.successful_urls",
-                    ) ?? 0,
-                },
+        evidence: ({ data, utils }) => ({
+            counts: {
+                "RESULT": utils.json.optionalNum(
+                    data.output,
+                    "$.meta.usage.successful_urls",
+                ) ?? 0,
             },
-            output: utils.json.omit(data.output, ["usage"]),
         }),
     },
 });

@@ -55,14 +55,11 @@ export default defineEndpoint({
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.urls.length },
         }),
-        consolidate: ({ data, utils }) => ({
-            usage: {
-                counts: {
-                    "RESULT": utils.json.len(data.output, "$.results"),
-                },
+        // the costDollars receipt is the provider consolidate's job (D27)
+        evidence: ({ data, utils }) => ({
+            counts: {
+                "RESULT": utils.json.len(data.output, "$.results"),
             },
-            // costDollars stays in the RAW run record (design D26)
-            output: utils.json.omit(data.output, ["costDollars"]),
         }),
     },
 });

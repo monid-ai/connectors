@@ -96,7 +96,7 @@ export default defineEndpoint({
                 : "embedding_4b";
             return { counts: { [key]: bytes } };
         },
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const tokens = utils.json.optionalNum(
                 data.output,
                 "$.meta.usage.input_tokens",
@@ -111,10 +111,7 @@ export default defineEndpoint({
                 : model === "octen-embedding-8b"
                 ? "embedding_8b"
                 : "embedding_4b";
-            return {
-                usage: { counts: { [key]: tokens } },
-                output: utils.json.omit(data.output, ["usage"]),
-            };
+            return { counts: { [key]: tokens } };
         },
     },
 });

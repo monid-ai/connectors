@@ -44,20 +44,19 @@ export default defineEndpoint({
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.queryParams.limit },
         }),
-        /** Akta bills whole increments of the REQUESTED limit regardless
-         *  of delivery (v1-verified), so settle counts the same quantity
-         *  the vendor charges on; `credits_consumed` stays in the raw
-         *  run record. */
-        consolidate: ({ data, utils }) => ({
-            usage: {
-                counts: {
-                    "RESULT": utils.json.num(
-                        data.input.queryParams ?? {},
-                        "$.limit",
-                    ),
-                },
+        /** OVERRIDES the provider's generic evidence (design D27): akta
+         *  bills whole increments of the REQUESTED limit regardless of
+         *  delivery (v1-verified), so settle counts the same quantity
+         *  the vendor charges on — not the delivered array. The provider
+         *  consolidate's claim now cross-checks this basis on every real
+         *  run (a live mismatch would flag it going stale). */
+        evidence: ({ data, utils }) => ({
+            counts: {
+                "RESULT": utils.json.num(
+                    data.input.queryParams ?? {},
+                    "$.limit",
+                ),
             },
-            output: utils.json.omit(data.output, ["credits_consumed"]),
         }),
     },
 });

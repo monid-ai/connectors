@@ -53,10 +53,12 @@ export default defineEndpoint({
                     : { "list_lookup": 1 },
             };
         },
-        /** Settle counts the REQUESTED quantities (akta bills per product
-         *  increment regardless of delivery — v1-verified); the vendor
-         *  meter stays in the raw run record. */
-        consolidate: ({ data, utils }) => {
+        /** OVERRIDES the provider's generic evidence (design D27): akta
+         *  bills per REQUESTED product increment regardless of delivery
+         *  (v1-verified), so settle counts the requested quantities. The
+         *  provider consolidate's claim cross-checks this basis on every
+         *  real run. */
+        evidence: ({ data, utils }) => {
             // the ENVELOPE input is post-toRequest (wire shape): the
             // provider CSV-joins arrays, so `products` is "id1,id2" here
             const raw = utils.json.optionalGet(
@@ -69,12 +71,9 @@ export default defineEndpoint({
                 ? raw.length
                 : 0;
             return {
-                usage: {
-                    counts: products > 0
-                        ? { "product": products }
-                        : { "list_lookup": 1 },
-                },
-                output: utils.json.omit(data.output, ["credits_consumed"]),
+                counts: products > 0
+                    ? { "product": products }
+                    : { "list_lookup": 1 },
             };
         },
     },

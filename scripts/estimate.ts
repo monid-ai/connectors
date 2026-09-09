@@ -72,12 +72,12 @@ const loaded = await new Engine({
     },
 }).load(sealUnit(bundle, endpointId));
 
+// Just the ANSWER: {credits, evidence} — the model and pool declarations
+// live on the doc, inspectable elsewhere (design D27).
 console.log(JSON.stringify(
     {
         endpoint: endpointId,
-        model: loaded.doc.usage.model ?? null,
-        credits: loaded.doc.usage.credits,
-        estimate: loaded.estimate(input),
+        ...loaded.estimate(input),
     },
     null,
     2,

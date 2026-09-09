@@ -141,11 +141,12 @@ export default defineEndpoint({
                     .map((section) => [section, 1]),
             ),
         }),
-        /** Doc-level settle: one count per section DELIVERED off the raw
-         *  envelope (the response's `data` is keyed by section; `uuid` is
-         *  identity, not a section) + the vendor meter as
-         *  cost-basis/evidence. */
-        consolidate: ({ data, utils }) => {
+        /** OVERRIDES the provider's generic evidence (design D27): the
+         *  response's `data` is an object KEYED BY SECTION, not akta's
+         *  usual array — one count per section delivered (`uuid` is
+         *  identity, not a section). Quantities only; the vendor meter is
+         *  the provider consolidate's job. */
+        evidence: ({ data, utils }) => {
             const sections = utils.json.optionalGet(data.output, "$.data");
             const delivered =
                 sections !== null && typeof sections === "object" &&
@@ -153,14 +154,9 @@ export default defineEndpoint({
                     ? Object.keys(sections).filter((key) => key !== "uuid")
                     : [];
             return {
-                usage: {
-                    counts: Object.fromEntries(
-                        delivered.map((section) => [section, 1]),
-                    ),
-                },
-                // billing fields never ride the payload — credits_consumed
-                // stays in the RAW run record (the receipt IS the output)
-                output: utils.json.omit(data.output, ["credits_consumed"]),
+                counts: Object.fromEntries(
+                    delivered.map((section) => [section, 1]),
+                ),
             };
         },
     },

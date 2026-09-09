@@ -8,6 +8,7 @@ import {
     docHash,
     type EndpointDoc,
     type FnRef,
+    hasMeteredLines,
     type Json,
     type LeafCategory,
     parseSchema,
@@ -151,6 +152,13 @@ function resolve<T>(
     return undefined;
 }
 
+/** The ONE lawful quantities fn for a model with no metered lines
+ *  (design D27) — the compiler materializes it into the doc (a real
+ *  interned fnTable entry: the compiled doc stays comprehensive) when
+ *  neither endpoint nor provider declares estimate/evidence. Module-
+ *  scope so its SOURCE is stable and interns to a single shared entry. */
+const SYNTHESIZED_EMPTY_USAGE = () => ({ counts: {} });
+
 /**
  * compileBundle — the compiler's SOLE job: the pure mapping
  * (defs, options) → bundle. Folder identity is a LOADER concern
@@ -160,7 +168,7 @@ function resolve<T>(
  *
  * ONE composition rule (design D20): everything resolves LEAF-WISE, closest
  * wins — endpoint ?? provider ?? config default. That includes hooks
- * (endpoint toRequest/fromResponse/consolidate REPLACES the provider's) and
+ * (endpoint toRequest/fromResponse/evidence REPLACES the provider's) and
  * meta leaves (docsUrl/categories). Headers merge key-wise (each key is a
  * leaf).
  */
@@ -436,35 +444,14 @@ export async function compileBundle(
                 )
                 : undefined;
 
-            // ---- usage.consolidate: THE settle fn, REQUIRED ---------------
-            const consolidate = resolve(
-                def.usage?.consolidate,
-                `${endpointFile}#usage.consolidate`,
-                provider.usage?.consolidate,
-                `${providerFile}#usage.consolidate`,
-            );
-            if (!consolidate) {
-                throw new CompileError(
-                    CompileErrorCode.HOOK_UNRESOLVED,
-                    `${where}: usage.consolidate must resolve — declare it on the endpoint ` +
-                        `or the provider; every endpoint must be able to settle. ` +
-                        `Use presets.usage.perCall() for flat billing.`,
-                );
-            }
-            const consolidateRef = await interner.intern(
-                consolidate.value,
-                consolidate.label,
-                SC.fnAbiSince,
-            );
-
-            // ---- usage.model (inline DATA, REQUIRED) + usage.estimate ------
+            // ---- usage.model (inline DATA, REQUIRED) ----------------------
             const usageModel = def.usage?.model ?? provider.usage?.model;
             if (usageModel === undefined) {
                 throw new CompileError(
                     CompileErrorCode.HOOK_UNRESOLVED,
                     `${where}: usage.model must resolve — declare it on the ` +
                         `endpoint or the provider; every doc states what is ` +
-                        `chargeable (rate-free shape, design D19).`,
+                        `chargeable (design D19).`,
                 );
             }
             const meteredCount = usageModel.kind === "COMPOSITE"
@@ -475,17 +462,17 @@ export async function compileBundle(
                 ? 1
                 : 0;
             // ≥2 METERED components ⇒ only DOC-owned fns can know which
-            // component a count belongs to — a GENERIC provider consolidate
-            // keys by "the sole PER_UNIT component" and would have no basis
-            // to choose between two (design D19). Reject at build time, not
+            // line a count belongs to — a GENERIC provider evidence fn
+            // keys by "the sole PER_UNIT line" and would have no basis to
+            // choose between two (design D19). Reject at build time, not
             // at the first live run. (Checked FIRST — the more specific
-            // diagnosis wins over the general estimate-required rule.)
+            // diagnosis wins over the general must-resolve rule.)
             if (usageModel.kind === "COMPOSITE" && meteredCount >= 2) {
-                if (def.usage?.consolidate === undefined) {
+                if (def.usage?.evidence === undefined) {
                     throw new CompileError(
                         CompileErrorCode.HOOK_UNRESOLVED,
                         `${where}: ${meteredCount} metered components — ` +
-                            `a doc-level usage.consolidate must key its ` +
+                            `a doc-level usage.evidence must key its ` +
                             `own counts (the generic provider fn cannot ` +
                             `choose between them)`,
                     );
@@ -498,33 +485,80 @@ export async function compileBundle(
                     );
                 }
             }
-            // THE BILLING TRIPLE (design D25): usage.model +
-            // usage.consolidate + usage.estimate are ALL required on every
-            // doc — what is chargeable, what this run will cost, what it
-            // did cost. Nothing silently defaults: a flat doc's estimate
-            // states {counts: {}} (the engine appends the flat 1s), a FREE
-            // doc's states {counts: {}, free: true}.
-            if (
-                def.usage?.estimate === undefined &&
-                provider.usage?.estimate === undefined
-            ) {
-                throw new CompileError(
-                    CompileErrorCode.HOOK_UNRESOLVED,
-                    `${where}: usage.estimate must resolve — model + ` +
-                        `estimate + consolidate are the required billing ` +
-                        `triple (design D25)`,
-                );
-            }
+            // ---- usage.estimate + usage.evidence: the QUANTITIES pair ----
+            // (design D27 subclassing): endpoint ?? provider, and when
+            // NEITHER declares one AND the model has no metered lines, the
+            // compiler synthesizes the one lawful fn — `{counts: {}}` is
+            // the only return a FREE/flat model admits, so writing it by
+            // hand adds no information. A METERED model's quantities
+            // depend on input/response — must resolve (the deduced-
+            // estimate guarantee, designs D24/D25).
+            const metered = hasMeteredLines(usageModel);
             const estimateFn = resolve(
                 def.usage?.estimate,
                 `${endpointFile}#usage.estimate`,
                 provider.usage?.estimate,
                 `${providerFile}#usage.estimate`,
             );
+            const evidenceFn = resolve(
+                def.usage?.evidence,
+                `${endpointFile}#usage.evidence`,
+                provider.usage?.evidence,
+                `${providerFile}#usage.evidence`,
+            );
+            if (metered && !estimateFn) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.estimate must resolve — the model has ` +
+                        `metered lines, so the promise depends on the ` +
+                        `input (deduced estimates, design D24/D27)`,
+                );
+            }
+            if (metered && !evidenceFn) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.evidence must resolve — the model has ` +
+                        `metered lines, so the settled quantities depend ` +
+                        `on the response (design D27)`,
+                );
+            }
             const estimateRef = estimateFn
                 ? await interner.intern(
                     estimateFn.value,
                     estimateFn.label,
+                    SC.fnAbiSince,
+                )
+                : await interner.intern(
+                    SYNTHESIZED_EMPTY_USAGE,
+                    "core#usage.synthesizedEmpty",
+                    SC.fnAbiSince,
+                );
+            const evidenceRef = evidenceFn
+                ? await interner.intern(
+                    evidenceFn.value,
+                    evidenceFn.label,
+                    SC.fnAbiSince,
+                )
+                : await interner.intern(
+                    SYNTHESIZED_EMPTY_USAGE,
+                    "core#usage.synthesizedEmpty",
+                    SC.fnAbiSince,
+                );
+
+            // ---- usage.consolidate: the VENDOR-METER fn, OPTIONAL --------
+            // (design D27 — not every vendor reports one; typically
+            // provider-level: where the meter lives is a provider-wide
+            // fact, so the claim + strip is written once).
+            const consolidate = resolve(
+                def.usage?.consolidate,
+                `${endpointFile}#usage.consolidate`,
+                provider.usage?.consolidate,
+                `${providerFile}#usage.consolidate`,
+            );
+            const consolidateRef = consolidate
+                ? await interner.intern(
+                    consolidate.value,
+                    consolidate.label,
                     SC.fnAbiSince,
                 )
                 : undefined;
@@ -667,10 +701,11 @@ export async function compileBundle(
                     ),
                 },
                 usage: {
-                    consolidate: consolidateRef as unknown as Json,
                     model: usageModel as unknown as Json,
                     credits: credits as unknown as Json,
                     estimate: estimateRef as unknown as Json,
+                    evidence: evidenceRef as unknown as Json,
+                    consolidate: consolidateRef as unknown as Json,
                 },
                 lifecycle: lifecycleStartRef
                     ? {

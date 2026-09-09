@@ -74,7 +74,7 @@ export default defineEndpoint({
                 "full_content_tokens": 0,
             },
         }),
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const queries = utils.json.optionalNum(
                 data.output,
                 "$.meta.usage.num_search_queries",
@@ -88,15 +88,12 @@ export default defineEndpoint({
                 "$.meta.usage.full_content_tokens",
             );
             return {
-                usage: {
-                    counts: {
-                        "receipt_queries": queries,
-                        ...(tokens !== undefined
-                            ? { "full_content_tokens": tokens }
-                            : {}),
-                    },
+                counts: {
+                    "receipt_queries": queries,
+                    ...(tokens !== undefined
+                        ? { "full_content_tokens": tokens }
+                        : {}),
                 },
-                output: utils.json.omit(data.output, ["usage"]),
             };
         },
     },

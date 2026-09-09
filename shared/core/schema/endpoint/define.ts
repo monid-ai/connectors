@@ -5,6 +5,7 @@ import type { Json } from "../json/type.ts";
 import type { UsageModelSeed } from "../usage/model/mod.ts";
 import type {
     MeteredKeyOf,
+    TypedConsolidated,
     TypedEnvelopeCtx,
     TypedEstimateCtx,
     TypedLifecycleSlots,
@@ -21,11 +22,12 @@ type SeedLifecycle = NonNullable<EndpointDefSeed["lifecycle"]>;
  * The def IS the parsed seed: defaults applied recursively, strictness
  * enforced. The signature is GENERIC (designs D19a + D23 + D25 — the
  * type layer; runtime is untouched, zod stays the truth):
- *   - `M` (const, inferred from `usage.model`): `usage.counts` keys in
- *     the doc's own consolidate/estimate narrow to the model's literal
+ *   - `M` (const, inferred from `usage.model`): the counts keys in the
+ *     doc's own evidence/estimate fns narrow to the model's literal
  *     metered keys. FREE and flat models' fns can promise only
  *     `{counts: {}}` (the engine appends flat 1s and owns the credits
- *     fold — countsMismatch is the runtime twin).
+ *     fold — countsMismatch is the runtime twin); usually they declare
+ *     NO fns at all (compiler synthesis — design D27).
  *   - `BodySchema` / `QuerySchema` (inferred from `input.schema`): the
  *     fns' `data.input.body` / `data.input.queryParams` are `z.output`
  *     of the doc's OWN schemas — direct, typed property access (sound:
@@ -69,25 +71,37 @@ export function defineEndpoint<
                 SeedOutput
             >;
             usage?:
-                & Omit<SeedUsage, "model" | "consolidate" | "estimate">
+                & Omit<
+                    SeedUsage,
+                    "model" | "evidence" | "estimate" | "consolidate"
+                >
                 & {
                     model?: M;
-                    consolidate?: (
+                    /** Post-run quantities (design D27 — estimate's
+                     *  settle-side twin; same typed shape). */
+                    evidence?: (
                         ctx: TypedEnvelopeCtx<
                             z.output<BodySchema>,
                             z.output<StateSchema>,
                             z.output<QuerySchema>
                         >,
-                    ) => {
-                        usage: TypedUsage<MeteredKeyOf<M>>;
-                        output?: Json;
-                    };
+                    ) => TypedUsage<MeteredKeyOf<M>>;
                     estimate?: (
                         ctx: TypedEstimateCtx<
                             z.output<BodySchema>,
                             z.output<QuerySchema>
                         >,
                     ) => TypedUsage<MeteredKeyOf<M>>;
+                    /** The vendor-meter fn (design D27) — usually
+                     *  provider-level; an endpoint overrides only when
+                     *  its meter lives somewhere unusual. */
+                    consolidate?: (
+                        ctx: TypedEnvelopeCtx<
+                            z.output<BodySchema>,
+                            z.output<StateSchema>,
+                            z.output<QuerySchema>
+                        >,
+                    ) => TypedConsolidated;
                 };
             lifecycle?: TypedLifecycleSlots<
                 z.output<BodySchema>,

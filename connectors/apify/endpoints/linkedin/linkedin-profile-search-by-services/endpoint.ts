@@ -3,7 +3,8 @@ import { zLinkedinProfileSearchByServicesBody } from "./schema/inputs.ts";
 
 /**
  * harvestapi/linkedin-profile-search-by-services — Search LinkedIn Profiles (by Services). Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({
@@ -91,9 +92,9 @@ export default defineEndpoint({
                 : "short_profile";
             return { counts: { [profileKey]: body.maxItems } };
         },
-        /** OVERRIDES the provider consolidate (≥2 metered components):
+        /** OVERRIDES the provider evidence (≥2 metered components):
          *  dataset items ARE the profiles, keyed by mode. */
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const profiles = Array.isArray(data.output)
                 ? data.output.length
                 : 0;
@@ -106,9 +107,7 @@ export default defineEndpoint({
                 : mode === "Full + email search"
                 ? "full_profile_with_email"
                 : "short_profile";
-            return {
-                usage: { counts: { [profileKey]: profiles } },
-            };
+            return { counts: { [profileKey]: profiles } };
         },
     },
 });

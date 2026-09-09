@@ -18,17 +18,23 @@ per-plan tier tables; serialized state above the engine cap fails the
 run); failure → synthesized 500 with providerHttpStatus 200
 and the statusMessage); stop POSTs `/abort` best-effort. ONE provider
 `output.fromError` SHALL digest error envelopes (`{message, type?, raw}`
-— raw preserved). ONE provider consolidate SHALL settle QUANTITIES only
-(design D26): counts = the dataset item count keyed via the doc's own
-model on `data.usage.model` (leaf → the unit; composite → the sole
-metered component id — design D19). It derives NO cost: the poll-stashed
-vendor pricing signals stay recorded in state/the RAW run record
-(reconciliation evidence — the receipt IS the output), and the ENGINE
-folds credits from the doc's own pinned rates.
+— raw preserved). ONE provider `usage.evidence` (the pre-D27 counts fn
+renamed — design D27) SHALL settle QUANTITIES only: counts = the
+dataset item count keyed via the doc's own model on `data.usage.model`
+(leaf → the unit; composite → the sole metered component id — design
+D19). It derives NO cost. ONE provider `usage.consolidate` SHALL claim
+the poll-stashed `usageTotalUsd` off `data.lifecycle.state` (entry
+OMITTED when absent, never `?? 0`; nothing to strip — the meter lives
+in state, never the user-facing output): the claim WINS at settle, and
+the ENGINE's fold through the doc's pinned rates cross-checks it on
+EVERY run (`usage.mismatch.derived` on disagreement — the survey
+guards rates BETWEEN runs, the mismatch signal guards them ON EVERY
+run). The raw pricing signals stay recorded in state/the RAW run
+record (reconciliation evidence — the receipt IS the output).
 
 #### Scenario: Full shared chain settles
 - **WHEN** the run-succeeded shape chain replays against any endpoint
-- **THEN** the fn counts carry the dataset item count under the doc's metered line id; the engine folds credits from the pinned consumes, and the poll-stashed vendor signals stay in the raw record/state
+- **THEN** the evidence fn counts carry the dataset item count under the doc's metered line id; the consolidate's usageTotalUsd claim settles as credits, and the pinned-rate fold cross-checks it (mismatch.derived on disagreement)
 
 #### Scenario: Actor failure zero-billed
 - **WHEN** the poll response carries a non-zero exitCode
@@ -51,11 +57,12 @@ as `owner~name` in the path) + a static input schema scaffolded from the
 actor's PUBLISHED schema via `deno task apify:scaffold` (non-strict —
 supersets pass through) + a `usage` declaration (model and/or estimate).
 All 46 v1 endpoints are ported. All apify docs SHALL share one fnTable
-entry per lifecycle fn and one consolidate entry.
+entry per lifecycle fn, one consolidate entry, and (absent an endpoint
+override) the one generic evidence entry.
 
 #### Scenario: Shared interning across endpoints
 - **WHEN** the bundle is compiled
-- **THEN** every apify doc references the same lifecycle.start/poll/stop and consolidate fn ids
+- **THEN** every apify doc references the same lifecycle.start/poll/stop and consolidate fn ids (and the same evidence id unless the endpoint overrides its counting)
 
 ### Requirement: Survey-verified per-endpoint models + pinned-field estimates
 Every endpoint SHALL declare `usage.model` matching its LIVE published
@@ -66,11 +73,12 @@ actors with a verified actor-start charge event; 2 PER_CALL actors
 on linkedin-profile-search. instagram-hashtag/post are SURVEY-CORRECTED
 from v1's per-call to metered. Models reference `UsageModelKind.*` /
 `Unit.*` consts, never raw strings. `usage.estimate` is a TYPED INLINE
-fn on every doc (design D23 — estimate presets deleted): it reads the
-endpoint's OWN input-schema fields by direct typed property access
-(v1's allow-list probing is NOT ported, and `utils.json` never touches
-`data.input.body`), and its counts key is the doc's literal metered key
-— field typos and foreign keys fail `deno task check`. Estimates are
+fn on every METERED doc (design D23 — estimate presets deleted): it
+reads the endpoint's OWN input-schema fields by direct typed property
+access (v1's allow-list probing is NOT ported, and `utils.json` never
+touches `data.input.body`), and its counts key is the doc's literal
+metered key — field typos and foreign keys fail `deno task check`.
+Estimates are
 DEDUCED, never defaulted (design D24 — every limiting knob was audited
 against three sources: our schema, the actor's LIVE published input
 schema, and the v1 monid-services impl; the disposition table lives in
@@ -83,8 +91,10 @@ hook, so the estimate reads the same effective value the vendor applies
 faithful actor mirror). No fallback constants exist; a body without its
 limiting knob is rejected at validation. Composite components carry
 `label`s where the charge-event key is vendor jargon ("base fee",
-"reviews", "ads"). Flat-only endpoints declare no estimate — the engine
-derives their whole vector from the model (design D24).
+"reviews", "ads"). Flat-only endpoints (tiktok-api,
+tiktok-comments-scraper-api) author NO quantities fns — their
+`{counts: {}}` estimates are COMPILER-SYNTHESIZED (design D27) and the
+engine derives their whole vector from the model (design D24).
 
 #### Scenario: Comma-separated search terms counted
 - **WHEN** instagram-search-scraper estimates {search: "a,b,c", searchLimit: 2}
@@ -156,8 +166,9 @@ mode) plus `full_profile` and `full_profile_with_email` (PER_UNIT·
 RESULT, SELECTED by the input's profileScraperMode; "Short" selects
 none; the vendor spellings "search-page" / "full-profile" /
 "full-profile-with-email" ride each line's `vendor` field — design D26)
-— and its fns SHALL key the profile count by the mode-selected
-component (design D19: select-one is counting logic, not a model shape;
+— and its estimate/evidence fns SHALL key the profile count by the
+mode-selected component (design D19: select-one is counting logic, not
+a model shape;
 three metered components trip the compiler's doc-level-fns rule). Rates
 are PINNED in each line's `consumes` (GOLD-tier — design D26): the
 engine folds credits from the pinned amounts, and a vendor repricing

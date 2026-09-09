@@ -2,6 +2,7 @@ import { assert, assertEquals } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
     assembleUsage,
+    creditsDisagree,
     flatLines,
     type RunInput,
     type UsageModel,
@@ -32,7 +33,8 @@ const INPUTS = JSON.parse(
     await Deno.readTextFile(`${HERE}test-inputs.json`),
 ) as Record<string, RunInput["body"]>;
 
-/** Endpoints whose consolidate is NOT the provider default. */
+/** Endpoints whose usage.evidence is NOT the provider default (they
+ *  still inherit the provider's usageTotalUsd consolidate). */
 const CUSTOM_BILLING = new Set([
     "harvestapi/linkedin-profile-search",
     "harvestapi/linkedin-profile-search-by-name",
@@ -52,7 +54,7 @@ const inputFor = (id: string): RunInput => {
     return { body };
 };
 
-Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, model-priced credits)", async () => {
+Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, vendor claim wins)", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
     const bundle = await testBundle();
     for (const id of await endpointIds()) {
@@ -66,17 +68,31 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, mod
         });
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
-        // the COMPLETE billed vector (design D24/D26): the metered key
+        // the COMPLETE evidence vector (design D24/D26): the metered key
         // settles the dataset item count AND every flat component bills 1
-        // (engine-appended), folded through EACH doc's own pinned rate
-        // card — assembleUsage is the shared fold, so the expectation is
-        // the per-endpoint 2-item bill (vendor run-record pricing signals
-        // stay in the raw record, never in usage)
+        // (engine-appended). But usage.credits is now the VENDOR's claim
+        // (design D27): the chain's terminal run record reports
+        // usageTotalUsd $0.01, the poll threads it through state, and the
+        // provider consolidate's non-empty claim WINS on every doc. Each
+        // doc's own pinned fold (assembleUsage) becomes the cross-check —
+        // it rides out as mismatch.derived exactly where it disagrees
+        // with the flat $0.01 beyond 1e-9.
         const model = bundle.endpoints[id].usage.model!;
         const keys = billedKeys(model);
+        const derived = assembleUsage(
+            model,
+            keys.length === 1 ? { [keys[0]]: 2 } : {},
+        );
+        const claim = { default: 0.01 };
         assertEquals(
             result.usage,
-            assembleUsage(model, keys.length === 1 ? { [keys[0]]: 2 } : {}),
+            {
+                credits: claim,
+                evidence: derived.evidence,
+                ...(creditsDisagree(claim, derived.credits)
+                    ? { mismatch: { derived: derived.credits } }
+                    : {}),
+            },
             id,
         );
         assertEquals((result.output as unknown[]).length, 2, id);
@@ -133,12 +149,14 @@ Deno.test("apify#harvestapi/linkedin-profile-search: pages reconstructed from LI
     // usageTotalUsd $0.04 at the LIVE $0.02 page rate ⇒ 2 pages; the baked
     // $0.05 fallback would have yielded 1 — proves the run-record read.
     // "Short" mode ⇒ profiles are free: only the page line is evidenced
-    // (the mode-selected profile keys stay absent — design D19), and the
-    // bill folds the 2 pages through the doc's PINNED $0.05 page rate
-    // (the live rate reconstructs the QUANTITY; the model prices it)
+    // (the mode-selected profile keys stay absent — design D19). The
+    // vendor's $0.04 claim IS usage.credits (claim wins, D27); the
+    // doc's PINNED $0.05 page rate folds 2 pages to $0.10, disagreeing
+    // beyond 1e-9 — the fold rides out as mismatch.derived.
     assertEquals(result.usage, {
-        credits: { default: 0.1 },
+        credits: { default: 0.04 },
         evidence: { search_page: 2 },
+        mismatch: { derived: { default: 0.1 } },
     });
     const output = result.output as Record<string, unknown>;
     assertEquals(output.searchPages, 2);
@@ -156,10 +174,14 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-name: mode-selected settl
     });
     assertEquals(result.httpStatus, 200);
     // 2 delivered profiles in "Short" mode ⇒ ceil(2/25) = 1 page +
-    // 2 main-profile results; fold = 1 × $0.003 + 2 × $0.0015 = $0.006
+    // 2 main-profile results. The chain's usageTotalUsd $0.01 claim wins
+    // (D27); the pinned fold 1 × $0.003 + 2 × $0.0015 = $0.006 disagrees
+    // and rides as mismatch.derived (written as the same left-to-right
+    // arithmetic creditsOf performs — a 0.006 literal is float dust off)
     assertEquals(result.usage, {
-        credits: { default: 0.006 },
+        credits: { default: 0.01 },
         evidence: { search_page: 1, main_profile: 2 },
+        mismatch: { derived: { default: 0.003 + 2 * 0.0015 } },
     });
 });
 
@@ -174,14 +196,17 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-services: mode-selected s
     });
     assertEquals(result.httpStatus, 200);
     // no page event on this actor's card: 2 delivered profiles in
-    // "Short" mode bill 2 × $0.001 under the mode-selected line only
+    // "Short" mode evidence the mode-selected line only. The chain's
+    // usageTotalUsd $0.01 claim wins (D27); the pinned fold 2 × $0.001 =
+    // $0.002 disagrees and rides as mismatch.derived
     assertEquals(result.usage, {
-        credits: { default: 0.002 },
+        credits: { default: 0.01 },
         evidence: { short_profile: 2 },
+        mismatch: { derived: { default: 0.002 } },
     });
 });
 
-Deno.test("apify: PAY_PER_EVENT chain settles item evidence at the pinned model rate", async () => {
+Deno.test("apify: PAY_PER_EVENT chain — usageTotalUsd claim wins over the pinned fold", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
     const id = "apify#apify/instagram-profile-scraper";
     const result = await runEndpoint({
@@ -190,12 +215,14 @@ Deno.test("apify: PAY_PER_EVENT chain settles item evidence at the pinned model 
         mode: "replay",
         fixture,
     });
-    // provider-default billing: dataset items are the evidence, folded at
-    // the doc's pinned $0.0016/result; the chain's usageTotalUsd receipt
-    // stays in the raw run record (D26 — no vendor-cost channel in usage)
+    // provider-default billing: dataset items are the evidence; the
+    // chain's usageTotalUsd $0.04 is the vendor's claim and IS
+    // usage.credits (D27). The doc's pinned $0.0016/result fold says
+    // $0.0032 — the disagreement rides out as mismatch.derived.
     assertEquals(result.usage, {
-        credits: { default: 0.0032 },
+        credits: { default: 0.04 },
         evidence: { RESULT: 2 },
+        mismatch: { derived: { default: 0.0032 } },
     });
 });
 

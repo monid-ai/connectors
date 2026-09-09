@@ -3,7 +3,8 @@ import { zInstagramHashtagScraperBody } from "./schema/inputs.ts";
 
 /**
  * apify/instagram-hashtag-scraper — Track Instagram Hashtag. Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({

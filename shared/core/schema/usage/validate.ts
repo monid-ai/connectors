@@ -101,6 +101,54 @@ export function assembleUsage(
     return { credits: creditsOf(model, evidence), evidence };
 }
 
+/** Whether the model has any METERED (PER_UNIT) line — the D27 rule for
+ *  when usage.estimate/usage.evidence must resolve vs when the compiler
+ *  synthesizes the one lawful `() => ({counts: {}})`: with no metered
+ *  lines, nothing depends on input or response. */
+export function hasMeteredLines(model: UsageModel): boolean {
+    switch (model.kind) {
+        case "PER_UNIT":
+            return true;
+        case "COMPOSITE":
+            return Object.values(model.components)
+                .some((component) => component.kind === "PER_UNIT");
+        case "FREE":
+        case "PER_CALL":
+            return false;
+        default:
+            model satisfies never;
+            return false;
+    }
+}
+
+/** Float-dust tolerance for the vendor-claim vs derived-fold comparison
+ *  (design D27) — anything larger is a REAL billing discrepancy. */
+export const CREDITS_EPSILON = 1e-9;
+
+/** Zero entries mean "nothing consumed" — pruned before the claim is
+ *  compared or settled (an all-zero vendor claim = an empty claim). */
+export function pruneZeroCredits(
+    credits: Record<string, number>,
+): Record<string, number> {
+    return Object.fromEntries(
+        Object.entries(credits).filter(([, amount]) => amount > 0),
+    );
+}
+
+/** The D27 cross-check: does the vendor's (pruned) claim disagree with
+ *  our derived fold anywhere, beyond float dust? */
+export function creditsDisagree(
+    claim: Record<string, number>,
+    derived: Record<string, number>,
+): boolean {
+    const pools = new Set([...Object.keys(claim), ...Object.keys(derived)]);
+    for (const pool of pools) {
+        const delta = Math.abs((claim[pool] ?? 0) - (derived[pool] ?? 0));
+        if (delta > CREDITS_EPSILON) return true;
+    }
+    return false;
+}
+
 /**
  * Counts ↔ model discipline (design D19/D26) — ONE exhaustive switch,
  * placed beside the schema it interprets so every consumer shares it:

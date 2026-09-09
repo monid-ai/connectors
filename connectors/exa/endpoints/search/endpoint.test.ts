@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidated away", async () => {
+Deno.test("exa#search happy: costDollars claim wins (fold rides as mismatch), receipt consolidated away", async () => {
     const unit = await testSealedUnit("exa#search");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -26,13 +26,15 @@ Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidat
 
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // base-plus-overage (D19/D26): 3 results are INSIDE the base fee's
-    // included 10 — nothing metered, the engine appends the flat call 1
-    // and folds it through the doc's own card ($0.007 base fee); the
-    // vendor's costDollars receipt stays in the RAW run record
+    // D27 claim-wins: the fixture's costDollars.total ($0.005) is the
+    // vendor's own meter — usage.credits IS that claim. Our pinned fold
+    // says $0.007 (3 results inside the included 10 ⇒ base fee only,
+    // flat call 1 engine-appended), which disagrees beyond 1e-9 — the
+    // fold rides out as mismatch.derived, said, never failing the run.
     assertEquals(result.usage, {
-        credits: { default: 0.007 },
+        credits: { default: 0.005 },
         evidence: { call: 1 },
+        mismatch: { derived: { default: 0.007 } },
     });
     // usage.consolidate ran (engine-executed, same for every operator):
     // the vendor billing field is absorbed out of the payload, the rest
@@ -112,12 +114,12 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        // 2 results ⇒ nothing above the included 10; the flat base fee
-        // bills its $0.007 (engine-appended complete vector, D24/D26)
-        assertEquals(result.usage, {
-            credits: { default: 0.007 },
-            evidence: { call: 1 },
-        });
+        // 2 results ⇒ nothing above the included 10 (evidence is the
+        // engine-appended flat call 1). credits can't be pinned live:
+        // exa's own costDollars claim WINS (D27) and its live total
+        // varies by search type — assert the pool settled instead.
+        assertEquals(result.usage.evidence, { call: 1 });
+        assertEquals(typeof result.usage.credits.default, "number");
         // consolidated — the vendor billing field left the payload
         assert(!("costDollars" in (result.output as Record<string, unknown>)));
     },

@@ -67,16 +67,9 @@ export default defineEndpoint({
         estimate: ({ data }) => ({
             counts: { "article": data.input.queryParams.limit },
         }),
-        /** Doc-level settle: articles DELIVERED off the raw envelope;
-         *  the vendor meter (`credits_consumed`) stays in the RAW run
-         *  record (the receipt IS the output — design D26). */
-        consolidate: ({ data, utils }) => {
-            const articles = utils.json.optionalLen(data.output, "$.data") ??
-                0;
-            return {
-                usage: { counts: { "article": articles } },
-                output: utils.json.omit(data.output, ["credits_consumed"]),
-            };
-        },
+        // Settle is INHERITED (design D27): the provider's generic
+        // evidence counts articles DELIVERED (len($.data) under the sole
+        // metered line) and the provider consolidate lifts the vendor's
+        // credits_consumed claim out of the payload.
     },
 });

@@ -433,3 +433,31 @@
       on evidence, by-name/by-services join CUSTOM_BILLING
 - [x] 18.g Docs: design D26 (D18-reversal rationale); schema/engine/apify
       spec rewrites; AGENT.md billing rewrite; version stays 0.0.1
+
+## 19. D27: subclassing settles — evidence + vendor-meter consolidate
+
+- [x] 19.a Hook split/rename: usage.evidence (quantities, {counts}
+      direct) + usage.consolidate (vendor meter, {credits, output?});
+      utils.json.pluck; zUsage.mismatch.derived; validate helpers
+      (hasMeteredLines/pruneZeroCredits/creditsDisagree/EPSILON)
+- [x] 19.b Engine settle: claim wins (pruned, declared-pool-checked,
+      FN_CONTRACT), empty claim → derived fold, mismatch only on
+      disagreement (logged, never fails), strip via consolidate.output;
+      error settles untouched
+- [x] 19.c Compiler: synthesis (core#usage.synthesizedEmpty, one shared
+      entry) for meterless docs; metered must-resolve for estimate AND
+      evidence; ≥2-metered messages renamed; consolidate optional;
+      compiled doc model/credits/estimate/evidence REQUIRED;
+      presets.usage.perCall + PortableConsolidateFn deleted
+- [x] 19.d Fleet: akta provider consolidate+evidence (6 strips → 1 fn;
+      FREE pair model-only; news settle deleted; 3 divergent evidence
+      overrides); exa provider pluck; apify provider claim + evidence
+      rename + 2 estimate deletions; octen strip hoist + 4 renames;
+      tinyfish model-only; estimate CLI prints the answer only
+- [x] 19.e Tests (25+30+66 core/compiler/engine, 35+ connectors):
+      claim-wins/mismatch/prune/undeclared-pool/strip/synthesis proofs;
+      akta OWN_EVIDENCE provenance guard; fixture-computed claims
+      (exa search claim 0.005 vs fold 0.007 → mismatch asserted;
+      apify chains claim 0.01 vs per-doc folds)
+- [x] 19.f Docs: design D27, spec deltas (schema/engine/apify), AGENT.md;
+      stale comment sweep; version stays 0.0.1

@@ -4,7 +4,7 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
 /**
  * harvestapi/linkedin-profile-search — Search LinkedIn Profiles. THE
  * leaf-wise-override showcase: this endpoint REPLACES the provider's poll
- * and consolidate (inheriting start/stop/fromError untouched) because its
+ * and evidence (inheriting start/stop/fromError untouched) because its
  * billing basis is SEARCH PAGES, not dataset items.
  *
  * Ported 1:1 from v1 (`linkedin/linkedin-profile-search.ts`):
@@ -23,7 +23,7 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
  *   - The poll override stamps the reconstruction ONTO the output
  *     (`{searchPages, profileCount, profiles}`) — the counts users are
  *     billed on are the counts they can see.
- *   - The consolidate override settles counts keyed by the actor's OWN
+ *   - The evidence override settles counts keyed by the actor's OWN
  *     charge events (design D19): "search-page" (a successful zero-profile
  *     run still scraped ≥1 charged page — page-basis keeps it billable)
  *     plus the profile count under the MODE-selected component
@@ -279,11 +279,11 @@ export default defineEndpoint({
                 },
             };
         },
-        // OVERRIDES the provider consolidate: billing basis = SEARCH PAGES
-        // (v1: a zero-profile run still bills its ≥1 charged pages);
-        // profiles land under the MODE-selected component key, so the
-        // broker prices them at exactly the vendor's per-event rate.
-        consolidate: ({ data, utils }) => {
+        // OVERRIDES the provider evidence (design D27): billing basis =
+        // SEARCH PAGES (v1: a zero-profile run still bills its ≥1 charged
+        // pages); profiles land under the MODE-selected line, priced at
+        // exactly the pinned per-event rate.
+        evidence: ({ data, utils }) => {
             const pages = utils.json.optionalNum(
                 data.output,
                 "$.searchPages",
@@ -301,16 +301,14 @@ export default defineEndpoint({
                 : mode === "Full + email search"
                 ? "full_profile_with_email"
                 : undefined;
-            // vendor receipts (run-record pricing, usageTotalUsd) stay in
-            // the RAW run record + the threaded state — never in usage (D26)
+            // quantities only (D27) — the vendor's usageTotalUsd claim is
+            // the provider consolidate's job
             return {
-                usage: {
-                    counts: {
-                        "search_page": pages,
-                        ...(profileKey !== undefined && profiles > 0
-                            ? { [profileKey]: profiles }
-                            : {}),
-                    },
+                counts: {
+                    "search_page": pages,
+                    ...(profileKey !== undefined && profiles > 0
+                        ? { [profileKey]: profiles }
+                        : {}),
                 },
             };
         },

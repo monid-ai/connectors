@@ -1018,3 +1018,75 @@ the folded `{credits, evidence}` — pre-run pricing with no broker.
     profile-search-by-* docs shed their v1 flat worst-case $0.01/result
     hold for the sibling's mode-selected composite (the known open
     follow-up on their billing basis).
+
+## D27 — Subclassing settles: usage.evidence + the vendor-meter consolidate
+
+**1. Two settle fns, names that mean what they do.** The pre-D27
+"consolidate" did two jobs — derive quantities AND strip the vendor's
+billing field — which forced endpoints to repeat the strip whenever they
+overrode the counting. Split, with the WORD going back to its original
+job:
+  - `usage.evidence(envelope) → {counts}` — per-line QUANTITIES (the
+    old fn renamed to the thing it produces, its return slimmed: no
+    wrapper, no output slot). Mirrors `estimate`, the same shape
+    pre-run: estimate promises evidence, evidence settles it, both feed
+    the public `usage.evidence` field — the same declaration→output
+    naming `usage.credits` already had. Endpoint-DIVERGENT.
+  - `usage.consolidate(envelope) → {credits, output?}` — the VENDOR'S
+    OWN METER, lifted out of the payload in one motion
+    (`utils.json.pluck(json, path) → {value, rest}` — new ABI util so
+    read + remove is one expression). Provider-UNIFORM: where the
+    vendor puts its meter is a provider-wide fact, so the strip is
+    written once (akta credits_consumed, exa costDollars, apify
+    usageTotalUsd-in-state; octen has no total — its consolidate claims
+    `{}` and only strips the meta.usage receipt). OPTIONAL on the
+    compiled doc.
+
+**2. Reported wins; the fold is the check.** At success settle:
+evidence → flat 1s appended → derived fold (D26, unchanged). Then, if a
+consolidate fn resolved: zero entries prune (0 = nothing consumed; the
+FREE lookups' `credits_consumed: 0` prunes to an empty claim), an
+all-empty claim falls back to the derived fold, and a NON-EMPTY claim
+WINS — `usage.credits` IS the vendor's number, our rate card demoted to
+fallback + always-on cross-check. Disagreement beyond 1e-9 rides out as
+`usage.mismatch.derived` (only OUR number — `credits` already holds the
+vendor's) — said, logged, never failing the run. Claim pool ids must be
+DECLARED credit systems (FN_CONTRACT — a nonzero claim on a FREE doc
+trips loudly). The public interface stays `{credits, evidence}` plus the
+one signal; fns omit unreported entries (never `?? 0`). Error settles
+stay `zeroUsage()` — no meter read. The apify posture upgrades: the
+survey guards rates BETWEEN runs, the mismatch signal guards them ON
+EVERY run.
+
+**3. Subclassing: endpoint ?? provider, and the compiler fills the
+forced move.** Resolution stays two-level (provider default, endpoint
+override). When NEITHER declares estimate/evidence AND the model has no
+metered lines (FREE / flat — `hasMeteredLines`), the compiler
+SYNTHESIZES the one lawful fn `() => ({counts: {}})` into the doc: a
+real interned fnTable entry (`core#usage.synthesizedEmpty`, one entry
+repo-wide), so the compiled doc stays comprehensive — model/credits/
+estimate/evidence all REQUIRED, consolidate present exactly when the
+vendor reports a meter. Metered models must still resolve both
+quantities fns (HOOK_UNRESOLVED — the deduced-estimate guarantee,
+unchanged); ≥2-metered composites still force DOC-level ownership.
+`presets.usage.perCall` DIES: a flat doc's settle is a forced move, so
+there is nothing to author at all. Note the resolution order means a
+provider-declared generic evidence serves even FREE docs (akta's
+returns `{counts: {}}` for them — behavior-identical to synthesis;
+synthesis fires only when no level declares).
+
+**4. Fleet.** akta: provider consolidate (pluck credits_consumed) +
+generic model-keyed evidence (delivered = len($.data) under the sole
+metered line — v1 providerFormatOutput + getActualCost reborn as two
+one-job fns); FREE pair shrink to `model: FREE` alone; news drops its
+settle entirely (provider default is behavior-identical); enrichment
+(section-keyed data), product-reviews (CSV mode), employee-reviews
+(REQUESTED-limit basis — now cross-checked by the claim on every real
+run) keep only their divergent evidence fns. exa: provider consolidate
+plucks costDollars; endpoint fns lose their strips. apify: provider
+consolidate claims stashed usageTotalUsd; generic counts fn renamed to
+evidence; the two flat docs' boilerplate estimates die (synthesis).
+tinyfish: provider fns die (model alone). octen: strips hoisted to one
+provider consolidate; four evidence renames. `engine:estimate` prints
+just the answer — `{credits, evidence}` (model and pools live on the
+doc).

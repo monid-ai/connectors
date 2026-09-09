@@ -3,7 +3,8 @@ import { zFacebookEventsScraperBody } from "./schema/inputs.ts";
 
 /**
  * apify/facebook-events-scraper — Search Facebook Events. Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({

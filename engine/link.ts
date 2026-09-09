@@ -33,6 +33,8 @@ import {
     type UsageConsolidateFn,
     UsageEstimateContract,
     type UsageEstimateFn,
+    UsageEvidenceContract,
+    type UsageEvidenceFn,
     zLifecycleOutcome,
     zLifecycleStartData,
     zLifecycleTickData,
@@ -58,8 +60,12 @@ export interface LinkedFns {
     fromResponse?: (data: EnvelopeData) => Json;
     /** Provider-error projection — runs only on error envelopes. */
     fromError?: (data: EnvelopeData) => Json;
-    /** THE settle fn: raw envelope → {usage, output?}. */
-    usageConsolidate: (data: EnvelopeData) => Consolidated;
+    /** Post-run quantities settle: raw envelope → {counts} (D27 —
+     *  estimate's settle-side twin; the engine folds to credits). */
+    usageEvidence: (data: EnvelopeData) => FnUsage;
+    /** The vendor-meter fn: raw envelope → {credits, output?} — the
+     *  vendor's own claim + its removal from the payload (D27). */
+    usageConsolidate?: (data: EnvelopeData) => Consolidated;
     /** Pre-run estimate: validated input → the QUANTITY promise per
      *  metered line (pure, no IO) — the engine folds to credits (D26). */
     usageEstimate?: (data: EstimateData) => FnUsage;
@@ -311,7 +317,25 @@ export async function linkFns(
             "auth.inject",
             logger,
         ),
-        usageConsolidate: wrapContract<
+        usageEvidence: wrapContract<
+            EnvelopeData,
+            FnUsage,
+            UsageEvidenceFn
+        >(
+            UsageEvidenceContract,
+            await resolveFn(
+                doc.usage.evidence,
+                fns,
+                engineVersion,
+                `${doc.id}#usage.evidence`,
+            ),
+            doc.id,
+            "usage.evidence",
+            logger,
+        ),
+    };
+    if (doc.usage.consolidate) {
+        linked.usageConsolidate = wrapContract<
             EnvelopeData,
             Consolidated,
             UsageConsolidateFn
@@ -326,8 +350,8 @@ export async function linkFns(
             doc.id,
             "usage.consolidate",
             logger,
-        ),
-    };
+        );
+    }
     if (doc.usage.estimate) {
         linked.usageEstimate = wrapContract<
             EstimateData,

@@ -80,22 +80,19 @@ export default defineEndpoint({
          *  `meta.usage.full_content_tokens`. The flat "call" is
          *  engine-appended, never promised here. */
         estimate: () => ({ counts: { "full_content_tokens": 0 } }),
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const tokens = utils.json.optionalNum(
                 data.output,
                 "$.meta.usage.full_content_tokens",
             );
+            // the flat "call" line is engine-appended (D24/D26); the
+            // meta.usage receipt strip is the provider consolidate's job
             return {
-                usage: {
-                    // the flat "call" line is engine-appended (D24/D26);
-                    // meta.usage stays in the RAW run record
-                    counts: {
-                        ...(tokens !== undefined
-                            ? { "full_content_tokens": tokens }
-                            : {}),
-                    },
+                counts: {
+                    ...(tokens !== undefined
+                        ? { "full_content_tokens": tokens }
+                        : {}),
                 },
-                output: utils.json.omit(data.output, ["usage"]),
             };
         },
     },

@@ -19,17 +19,11 @@ export default defineEndpoint({
     request: { method: "GET", path: "/v1/industry/search/" },
     input: { schema: { queryParams: zIndustrySearchQueryParams } },
     usage: {
-        /** FREE (design D25) — resolution bills nothing: v1 evidence
-         *  industry-search.ts priced `makePerCallPrice(0)`; the akta docs
-         *  say "Free — consumes 0 credits". Free-ness is a MODEL fact — the
-         *  fns return plain {counts: {}} and the model interprets. */
+        /** FREE (designs D25/D27) — the lookup bills nothing, and the
+         *  MODEL alone says so: the quantities fns are compiler-
+         *  synthesized (`{counts: {}}` is the only lawful return) and
+         *  the provider consolidate handles the vendor meter (always 0
+         *  here — prunes to an empty claim). */
         model: { kind: UsageModelKind.FREE },
-        estimate: () => ({ counts: {} }),
-        consolidate: ({ data, utils }) => ({
-            usage: { counts: {} },
-            // still absorb the vendor's billing field (always 0 here) —
-            // billing facts never ride the payload
-            output: utils.json.omit(data.output, ["credits_consumed"]),
-        }),
     },
 });

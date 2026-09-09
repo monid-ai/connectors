@@ -51,6 +51,36 @@ function deepOmit(value: Json, keys: ReadonlySet<string>): Json {
     return out;
 }
 
+/** Remove EXACTLY the node at a (valid, present) restricted path —
+ *  copy-on-write along the walk; containers stay otherwise untouched. */
+function removeAtPath(value: Json, path: string): Json {
+    const segments =
+        path.slice(1).match(/\.[A-Za-z_][A-Za-z0-9_-]*|\[\d+\]/g) ?? [];
+    if (segments.length === 0) return null; // plucking $ leaves nothing
+    const walk = (current: Json, depth: number): Json => {
+        const segment = segments[depth];
+        const last = depth === segments.length - 1;
+        if (segment.startsWith("[")) {
+            if (!Array.isArray(current)) return current;
+            const index = Number(segment.slice(1, -1));
+            const out = [...current];
+            if (last) out.splice(index, 1);
+            else out[index] = walk(out[index], depth + 1);
+            return out;
+        }
+        if (
+            current === null || typeof current !== "object" ||
+            Array.isArray(current)
+        ) return current;
+        const key = segment.slice(1);
+        const out = { ...current };
+        if (last) delete out[key];
+        else out[key] = walk(out[key], depth + 1);
+        return out;
+    };
+    return walk(value, 0);
+}
+
 function deepMerge(value: Json, fields: Record<string, Json>): Json {
     if (value === null || typeof value !== "object" || Array.isArray(value)) {
         // merging fields into a non-object replaces it with the fields object
@@ -160,6 +190,12 @@ export const jsonUtil: JsonUtil = {
     },
     /** Deep-merge (append) fields into an object value; non-objects are replaced. */
     merge: (value, fields) => deepMerge(value, fields),
+    /** One-motion extract (design D27): {value at path, input without it}. */
+    pluck: (value, path) => {
+        const found = lookup(value, path);
+        if (found === undefined) return { rest: value };
+        return { value: found, rest: removeAtPath(value, path) };
+    },
 };
 
 /**

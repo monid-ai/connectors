@@ -3,7 +3,8 @@ import { zTiktokCommentsScraperApiBody } from "./schema/inputs.ts";
 
 /**
  * scraptik/tiktok-comments-scraper-api — List TikTok Comments. Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({
@@ -55,6 +56,5 @@ export default defineEndpoint({
         },
         // all-flat composite: nothing metered to promise — the engine
         // appends both flat 1s (billing triple, D25)
-        estimate: () => ({ counts: {} }),
     },
 });

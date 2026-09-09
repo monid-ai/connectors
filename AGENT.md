@@ -85,11 +85,18 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   endpoint — the pool is a provider-wide fact; single-pool providers declare
   `default`; a dollar-priced vendor's pool IS dollars).
   Conditions/offsets/selection are COUNTING rules owned by consolidate/estimate,
-  never model shapes (D19 — no VARIANT/TIERED kinds). The BILLING TRIPLE
-  (model + estimate + consolidate) is compile-required on every doc (D25); FREE
-  and flat docs' fns return plain `{counts: {}}` (the model interprets).
-  Estimates read the PRE-toRequest validated input (typed body AND queryParams —
-  D25).
+  never model shapes (D19 — no VARIANT/TIERED kinds). The settle splits into TWO
+  one-job fns (D27, subclassing: the PROVIDER states the default, the ENDPOINT
+  overrides only what diverges): `usage.evidence` (envelope → `{counts}` —
+  per-line quantities, estimate's settle-side twin, endpoint-divergent) and
+  `usage.consolidate` (envelope → `{credits, output?}` — the VENDOR'S OWN meter
+  lifted out of the payload in one motion via `utils.json.pluck`,
+  provider-uniform, OPTIONAL: not every vendor reports one). Compiled doc:
+  model/credits/estimate/evidence REQUIRED — for meterless models (FREE/flat)
+  the compiler SYNTHESIZES the one lawful `() => ({counts: {}})`
+  (`core#usage.synthesizedEmpty`, one shared fnTable entry); metered models must
+  resolve both quantities fns. Estimates read the PRE-toRequest validated input
+  (typed body AND queryParams — D25).
 - **Input fidelity (D25)**: `schema/inputs.ts` is the faithful vendor mirror —
   optionality only, no `.default()`, unquoted identifier keys. ALL tightening
   lives at the BINDING, derived: `zBody.required({limit: true})` (primary
@@ -99,16 +106,20 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   defaults) / `.unwrap().min(1)` floors ONLY where the vendor documents 0 =
   unbounded. Multiplier arrays are never tightened — optional arrays read
   `arr?.length ?? 0` (honest optionality); empty input ⇒ estimate 0. Never
-  invent structure the mirror doesn't have. Fns return `{counts}` — QUANTITIES
-  per metered line only (no rate math, no receipts: vendor billing fields live
-  in the RAW run record — the receipt IS the output). The ENGINE owns the fold
-  (D26, at estimate AND success settle): it appends the model's flat 1s
+  invent structure the mirror doesn't have. Quantities fns return `{counts}` —
+  per metered line only (no rate math, no receipt plumbing). The ENGINE owns the
+  fold (D26, at estimate AND success settle): it appends the model's flat 1s
   (composite flats under their line id; leaf PER_CALL under the reserved `CALL`
   key — not a Unit; fns never write flat keys, type + runtime rejected) and
   folds `ceil(quantity / every) × consumes.amount` per line into the public
-  `usage = {credits, evidence}` — per-pool consumption plus the per-line
-  quantities that re-derive it; anyone holding the doc can check the bill. Error
-  settles are `{credits: {}, evidence: {}}`. Scalars carry optional `label`s
+  `usage = {credits, evidence}`. Then the VENDOR'S CLAIM settles (D27): the
+  consolidate fn's non-empty `credits` WINS (source of truth — zero entries
+  prune, unreported entries are OMITTED, never `?? 0`; an empty claim falls back
+  to the derived fold), pool ids must be declared credit systems (FN_CONTRACT),
+  and a disagreement beyond 1e-9 rides out as `usage.mismatch.derived` — our
+  fold, said and logged, never failing the run. Anyone holding the doc
+  re-derives the fold from evidence × rates. Error settles are
+  `{credits: {}, evidence: {}}` — no meter read. Scalars carry optional `label`s
   ("base fee", "reviews") — display metadata; the id is the join. ≥2 metered
   components require doc-level fns (compile-checked); estimates are DEDUCED,
   never defaulted: no fallback constants — limiting knobs are either
@@ -116,10 +127,11 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   before any hook) or REQUIRED at the binding site (`zBody.required({...})` in
   endpoint.ts; schema files stay actor-faithful). The engine validates fn counts
   against the model at settle AND estimate (FN_CONTRACT) before the fold.
-  `deno task engine:estimate` prints the folded pre-run `{credits, evidence}`;
+  `deno task engine:estimate` prints just the answer — `{credits, evidence}`;
   `deno task apify:pricing` (survey v3) guards model shape + the `vendor ?? id`
-  join + PINNED GOLD-TIER RATES against live published pricing
-  (D18/D19/D24/D26).
+  join + PINNED GOLD-TIER RATES against live published pricing between runs
+  (D18/D19/D24/D26), and the D27 mismatch signal cross-checks the same rates on
+  EVERY run.
 - **Typed authoring (D19a/D23)**: `defineEndpoint` is generic over the model,
   the input body schema, and the lifecycle state schema — counts keys narrow to
   the model's LITERAL metered keys, `data.input.body` is `z.output` of the doc's

@@ -3,7 +3,8 @@ import { zLinkedinCompanyEmployeesBody } from "./schema/inputs.ts";
 
 /**
  * harvestapi/linkedin-company-employees — List LinkedIn Company Employees. Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({

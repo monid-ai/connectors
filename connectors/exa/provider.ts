@@ -26,5 +26,25 @@ export default defineProvider({
          *  pool is US dollars — pinned v1 vendor unit prices, re-audited
          *  on repricing (the apify posture). */
         credits: { default: { label: "US dollars" } },
+        /** The vendor's OWN claim (design D27): every exa response
+         *  carries a `costDollars` receipt — pluck the whole node out of
+         *  the payload, read `.total` off it. Entry OMITTED when absent
+         *  (falls back to the derived fold); a present claim WINS and the
+         *  pinned rates become the per-run cross-check. */
+        consolidate: ({ data, utils }) => {
+            const { value, rest } = utils.json.pluck(
+                data.output,
+                "$.costDollars",
+            );
+            const total = value === undefined
+                ? undefined
+                : utils.json.optionalNum(value, "$.total");
+            return {
+                credits: {
+                    ...(total !== undefined ? { default: total } : {}),
+                },
+                output: rest,
+            };
+        },
     },
 });

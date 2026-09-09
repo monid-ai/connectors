@@ -14,21 +14,31 @@ export const zFnUsage = z.object({
 export type FnUsage = z.infer<typeof zFnUsage>;
 
 /**
- * The PUBLIC usage (design D26) — exactly two facts, both re-derivable
- * and broker-generic:
+ * The PUBLIC usage (designs D26/D27) — the same two facts, both
+ * re-derivable and broker-generic:
  *   1. `credits`  — how many credits consumed, per declared credit
  *      system: the priced vector (broker: credits[id] × card row).
+ *      When the vendor reports its OWN meter (`usage.consolidate`),
+ *      that claim IS this number — source of truth; otherwise it is
+ *      the engine's fold of evidence through the doc's rate card.
  *   2. `evidence` — WHY: one entry per rate-card line (units consumed
  *      for PER_UNIT lines, 1 for PER_CALL lines — engine-appended).
- *      Anyone holding the DOC re-derives credits from evidence × the
+ *      Anyone holding the DOC re-derives the fold from evidence × the
  *      model's every/amount: the bill is checkable from public facts.
- * Assembled by the ENGINE (fn quantities + flat 1s → fold through the
- * doc's rate card). No third field: vendor receipts are the raw run
- * record's job, not usage's.
+ * Plus ONE signal, present only when the two calculations disagree
+ * (design D27): `mismatch.derived` carries OUR fold when the vendor's
+ * claim (already in `credits`) differs — "vendor says X, we compute Y"
+ * — surfaced, never hidden, never failing the run. Same interface
+ * otherwise; only how `credits` was calculated differs.
  */
 export const zUsage = z.object({
     credits: z.record(z.string().min(1), z.number().nonnegative()),
     evidence: z.record(z.string().min(1), z.number().nonnegative()),
+    mismatch: z.strictObject({
+        /** The engine's rate-card fold — the number WE compute from
+         *  evidence; `credits` holds the vendor's disagreeing claim. */
+        derived: z.record(z.string().min(1), z.number().nonnegative()),
+    }).optional(),
 }).strict();
 export type Usage = z.infer<typeof zUsage>;
 

@@ -72,6 +72,13 @@ export interface JsonUtil {
     pick(value: Json, paths: string[]): Record<string, Json>;
     /** Deep-merge fields into an object value; non-objects are replaced. */
     merge(value: Json, fields: Record<string, Json>): Json;
+    /** ONE-MOTION extract (design D27): split a value into the node at
+     *  the path and everything else — `{value, rest}`. Absent path ⇒
+     *  `value` undefined, `rest` = the input unchanged (shape-tolerant
+     *  like the other transformers; bad path SYNTAX still throws).
+     *  Removal is exact (that one path), not the deep key-walk `omit`
+     *  does. */
+    pluck(value: Json, path: string): { value?: Json; rest: Json };
 }
 
 export const zJsonUtil = z.custom<JsonUtil>(

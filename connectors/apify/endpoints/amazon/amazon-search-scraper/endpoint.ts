@@ -3,7 +3,8 @@ import { zAmazonSearchScraperBody } from "./schema/inputs.ts";
 
 /**
  * axesso_data/amazon-search-scraper — Search Amazon. Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({

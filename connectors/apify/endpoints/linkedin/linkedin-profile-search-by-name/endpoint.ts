@@ -3,7 +3,8 @@ import { zLinkedinProfileSearchByNameBody } from "./schema/inputs.ts";
 
 /**
  * harvestapi/linkedin-profile-search-by-name — Search LinkedIn Profiles (by Name). Pure data; the async machinery
- * (lifecycle + fromError + usage.consolidate) is inherited leaf-wise from
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
  * the apify provider.
  */
 export default defineEndpoint({
@@ -107,12 +108,12 @@ export default defineEndpoint({
                 },
             };
         },
-        /** OVERRIDES the provider consolidate (≥2 metered components):
+        /** OVERRIDES the provider evidence (≥2 metered components):
          *  dataset items ARE the profiles, keyed by the mode the pinned
          *  input selects. The actor does not report a page receipt in its
          *  output, so pages settle on the same documented-25-per-page
          *  arithmetic the estimate uses, over DELIVERED profiles. */
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const profiles = Array.isArray(data.output)
                 ? data.output.length
                 : 0;
@@ -126,11 +127,9 @@ export default defineEndpoint({
                 ? "full_profile_with_email"
                 : "main_profile";
             return {
-                usage: {
-                    counts: {
-                        "search_page": Math.ceil(profiles / 25),
-                        ...(profiles > 0 ? { [profileKey]: profiles } : {}),
-                    },
+                counts: {
+                    "search_page": Math.ceil(profiles / 25),
+                    ...(profiles > 0 ? { [profileKey]: profiles } : {}),
                 },
             };
         },

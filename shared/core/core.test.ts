@@ -8,6 +8,8 @@ import {
     CALL_KEY,
     contractConfig,
     countsMismatch,
+    CREDITS_EPSILON,
+    creditsDisagree,
     creditsOf,
     defaultFnUsage,
     defineEndpoint,
@@ -16,15 +18,18 @@ import {
     flatLines,
     fnKey,
     getPath,
+    hasMeteredLines,
     parseSchema,
     presets,
     pruneUndefined,
+    pruneZeroCredits,
     stableStringify,
     Unit,
     UsageModelKind,
     ValidationError,
     zeroUsage,
     zJson,
+    zUsage,
     zUsageModel,
 } from "@shared/core";
 
@@ -261,6 +266,79 @@ Deno.test("countsMismatch: one rule per kind; {counts: {}} passes everywhere", (
 });
 
 // ---------------------------------------------------------------------------
+// the vendor-claim machinery (design D27): mismatch shape, the synthesis
+// rule (hasMeteredLines), zero-claim pruning, and the claim ↔ fold check
+// ---------------------------------------------------------------------------
+
+Deno.test("zUsage: optional mismatch carries ONLY the derived fold (strict)", () => {
+    // the common shape is unchanged — no mismatch key when the two agree
+    assertEquals(
+        zUsage.parse({ credits: { default: 1 }, evidence: { RESULT: 2 } }),
+        { credits: { default: 1 }, evidence: { RESULT: 2 } },
+    );
+    // present: credits = the VENDOR's claim, mismatch.derived = OUR fold
+    const disagreeing = {
+        credits: { default: 0.5 },
+        evidence: { RESULT: 3 },
+        mismatch: { derived: { default: 1.5 } },
+    };
+    assertEquals(zUsage.parse(disagreeing), disagreeing);
+    // strict: derived is required and is the ONLY mismatch field
+    assert(
+        !zUsage.safeParse({ credits: {}, evidence: {}, mismatch: {} }).success,
+    );
+    assert(
+        !zUsage.safeParse({
+            credits: {},
+            evidence: {},
+            mismatch: { derived: {}, reported: {} },
+        }).success,
+    );
+});
+
+Deno.test("hasMeteredLines: the D27 synthesis rule — true iff a PER_UNIT line exists", () => {
+    assertEquals(hasMeteredLines(freeModel), false);
+    assertEquals(hasMeteredLines(flatModel), false);
+    assertEquals(hasMeteredLines(meteredModel), true);
+    assertEquals(hasMeteredLines(compositeModel), true);
+    // an ALL-FLAT composite meters nothing — the compiler synthesizes
+    const allFlat = zUsageModel.parse({
+        kind: "COMPOSITE",
+        components: {
+            "actor-start": {
+                kind: "PER_CALL",
+                consumes: { credit: "default", amount: 0.25 },
+            },
+            "actor-finish": {
+                kind: "PER_CALL",
+                consumes: { credit: "default", amount: 0.1 },
+            },
+        },
+    });
+    assertEquals(hasMeteredLines(allFlat), false);
+});
+
+Deno.test("pruneZeroCredits: zero entries mean nothing consumed; positives survive", () => {
+    assertEquals(pruneZeroCredits({}), {});
+    assertEquals(pruneZeroCredits({ default: 0 }), {});
+    assertEquals(pruneZeroCredits({ default: 0, usd: 0.5 }), { usd: 0.5 });
+});
+
+Deno.test("creditsDisagree: float dust tolerated (1e-9); real deltas + one-sided pools flag", () => {
+    assertEquals(CREDITS_EPSILON, 1e-9);
+    // 0.1 + 0.2 !== 0.3 in floats — but the delta is dust, not billing
+    assertEquals(
+        creditsDisagree({ default: 0.3 }, { default: 0.1 + 0.2 }),
+        false,
+    );
+    assertEquals(creditsDisagree({ default: 0.5 }, { default: 0.6 }), true);
+    // a pool present on only one side is a real disagreement
+    assertEquals(creditsDisagree({ default: 0.5 }, {}), true);
+    assertEquals(creditsDisagree({}, { default: 0.5 }), true);
+    assertEquals(creditsDisagree({}, {}), false);
+});
+
+// ---------------------------------------------------------------------------
 // loader owns folder identity (the compiler never sees folder names)
 // ---------------------------------------------------------------------------
 
@@ -319,15 +397,15 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
                     },
                 },
             },
-            consolidate: ({ data }) => ({
-                usage: {
-                    // typed body: direct property access, no JSONPath
-                    counts: { "comment": data.input.body.maxItems ?? 1 },
-                },
+            evidence: ({ data }) => ({
+                // typed body: direct property access, no JSONPath
+                counts: { "comment": data.input.body.maxItems ?? 1 },
             }),
             estimate: ({ data }) => ({
                 counts: { "comment": data.input.body.maxItems ?? 1 },
             }),
+            // the vendor-meter fn (design D27): {credits, output?}
+            consolidate: () => ({ credits: { default: 0.02 }, output: null }),
         },
     });
     assert(good.meta.displayName === "Typed");
@@ -411,12 +489,27 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
                     unit: Unit.RESULT,
                     consumes: { credit: "default", amount: 0.01 },
                 },
-                consolidate: ({ data }) => ({
-                    usage: {
-                        // @ts-expect-error — the body schema has no such field
-                        counts: { "RESULT": data.input.body.nope ?? 1 },
-                    },
+                evidence: ({ data }) => ({
+                    // @ts-expect-error — the body schema has no such field
+                    counts: { "RESULT": data.input.body.nope ?? 1 },
                 }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { body } },
+            usage: {
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
+                evidence: () => ({ counts: {} }),
+                // @ts-expect-error — the pre-D27 shape: consolidate
+                // returns {credits, output?}, never {usage: {counts}}
+                consolidate: () => ({ usage: { counts: {} } }),
             },
         }));
     void (() =>
@@ -485,13 +578,11 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
                 unit: Unit.RESULT,
                 consumes: { credit: "default", amount: 0.01 },
             },
-            consolidate: ({ data }) => ({
-                usage: {
-                    counts: {
-                        "RESULT": data.lifecycle?.state.data?.usd !== undefined
-                            ? 1
-                            : 0,
-                    },
+            evidence: ({ data }) => ({
+                counts: {
+                    "RESULT": data.lifecycle?.state.data?.usd !== undefined
+                        ? 1
+                        : 0,
                 },
             }),
         },
@@ -537,7 +628,7 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
                     unit: Unit.RESULT,
                     consumes: { credit: "default", amount: 0.01 },
                 },
-                consolidate: () => ({ usage: { counts: {} } }),
+                evidence: () => ({ counts: {} }),
             },
             lifecycle: {
                 state: stateData,
@@ -564,13 +655,11 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
                     unit: Unit.RESULT,
                     consumes: { credit: "default", amount: 0.01 },
                 },
-                consolidate: ({ data }) => ({
-                    usage: {
-                        counts: {
-                            // @ts-expect-error — no such field on the
-                            // declared state bag (typed READ at settle)
-                            "RESULT": data.lifecycle?.state.data?.nope ?? 0,
-                        },
+                evidence: ({ data }) => ({
+                    counts: {
+                        // @ts-expect-error — no such field on the
+                        // declared state bag (typed READ at settle)
+                        "RESULT": data.lifecycle?.state.data?.nope ?? 0,
                     },
                 }),
             },
@@ -628,16 +717,18 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
             },
         },
         usage: {
-            // typed READ at settle: the stashed billing signal is
-            // absorbed into the OUTPUT (receipts are the raw run
-            // record's job, never usage's — design D26)
-            consolidate: ({ data }) => ({
-                usage: { counts: {} },
-                output: {
-                    settledUsd: data.lifecycle?.state.data?.usageTotalUsd ??
-                        null,
-                },
-            }),
+            // a GENERIC quantities default (design D27) — counts stay
+            // Record<string, number> at provider level
+            evidence: () => ({ counts: {} }),
+            // typed READ at settle: the stashed vendor meter is LIFTED
+            // into the claim (design D27 — the claim wins at settle;
+            // receipts stay the raw run record's job)
+            consolidate: ({ data }) => {
+                const usd = data.lifecycle?.state.data?.usageTotalUsd;
+                return {
+                    credits: { ...(usd !== undefined ? { default: usd } : {}) },
+                };
+            },
         },
     });
     void good;
@@ -661,7 +752,7 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
                     };
                 },
             },
-            usage: { consolidate: () => ({ usage: { counts: {} } }) },
+            usage: { consolidate: () => ({ credits: {} }) },
         }));
     void (() =>
         defineProvider({
@@ -682,7 +773,7 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
             },
             usage: {
                 consolidate: ({ data }) => ({
-                    usage: { counts: {} },
+                    credits: {},
                     output: {
                         // @ts-expect-error — no such field on the
                         // provider's declared state bag (typed READ)
@@ -723,7 +814,6 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
                 void requestedLimit;
                 return { counts: {} };
             },
-            consolidate: () => ({ usage: { counts: {} } }),
         },
     });
     void good;
@@ -738,7 +828,6 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
                 // @ts-expect-error — a FREE doc has no metered keys: its
                 // fns can write only {} (free bills nothing — D25)
                 estimate: () => ({ counts: { "RESULT": 1 } }),
-                consolidate: () => ({ usage: { counts: {} } }),
             },
         }));
     void (() =>
@@ -759,7 +848,6 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
                         "RESULT": data.input.queryParams.nope ?? 1,
                     },
                 }),
-                consolidate: () => ({ usage: { counts: {} } }),
             },
         }));
 });

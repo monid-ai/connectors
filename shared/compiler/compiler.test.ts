@@ -57,12 +57,11 @@ function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
                     consumes: { credit: "default", amount: 0.01 },
                 },
                 // billable lines drain a DECLARED credit system (D26):
-                // one provider-level pool serves every test doc
+                // one provider-level pool serves every test doc. The
+                // flat model has no metered lines, so estimate and
+                // evidence are compiler-SYNTHESIZED (design D27);
+                // consolidate is optional and none is declared.
                 credits: { default: { label: "Demo credits" } },
-                // billing triple (D25): a provider-level estimate resolves
-                // the compile rule for every test doc
-                estimate: () => ({ counts: {} }),
-                consolidate: presets.usage.perCall(),
             },
             ...overrides,
         } as Parameters<typeof defineProvider>[0],
@@ -199,11 +198,10 @@ Deno.test("compile produces doc maps + interned table; ids inferred; closure hol
     assertEquals(Object.keys(bundle.providers), ["demo"]);
     const other = bundle.endpoints["demo#other"];
     const search = bundle.endpoints["demo#search"];
-    // interning: identical fallback fns share one entry
-    assertEquals(
-        other.usage.consolidate.$fn.key,
-        search.usage.consolidate.$fn.key,
-    );
+    // interning: identical fallback fns share one entry — both flat docs
+    // carry the ONE synthesized quantities entry (design D27)
+    assertEquals(other.usage.evidence.$fn.key, search.usage.evidence.$fn.key);
+    assertEquals(other.usage.estimate.$fn.key, search.usage.estimate.$fn.key);
     assertEquals(other.auth.inject.$fn.key, search.auth.inject.$fn.key);
     // fnTable closure in BOTH directions
     const referenced = new Set(
@@ -251,7 +249,7 @@ Deno.test("coded rejections: a malformed def at the compiler boundary is DOC_MAL
     assert(error.cause !== undefined, "ValidationError preserved as cause");
 });
 
-Deno.test("usage.consolidate is REQUIRED: endpoint ?? provider, neither fails", async () => {
+Deno.test("usage.model is REQUIRED: endpoint ?? provider, neither fails", async () => {
     await assertRejects(
         () =>
             compileBundle(
@@ -262,21 +260,141 @@ Deno.test("usage.consolidate is REQUIRED: endpoint ?? provider, neither fails", 
                 OPTS,
             ),
         Error,
-        "usage.consolidate must resolve",
-    );
-    // provider-level fallback fills every endpoint
-    const bundle = await compileBundle(
-        source([{ name: "search", def: makeEndpoint() }]),
-        OPTS,
-    );
-    assert(
-        bundle.endpoints["demo#search"].usage.consolidate.$fn.key.startsWith(
-            "sha256:",
-        ),
+        "usage.model must resolve",
     );
 });
 
-Deno.test("≥2 metered components require DOC-level consolidate + estimate (design D19)", async () => {
+Deno.test("D27 synthesis: meterless docs share ONE fnTable entry for estimate + evidence", async () => {
+    // neither endpoint nor provider declares estimate/evidence, and
+    // neither model (flat, FREE) has metered lines — the compiler
+    // interns the one lawful fn ONCE, repo-wide
+    const bundle = await compileBundle(
+        source([
+            { name: "search", def: makeEndpoint() },
+            {
+                name: "free",
+                def: makeEndpoint({
+                    request: { method: "POST", path: "/free" },
+                    usage: { model: { kind: "FREE" } },
+                }),
+            },
+        ]),
+        OPTS,
+    );
+    const flat = bundle.endpoints["demo#search"];
+    const free = bundle.endpoints["demo#free"];
+    const key = flat.usage.estimate.$fn.key;
+    assertEquals(flat.usage.evidence.$fn.key, key);
+    assertEquals(free.usage.estimate.$fn.key, key);
+    assertEquals(free.usage.evidence.$fn.key, key);
+    const entry = bundle.fnTable[key];
+    assertEquals(entry.provenance, "core#usage.synthesizedEmpty");
+    assertEquals(entry.src, "()=>({counts:{}})");
+    // consolidate stays absent — no vendor meter was declared anywhere
+    assertEquals(flat.usage.consolidate, undefined);
+    assertEquals(free.usage.consolidate, undefined);
+});
+
+Deno.test("metered models: usage.estimate + usage.evidence must resolve (no synthesis)", async () => {
+    const metered = {
+        model: {
+            kind: "PER_UNIT",
+            unit: "RESULT",
+            consumes: { credit: "default", amount: 0.01 },
+        },
+    } as Partial<EndpointDefSeed>["usage"];
+    // neither endpoint nor provider declares an estimate
+    const error = await assertRejects(() =>
+        compileBundle(
+            source([{ name: "search", def: makeEndpoint({ usage: metered }) }]),
+            OPTS,
+        )
+    );
+    assert(error instanceof CompileError);
+    assertEquals(error.code, CompileErrorCode.HOOK_UNRESOLVED);
+    assert(error.message.includes("usage.estimate must resolve"));
+    // estimate declared, evidence still missing
+    await assertRejects(
+        () =>
+            compileBundle(
+                source([{
+                    name: "search",
+                    def: makeEndpoint({
+                        usage: { ...metered, estimate: () => ({ counts: {} }) },
+                    }),
+                }]),
+                OPTS,
+            ),
+        Error,
+        "usage.evidence must resolve",
+    );
+});
+
+Deno.test("usage.consolidate is OPTIONAL: endpoint ?? provider fallback when declared", async () => {
+    const withMeter = {
+        model: {
+            kind: "PER_CALL",
+            consumes: { credit: "default", amount: 0.01 },
+        },
+        credits: { default: { label: "Demo credits" } },
+        consolidate: () => ({ credits: {} }),
+    } as Partial<ProviderDefSeed>["usage"];
+    // provider-declared: every doc inherits the ONE vendor-meter fn
+    const bundle = await compileBundle(
+        source(
+            [
+                { name: "search", def: makeEndpoint() },
+                {
+                    name: "other",
+                    def: makeEndpoint({
+                        request: { method: "POST", path: "/other" },
+                    }),
+                },
+            ],
+            makeProvider({ usage: withMeter }),
+        ),
+        OPTS,
+    );
+    const search = bundle.endpoints["demo#search"];
+    const other = bundle.endpoints["demo#other"];
+    assert(search.usage.consolidate?.$fn.key.startsWith("sha256:"));
+    assertEquals(
+        other.usage.consolidate?.$fn.key,
+        search.usage.consolidate?.$fn.key,
+    );
+    assertEquals(
+        bundle.fnTable[search.usage.consolidate!.$fn.key].provenance,
+        "connectors/demo/provider.ts#usage.consolidate",
+    );
+    // an endpoint's own consolidate REPLACES the provider's (fallback)
+    const overridden = await compileBundle(
+        source(
+            [{
+                name: "search",
+                def: makeEndpoint({
+                    usage: {
+                        consolidate: ({ data }) => ({
+                            credits: {},
+                            output: data.output,
+                        }),
+                    },
+                }),
+            }],
+            makeProvider({ usage: withMeter }),
+        ),
+        OPTS,
+    );
+    const doc = overridden.endpoints["demo#search"];
+    assert(
+        doc.usage.consolidate!.$fn.key !== search.usage.consolidate!.$fn.key,
+    );
+    assertEquals(
+        overridden.fnTable[doc.usage.consolidate!.$fn.key].provenance,
+        "connectors/demo/endpoints/search/endpoint.ts#usage.consolidate",
+    );
+});
+
+Deno.test("≥2 metered components require DOC-level evidence + estimate (design D19)", async () => {
     const model = {
         kind: "COMPOSITE",
         components: {
@@ -292,7 +410,7 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
             },
         },
     } as const;
-    // generic (provider) consolidate can't choose a key between two
+    // a generic (provider) evidence fn can't choose a key between two
     // metered components — build fails, not the first live run
     await assertRejects(
         () =>
@@ -304,9 +422,9 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
                 OPTS,
             ),
         Error,
-        "metered components",
+        "doc-level usage.evidence",
     );
-    // a doc-level consolidate alone is not enough — the estimate keys too
+    // a doc-level evidence alone is not enough — the estimate keys too
     await assertRejects(
         () =>
             compileBundle(
@@ -315,9 +433,7 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
                     def: makeEndpoint({
                         usage: {
                             model,
-                            consolidate: () => ({
-                                usage: { counts: { "page": 1 } },
-                            }),
+                            evidence: () => ({ counts: { "page": 1 } }),
                         },
                     }),
                 }]),
@@ -333,7 +449,7 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
             def: makeEndpoint({
                 usage: {
                     model,
-                    consolidate: () => ({ usage: { counts: { "page": 1 } } }),
+                    evidence: () => ({ counts: { "page": 1 } }),
                     estimate: () => ({ counts: { "page": 1 } }),
                 },
             }),
@@ -375,8 +491,6 @@ Deno.test("usage.credits must resolve for billable models; the ENDPOINT declarat
             kind: "PER_CALL",
             consumes: { credit: "default", amount: 0.01 },
         },
-        estimate: () => ({ counts: {} }),
-        consolidate: presets.usage.perCall(),
     } as Partial<ProviderDefSeed>["usage"];
     await assertRejects(
         () =>
@@ -422,9 +536,7 @@ Deno.test("a line consuming an UNDECLARED credit fails compilation", async () =>
                                 consumes: { credit: "nope", amount: 0.01 },
                             },
                             estimate: () => ({ counts: {} }),
-                            consolidate: () => ({
-                                usage: { counts: { "RESULT": 1 } },
-                            }),
+                            evidence: () => ({ counts: { "RESULT": 1 } }),
                         },
                     }),
                 }]),
@@ -451,8 +563,6 @@ Deno.test("a declared credit no line drains fails compilation", async () => {
                                 default: { label: "Demo credits" },
                                 extra: { label: "Never drained" },
                             },
-                            estimate: () => ({ counts: {} }),
-                            consolidate: presets.usage.perCall(),
                         } as Partial<ProviderDefSeed>["usage"],
                     }),
                 ),
@@ -468,11 +578,7 @@ Deno.test("FREE docs compile with EMPTY credits — nothing drains, nothing decl
         source([{
             name: "search",
             def: makeEndpoint({
-                usage: {
-                    model: { kind: "FREE" },
-                    estimate: () => ({ counts: {} }),
-                    consolidate: () => ({ usage: { counts: {} } }),
-                },
+                usage: { model: { kind: "FREE" } },
             }),
         }]),
         OPTS,
@@ -811,10 +917,16 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     );
     assert(doc.input.toRequest?.$fn.key.startsWith("sha256:"));
     assertEquals(doc.output.fromResponse, undefined);
-    assert(doc.usage.consolidate.$fn.key.startsWith("sha256:"));
-    // the billing triple (D25) + the credit declaration (D26): estimate
-    // compiled, and the provider's pool resolved onto the doc
+    // the quantities pair (D27) + the credit declaration (D26): both
+    // compiled, and the provider's pool resolved onto the doc; the
+    // vendor-meter consolidate resolved from the PROVIDER
     assert(doc.usage.estimate.$fn.key.startsWith("sha256:"));
+    assert(doc.usage.evidence.$fn.key.startsWith("sha256:"));
+    assert(doc.usage.consolidate?.$fn.key.startsWith("sha256:"));
+    assertEquals(
+        bundle.fnTable[doc.usage.consolidate!.$fn.key].provenance,
+        "connectors/exa/provider.ts#usage.consolidate",
+    );
     assertEquals(doc.usage.credits, { default: { label: "US dollars" } });
     assertEquals(doc.timeouts, { requestMs: 30_000, runMs: 30_000 });
     // meta roles: one-line summary + full description
@@ -825,17 +937,20 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     const authEntry = bundle.fnTable[doc.auth.inject.$fn.key];
     assertEquals(authEntry.kind, "factory");
     assertEquals(authEntry.provenance, "presets#auth.header");
-    assertEquals(bundle.fnTable[doc.usage.consolidate.$fn.key].kind, "fn");
+    assertEquals(bundle.fnTable[doc.usage.evidence.$fn.key].kind, "fn");
     // every entry declares its ABI floor
     assertEquals(authEntry.api, "0.0.1");
 
-    // interning across endpoints: contents shares the provider auth fn;
-    // the settle fns diverged with the search re-model (design D19 —
-    // base-plus-overage offset counting), so each has its own entry
+    // interning across endpoints: contents shares the provider auth fn
+    // AND the provider's ONE vendor-meter consolidate (design D27); the
+    // quantities fns stay doc-owned (offset counting vs per-page), so
+    // each evidence keeps its own entry
     const contents = bundle.endpoints["exa#contents"];
-    assert(
-        contents.usage.consolidate.$fn.key !== doc.usage.consolidate.$fn.key,
+    assertEquals(
+        contents.usage.consolidate?.$fn.key,
+        doc.usage.consolidate?.$fn.key,
     );
+    assert(contents.usage.evidence.$fn.key !== doc.usage.evidence.$fn.key);
     assertEquals(contents.auth.inject.$fn.key, doc.auth.inject.$fn.key);
 
     // taxonomy membership from the real registry (whole-repo compile —

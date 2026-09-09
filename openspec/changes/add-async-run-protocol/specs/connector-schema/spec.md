@@ -106,7 +106,7 @@ SECOND, MINUTE, CREDIT, PAGE) with UPPERCASE keys AND values (the repo
 enum rule; lowercase is display-only). CALL SHALL NOT be a unit: a flat
 charge is the PER_CALL model kind, never a count.
 
-### Requirement: usage — {credits, evidence}, engine-assembled (D24/D26)
+### Requirement: usage — {credits, evidence}, engine-assembled (D24/D26/D27)
 `zUsage` SHALL be the strict pair `{credits, evidence}` (both
 `Record<string, number ≥ 0>`) — exactly two facts, both re-derivable:
 `evidence` carries one entry per rate-card LINE (the fn-settled
@@ -116,13 +116,29 @@ exactly 1: a composite's PER_CALL components under their own line ids
 reserved `CALL` key — NOT a Unit); `credits` is the ENGINE's fold of
 that evidence through the doc's own rate card —
 `ceil(quantity / every) × consumes.amount` per line, summed per credit
-id — so anyone holding the doc re-derives credits from evidence. FNS
-return `zFnUsage = {counts}`: quantities per METERED line only — never
-flat keys (the type layer and `countsMismatch` reject them), no cost,
-no receipt blobs (vendor receipts live in the RAW run record — the
-receipt IS the output). `zeroUsage()` = `{credits: {}, evidence: {}}`
-is the ERROR-PATH shape (nothing billed, nothing evidenced);
-`defaultFnUsage()` = `{counts: {}}`.
+id — so anyone holding the doc re-derives credits from evidence,
+UNLESS the vendor reports its own meter (below): then the claim IS
+`credits` and the fold demotes to cross-check. QUANTITIES come from
+the `usage.evidence` hook (design D27 — the pre-D27 "consolidate"
+renamed to the thing it produces): RAW envelope → `zFnUsage =
+{counts}`, quantities per METERED line only — never flat keys (the
+type layer and `countsMismatch` reject them), no cost, no receipt
+blobs (vendor receipts live in the RAW run record — the receipt IS the
+output). `usage.consolidate` SHALL be the VENDOR-METER hook (design
+D27, the word restored to its original job): RAW envelope →
+`{credits, output?}` — the vendor's OWN consumed-credits claim per
+declared pool plus its removal from the payload, one motion via
+`utils.json.pluck(json, path) → {value, rest}` (`output` absent =
+payload unchanged). Claim semantics: zero entries prune (0 = nothing
+consumed); unreported entries are OMITTED, never `?? 0`; an all-empty
+claim falls back to the derived fold; a NON-EMPTY claim WINS; claim
+pool ids must be DECLARED credit systems (FN_CONTRACT — a nonzero
+claim on a FREE doc trips loudly). `zUsage` SHALL carry optional
+`mismatch: {derived}`, present ONLY when a non-empty claim disagrees
+with the derived fold beyond 1e-9: `derived` is OUR fold — `credits`
+already holds the vendor's number. `zeroUsage()` = `{credits: {},
+evidence: {}}` is the ERROR-PATH shape (nothing billed, nothing
+evidenced); `defaultFnUsage()` = `{counts: {}}`.
 
 #### Scenario: Zero counts nothing
 - **WHEN** a provider error forces zero usage
@@ -134,11 +150,23 @@ is the ERROR-PATH shape (nothing billed, nothing evidenced);
 
 #### Scenario: Leaf flat bills under CALL
 - **WHEN** apify#scraptik/tiktok-api (leaf PER_CALL) succeeds
-- **THEN** the usage is evidence `{"CALL": 1}`, credits `{"default": 0.002}` — engine-derived, no estimate fn needed
+- **THEN** the usage is evidence `{"CALL": 1}`, credits `{"default": 0.002}` — engine-derived, no authored fn (the compiler synthesizes the empty quantities pair)
 
 #### Scenario: A fn writing a flat key fails closed
-- **WHEN** a consolidate returns `{"actor_start": 2}`
+- **WHEN** a usage.evidence fn returns counts `{"actor_start": 2}`
 - **THEN** FN_CONTRACT (and the typed layer rejects it at `deno task check`)
+
+#### Scenario: Non-empty claim wins, agreement stays silent
+- **WHEN** a consolidate claims `{default: 0.0332}` and the derived fold agrees within 1e-9
+- **THEN** the settled credits are the vendor's claim and NO `mismatch` key is present
+
+#### Scenario: Disagreement rides out as mismatch.derived
+- **WHEN** a consolidate claims `{default: 0.05}` and the fold derives `{default: 0.0332}`
+- **THEN** usage settles credits `{default: 0.05}` (the vendor's number) with `mismatch: {derived: {default: 0.0332}}` (OUR number) — said, logged, never failing the run
+
+#### Scenario: Zero claim prunes to the derived fold
+- **WHEN** an akta FREE lookup settles with `credits_consumed: 0`
+- **THEN** the claim prunes empty, usage falls back to the derived fold — `{credits: {}, evidence: {}}`, no mismatch
 
 ### Requirement: usage.model — the billing ALGEBRA; the def IS the rate card (D26)
 `zUsageModel` SHALL be the discriminated union of two operators, one kind
@@ -165,7 +193,7 @@ guard):
   No nesting.
 No VARIANT kind (deleted — design D19) and no TIERED kind: conditions,
 offsets and input-selection are COUNTING rules owned by the
-consolidate/estimate fns (a gated line counts 0 when off; a select-one
+evidence/estimate fns (a gated line counts 0 when off; a select-one
 populates only the selected key; exa's base-covers-first-10 is
 `max(0, n − 10)`); volume schedules stay counting facts, never model
 shapes. Every BILLABLE line (PER_CALL and PER_UNIT, leaf or composite
@@ -182,22 +210,36 @@ vendor's native line name when it differs from OUR snake_case id
 `usage.credits` sits BESIDE the model — `Record<creditId, {label?,
 description?}>`, resolved provider ?? endpoint (OPPOSITE of hooks: the
 pool is a provider-wide fact; single-pool providers use id `default`).
-`zUsageSection` carries `model?` (and `estimate?`) per level — but the
-model MUST RESOLVE (endpoint ?? provider, compile error if neither:
-every doc declares what is chargeable), and `usage.estimate` must
-resolve on EVERY doc (design D25 — the required billing TRIPLE: model +
-estimate + consolidate state what is chargeable, what this run will
-cost, and what it did cost; a flat doc's estimate states `{counts: {}}`,
-a FREE doc's states `{counts: {}}`). `doc.usage` carries the resolved
-`model` REQUIRED inline (hash-covered), `estimate` as a FnRef, and
-`credits` REQUIRED (`{}` for FREE — an endpoint-level declaration on a
-FREE doc is a compile error, dead config). Compile checks: credits must
-resolve for billable models; every `consumes.credit` references a
-declared id; no declared id goes undrained.
+`zUsageSection` carries `model?`, `estimate?`, `evidence?` and
+`consolidate?` per level — but the model MUST RESOLVE (endpoint ??
+provider, compile error if neither: every doc declares what is
+chargeable). `doc.usage` carries the resolved `model` REQUIRED inline
+(hash-covered), `credits` REQUIRED (`{}` for FREE — an endpoint-level
+declaration on a FREE doc is a compile error, dead config), `estimate`
+AND `evidence` as REQUIRED FnRefs (the quantities pair, design D27),
+and `consolidate` as an OPTIONAL FnRef — present exactly when the
+vendor reports a meter. When NEITHER endpoint nor provider declares
+estimate/evidence AND the model has no metered lines (FREE / flat —
+`hasMeteredLines`), the compiler SYNTHESIZES the one lawful fn
+`() => ({counts: {}})` into the missing slot: a real interned fnTable
+entry, ONE shared entry repo-wide, provenance
+`core#usage.synthesizedEmpty` — the compiled doc stays comprehensive
+with nothing to author. Metered models must still resolve BOTH
+quantities fns (HOOK_UNRESOLVED if either is missing — the
+deduced-estimate guarantee); a ≥2-metered composite forces DOC-level
+evidence AND estimate. `presets.usage.perCall` SHALL NOT exist
+(deleted, design D27): a flat doc's settle is a forced move, so there
+is nothing to author at all. Compile checks: credits must resolve for
+billable models; every `consumes.credit` references a declared id; no
+declared id goes undrained.
 
-#### Scenario: Doc without an estimate fails compile
-- **WHEN** a doc resolves neither an endpoint- nor provider-level usage.estimate
-- **THEN** compile fails HOOK_UNRESOLVED citing the D25 billing triple
+#### Scenario: Metered doc must resolve both quantities fns
+- **WHEN** a PER_UNIT doc resolves neither an endpoint- nor provider-level usage.evidence (or usage.estimate)
+- **THEN** compile fails HOOK_UNRESOLVED — the model has metered lines, so nothing can be synthesized
+
+#### Scenario: FREE doc compiles with no fns — synthesis
+- **WHEN** a FREE-model doc declares no usage fns at any level
+- **THEN** it compiles; its estimate AND evidence refs both point at the ONE shared `core#usage.synthesizedEmpty` entry
 
 #### Scenario: Undeclared consumes.credit fails compile
 - **WHEN** a line pins `consumes: {credit: "tokens", amount: 1}` but the resolved usage.credits declares no `tokens` pool
@@ -213,20 +255,23 @@ declared id; no declared id goes undrained.
 
 ### Requirement: FREE usage — the MODEL is the free fact (D25)
 Free-ness SHALL live in the MODEL only — `zUsage` carries NO free field.
-A FREE-model doc's estimate and consolidate return plain `{counts: {}}`
+A FREE doc needs NO usage fns at all: when neither level declares them
+the compiler synthesizes the one lawful `() => ({counts: {}})` (design
+D27); a declared estimate/evidence fn may return only `{counts: {}}`
 (nothing counted; the countsMismatch FREE arm rejects any key — the ONE
 gate now that no cost field exists: freeMismatch is DELETED, design
 D26). The engine's flat-line completion and credits fold are structural
 no-ops for FREE (`flatLines(FREE) = {}`; the fold yields `{}`), so the
-public usage of a free run is `{credits: {}, evidence: {}}` — consumers
-read the DOC's model (`kind: "FREE"`) to render "free".
+public usage of a free run is `{credits: {}, evidence: {}}` — the
+settled shape unchanged; consumers read the DOC's model
+(`kind: "FREE"`) to render "free".
 
 #### Scenario: FREE doc settles empty
 - **WHEN** tinyfish#fetch (model FREE) succeeds
 - **THEN** the usage is `{credits: {}, evidence: {}}` — no CALL line, no credits; the doc's model says free
 
 #### Scenario: FREE doc counting fails closed
-- **WHEN** a FREE doc's consolidate returns any counts key
+- **WHEN** a FREE doc's evidence fn returns any counts key
 - **THEN** the run fails FN_CONTRACT — free bills nothing
 
 #### Scenario: Same-unit components are legal, keyed
@@ -280,7 +325,7 @@ tinyfish pins explicitly (its `request.path` is "/").
 ### Requirement: Typed authoring — model keys, inputs, lifecycle state (D19a/D22/D23/D25)
 `defineEndpoint` SHALL be generic over the declared model, the input
 body AND queryParams schemas, and the lifecycle state schema (types
-only; zod stays the runtime truth): the doc's own consolidate/estimate
+only; zod stays the runtime truth): the doc's own evidence/estimate fns
 return counts keyed by the model's LITERAL metered keys (a typo'd key or
 a flat-component key fails the typecheck; a flat doc's estimate can
 promise only `{}`; a FREE doc's fns can promise only `{counts: {}}`);
@@ -352,11 +397,13 @@ same effective knobs the vendor applies.
 `presets.estimate.*` SHALL NOT exist: preset field args were unchecked
 strings and the portable ctx erased the body typing, and generic presets
 cannot recover the field check (the factory call is eager — the doc's
-types aren't in scope when the field arg binds). Every estimate SHALL be
-a typed inline fn on its doc. Presets survive ONLY at provider-seam
-slots where no doc-local typing is lost: `presets.auth.*` (credential
-injection) and `presets.usage.perCall` (the canonical flat settle,
-`{counts: {}}` by construction). Estimate fns SHALL NOT probe
+types aren't in scope when the field arg binds). Every AUTHORED
+estimate SHALL be a typed inline fn on its doc (a flat/FREE doc
+authors none — compiler-synthesized, design D27). Presets survive
+ONLY at the one provider-seam slot where no doc-local typing is lost:
+`presets.auth.*` (credential injection); `presets.usage.perCall` is
+DELETED with D27 synthesis — the canonical flat settle is a forced
+move the compiler fills. Estimate fns SHALL NOT probe
 `data.input.body` via `utils.json` — direct typed access only.
 
 #### Scenario: Fleet grep is clean

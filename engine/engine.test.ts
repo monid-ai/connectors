@@ -64,14 +64,14 @@ function demoConnector(): ConnectorSource[] {
                     },
                     // metered docs must estimate (D24)
                     estimate: () => ({ counts: { "RESULT": 1 } }),
-                    consolidate: ({ data, utils }) => ({
-                        usage: {
-                            counts: {
-                                "RESULT": utils.json.len(
-                                    data.output,
-                                    "$.results",
-                                ),
-                            },
+                    // the QUANTITIES settle (design D27 — the pre-D27
+                    // consolidate renamed): RAW envelope → {counts}
+                    evidence: ({ data, utils }) => ({
+                        counts: {
+                            "RESULT": utils.json.len(
+                                data.output,
+                                "$.results",
+                            ),
                         },
                     }),
                 },
@@ -162,17 +162,17 @@ Deno.test("UNSUPPORTED_DOC: doc from a newer engine", async () => {
 
 Deno.test("UNKNOWN_FN: missing table entry", async () => {
     const unit = clone(await demoUnit());
-    delete unit.fns[unit.doc.usage.consolidate.$fn.key];
+    delete unit.fns[unit.doc.usage.evidence.$fn.key];
     const engine = new Engine({ transport: jsonTransport(200, {}) });
     await expectCode(engine.load(unit), EngineErrorCode.UNKNOWN_FN);
 });
 
 Deno.test("LINK_INTEGRITY: tampered fn source", async () => {
     const unit = clone(await demoUnit());
-    const key = unit.doc.usage.consolidate.$fn.key;
+    const key = unit.doc.usage.evidence.$fn.key;
     unit.fns[key] = {
         ...unit.fns[key],
-        src: "(ctx) => ({ usage: { units: [{ amount: 999, unit: 'call' }] } })",
+        src: "(ctx) => ({ counts: { RESULT: 999 } })",
     };
     const engine = new Engine({ transport: jsonTransport(200, {}) });
     await expectCode(engine.load(unit), EngineErrorCode.LINK_INTEGRITY);
@@ -180,7 +180,7 @@ Deno.test("LINK_INTEGRITY: tampered fn source", async () => {
 
 Deno.test("UNSUPPORTED_FN_ABI: entry targets a newer ABI", async () => {
     const unit = clone(await demoUnit());
-    const key = unit.doc.usage.consolidate.$fn.key;
+    const key = unit.doc.usage.evidence.$fn.key;
     unit.fns[key] = { ...unit.fns[key], api: "999.0.0" };
     const engine = new Engine({ transport: jsonTransport(200, {}) });
     await expectCode(engine.load(unit), EngineErrorCode.UNSUPPORTED_FN_ABI);
@@ -313,7 +313,7 @@ Deno.test("CONTRACT_VIOLATION: final output fails output.schema", async () => {
     );
 });
 
-Deno.test("FN_CONTRACT: compute returning junk fails closed (slot z.function enforced)", async () => {
+Deno.test("FN_CONTRACT: evidence returning junk fails closed (slot z.function enforced)", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         model: {
@@ -323,7 +323,7 @@ Deno.test("FN_CONTRACT: compute returning junk fails closed (slot z.function enf
             consumes: { credit: "default", amount: 0.5 },
         },
         estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
-        consolidate: ((_ctx: never) => 42) as never,
+        evidence: ((_ctx: never) => 42) as never,
     };
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
     const engine = new Engine({
@@ -346,7 +346,7 @@ Deno.test("FN_CONTRACT: fn that throws fails closed", async () => {
             consumes: { credit: "default", amount: 0.5 },
         },
         estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
-        consolidate: ((_ctx: never) => {
+        evidence: ((_ctx: never) => {
             throw new Error("boom");
         }) as never,
     };
@@ -369,7 +369,7 @@ Deno.test("FN_CONTRACT: strict json.len on a missing path fails closed (never bi
         transport: jsonTransport(200, { items: [{ id: "a" }] }),
     });
     const loaded = await engine.load(sealUnit(bundle, "demo#search"));
-    // compute reads $.results, response only has $.items
+    // evidence reads $.results, response only has $.items
     const error = await assertRejects(() => loaded.start({ body: { q: "x" } }));
     assert(error instanceof EngineError);
     assertEquals(error.code, EngineErrorCode.FN_CONTRACT);
@@ -421,10 +421,9 @@ Deno.test("hook fallback: endpoint fromResponse REPLACES the provider's", async 
                 consumes: { credit: "default", amount: 0.25 },
             },
             // the replaced provider above declares no usage — the
-            // endpoint owns the credit pool (design D26)
+            // endpoint owns the credit pool (design D26); the flat
+            // model's quantities fns are synthesized (design D27)
             credits: { default: { label: "Demo credits" } },
-            estimate: () => ({ counts: {} }), // billing triple (D25)
-            consolidate: presets.usage.perCall(),
         },
     });
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
@@ -440,10 +439,11 @@ Deno.test("hook fallback: endpoint fromResponse REPLACES the provider's", async 
 });
 
 // ---------------------------------------------------------------------------
-// usage.consolidate — billing fields absorbed into the structured usage
+// usage.consolidate — the VENDOR METER (design D27): the claim lifted out
+// of the payload, winning over the derived fold at settle
 // ---------------------------------------------------------------------------
 
-Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", async () => {
+Deno.test("D27 settle: consolidate PLUCKS the vendor meter before fromResponse; claim wins", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def = defineEndpoint({
         meta: {
@@ -460,16 +460,28 @@ Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", asy
                 consumes: { credit: "default", amount: 0.5 },
             },
             estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
-            // ONE settle fn: extract the counts AND absorb the vendor
-            // billing field (receipts stay in the RAW run record — D26)
-            consolidate: ({ data, utils }) => ({
-                usage: {
-                    counts: {
-                        "RESULT": utils.json.len(data.output, "$.results"),
-                    },
+            // QUANTITIES from the RAW envelope (rate math is engine-owned)
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
                 },
-                output: utils.json.omit(data.output, ["costDollars"]),
             }),
+            // the VENDOR METER: one pluck lifts the claim AND strips the
+            // billing field out of the payload (design D27)
+            consolidate: ({ data, utils }) => {
+                const { value, rest } = utils.json.pluck(
+                    data.output,
+                    "$.costDollars",
+                );
+                return {
+                    credits: {
+                        ...(value !== undefined
+                            ? { default: utils.json.num(value, "$.total") }
+                            : {}),
+                    },
+                    output: rest,
+                };
+            },
         },
         output: {
             // fromResponse runs on the CONSOLIDATED output — proves ordering
@@ -485,25 +497,26 @@ Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", asy
     const engine = new Engine({
         transport: jsonTransport(200, {
             results: [{ id: "a" }],
-            costDollars: { total: 0.005 },
+            costDollars: { total: 0.5 },
         }),
     });
     const loaded = await engine.load(sealUnit(bundle, "demo#search"));
     const result = await loaded.run({ body: { q: "x" } });
     const output = result.output as Record<string, unknown>;
-    // the settle counted the RAW envelope; the engine folded the count
-    // through the doc's rate card (1 RESULT × 0.5 — design D26)
+    // the claim (0.5) AGREES with the fold (1 RESULT × 0.5) — the claim
+    // settles as usage.credits with NO mismatch key
     assertEquals(result.usage, {
         credits: { default: 0.5 },
         evidence: { "RESULT": 1 },
     });
-    // consolidate absorbed the vendor field before fromResponse saw it
+    // consolidate stripped the vendor field before fromResponse saw it
     assertEquals("costDollars" in output, false);
     assertEquals(output.sawCost, false);
 });
 
-Deno.test("usage.consolidate: absent output = unchanged payload", async () => {
-    // demoConnector's settle fn returns {usage} only — the raw body passes through
+Deno.test("no consolidate fn: raw payload passes through; the derived fold settles", async () => {
+    // demoConnector links no vendor-meter fn — evidence counts, the
+    // engine folds, and the raw body rides out untouched
     const engine = new Engine({
         transport: jsonTransport(200, { results: [{ id: "a" }], extra: true }),
     });
@@ -516,16 +529,211 @@ Deno.test("usage.consolidate: absent output = unchanged payload", async () => {
     });
 });
 
-Deno.test("FN_CONTRACT: bad OUTPUT half of the settle pair fails closed", async () => {
+Deno.test("claim wins; mismatch.derived rides ONLY on disagreement (1e-9)", async () => {
+    // the vendor's number arrives on $.vendorTotal; the pinned fold is
+    // 2 RESULT × 0.5 = 1 — run once agreeing, once disagreeing
+    const meteredWithMeter = () =>
+        usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: ({ data, utils }) => {
+                const { value, rest } = utils.json.pluck(
+                    data.output,
+                    "$.vendorTotal",
+                );
+                return {
+                    credits: {
+                        ...(typeof value === "number"
+                            ? { default: value }
+                            : {}),
+                    },
+                    output: rest,
+                };
+            },
+        });
+    const agreeing = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }, { id: "b" }],
+            vendorTotal: 1,
+        }),
+    });
+    const agreed = await (await agreeing.load(await meteredWithMeter()))
+        .run({ body: { q: "x" } });
+    // claim == fold: the claim settles silently (deep-equal proves the
+    // mismatch key is ABSENT), and the meter field is stripped
+    assertEquals(agreed.usage, {
+        credits: { default: 1 },
+        evidence: { "RESULT": 2 },
+    });
+    assertEquals(agreed.output, { results: [{ id: "a" }, { id: "b" }] });
+
+    const disagreeing = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }, { id: "b" }],
+            vendorTotal: 0.75,
+        }),
+    });
+    const disagreed = await (await disagreeing.load(await meteredWithMeter()))
+        .run({ body: { q: "x" } });
+    // the vendor's 0.75 WINS as usage.credits; OUR fold (1) rides out
+    // as mismatch.derived — said, never hidden, never failing the run
+    assertEquals(disagreed.usage, {
+        credits: { default: 0.75 },
+        evidence: { "RESULT": 2 },
+        mismatch: { derived: { default: 1 } },
+    });
+});
+
+Deno.test("zero-claim entries prune: an all-zero claim falls back to the derived fold", async () => {
+    // the vendor reports 0 consumed — zero entries mean "nothing
+    // consumed", so the claim empties and OUR fold settles, no mismatch
+    const engine = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }],
+            vendorTotal: 0,
+        }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: ({ data, utils }) => ({
+                credits: {
+                    default: utils.json.num(data.output, "$.vendorTotal"),
+                },
+            }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.usage, {
+        credits: { default: 0.5 },
+        evidence: { "RESULT": 1 },
+    });
+});
+
+Deno.test("FN_CONTRACT: a claim on an UNDECLARED credit pool fails closed", async () => {
+    // the demo provider declares only {default} — a "bogus" pool claim
+    // must trip loudly, never settle
+    const engine = new Engine({
+        transport: jsonTransport(200, { results: [{ id: "a" }] }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: () => ({ credits: { bogus: 1 } }),
+        }),
+    );
+    await expectCode(
+        loaded.run({ body: { q: "x" } }),
+        EngineErrorCode.FN_CONTRACT,
+    );
+});
+
+Deno.test("consolidate.output strip applies even with an EMPTY claim (the octen shape)", async () => {
+    // no vendor pool claimed, but the receipt still leaves the payload:
+    // {credits: {}, output} — the derived fold settles, output stripped
+    const engine = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }],
+            meta: { usage: { tokens: 12 } },
+        }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: ({ data, utils }) => ({
+                credits: {},
+                output: utils.json.omit(data.output, ["usage"]),
+            }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.usage, {
+        credits: { default: 0.5 },
+        evidence: { "RESULT": 1 },
+    });
+    assertEquals(result.output, { results: [{ id: "a" }], meta: {} });
+});
+
+Deno.test("error settles: zeroUsage forced — neither evidence nor consolidate runs", async () => {
+    // both settle fns would THROW on this error body if invoked; a clean
+    // zero-usage settle proves the engine never ran them
+    const engine = new Engine({
+        transport: jsonTransport(500, { error: "boom" }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: ({ data, utils }) => ({
+                credits: {
+                    default: utils.json.num(data.output, "$.vendorTotal"),
+                },
+            }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    assertEquals(result.output, { error: "boom" });
+});
+
+Deno.test("FN_CONTRACT: bad OUTPUT half of the consolidate pair fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         model: {
             kind: "PER_CALL",
             consumes: { credit: "default", amount: 0.25 },
         },
-        estimate: () => ({ counts: {} }), // billing triple (D25)
         consolidate: ((_ctx: never) => ({
-            usage: { counts: {} },
+            credits: {},
             output: () => 1, // not Json — the pair contract rejects it
         })) as never,
     };
@@ -623,6 +831,30 @@ Deno.test("jsonUtil: transformers stay shape-tolerant (merge deep-appends, pick 
         ]),
         { costDollars: { total: 5 }, requestId: "r" },
     );
+});
+
+Deno.test("jsonUtil.pluck: one motion — {value, rest}; absent leaves the input untouched", async () => {
+    const { jsonUtil } = await import("./fn-utils.ts");
+    // present: the value comes out, the rest no longer carries it
+    assertEquals(
+        jsonUtil.pluck({ a: 1, cost: { total: 5 } }, "$.cost"),
+        { value: { total: 5 }, rest: { a: 1 } },
+    );
+    // nested removal is copy-on-write — siblings survive
+    assertEquals(
+        jsonUtil.pluck(
+            { meta: { usage: 3, keep: true }, x: 1 },
+            "$.meta.usage",
+        ),
+        { value: 3, rest: { meta: { keep: true }, x: 1 } },
+    );
+    // array index removal splices, not holes
+    assertEquals(
+        jsonUtil.pluck({ r: [1, 2, 3] }, "$.r[1]"),
+        { value: 2, rest: { r: [1, 3] } },
+    );
+    // absent: no value, rest IS the input
+    assertEquals(jsonUtil.pluck({ a: 1 }, "$.missing"), { rest: { a: 1 } });
 });
 
 // ---------------------------------------------------------------------------
@@ -764,26 +996,28 @@ function asyncConnector(): ConnectorSource[] {
                 credits: { default: { label: "Async demo credits" } },
                 // metered docs must estimate (D24)
                 estimate: () => ({ counts: { "RESULT": 1 } }),
+                // QUANTITIES from the final output (design D27)
+                evidence: ({ data }) => ({
+                    counts: {
+                        "RESULT": Array.isArray(data.output)
+                            ? data.output.length
+                            : 0,
+                    },
+                }),
+                // the VENDOR METER lives in the threaded lifecycle state
+                // (stashed at the poll tick) — the claim is lifted from
+                // there; no output strip (the meter never rode the
+                // payload). Reading the stashed signal here proves the
+                // settle sees the final threaded state.
                 consolidate: ({ data, utils }) => {
                     const usd = utils.json.optionalNum(
                         data.lifecycle?.state ?? null,
                         "$.data.usd",
                     );
                     return {
-                        usage: {
-                            counts: {
-                                "RESULT": Array.isArray(data.output)
-                                    ? data.output.length
-                                    : 0,
-                            },
+                        credits: {
+                            ...(usd !== undefined ? { default: usd } : {}),
                         },
-                        // vendor receipts ride the OUTPUT/raw run record,
-                        // never usage (design D26) — reading the stashed
-                        // poll-tick signal here proves the settle sees
-                        // the final threaded state
-                        ...(usd !== undefined
-                            ? { output: { items: data.output, vendorUsd: usd } }
-                            : {}),
                     };
                 },
             },
@@ -831,7 +1065,7 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
         transport: scriptTransport([
             { status: 201, body: { jobId: "j1" } },
             { status: 200, body: { status: "running" } },
-            { status: 200, body: { status: "done", usd: 0.5 } },
+            { status: 200, body: { status: "done", usd: 1.5 } },
             { status: 200, body: [{ id: "a" }, { id: "b" }, { id: "c" }] },
         ], seen),
         ...INSTANT_SLEEP,
@@ -841,7 +1075,9 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     assertEquals(result.kind, "COMPLETED");
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // 3 RESULT × 0.5 credits (the engine's D26 fold)
+    // the vendor claim (1.5, stashed in STATE at the poll tick) WON the
+    // settle and AGREES with the fold (3 RESULT × 0.5) — no mismatch
+    // (deep-equal proves the key is absent — design D27)
     assertEquals(result.usage, {
         credits: { default: 1.5 },
         evidence: { "RESULT": 3 },
@@ -850,12 +1086,8 @@ Deno.test("lifecycle happy path: start → poll(running) → poll(done) → resu
     // two poll ticks were measured
     assertEquals(result.timing.attempts, 2);
     assert(result.timing.providerTotalMs >= 0);
-    // the vendor receipt stashed in STATE at the poll tick rode into the
-    // settle and landed on the OUTPUT — usage stays receipt-free (D26)
-    assertEquals(result.output, {
-        items: [{ id: "a" }, { id: "b" }, { id: "c" }],
-        vendorUsd: 0.5,
-    });
+    // the meter never rode the payload, so the output is the raw items
+    assertEquals(result.output, [{ id: "a" }, { id: "b" }, { id: "c" }]);
     // wire sequence: start request (the doc's request), poll, poll, items
     assertEquals(seen.map((call) => `${call.method} ${call.url}`), [
         "POST https://api.asyncdemo.test/jobs",
@@ -1475,7 +1707,6 @@ Deno.test("estimate: pure (no IO); a flat doc's vector is engine-derived (D24)",
                 kind: "PER_CALL",
                 consumes: { credit: "default", amount: 0.25 },
             },
-            consolidate: () => ({ usage: { counts: {} } }),
         }),
     );
     assertEquals(loaded.estimate({ body: { q: "x" } }), {
@@ -1489,13 +1720,14 @@ Deno.test("estimate: pure (no IO); a flat doc's vector is engine-derived (D24)",
 // counts ↔ model discipline (design D19) — validateUsage at settle + estimate
 // ---------------------------------------------------------------------------
 
-/** demoUnit with a mutated usage block (model/consolidate/estimate). */
+/** demoUnit with a mutated usage block (model/evidence/consolidate/
+ *  estimate). */
 async function usageUnit(
     usage: ConnectorSource["endpoints"][number]["def"]["usage"],
 ): Promise<SealedUnit> {
     const connectors = demoConnector();
-    // every doc must declare an estimate (D25 billing triple) — splice a
-    // benign one when the test under-specifies ({counts: {}} passes
+    // metered docs must declare an estimate (D24/D27) — splice a benign
+    // one when the test under-specifies ({counts: {}} passes
     // countsMismatch for every kind, FREE included)
     connectors[0].endpoints[0].def.usage =
         usage !== undefined && usage.estimate === undefined
@@ -1514,7 +1746,7 @@ Deno.test("FN_CONTRACT: counts key on a doc with nothing countable (PER_CALL)", 
                 kind: "PER_CALL",
                 consumes: { credit: "default", amount: 0.25 },
             },
-            consolidate: () => ({ usage: { counts: { "RESULT": 1 } } }),
+            evidence: () => ({ counts: { "RESULT": 1 } }),
         }),
     );
     await expectCode(
@@ -1533,7 +1765,7 @@ Deno.test("FN_CONTRACT: leaf PER_UNIT counts must key the model's unit", async (
                 every: 1,
                 consumes: { credit: "default", amount: 0.5 },
             },
-            consolidate: () => ({ usage: { counts: { "TOKEN": 5 } } }),
+            evidence: () => ({ counts: { "TOKEN": 5 } }),
         }),
     );
     await expectCode(
@@ -1562,7 +1794,7 @@ Deno.test("FN_CONTRACT: composite counts key must name a METERED component", asy
                     },
                 },
             },
-            consolidate: () => ({ usage: { counts: { "start": 1 } } }),
+            evidence: () => ({ counts: { "start": 1 } }),
         }),
     );
     await expectCode(
@@ -1590,7 +1822,7 @@ Deno.test("composite settle: counts keyed by component id pass; {} always passes
                     },
                 },
             },
-            consolidate: () => ({ usage: { counts: { "item": 7 } } }),
+            evidence: () => ({ counts: { "item": 7 } }),
         }),
     );
     const result = await loaded.run({ body: { q: "x" } });
@@ -1607,7 +1839,7 @@ Deno.test("composite settle: counts keyed by component id pass; {} always passes
                 kind: "PER_CALL",
                 consumes: { credit: "default", amount: 0.25 },
             },
-            consolidate: () => ({ usage: { counts: {} } }),
+            evidence: () => ({ counts: {} }),
         }),
     );
     // leaf PER_CALL bills under the reserved CALL line (D24)
@@ -1627,7 +1859,7 @@ Deno.test("FN_CONTRACT: estimate counts are validated like settled ones", async 
                 every: 1,
                 consumes: { credit: "default", amount: 0.5 },
             },
-            consolidate: () => ({ usage: { counts: {} } }),
+            evidence: () => ({ counts: {} }),
             estimate: () => ({ counts: { "nope": 1 } }),
         }),
     );
@@ -1641,8 +1873,8 @@ Deno.test("FN_CONTRACT: estimate counts are validated like settled ones", async 
 Deno.test("generic keying: provider-seam fns derive the counts key from data.usage.model", async () => {
     // leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id.
     // The generic idiom survives ONLY at the provider seam (apify's shared
-    // consolidate) — doc-local fns hardcode their literal key (design D23).
-    const keyedConsolidate = (ctx: {
+    // evidence) — doc-local fns hardcode their literal key (design D23).
+    const keyedEvidence = (ctx: {
         data: { output: unknown; usage: { model: unknown } };
         utils: unknown;
     }) => {
@@ -1670,9 +1902,7 @@ Deno.test("generic keying: provider-seam fns derive the counts key from data.usa
                 break;
         }
         const amount = len(ctx.data.output, "$.results");
-        return {
-            usage: { counts: key === undefined ? {} : { [key]: amount } },
-        };
+        return { counts: key === undefined ? {} : { [key]: amount } };
     };
     const engine = new Engine({
         transport: jsonTransport(200, { results: [{ id: "a" }] }),
@@ -1694,7 +1924,7 @@ Deno.test("generic keying: provider-seam fns derive the counts key from data.usa
                     },
                 },
             },
-            consolidate: keyedConsolidate,
+            evidence: keyedEvidence,
             estimate: ({ data }: { data: { usage: { model: unknown } } }) => {
                 const model = data.usage.model as {
                     kind: string;
@@ -1735,7 +1965,7 @@ Deno.test("generic keying: provider-seam fns derive the counts key from data.usa
                 every: 1,
                 consumes: { credit: "default", amount: 0.5 },
             },
-            consolidate: keyedConsolidate,
+            evidence: keyedEvidence,
         }),
     );
     assertEquals(
@@ -1784,10 +2014,10 @@ Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not a
 // ---------------------------------------------------------------------------
 
 Deno.test("FREE model: fns return plain empty counts — the MODEL is the free fact", async () => {
+    // no quantities fns declared — the compiler synthesizes both
+    // (design D27); the MODEL is the free fact
     const free = {
         model: { kind: "FREE" },
-        estimate: () => ({ counts: {} }),
-        consolidate: () => ({ usage: { counts: {} } }),
     } as ConnectorSource["endpoints"][number]["def"]["usage"];
     const engine = new Engine({ transport: jsonTransport(200, { ok: true }) });
     const loaded = await engine.load(await usageUnit(free));
@@ -1818,7 +2048,7 @@ Deno.test("FREE discipline: FN_CONTRACT on counts or junk usage keys from a FREE
             await usageUnit({
                 model: { kind: "FREE" },
                 estimate: () => ({ counts: {} }),
-                consolidate: () => ({ usage: { counts: { "RESULT": 1 } } }),
+                evidence: () => ({ counts: { "RESULT": 1 } }),
             }),
         );
         await expectCode(
@@ -1835,14 +2065,12 @@ Deno.test("FREE discipline: FN_CONTRACT on counts or junk usage keys from a FREE
             await usageUnit({
                 model: { kind: "FREE" },
                 estimate: () => ({ counts: {} }),
-                consolidate: ((_ctx: never) => ({
-                    usage: {
-                        counts: {},
-                        cost: {
-                            currency: "USD",
-                            value: 1,
-                            unit: "MICRO_DOLLAR",
-                        },
+                evidence: ((_ctx: never) => ({
+                    counts: {},
+                    cost: {
+                        currency: "USD",
+                        value: 1,
+                        unit: "MICRO_DOLLAR",
                     },
                 })) as never,
             }),

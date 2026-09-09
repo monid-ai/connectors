@@ -185,27 +185,13 @@ export type TypedOutputSlots<B, SD, Seed> =
     };
 
 /**
- * The PORTABLE fn shape the remaining consolidate preset returns:
- * body-agnostic (`body?: unknown` — a preset guards its own reads), so
- * one preset term slots into ANY doc's typed consolidate position via
- * plain assignability. (The estimate twin died with the estimate presets
- * — design D23: a typed inline fn IS the typed estimate.)
+ * The typed return of a usage.consolidate (vendor-meter) fn — design
+ * D27: the vendor's own consumption claim per declared pool, plus the
+ * payload with the billing field removed (absent = unchanged). Pool ids
+ * stay `string` — the credit-id generic is the deferred defineConnector
+ * typed-assembly stub (D26 open question).
  */
-export type PortableConsolidateFn = (ctx: {
-    data: {
-        input: Omit<RunInput, "body"> & { body?: unknown };
-        output: Json;
-        lifecycle?: { state: unknown };
-        usage: { model: UsageModel };
-    };
-    utils: FnUtils;
-    logger: HookLogger;
-}) => {
-    usage: {
-        /** The one surviving consolidate preset (perCall) settles NO
-         *  counts — Record<string, never> keeps it assignable to every
-         *  typed slot (flat, metered, free) without loosening any. */
-        counts: Record<string, never>;
-    };
+export type TypedConsolidated = {
+    credits: Record<string, number>;
     output?: Json;
 };

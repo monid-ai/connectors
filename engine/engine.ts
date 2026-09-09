@@ -3,6 +3,7 @@ import {
     assembleUsage,
     contractConfig,
     countsMismatch,
+    creditsDisagree,
     type EndpointDoc,
     type EnvelopeData,
     type FnState,
@@ -13,6 +14,7 @@ import {
     type LifecycleOutcome,
     type LifecycleRequestInfo,
     type LifecycleUtils,
+    pruneZeroCredits,
     type RunCompleted,
     type RunInput,
     RunKind,
@@ -481,14 +483,58 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 // key its counts (design D19)
                 usage: { model: doc.usage.model },
             };
-            const settled = this.fns.usageConsolidate(envelope);
-            // fn-returned QUANTITIES: metered line keys only
-            this.validateUsage(settled.usage);
-            // D26 assembly: flat 1s appended, folded through the doc's own
-            // rate card → {credits, evidence}. Error settles keep
-            // zeroUsage() — nothing billed, nothing evidenced.
-            usage = assembleUsage(doc.usage.model, settled.usage.counts);
-            output = settled.output ?? raw;
+            // QUANTITIES first (usage.evidence — metered line keys only),
+            // then the D26 assembly: flat 1s appended, folded through the
+            // doc's own rate card → {credits, evidence}. Error settles
+            // keep zeroUsage() — nothing billed, nothing evidenced.
+            const settled = this.fns.usageEvidence(envelope);
+            this.validateUsage(settled);
+            usage = assembleUsage(doc.usage.model, settled.counts);
+            // THE VENDOR'S OWN METER (usage.consolidate — design D27):
+            // a non-empty claim WINS (source of truth; zero entries mean
+            // "nothing consumed" and are pruned — an all-empty claim
+            // falls back to our derived fold). On disagreement the fold
+            // rides out as usage.mismatch.derived — said, never hidden,
+            // never failing the run. The claim's pool ids must be
+            // DECLARED credit systems (fail-closed: a nonzero claim on a
+            // FREE doc trips this loudly).
+            if (this.fns.usageConsolidate) {
+                const consolidated = this.fns.usageConsolidate(envelope);
+                const claim = pruneZeroCredits(consolidated.credits);
+                for (const pool of Object.keys(claim)) {
+                    if (!(pool in doc.usage.credits)) {
+                        throw new EngineError(
+                            EngineErrorCode.FN_CONTRACT,
+                            `${doc.id}: consolidate claimed undeclared ` +
+                                `credit pool "${pool}" (declared: ` +
+                                `${
+                                    Object.keys(doc.usage.credits)
+                                        .join(", ") || "none"
+                                })`,
+                        );
+                    }
+                }
+                if (Object.keys(claim).length > 0) {
+                    const derived = usage.credits;
+                    usage = {
+                        credits: claim,
+                        evidence: usage.evidence,
+                        ...(creditsDisagree(claim, derived)
+                            ? { mismatch: { derived } }
+                            : {}),
+                    };
+                    if (usage.mismatch) {
+                        this.logger.warn("usage mismatch", {
+                            endpoint: doc.id,
+                            reported: claim,
+                            derived,
+                        });
+                    }
+                }
+                output = consolidated.output ?? raw;
+            } else {
+                output = raw;
+            }
             if (this.fns.fromResponse) {
                 output = this.fns.fromResponse({
                     input,

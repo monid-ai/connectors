@@ -41,7 +41,21 @@ export function defineProvider<
                 z.output<StateSchema>,
                 SeedOutput
             >;
-            usage?: Omit<SeedUsage, "consolidate"> & {
+            usage?: Omit<SeedUsage, "evidence" | "consolidate"> & {
+                /** Post-run quantities default (design D27) — a GENERIC
+                 *  fn serving every endpoint keys its counts off
+                 *  `data.usage.model` at runtime; counts stay
+                 *  `Record<string, number>` (no model generic at
+                 *  provider level). */
+                evidence?: (
+                    ctx: TypedEnvelopeCtx<
+                        Json | undefined,
+                        z.output<StateSchema>
+                    >,
+                ) => { counts: Record<string, number> };
+                /** The vendor-meter default (design D27) — where the
+                 *  vendor puts its meter is a provider-wide fact, so the
+                 *  claim + strip is written ONCE here. */
                 consolidate?: (
                     ctx: TypedEnvelopeCtx<
                         Json | undefined,

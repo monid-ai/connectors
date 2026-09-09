@@ -314,16 +314,33 @@ export default defineProvider({
          *  draws, and the drift guard (apify:pricing) alarms on vendor
          *  repricing. One pool ⇒ id `default`. */
         credits: { default: { label: "US dollars" } },
+        /** The vendor's OWN claim (design D27): PAY_PER_EVENT run records
+         *  report `usageTotalUsd`, stashed into the threaded state by the
+         *  poll fns — nothing to strip (state is never user-facing).
+         *  Entry OMITTED when absent (falls back to the derived fold);
+         *  a present claim WINS and the pinned-rate fold becomes a LIVE
+         *  cross-check on every run (`usage.mismatch.derived` on
+         *  disagreement — the survey's between-runs guard, per-run). */
+        consolidate: ({ data, utils }) => {
+            const total = utils.json.optionalNum(
+                data.lifecycle?.state ?? null,
+                "$.data.usageTotalUsd",
+            );
+            return {
+                credits: {
+                    ...(total !== undefined ? { default: total } : {}),
+                },
+            };
+        },
         // No provider-level model/estimate defaults: every ENDPOINT declares
         // its own — the rate card and the estimate fields are per-actor
         // facts, pinned beside the input schema that defines them.
-        consolidate: ({ data }) => {
+        /** The generic QUANTITIES default (design D27): dataset items
+         *  keyed by the doc's OWN model — leaf → the unit; composite →
+         *  the sole metered line id (single-valued by the compiler's
+         *  ≥2-metered rule; multi-metered actors declare their own fns). */
+        evidence: ({ data }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
-            // counts KEY from the doc's OWN model (design D19): leaf → the
-            // unit; composite → the sole metered line id. Single-valued by
-            // the compiler's ≥2-metered rule (multi-metered actors declare
-            // their own fns). Vendor receipts (run-record pricing) live in
-            // the RAW record + the threaded state — never in usage (D26).
             let key;
             switch (data.usage.model.kind) {
                 case "PER_UNIT":
@@ -339,11 +356,7 @@ export default defineProvider({
                     key = undefined;
                     break;
             }
-            return {
-                usage: {
-                    counts: key === undefined ? {} : { [key]: items },
-                },
-            };
+            return { counts: key === undefined ? {} : { [key]: items } };
         },
     },
 });

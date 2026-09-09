@@ -28,9 +28,9 @@ PRESENT state IS the complete next fn-state (replaces the previous one
 wholesale); an ABSENT state carries the previous fn-owned fields forward
 untouched — no field-level merge exists. A RUNNING outcome SHALL stamp
 engine timing and return `{kind: RUNNING, state: RunState, pollAfterMs:
-outcome override ?? timeouts.pollMs}`; a COMPLETED outcome SHALL feed the
-ONE settle pipeline (consolidate on the raw envelope + the final state →
-fromResponse → output.schema). A running
+outcome override ?? timeouts.pollMs}`; a COMPLETED outcome SHALL feed
+the ONE settle pipeline (evidence + consolidate on the raw envelope
+with the final state → fromResponse → output.schema). A running
 outcome without a resolved lifecycle.poll SHALL fail closed
 (CONTRACT_VIOLATION).
 
@@ -120,10 +120,12 @@ resolve the credential). Absolute targets SHALL be https-only
 CALLER's request — schema-shaped, defaults materialized; a reshaping
 toRequest like akta's array→CSV would make typed input reads lie) and
 run the linked `usage.estimate` fn — PURE, no IO, no state; the fn is
-compile-required on every doc (the D25 billing triple: model + estimate
-+ consolidate must all RESOLVE, endpoint ?? provider — a provider-level
-fallback satisfies the compiled doc). Then the engine ASSEMBLES the
-public usage (design D26: `assembleUsage(model, fnCounts)` — evidence =
+compile-required on every doc (model + estimate + evidence must all
+RESOLVE, endpoint ?? provider — a provider-level fallback satisfies
+the compiled doc, and for unmetered models the compiler's synthesized
+empty fn does; consolidate stays OPTIONAL — design D27). Then the
+engine ASSEMBLES the public usage (design D26:
+`assembleUsage(model, fnCounts)` — evidence =
 the fn quantities + the model's flat 1s (`flatLines(model)`, renamed
 from flatCounts; a structural no-op for FREE and pure PER_UNIT models),
 credits = the fold through the doc's own rate card). The doc's own
@@ -131,9 +133,9 @@ credits = the fold through the doc's own rate card). The doc's own
 provenance-named, design D23), and the FN-returned quantities are
 validated (`countsMismatch` — the ONE gate; freeMismatch is DELETED
 with the cost field, design D26) BEFORE assembly. A standalone command
-(`deno task engine:estimate`) SHALL print the model + the declared
-credit pools + the folded `{credits, evidence}`, loading against a
-transport that rejects every call.
+(`deno task engine:estimate`) SHALL print just the answer — the folded
+`{credits, evidence}` (model and pools live on the doc) — loading
+against a transport that rejects every call.
 
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
@@ -164,11 +166,11 @@ evidence.
 - **THEN** estimate(input) deep-equals run(input).usage — credits and evidence alike
 
 ### Requirement: Counts ↔ model discipline (validateUsage) + usage assembly (D24/D26)
-The engine SHALL validate consolidate output at settle AND the estimate
-fn's return against the doc's model, fail-closed as FN_CONTRACT: a
-COMPOSITE doc's counts keys must each name a PER_UNIT component in
-`model.components` (flat components are ENGINE-appended, never
-fn-written); a leaf PER_UNIT doc's single key must equal the model's
+The engine SHALL validate the usage.evidence fn's return at settle AND
+the estimate fn's return against the doc's model, fail-closed as
+FN_CONTRACT: a COMPOSITE doc's counts keys must each name a PER_UNIT
+component in `model.components` (flat components are ENGINE-appended,
+never fn-written); a leaf PER_UNIT doc's single key must equal the model's
 unit; PER_CALL and FREE docs may count nothing (`{counts: {}}` only).
 `{counts: {}}` passes everywhere as a FN return. AFTER validation, on
 SUCCESS settles and estimates, the engine SHALL assemble the public
@@ -178,23 +180,56 @@ PER_CALL under `CALL`), credits = `ceil(quantity / every) ×
 consumes.amount` per line, summed per credit id — the settle output is
 `{credits, evidence}`; error settles stay `zeroUsage()` (`{credits: {},
 evidence: {}}`) untouched. The doc's model SHALL ride into the
-consolidate envelope (`data.usage.model` — provenance-named, design
+settle envelope (`data.usage.model` — provenance-named, design
 D23; the final async state rides beside it at `data.lifecycle.state`) so
-a GENERIC provider consolidate keys its count with zero per-doc code
+a GENERIC provider evidence fn keys its count with zero per-doc code
 (leaf → the unit; composite → the sole metered component id —
 single-valued by the compiler's ≥2-metered rule).
 
 #### Scenario: Unknown key fails closed
-- **WHEN** a consolidate returns counts keyed by a name not in the composite's components
+- **WHEN** a usage.evidence fn returns counts keyed by a name not in the composite's components
 - **THEN** the run fails FN_CONTRACT naming the key and the declared components
 
 #### Scenario: Flat keys are engine-owned
-- **WHEN** a consolidate keys a count by a PER_CALL component id
+- **WHEN** a usage.evidence fn keys a count by a PER_CALL component id
 - **THEN** the run fails FN_CONTRACT — the flat 1 is engine-appended, never fn-written
 
 #### Scenario: Success settle assembles credits and evidence
 - **WHEN** a composite doc settles 23 metered items on a 2xx envelope
 - **THEN** the public usage's evidence carries every flat line at 1 beside the 23, and credits carry the engine's fold through the pinned rates
+
+### Requirement: Vendor-claim settle — reported wins, the fold is the check (D27)
+On SUCCESS settles the pipeline SHALL run in order: `usage.evidence`
+(quantities) → `assembleUsage` (flat 1s + the derived credits fold) →
+`usage.consolidate` (when resolved) on the SAME raw envelope →
+`output.fromResponse`. Consolidate semantics: the claim's zero entries
+prune (`pruneZeroCredits` — 0 = nothing consumed); every claimed pool
+id must be a DECLARED credit system (FN_CONTRACT naming the pool
+otherwise — a nonzero claim on a FREE doc trips loudly); a NON-EMPTY
+pruned claim WINS (`usage.credits` = the vendor's number), the derived
+fold demoted to cross-check — disagreement beyond 1e-9
+(`creditsDisagree`) rides out as `usage.mismatch.derived` (OUR fold;
+warn-logged, never failing the run); an all-empty claim falls back to
+the derived fold. The OUTPUT STRIP applies regardless of the claim:
+`consolidate.output` (when present) replaces the payload fed to
+fromResponse even when the claim is empty. Error settles run NEITHER
+usage fn — zero usage forced, payload untouched by usage hooks.
+
+#### Scenario: Non-empty claim wins and flags disagreement
+- **WHEN** a success settle derives `{default: 0.0332}` and the consolidate claims `{default: 0.05}`
+- **THEN** usage settles credits `{default: 0.05}` with `mismatch: {derived: {default: 0.0332}}`, a warning is logged, and the run succeeds
+
+#### Scenario: Empty claim falls back to the fold
+- **WHEN** a consolidate returns `{credits: {default: 0}, output}` (zero prunes empty)
+- **THEN** usage keeps the engine's derived fold, no mismatch key appears, and the stripped output still feeds fromResponse
+
+#### Scenario: Undeclared pool fails closed
+- **WHEN** a consolidate claims a pool id absent from doc.usage.credits
+- **THEN** the run fails FN_CONTRACT naming the claimed pool and the declared ids
+
+#### Scenario: Error settle runs neither usage fn
+- **WHEN** an envelope settles non-2xx on a doc with evidence and consolidate fns
+- **THEN** neither fn runs — usage is zeroUsage() and the raw payload rides to fromError untouched
 
 ### Requirement: Zero usage forced on every non-2xx envelope
 The settle pipeline SHALL force zero usage whenever the envelope's

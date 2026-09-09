@@ -22,13 +22,13 @@ export default defineProvider({
     },
     auth: { inject: presets.auth.header("X-API-Key") },
     usage: {
-        // FREE (design D25): tinyfish bills nothing on every plan today —
-        // v1 evidence: "$0 wins verbatim … both endpoints are free". Free-ness
-        // is a MODEL fact (D25): the fns return plain {counts: {}} — the
-        // model interprets, and a future price change is a MODEL change,
-        // not a rate-card surprise.
+        // FREE (designs D25/D27): tinyfish bills nothing on every plan
+        // today — v1 evidence: "$0 wins verbatim … both endpoints are
+        // free". Free-ness is a MODEL fact, and the model ALONE suffices:
+        // the quantities fns are compiler-synthesized ({counts: {}} is
+        // the only lawful return) and there is no vendor meter to
+        // consolidate. A future price change is a MODEL change, not a
+        // rate-card surprise.
         model: { kind: UsageModelKind.FREE },
-        estimate: () => ({ counts: {} }),
-        consolidate: () => ({ usage: { counts: {} } }),
     },
 });

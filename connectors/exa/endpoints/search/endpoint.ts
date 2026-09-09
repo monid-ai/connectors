@@ -88,21 +88,17 @@ export default defineEndpoint({
                 },
             };
         },
-        consolidate: ({ data, utils }) => {
+        evidence: ({ data, utils }) => {
             const results = utils.json.len(data.output, "$.results");
             // OFFSET counting rule (v1 selector.offset: 10): the base "call"
             // component covers the first 10 — only the surplus is counted.
-            // costDollars stays in the RAW run record (the receipt IS the
-            // output — design D26); it is absorbed from the user-facing
-            // payload only.
+            // The costDollars receipt is the provider consolidate's job
+            // (claim + strip — design D27).
             const above = Math.max(0, results - 10);
             return {
-                usage: {
-                    counts: {
-                        ...(above > 0 ? { "additional_result": above } : {}),
-                    },
+                counts: {
+                    ...(above > 0 ? { "additional_result": above } : {}),
                 },
-                output: utils.json.omit(data.output, ["costDollars"]),
             };
         },
     },

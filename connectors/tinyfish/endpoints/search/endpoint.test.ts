@@ -21,10 +21,20 @@ Deno.test("tinyfish: per-endpoint baseUrl overrides land in the compiled urls", 
         bundle.endpoints["tinyfish#fetch"].request.url,
         "https://api.fetch.tinyfish.ai/",
     );
-    // free provider: both endpoints share the provider-level FREE settle fn
+    // FREE provider (D27): no vendor meter — no consolidate fn compiles
+    // at all, and BOTH quantities slots on BOTH docs are the one
+    // compiler-synthesized `() => ({counts: {}})` entry (same $fn.key)
+    const search = bundle.endpoints["tinyfish#search"];
+    const fetchDoc = bundle.endpoints["tinyfish#fetch"];
+    assertEquals(search.usage.consolidate, undefined);
+    assertEquals(fetchDoc.usage.consolidate, undefined);
+    const synthesizedKey = search.usage.evidence.$fn.key;
+    assertEquals(search.usage.estimate.$fn.key, synthesizedKey);
+    assertEquals(fetchDoc.usage.evidence.$fn.key, synthesizedKey);
+    assertEquals(fetchDoc.usage.estimate.$fn.key, synthesizedKey);
     assertEquals(
-        bundle.endpoints["tinyfish#search"].usage.consolidate.$fn.key,
-        bundle.endpoints["tinyfish#fetch"].usage.consolidate.$fn.key,
+        bundle.fnTable[synthesizedKey].provenance,
+        "core#usage.synthesizedEmpty",
     );
 });
 
