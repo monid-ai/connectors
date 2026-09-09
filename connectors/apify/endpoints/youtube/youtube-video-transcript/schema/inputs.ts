@@ -20,7 +20,7 @@ export const zYoutubeVideoTranscriptBody = z.object({
     ).optional(),
     "max_videos": z.number().int().min(1).max(200).describe(
         "Maximum number of videos to fetch from the channel (optional, default: 10, range: 1 to 200). Only applicable and used with channel_url; ignored for youtube_url. Combine with start_date/end_date for filtered results.",
-    ).optional(),
+    ).default(10), // the actor's OWN server default (verified live)
     "start_date": z.string().describe(
         "Start date for filtering videos by upload date (format: YYYY-MM-DD or ISO 8601, optional). Only applicable and used with channel_url; ignored for youtube_url. Videos uploaded on or after this date will be fetched.",
     ).optional(),

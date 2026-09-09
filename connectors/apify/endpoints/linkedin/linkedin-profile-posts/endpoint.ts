@@ -43,8 +43,8 @@ export default defineEndpoint({
         /** maxPosts (schema default 10) per target url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["maxPosts"],
-            ["targetUrls"],
+            "maxPosts",
+            "targetUrls",
             10,
         ),
     },

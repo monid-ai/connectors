@@ -43,8 +43,8 @@ export default defineEndpoint({
         /** maxReviews per place url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["maxReviews"],
-            ["startUrls"],
+            "maxReviews",
+            "startUrls",
             3,
         ),
     },

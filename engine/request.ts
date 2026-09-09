@@ -8,7 +8,7 @@ import {
 } from "@shared/core";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import type { PreparedRequest } from "./interfaces/mod.ts";
-import { validateAgainst } from "./validate.ts";
+import { validateAgainst, validateInputAgainst } from "./validate.ts";
 
 /**
  * Validate the caller's input: first the RunInput shape itself (the engine
@@ -25,8 +25,24 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     }
     const runInput = shape.data;
     const schemas = doc.input.schema;
+    // BODY: validated on a clone the engine owns, with schema DEFAULTS
+    // materialized into it (design D19 addendum — schema defaults mirror
+    // the vendor's own server defaults, so hooks read the same effective
+    // knobs the vendor applies). The caller's object is never mutated.
+    if (schemas.body) {
+        const body = runInput.body !== undefined
+            ? structuredClone(runInput.body)
+            : null;
+        const result = validateInputAgainst(schemas.body, body);
+        if (!result.ok) {
+            throw new EngineError(
+                EngineErrorCode.INVALID_INPUT,
+                `${doc.id}: input.body ${result.message}`,
+            );
+        }
+        runInput.body = body;
+    }
     const checks: [string, JsonSchemaDoc | undefined, unknown][] = [
-        ["body", schemas.body, runInput.body],
         ["queryParams", schemas.queryParams, runInput.queryParams ?? {}],
         ["pathParams", schemas.pathParams, runInput.pathParams ?? {}],
     ];

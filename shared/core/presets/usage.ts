@@ -6,10 +6,11 @@ import { preset } from "./preset.ts";
  * (usage.consolidate is REQUIRED on every endpoint; these kill the
  * boilerplate). They return {usage} only — output absent = unchanged.
  *
- * Counts are KEYED (design D19): the key is derived from the doc's OWN
- * model, which rides in on `data.model` — leaf PER_UNIT → the unit;
- * COMPOSITE → the sole metered component id (single-valued by the
- * compiler's ≥2-metered rule, which forces doc-level fns otherwise).
+ * Counts are KEYED (design D19) via the doc's model (`data.model`,
+ * REQUIRED on every doc) — the same switch every model consumer uses:
+ * leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id
+ * (single-valued by the compiler's ≥2-metered rule); PER_CALL → nothing
+ * countable.
  */
 export const usage = {
     /** Flat per-run billing (model kind PER_CALL): nothing to count — the
@@ -22,18 +23,24 @@ export const usage = {
         }),
     ),
     /** Count = array length at the given output path (e.g. "$.results"),
-     *  keyed by the doc's model (unit / sole metered component id). */
+     *  keyed by the doc's model. */
     perResult: preset(
         "usage.perResult",
         (path: string): UsageConsolidateFn => ({ data, utils }) => {
-            const model = data.model;
-            const key = model?.kind === "PER_UNIT"
-                ? model.unit
-                : model?.kind === "COMPOSITE"
-                ? Object.entries(model.components)
-                    .find(([, component]) => component.kind === "PER_UNIT")
-                    ?.[0]
-                : undefined;
+            let key;
+            switch (data.model.kind) {
+                case "PER_UNIT":
+                    key = data.model.unit;
+                    break;
+                case "COMPOSITE":
+                    key = Object.entries(data.model.components)
+                        .find(([, component]) => component.kind === "PER_UNIT")
+                        ?.[0];
+                    break;
+                case "PER_CALL":
+                    key = undefined;
+                    break;
+            }
             const amount = utils.json.len(data.output, path);
             return {
                 usage: {

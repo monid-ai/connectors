@@ -30,8 +30,20 @@ export default defineEndpoint({
     input: { schema: { body: zTiktokVideoScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one video per post url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["postURLs"]),
+        /** one video per post URL, PLUS resultsPerPage related videos per
+         *  URL when scrapeRelatedVideos is on (PR #2 finding — every
+         *  related record bills as an item). The schema pins the actor's
+         *  OWN server defaults (scrapeRelatedVideos false, resultsPerPage
+         *  1), materialized into the body before any hook runs. */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const urls = utils.json.optionalGet(body, "$.postURLs");
+            const n = Math.max(Array.isArray(urls) ? urls.length : 0, 1);
+            const related =
+                utils.json.optionalGet(body, "$.scrapeRelatedVideos") === true
+                    ? utils.json.optionalNum(body, "$.resultsPerPage") ?? 1
+                    : 0;
+            return { counts: { "RESULT": n * (1 + related) } };
+        },
     },
 });

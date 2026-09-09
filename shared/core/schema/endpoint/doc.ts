@@ -62,8 +62,12 @@ export const zEndpointDoc = z.strictObject({
          *  resolved endpoint ?? provider at compile. */
         consolidate: zFnRef,
         /** Rate-free cost-shape declaration — inline DATA (hash-covered),
-         *  never a fn: catalogs price from it without executing anything. */
-        model: zUsageModel.optional(),
+         *  never a fn: catalogs price from it without executing anything.
+         *  REQUIRED (resolved endpoint ?? provider at compile, like
+         *  consolidate): every doc must declare what is chargeable —
+         *  optionality only bought silent "nothing countable" fallbacks
+         *  (design D19 addendum). */
+        model: zUsageModel,
         /** Pre-run estimate hook: validated input → estimated Usage in
          *  consolidate's units. Absent ⇒ engine defaults to one CALL. */
         estimate: zFnRef.optional(),

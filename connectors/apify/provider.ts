@@ -304,14 +304,20 @@ export default defineProvider({
             // card and vendor truth join on one string. Single-valued by
             // the compiler's ≥2-metered rule (multi-metered actors declare
             // their own fns).
-            const usageModel = data.model;
-            const key = usageModel?.kind === "PER_UNIT"
-                ? usageModel.unit
-                : usageModel?.kind === "COMPOSITE"
-                ? Object.entries(usageModel.components)
-                    .find(([, component]) => component.kind === "PER_UNIT")
-                    ?.[0]
-                : undefined;
+            let key;
+            switch (data.model.kind) {
+                case "PER_UNIT":
+                    key = data.model.unit;
+                    break;
+                case "COMPOSITE":
+                    key = Object.entries(data.model.components)
+                        .find(([, component]) => component.kind === "PER_UNIT")
+                        ?.[0];
+                    break;
+                case "PER_CALL":
+                    key = undefined;
+                    break;
+            }
             const model = utils.json.optionalGet(
                 state,
                 "$.data.pricingModel",

@@ -32,6 +32,6 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one result per input entry (one asin each) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["input"]),
+        estimate: presets.estimate.onePerQuery("input"),
     },
 });

@@ -25,7 +25,7 @@ import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
  */
 export const zEstimateData = z.strictObject({
     input: zRunInput,
-    model: zUsageModel.optional(),
+    model: zUsageModel,
 });
 export type EstimateData = z.infer<typeof zEstimateData>;
 

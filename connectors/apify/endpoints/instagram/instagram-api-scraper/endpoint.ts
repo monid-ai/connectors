@@ -43,10 +43,17 @@ export default defineEndpoint({
         },
         /** resultsLimit posts per direct url (searchLimit in search mode) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            ["resultsLimit", "searchLimit"],
-            ["directUrls"],
-            3,
-        ),
+        /** resultsLimit (direct-url runs) or searchLimit (search runs) —
+         *  TWO alternative limit knobs, so an inline fn (presets take
+         *  single fields — D19 addendum); × directUrls. */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const limit = utils.json.optionalNum(body, "$.resultsLimit") ??
+                utils.json.optionalNum(body, "$.searchLimit");
+            if (limit === undefined) return { counts: { "result": 3 } };
+            const urls = utils.json.optionalGet(body, "$.directUrls");
+            const n = Math.max(Array.isArray(urls) ? urls.length : 0, 1);
+            return { counts: { "result": limit * n } };
+        },
     },
 });

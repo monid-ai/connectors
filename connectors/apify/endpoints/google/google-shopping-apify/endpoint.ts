@@ -31,6 +31,19 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** max_pages pages of num results each — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsPages(["max_pages"], ["num"], 0, 3),
+        /** max_pages × num results/page (else the 10-per-page guess; the
+         *  actor's `num` is a STRING enum "10"…"100") — single-use
+         *  counting rule, inline (D19 addendum). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const pages = utils.json.optionalNum(body, "$.max_pages");
+            if (pages === undefined) return { counts: { "RESULT": 3 } };
+            const size = Number(utils.json.optionalGet(body, "$.num"));
+            return {
+                counts: {
+                    "RESULT": pages * (Number.isFinite(size) ? size : 10),
+                },
+            };
+        },
     },
 });

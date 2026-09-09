@@ -46,8 +46,8 @@ export default defineEndpoint({
         /** maxComments per keyword — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["maxComments"],
-            ["keywords"],
+            "maxComments",
+            "keywords",
             3,
         ),
     },

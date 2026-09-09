@@ -148,7 +148,9 @@ populates only the selected key; exa's base-covers-first-10 is
 `max(0, n − 10)`); volume schedules are services card-row shapes. No
 rate field anywhere: apify event prices are tiered by OUR subscription
 plan (verified), so rates are services config. `zUsageSection` carries
-`model?` (and `estimate?`); `doc.usage` carries `model` inline
+`model?` (and `estimate?`) per level — but the model MUST RESOLVE
+(endpoint ?? provider, compile error if neither: every doc declares what
+is chargeable); `doc.usage` carries the resolved `model` REQUIRED inline
 (hash-covered) and `estimate` as a FnRef.
 
 #### Scenario: Same-unit components are legal, keyed

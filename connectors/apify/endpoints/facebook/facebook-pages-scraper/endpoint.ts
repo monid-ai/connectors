@@ -29,6 +29,6 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one page record per startUrl — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["startUrls"]),
+        estimate: presets.estimate.onePerQuery("startUrls"),
     },
 });

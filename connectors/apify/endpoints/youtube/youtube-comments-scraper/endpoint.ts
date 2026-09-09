@@ -32,8 +32,8 @@ export default defineEndpoint({
         /** maxComments per video url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["maxComments"],
-            ["startUrls"],
+            "maxComments",
+            "startUrls",
             3,
         ),
     },

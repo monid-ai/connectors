@@ -44,6 +44,6 @@ export default defineEndpoint({
         },
         /** limit = products per call (schema default 10) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact(["limit"], 10),
+        estimate: presets.estimate.limitIsExact("limit", 10),
     },
 });

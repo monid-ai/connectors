@@ -28,9 +28,15 @@ fail with the same code.
 
 ### Requirement: usage.model + usage.estimate resolution
 `usage.model` SHALL resolve leaf-wise as inline DATA on `doc.usage.model`
-(never interned); `usage.estimate` SHALL resolve leaf-wise, intern with
+(never interned) and is REQUIRED — endpoint ?? provider, compile error
+(HOOK_UNRESOLVED) if neither declares one: every doc states what is
+chargeable. `usage.estimate` SHALL resolve leaf-wise, intern with
 `api = schema.fn_abi_since`, land at `doc.usage.estimate`, and join
 fnKeysOf/minEngineVersion inputs.
+
+#### Scenario: Model must resolve
+- **WHEN** neither endpoint nor provider declares usage.model
+- **THEN** compilation fails with code HOOK_UNRESOLVED naming usage.model
 
 #### Scenario: Endpoint model overrides the provider default
 - **WHEN** a provider declares model per_result and an endpoint declares per_call

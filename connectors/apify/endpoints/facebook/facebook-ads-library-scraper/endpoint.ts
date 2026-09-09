@@ -46,8 +46,8 @@ export default defineEndpoint({
         /** limitPerSource ads per url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["limitPerSource"],
-            ["urls"],
+            "limitPerSource",
+            "urls",
             3,
         ),
     },

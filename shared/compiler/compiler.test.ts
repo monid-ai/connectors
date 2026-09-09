@@ -47,7 +47,10 @@ function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
         meta: { displayName: "Demo", summary: "A demo provider." },
         auth: { inject: presets.auth.header("x-demo-key") },
         request: { baseUrl: "https://api.demo.test" },
-        usage: { consolidate: presets.usage.perCall() },
+        usage: {
+            model: { kind: "PER_CALL" },
+            consolidate: presets.usage.perCall(),
+        },
         ...overrides,
     });
 }

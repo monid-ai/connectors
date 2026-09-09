@@ -32,6 +32,6 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxItems caps the run — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact(["maxItems"], 3),
+        estimate: presets.estimate.limitIsExact("maxItems", 3),
     },
 });

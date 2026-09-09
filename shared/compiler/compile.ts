@@ -439,8 +439,16 @@ export async function compileBundle(
                 SC.fnAbiSince,
             );
 
-            // ---- usage.model (inline DATA) + usage.estimate (hook) --------
+            // ---- usage.model (inline DATA, REQUIRED) + usage.estimate ------
             const usageModel = def.usage?.model ?? provider.usage?.model;
+            if (usageModel === undefined) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.model must resolve — declare it on the ` +
+                        `endpoint or the provider; every doc states what is ` +
+                        `chargeable (rate-free shape, design D19).`,
+                );
+            }
             // ≥2 METERED components ⇒ only DOC-owned fns can know which
             // component a count belongs to — a GENERIC provider consolidate
             // keys by "the sole PER_UNIT component" and would have no basis

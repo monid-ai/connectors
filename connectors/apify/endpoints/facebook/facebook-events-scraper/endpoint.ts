@@ -37,11 +37,18 @@ export default defineEndpoint({
                 "event": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
             },
         },
-        /** maxEvents per query/url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(["maxEvents"], [
-            "searchQueries",
-            "startUrls",
-        ], 3),
+        /** maxEvents × (searchQueries + startUrls) — TWO multiplier
+         *  arrays, so an inline fn (presets take single fields — D19
+         *  addendum). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const limit = utils.json.optionalNum(body, "$.maxEvents");
+            if (limit === undefined) return { counts: { "event": 3 } };
+            const queries = utils.json.optionalGet(body, "$.searchQueries");
+            const urls = utils.json.optionalGet(body, "$.startUrls");
+            const n = (Array.isArray(queries) ? queries.length : 0) +
+                (Array.isArray(urls) ? urls.length : 0);
+            return { counts: { "event": limit * Math.max(n, 1) } };
+        },
     },
 });

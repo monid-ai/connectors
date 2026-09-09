@@ -42,12 +42,18 @@ export default defineEndpoint({
         },
         /** limit review-pages (~10 reviews each) per product — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryPages(
-            ["limit"],
-            [],
-            ["products"],
-            10,
-            3,
-        ),
+        /** limit review-PAGES (~10 reviews each) × products — single-use
+         *  counting rule, so an inline fn, not a preset (D19 addendum). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const pages = utils.json.optionalNum(body, "$.limit");
+            if (pages === undefined) return { counts: { "review": 3 } };
+            const products = utils.json.optionalGet(body, "$.products");
+            const n = Math.max(
+                Array.isArray(products) ? products.length : 0,
+                1,
+            );
+            return { counts: { "review": pages * 10 * n } };
+        },
     },
 });

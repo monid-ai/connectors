@@ -45,6 +45,6 @@ export default defineEndpoint({
         },
         /** one spotlight per url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["spotlightUrls"]),
+        estimate: presets.estimate.onePerQuery("spotlightUrls"),
     },
 });

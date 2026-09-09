@@ -31,7 +31,7 @@ import {
  *  `state` is present only for lifecycle (async) runs: the final threaded
  *  state, so settle fns can read billing signals stashed during polling
  *  (e.g. Apify's pricing fields ride the poll response, not the dataset).
- *  `model` is the DOC'S OWN usage.model (when declared): a GENERIC
+ *  `model` is the DOC'S OWN usage.model (REQUIRED on every doc): a GENERIC
  *  provider consolidate keys its `usage.counts` by looking the component
  *  id up here — leaf → the unit, composite → the sole PER_UNIT component
  *  (single-valued by the loader's ≥2-metered rule) — with zero per-doc
@@ -40,7 +40,7 @@ export const zEnvelopeData = z.strictObject({
     input: zRunInput,
     output: zOutputByConstruction,
     state: zJson.optional(),
-    model: zUsageModel.optional(),
+    model: zUsageModel,
 });
 export type EnvelopeData = z.infer<typeof zEnvelopeData>;
 

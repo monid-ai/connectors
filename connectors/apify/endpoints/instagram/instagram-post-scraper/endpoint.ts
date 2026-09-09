@@ -32,8 +32,8 @@ export default defineEndpoint({
         // published charge event is per item — metered, not flat.
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         estimate: presets.estimate.perQueryLimit(
-            ["resultsLimit"],
-            ["username"],
+            "resultsLimit",
+            "username",
             3,
         ),
     },

@@ -32,11 +32,13 @@ export default defineEndpoint({
     input: { schema: { body: zPremiumXFollowerScraperFollowingDataBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** whichever follower cap is set — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact([
-            "maxFollowers",
-            "maxFollowings",
-        ], 3),
+        /** whichever follower cap is set — TWO alternative limit knobs,
+         *  so an inline fn (presets take single fields — D19 addendum). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const limit = utils.json.optionalNum(body, "$.maxFollowers") ??
+                utils.json.optionalNum(body, "$.maxFollowings") ?? 3;
+            return { counts: { "RESULT": limit } };
+        },
     },
 });

@@ -35,9 +35,17 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxResults per url/query — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(["maxResults"], [
-            "startUrls",
-            "searchQueries",
-        ], 3),
+        /** maxResults × (startUrls + searchQueries) — TWO multiplier
+         *  arrays, so an inline fn (presets take single fields). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const limit = utils.json.optionalNum(body, "$.maxResults");
+            if (limit === undefined) return { counts: { "RESULT": 3 } };
+            const urls = utils.json.optionalGet(body, "$.startUrls");
+            const queries = utils.json.optionalGet(body, "$.searchQueries");
+            const n = (Array.isArray(urls) ? urls.length : 0) +
+                (Array.isArray(queries) ? queries.length : 0);
+            return { counts: { "RESULT": limit * Math.max(n, 1) } };
+        },
     },
 });

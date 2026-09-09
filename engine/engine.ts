@@ -134,10 +134,9 @@ export class LoadedEndpoint implements RunnableEndpoint {
     estimate(runInput: RunInput): Usage {
         const input = this.deriveInput(runInput);
         if (this.fns.usageEstimate) {
-            const model = this.doc.usage.model;
             const usage = this.fns.usageEstimate({
                 input,
-                ...(model !== undefined ? { model } : {}),
+                model: this.doc.usage.model,
             });
             this.validateUsage(usage);
             return usage;
@@ -459,6 +458,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 input,
                 output: raw,
                 ...(state !== undefined ? { state } : {}),
+                model: doc.usage.model,
             });
         }
         if (!isProviderError) {
@@ -468,9 +468,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 ...(state !== undefined ? { state } : {}),
                 // the doc's OWN model rides along so a GENERIC provider
                 // consolidate can key its counts (design D19)
-                ...(doc.usage.model !== undefined
-                    ? { model: doc.usage.model }
-                    : {}),
+                model: doc.usage.model,
             };
             const settled = this.fns.usageConsolidate(envelope);
             this.validateUsage(settled.usage);
@@ -481,6 +479,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
                     input,
                     output,
                     ...(state !== undefined ? { state } : {}),
+                    model: doc.usage.model,
                 });
             }
             if (doc.output.schema) {

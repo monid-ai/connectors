@@ -559,6 +559,36 @@ its Temporal `endpointExecution` workflow.
   linkedin-profile-search (PER_UNIT·PAGE → the three published events,
   mode-keyed fns).
 
+## D19a — Billing-contract hardening: model REQUIRED, presets diet, actor-default knobs
+
+- **`usage.model` is REQUIRED** (resolved endpoint ?? provider, compile
+  error if neither — consolidate's exact rule; `doc.usage.model`
+  non-optional): every doc states what is chargeable; optionality only
+  bought silent "nothing countable" fallbacks. `data.model` in the
+  estimate/envelope ctxs is non-optional in turn.
+- **Presets are SHARED terms with SINGLE-field args**: a preset earns its
+  existence by ≥2 call sites and a plain signature. perQueryPages /
+  limitIsPages (single-use) and dualLimit (dead) are DELETED — their call
+  sites carry inline fns; multi-knob docs (two limit fields, two
+  multiplier arrays, comma-separated terms, mode-aware caps) write inline
+  estimates instead of widening preset signatures. Kept: perQueryLimit /
+  limitIsExact / onePerQuery. Model-key derivation inside presets and the
+  generic apify consolidate is SWITCH-shaped (one style at every model
+  consumer).
+- **Actor-default knobs become schema `.default(…)`** — ONLY where the
+  value mirrors the actor's OWN server default (verified live; a default
+  is SENT, so an invented one would change vendor behavior):
+  tiktok-video-scraper resultsPerPage 1 + scrapeRelatedVideos false;
+  youtube-video-transcript max_videos 10. instagram-search-scraper's
+  searchLimit has NO server default (prefill only) — its estimate keeps an
+  in-fn fallback. The engine's input validation MATERIALIZES schema
+  defaults into a cloned body (ajv useDefaults; the caller's object is
+  never mutated; output validation stays default-free), so hooks read the
+  same effective knobs the vendor applies.
+- Estimate-fidelity fixes ride this design (PR #2 findings): comma-term
+  counting (instagram-search), related-video counting (tiktok-video),
+  channel-default counting (youtube-video-transcript).
+
 ## D20 — Review-round fixes: state-size projection, presence overrides, bounded naps, recorder scrub, coded compile errors
 
 - apify's poll PROJECTS `actorChargeEvents` to `{eventPriceUsd}` per event

@@ -66,11 +66,29 @@ on linkedin-profile-search. instagram-hashtag/post are SURVEY-CORRECTED
 from v1's per-call to metered. Models reference `UsageModelKind.*` /
 `Unit.*` consts, never raw strings. `usage.estimate` names the endpoint's
 OWN input-schema fields via `presets.estimate.*` (v1's allow-list probing
-is NOT ported — inputs are pinned); endpoints whose knobs no flat-field
-preset can see (amazon-search-scraper: per-item maxPages;
-facebook-profile-posts-scraper: newline targets × max_posts) declare
-custom inline estimates. Flat-only endpoints declare no estimate (the
-engine default `{counts: {}}` is already exact).
+is NOT ported — inputs are pinned). Presets are SHARED terms with
+SINGLE-field args (D19 addendum: a preset earns its existence by ≥2 call
+sites); every oddly-shaped counting rule is an inline fn on its doc
+(multi-knob or multi-multiplier docs, comma-separated terms, page×size
+math, mode-aware caps). Estimate-driving knobs whose ACTOR publishes a
+server default pin it as a schema `.default(…)` — materialized into the
+validated body before any hook, so the estimate reads the same effective
+value the vendor applies (tiktok-video-scraper resultsPerPage 1 /
+scrapeRelatedVideos false; youtube-video-transcript max_videos 10 — all
+verified live). Flat-only endpoints declare no estimate (the engine
+default `{counts: {}}` is already exact).
+
+#### Scenario: Comma-separated search terms counted
+- **WHEN** instagram-search-scraper estimates {search: "a,b,c", searchLimit: 2}
+- **THEN** the estimate is 6 RESULTs (2 per term — the actor runs each term as its own search)
+
+#### Scenario: Related videos counted
+- **WHEN** tiktok-video-scraper estimates one postURL with scrapeRelatedVideos and resultsPerPage 5
+- **THEN** the estimate is 6 RESULTs (the post + 5 related records, every item billed)
+
+#### Scenario: Channel default applied
+- **WHEN** youtube-video-transcript estimates a channel_url without max_videos
+- **THEN** the estimate is 10 RESULTs (the actor's own server default, schema-materialized)
 
 #### Scenario: Exact-field estimate
 - **WHEN** tweet-scraper estimates {maxItems: 7}

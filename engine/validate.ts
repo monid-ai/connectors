@@ -15,18 +15,36 @@ const ajv: AjvInstance = new AjvCtor({ allErrors: false, strict: false });
 // deno-lint-ignore no-explicit-any
 ((addFormats as any).default ?? addFormats)(ajv);
 
-const compiled = new Map<string, ValidateFn & { errors?: unknown[] | null }>();
+// Second instance for INPUT bodies only: `useDefaults` MATERIALIZES schema
+// `default` values into the (caller-cloned) body, so estimate/consolidate
+// fns read the same effective knobs the vendor applies (design D19
+// addendum: schema defaults mirror the ACTOR's own server defaults).
+// Output validation stays default-free — settle must never mutate results.
+const ajvDefaults: AjvInstance = new AjvCtor({
+    allErrors: false,
+    strict: false,
+    useDefaults: true,
+});
+// deno-lint-ignore no-explicit-any
+((addFormats as any).default ?? addFormats)(ajvDefaults);
 
-/** Compile-once JSON Schema (draft 2020-12) validation keyed by schema identity. */
-export function validateAgainst(
+const compiled = new Map<string, ValidateFn & { errors?: unknown[] | null }>();
+const compiledDefaults = new Map<
+    string,
+    ValidateFn & { errors?: unknown[] | null }
+>();
+
+function run(
+    instance: AjvInstance,
+    cache: Map<string, ValidateFn & { errors?: unknown[] | null }>,
     schema: Record<string, Json>,
     data: unknown,
 ): { ok: true } | { ok: false; message: string } {
     const key = JSON.stringify(schema);
-    let validator = compiled.get(key);
+    let validator = cache.get(key);
     if (!validator) {
-        validator = ajv.compile(schema);
-        compiled.set(key, validator);
+        validator = instance.compile(schema);
+        cache.set(key, validator);
     }
     if (validator(data)) return { ok: true };
     const first = (validator.errors ?? [])[0] as
@@ -38,4 +56,21 @@ export function validateAgainst(
             first?.message ?? "schema mismatch"
         }`.trim(),
     };
+}
+
+/** Compile-once JSON Schema (draft 2020-12) validation keyed by schema identity. */
+export function validateAgainst(
+    schema: Record<string, Json>,
+    data: unknown,
+): { ok: true } | { ok: false; message: string } {
+    return run(ajv, compiled, schema, data);
+}
+
+/** Like validateAgainst, but MATERIALIZES schema defaults into `data`
+ *  (mutating — callers pass a clone they own). Input-body validation only. */
+export function validateInputAgainst(
+    schema: Record<string, Json>,
+    data: unknown,
+): { ok: true } | { ok: false; message: string } {
+    return run(ajvDefaults, compiledDefaults, schema, data);
 }

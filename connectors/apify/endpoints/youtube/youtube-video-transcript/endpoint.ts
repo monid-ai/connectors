@@ -29,8 +29,17 @@ export default defineEndpoint({
     input: { schema: { body: zYoutubeVideoTranscriptBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** video-url mode returns 1; channel mode caps at max_videos — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact(["max_videos"], 1),
+        /** MODE-aware (PR #2 finding): youtube_url mode returns exactly 1;
+         *  channel mode caps at max_videos, whose schema default (10) is
+         *  the actor's OWN server default — materialized into the body
+         *  before any hook runs, so the estimate is exact. */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const channel = utils.json.optionalGet(body, "$.channel_url");
+            const amount = typeof channel === "string" && channel !== ""
+                ? utils.json.optionalNum(body, "$.max_videos") ?? 10
+                : 1;
+            return { counts: { "RESULT": amount } };
+        },
     },
 });

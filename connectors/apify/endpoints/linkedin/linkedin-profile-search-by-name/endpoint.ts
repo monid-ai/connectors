@@ -29,14 +29,17 @@ export default defineEndpoint({
     input: { schema: { body: zLinkedinProfileSearchByNameBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems wins; else maxPages x 25 profiles/page — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.dualLimit(
-            ["maxItems"],
-            ["maxPages"],
-            [],
-            25,
-            3,
-        ),
+        /** maxItems wins; else maxPages × 25 profiles/page — a dual-knob
+         *  rule used ONCE, so an inline fn (the dualLimit preset is
+         *  deleted — D19 addendum). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const items = utils.json.optionalNum(body, "$.maxItems");
+            if (items !== undefined) return { counts: { "RESULT": items } };
+            const pages = utils.json.optionalNum(body, "$.maxPages");
+            return {
+                counts: { "RESULT": pages !== undefined ? pages * 25 : 3 },
+            };
+        },
     },
 });

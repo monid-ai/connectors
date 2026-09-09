@@ -35,8 +35,8 @@ export default defineEndpoint({
         /** maxItems per startUrl — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
         estimate: presets.estimate.perQueryLimit(
-            ["maxItems"],
-            ["startUrls"],
+            "maxItems",
+            "startUrls",
             3,
         ),
     },

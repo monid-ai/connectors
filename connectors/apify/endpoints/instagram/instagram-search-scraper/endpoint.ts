@@ -31,12 +31,18 @@ export default defineEndpoint({
     input: { schema: { body: zInstagramSearchScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** searchLimit results per search — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            ["searchLimit"],
-            ["search"],
-            3,
-        ),
+        /** searchLimit × comma-separated `search` TERMS (the actor treats
+         *  "a,b,c" as three searches — PR #2 finding; the actor publishes
+         *  no searchLimit server default, so absent stays a conservative
+         *  in-fn fallback rather than a schema default). */
+        estimate: ({ data, utils }) => {
+            const body = data.input.body ?? null;
+            const limit = utils.json.optionalNum(body, "$.searchLimit") ?? 3;
+            const raw = utils.json.optionalGet(body, "$.search");
+            const terms = typeof raw === "string"
+                ? raw.split(",").filter((t) => t.trim() !== "").length
+                : 0;
+            return { counts: { "RESULT": limit * Math.max(terms, 1) } };
+        },
     },
 });

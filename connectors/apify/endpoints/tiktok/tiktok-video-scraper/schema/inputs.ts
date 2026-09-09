@@ -14,10 +14,10 @@ export const zTiktokVideoScraperBody = z.object({
     ),
     "scrapeRelatedVideos": z.boolean().describe(
         "Tick to scrape related videos for the post URLs you provide. - The maximum number of scraped related videos is set by the `resultsPerPage` count.",
-    ).optional(),
+    ).default(false), // the actor's OWN server default (verified live)
     "resultsPerPage": z.number().int().min(1).max(1000000).describe(
         "Add the number of related videos you want to scrape for each post URL. This field is applicable when the Scrape related videos option is enabled.",
-    ).optional(),
+    ).default(1), // the actor's OWN server default (verified live)
     "shouldDownloadVideos": z.boolean().describe(
         "This is a charged add-on. Tick to download TikTok videos.",
     ).optional(),

@@ -48,6 +48,6 @@ export default defineEndpoint({
         },
         /** one profile per username — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["usernames"]),
+        estimate: presets.estimate.onePerQuery("usernames"),
     },
 });

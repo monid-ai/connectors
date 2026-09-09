@@ -35,6 +35,6 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one channel record per entry — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery(["channels"]),
+        estimate: presets.estimate.onePerQuery("channels"),
     },
 });

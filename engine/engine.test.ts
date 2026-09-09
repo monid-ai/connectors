@@ -301,6 +301,7 @@ Deno.test("CONTRACT_VIOLATION: final output fails output.schema", async () => {
 Deno.test("FN_CONTRACT: compute returning junk fails closed (slot z.function enforced)", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
+        model: { kind: "PER_UNIT", unit: "RESULT" },
         consolidate: ((_ctx: never) => 42) as never,
     };
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
@@ -317,6 +318,7 @@ Deno.test("FN_CONTRACT: compute returning junk fails closed (slot z.function enf
 Deno.test("FN_CONTRACT: fn that throws fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
+        model: { kind: "PER_UNIT", unit: "RESULT" },
         consolidate: ((_ctx: never) => {
             throw new Error("boom");
         }) as never,
@@ -386,7 +388,10 @@ Deno.test("hook fallback: endpoint fromResponse REPLACES the provider's", async 
             fromResponse: ({ data, utils }) =>
                 utils.json.merge(data.output, { endpointRan: true }),
         },
-        usage: { consolidate: presets.usage.perCall() },
+        usage: {
+            model: { kind: "PER_CALL" },
+            consolidate: presets.usage.perCall(),
+        },
     });
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
     const engine = new Engine({
@@ -474,6 +479,7 @@ Deno.test("usage.consolidate: absent output = unchanged payload", async () => {
 Deno.test("FN_CONTRACT: bad OUTPUT half of the settle pair fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
+        model: { kind: "PER_CALL" },
         consolidate: ((_ctx: never) => ({
             usage: { counts: {} },
             output: () => 1, // not Json — the pair contract rejects it
@@ -1363,7 +1369,7 @@ Deno.test("estimate matches actual when counts are true (counts deep-equal)", as
                 schema: { body: z.object({ queries: z.array(z.string()) }) },
             };
             connectors[0].endpoints[0].def.usage = {
-                estimate: presets.estimate.onePerQuery(["queries"]),
+                estimate: presets.estimate.onePerQuery("queries"),
             };
         }),
     );
@@ -1512,7 +1518,7 @@ Deno.test("generic keying: presets derive the counts key from data.model", async
                 },
             },
             consolidate: presets.usage.perResult("$.results"),
-            estimate: presets.estimate.limitIsExact(["q"], 3),
+            estimate: presets.estimate.limitIsExact("q", 3),
         }),
     );
     assertEquals(

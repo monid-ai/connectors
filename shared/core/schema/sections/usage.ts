@@ -13,10 +13,12 @@ import { zUsageModel } from "../usage/model/mod.ts";
  *     operator.
  *   - `model`: the RATE-FREE billing-shape declaration (usage/model/) —
  *     inline DATA on the compiled doc (never a fn), so catalogs can price
- *     without executing anything.
+ *     without executing anything. Must RESOLVE for every endpoint
+ *     (endpoint ?? provider — compile error if neither): every doc
+ *     declares what is chargeable.
  *   - `estimate`: the PRE-RUN estimate hook (hooks/estimate.ts) —
- *     validated input → estimated Usage in consolidate's units. Absent ⇒
- *     the engine defaults to one CALL unit.
+ *     validated input → estimated Usage with consolidate's counts keys.
+ *     Absent ⇒ the engine defaults to `{counts: {}}`.
  */
 export const zUsageSection = z.strictObject({
     consolidate: zUsageConsolidateFn.optional(),
