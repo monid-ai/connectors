@@ -85,19 +85,19 @@ if (baseVersion === null) {
     Deno.exit(0);
 }
 
-const [curMajor, curMinor] = currentVersion.split(".").map(Number);
-const [baseMajor, baseMinor] = baseVersion.split(".").map(Number);
-const bumped = curMajor > baseMajor ||
-    (curMajor === baseMajor && curMinor > baseMinor);
-
-if (!bumped) {
+// Pre-1.0 posture: the guard requires the version to DIFFER from base when
+// contract paths changed (catches the forgot-to-bump case) — not to INCREASE.
+// Rationale: the unreleased contract was reset 0.3.0 → 0.0.1 (versions stay
+// at the pre-release floor until a first real release), and a strict
+// greater-than would forbid exactly that kind of correction.
+if (currentVersion === baseVersion) {
     console.error(
-        `[version:check] FAIL — contract surface changed without a minor engine bump:\n` +
+        `[version:check] FAIL — contract surface changed without an engine version change:\n` +
             contractChanged.map((file) => `  - ${file}`).join("\n") +
-            `\n  engine version: ${baseVersion} → ${currentVersion} (need at least a MINOR bump)`,
+            `\n  engine version: ${baseVersion} (unchanged — it must differ from base)`,
     );
     Deno.exit(1);
 }
 console.log(
-    `[version:check] contract changed, engine bumped ${baseVersion} → ${currentVersion} — ok`,
+    `[version:check] contract changed, engine version ${baseVersion} → ${currentVersion} — ok`,
 );

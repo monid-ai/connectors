@@ -752,11 +752,11 @@ async function asyncUnit(
 
 const INSTANT_SLEEP = { sleep: () => Promise.resolve() };
 
-Deno.test("lifecycle: compiled doc carries lifecycle refs, pollMs, and the 0.3.0 floor", async () => {
+Deno.test("lifecycle: compiled doc carries lifecycle refs, pollMs, and the 0.0.1 floor", async () => {
     const unit = await asyncUnit();
     assert(unit.doc.lifecycle);
     assertEquals(unit.doc.timeouts.pollMs, 5);
-    assertEquals(unit.doc.minEngineVersion, "0.3.0");
+    assertEquals(unit.doc.minEngineVersion, "0.0.1");
     // the sealed unit closes over all three lifecycle fns
     assert(unit.fns[unit.doc.lifecycle.start.$fn.key]);
     assert(unit.fns[unit.doc.lifecycle.poll!.$fn.key]);
@@ -1423,11 +1423,11 @@ Deno.test("lifecycle compile checks: poll without start; endpoint pollMs dead co
 
 Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not async machinery", async () => {
     const bundle = await compileBundle(demoConnector(), COMPILE_OPTS);
-    // 0.3.0 via fn_abi_since (the structured-state/estimate ABI) — NOT
+    // 0.0.1 via fn_abi_since (the pre-release contract floor) — NOT
     // because of anything async: sync docs carry no lifecycle surface
     assertEquals(
         bundle.endpoints["demo#search"].minEngineVersion,
-        "0.3.0",
+        "0.0.1",
     );
     assertEquals(bundle.endpoints["demo#search"].lifecycle, undefined);
     assertEquals(bundle.endpoints["demo#search"].timeouts.pollMs, undefined);

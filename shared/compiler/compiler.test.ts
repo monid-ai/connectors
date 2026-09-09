@@ -594,9 +594,9 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     const doc = bundle.endpoints["exa#search"];
     assert(doc, "exa#search compiled");
     assertEquals(doc.provider, "exa");
-    // fn_abi_since 0.3.0: the structured-state/estimate ABI, so every doc
+    // fn_abi_since 0.0.1: the pre-release contract floor, so every doc
     // floors here
-    assertEquals(doc.minEngineVersion, "0.3.0");
+    assertEquals(doc.minEngineVersion, "0.0.1");
     assertEquals(doc.request, {
         method: "POST",
         url: "https://api.exa.ai/search",
@@ -628,7 +628,7 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     assertEquals(authEntry.provenance, "presets#auth.header");
     assertEquals(bundle.fnTable[doc.usage.consolidate.$fn.key].kind, "fn");
     // every entry declares its ABI floor
-    assertEquals(authEntry.api, "0.3.0");
+    assertEquals(authEntry.api, "0.0.1");
 
     // interning across endpoints: contents shares the provider auth fn;
     // the settle fns diverged with the search re-model (design D19 —

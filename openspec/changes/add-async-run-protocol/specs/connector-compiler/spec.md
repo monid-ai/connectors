@@ -8,12 +8,12 @@ provider), intern resolved fns with `api = schema.async_since`, and emit
 `doc.lifecycle` iff `start` resolves. `poll`/`stop` resolving without
 `start` SHALL be a compile error (HOOK_UNRESOLVED). The existing
 minEngineVersion computation (semverMax over referenced fn `api`s)
-SHALL floor every doc at `schema.fn_abi_since` (0.3.0 — the
+SHALL floor every doc at `schema.fn_abi_since` (0.0.1 — the
 structured-state/estimate ABI) with no new mechanism.
 
 #### Scenario: Provider lifecycle shared by data-only endpoints
 - **WHEN** a provider declares start/poll/stop and five endpoints declare none
-- **THEN** all five docs reference the SAME three fnTable entries and floor at 0.3.0
+- **THEN** all five docs reference the SAME three fnTable entries and floor at 0.0.1
 
 ### Requirement: Typed state compilation (lifecycle.state → stateSchema)
 `lifecycle.state` SHALL resolve leaf-wise (endpoint ?? provider) and
