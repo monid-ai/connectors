@@ -38,7 +38,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0035 },
+        },
         /** max_pages × num results/page × queries (the actor's `num` is a
          *  REQUIRED STRING enum "10"…"100", so Number() always yields a
          *  finite page size; v1 LIMIT_IS_PAGES missed the multi-query

@@ -56,7 +56,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "result",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0024 },
+        },
         /** (maxResults + maxResultsShorts + maxResultStreams) ×
          *  (searchQueries + startUrls) — maxResults is required at the
          *  binding and the shorts/streams caps carry the actor's

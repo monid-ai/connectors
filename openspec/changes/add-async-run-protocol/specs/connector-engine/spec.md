@@ -122,14 +122,18 @@ toRequest like akta's array→CSV would make typed input reads lie) and
 run the linked `usage.estimate` fn — PURE, no IO, no state; the fn is
 compile-required on every doc (the D25 billing triple: model + estimate
 + consolidate must all RESOLVE, endpoint ?? provider — a provider-level
-fallback satisfies the compiled doc). Then the engine COMPLETES the
-vector with the model's flat 1s (design D24: `{...fnCounts,
-...flatCounts(model)}` — a structural no-op for FREE and pure PER_UNIT
-models). The doc's own `usage.model` SHALL ride into the estimate ctx
-(`data.usage.model` — provenance-named, design D23), and the FN-returned
-usage is validated (countsMismatch + freeMismatch) BEFORE completion. A
-standalone command (`deno task engine:estimate`) SHALL print the model +
-estimated counts, loading against a transport that rejects every call.
+fallback satisfies the compiled doc). Then the engine ASSEMBLES the
+public usage (design D26: `assembleUsage(model, fnCounts)` — evidence =
+the fn quantities + the model's flat 1s (`flatLines(model)`, renamed
+from flatCounts; a structural no-op for FREE and pure PER_UNIT models),
+credits = the fold through the doc's own rate card). The doc's own
+`usage.model` SHALL ride into the estimate ctx (`data.usage.model` —
+provenance-named, design D23), and the FN-returned quantities are
+validated (`countsMismatch` — the ONE gate; freeMismatch is DELETED
+with the cost field, design D26) BEFORE assembly. A standalone command
+(`deno task engine:estimate`) SHALL print the model + the declared
+credit pools + the folded `{credits, evidence}`, loading against a
+transport that rejects every call.
 
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
@@ -141,35 +145,40 @@ estimated counts, loading against a transport that rejects every call.
 
 #### Scenario: FREE doc estimates empty
 - **WHEN** estimate() runs on a FREE-model doc
-- **THEN** it returns `{counts: {}}` — the doc's model is the free fact
+- **THEN** it returns `{credits: {}, evidence: {}}` — the doc's model is the free fact
 
-### Requirement: The card invariant — estimate and settle share counts KEYS
+### Requirement: The card invariant — estimate and settle share evidence KEYS
 For a doc with a metered `usage.model`, estimate() AND the settled usage
-SHALL key their counts by the model's billed keys (a leaf PER_UNIT's
-unit; a COMPOSITE's metered component ids) — one card row prices both
-ends. A multi-metered composite MAY promise/settle a SUBSET of its keys
+SHALL key their `evidence` by the model's billed line ids (a leaf
+PER_UNIT's unit; a COMPOSITE's metered component ids; flat lines
+engine-appended on BOTH ends) — one rate-card line prices both ends. A
+multi-metered composite MAY promise/settle a SUBSET of its metered keys
 (input-selected components — linkedin's mode picks which profile rate
 bills; design D19), but never a key outside the model. On a count-true
 chain (the estimate's counted input equals the produced output) the
-estimated counts SHALL deep-equal the settled counts.
+estimated usage SHALL deep-equal the settled usage — credits AND
+evidence.
 
 #### Scenario: Count-true chain agrees exactly
 - **WHEN** 2 queries produce a 2-item chain and the estimate counts queries
-- **THEN** estimate(input).counts deep-equals run(input).usage.counts
+- **THEN** estimate(input) deep-equals run(input).usage — credits and evidence alike
 
-### Requirement: Counts ↔ model discipline (validateUsage) + vector completion (D24)
+### Requirement: Counts ↔ model discipline (validateUsage) + usage assembly (D24/D26)
 The engine SHALL validate consolidate output at settle AND the estimate
 fn's return against the doc's model, fail-closed as FN_CONTRACT: a
 COMPOSITE doc's counts keys must each name a PER_UNIT component in
 `model.components` (flat components are ENGINE-appended, never
 fn-written); a leaf PER_UNIT doc's single key must equal the model's
-unit; PER_CALL / model-less docs may count nothing (`{}` only).
+unit; PER_CALL and FREE docs may count nothing (`{counts: {}}` only).
 `{counts: {}}` passes everywhere as a FN return. AFTER validation, on
-SUCCESS settles and estimates, the engine SHALL complete the vector with
-`flatCounts(model)` — every flat component at exactly 1 (leaf PER_CALL
-under `CALL`) — so the PUBLIC usage is the complete billed vector; error
-settles stay `zeroUsage()` untouched. The doc's model SHALL ride into
-the consolidate envelope (`data.usage.model` — provenance-named, design
+SUCCESS settles and estimates, the engine SHALL assemble the public
+usage (`assembleUsage(model, fnCounts)`, design D26): evidence = the fn
+quantities + `flatLines(model)` (every flat line at exactly 1, leaf
+PER_CALL under `CALL`), credits = `ceil(quantity / every) ×
+consumes.amount` per line, summed per credit id — the settle output is
+`{credits, evidence}`; error settles stay `zeroUsage()` (`{credits: {},
+evidence: {}}`) untouched. The doc's model SHALL ride into the
+consolidate envelope (`data.usage.model` — provenance-named, design
 D23; the final async state rides beside it at `data.lifecycle.state`) so
 a GENERIC provider consolidate keys its count with zero per-doc code
 (leaf → the unit; composite → the sole metered component id —
@@ -183,9 +192,9 @@ single-valued by the compiler's ≥2-metered rule).
 - **WHEN** a consolidate keys a count by a PER_CALL component id
 - **THEN** the run fails FN_CONTRACT — the flat 1 is engine-appended, never fn-written
 
-#### Scenario: Success settle carries the complete vector
+#### Scenario: Success settle assembles credits and evidence
 - **WHEN** a composite doc settles 23 metered items on a 2xx envelope
-- **THEN** the public usage counts every flat component at 1 beside the 23
+- **THEN** the public usage's evidence carries every flat line at 1 beside the 23, and credits carry the engine's fold through the pinned rates
 
 ### Requirement: Zero usage forced on every non-2xx envelope
 The settle pipeline SHALL force zero usage whenever the envelope's

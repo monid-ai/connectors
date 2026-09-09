@@ -51,18 +51,23 @@ export default defineEndpoint({
         model: {
             // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
-            // component ids = the actor's charge-event names, VERBATIM
-            // (live survey) — the broker card row key and the join key for
-            // the stashed run-record rates (design D19)
+            // component ids are OUR snake_case keys (the broker card row
+            // key); `vendor:` pins the actor's charge-event name verbatim
+            // where it differs — the join key for the stashed run-record
+            // rates (design D19/D26)
             components: {
-                "start": {
+                start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.005 },
                 },
-                "profile-scraped": {
+                profile_scraped: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "profiles",
+                    vendor: "profile-scraped",
+                    consumes: { credit: "default", amount: 0.0013 },
                 },
             },
         },
@@ -75,7 +80,7 @@ export default defineEndpoint({
             const body = data.input.body;
             return {
                 counts: {
-                    "profile-scraped": body.usernames.length +
+                    "profile_scraped": body.usernames.length +
                         body.relatedProfilesLimit,
                 },
             };

@@ -46,7 +46,14 @@ export default defineEndpoint({
     usage: {
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "result",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0019 },
+        },
         /** resultsLimit (required at the binding) caps EACH hashtag
          *  (actor docs: 7 hashtags × limit 5 = 35 posts) — × the
          *  actor-required hashtags list: pure arithmetic (D24). */

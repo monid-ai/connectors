@@ -37,15 +37,19 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "apify-actor-start": {
+                actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    vendor: "apify-actor-start",
                     description: "run start fee",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.00005 },
                 },
-                "request": {
+                request: {
                     kind: UsageModelKind.PER_CALL,
                     label: "request fee",
                     description: "per-run request fee",
+                    consumes: { credit: "default", amount: 0.002 },
                 },
             },
         },

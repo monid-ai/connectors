@@ -1,22 +1,20 @@
+import type { Usage } from "./usage.ts";
 import type { UsageModel } from "./model/mod.ts";
 
-/** The reserved counts key for a LEAF PER_CALL model's flat charge (design
- *  D24). Deliberately NOT in the `Unit` vocabulary — units are countable
- *  quantities; CALL is the reserved flat key. Composite flat components
- *  key by their own component id instead. */
+/** The evidence line id for a LEAF PER_CALL model's flat draw (design
+ *  D24/D26). Deliberately NOT in the `Unit` vocabulary — units are
+ *  countable quantities; CALL is the reserved flat LINE id. Composite
+ *  flat lines key by their own component id instead. */
 export const CALL_KEY = "CALL";
 
 /**
- * The model's FLAT quantity vector (design D24): every PER_CALL charge is
- * exactly 1 per successful run — a constant the model already states, so
- * the ENGINE appends it to the fn-returned usage at estimate AND success
- * settle. `counts × rates = the whole bill` with no model join, and the
- * vector maps 1:1 onto apify's own charge events. Fns never write flat
- * keys (`countsMismatch` + the type layer keep rejecting them — a fn
- * stating `"apify-actor-start": 2` stays unrepresentable); error settles
- * stay `zeroUsage()` — nothing billed, nothing counted.
+ * The model's FLAT line 1s (design D24/D26): every PER_CALL line draws
+ * exactly once per successful run — a constant the model already states,
+ * so the ENGINE appends it to the fn quantities before the credits fold.
+ * Fns never write flat line ids (`countsMismatch` + the type layer keep
+ * rejecting them); error settles stay `zeroUsage()`.
  */
-export function flatCounts(model: UsageModel): Record<string, number> {
+export function flatLines(model: UsageModel): Record<string, number> {
     switch (model.kind) {
         case "PER_CALL":
             return { [CALL_KEY]: 1 };
@@ -28,7 +26,6 @@ export function flatCounts(model: UsageModel): Record<string, number> {
             );
         case "PER_UNIT":
         case "FREE":
-            // FREE bills nothing — completion is a no-op by construction
             return {};
         default:
             model satisfies never;
@@ -37,17 +34,85 @@ export function flatCounts(model: UsageModel): Record<string, number> {
 }
 
 /**
- * Counts ↔ model discipline (design D19) — ONE exhaustive switch, placed
- * beside the schema it interprets so every consumer shares it: the engine
- * (wrapping violations in FN_CONTRACT at settle AND estimate), the test
- * suites' card-invariant helpers, and later the services broker. These
- * rules govern what FNS return; the engine then completes the vector with
- * `flatCounts` (design D24), so the PUBLIC usage carries every billed
- * component. Rules, one per model kind:
+ * THE CREDITS FOLD (design D26): quantities → the consumed-credits vector
+ * through the doc's OWN rate card. One shared implementation for the
+ * engine, the tests and the broker: for each line,
+ * `ceil(quantity / every) × consumes.amount` (whole increments — a
+ * PER_CALL line has no `every`, its quantity is the engine-appended 1),
+ * summed per credit id. FREE folds to `{}`. Anyone holding the doc can
+ * re-derive the result from the evidence alone.
+ */
+export function creditsOf(
+    model: UsageModel,
+    quantities: Record<string, number>,
+): Record<string, number> {
+    const credits: Record<string, number> = {};
+    const draw = (creditId: string, amount: number) => {
+        if (amount <= 0) return;
+        credits[creditId] = (credits[creditId] ?? 0) + amount;
+    };
+    switch (model.kind) {
+        case "FREE":
+            return {};
+        case "PER_CALL":
+            draw(
+                model.consumes.credit,
+                (quantities[CALL_KEY] ?? 0) > 0 ? model.consumes.amount : 0,
+            );
+            return credits;
+        case "PER_UNIT":
+            draw(
+                model.consumes.credit,
+                Math.ceil((quantities[model.unit] ?? 0) / model.every) *
+                    model.consumes.amount,
+            );
+            return credits;
+        case "COMPOSITE": {
+            for (const [id, component] of Object.entries(model.components)) {
+                const quantity = quantities[id] ?? 0;
+                if (component.kind === "PER_CALL") {
+                    draw(
+                        component.consumes.credit,
+                        quantity > 0 ? component.consumes.amount : 0,
+                    );
+                } else {
+                    draw(
+                        component.consumes.credit,
+                        Math.ceil(quantity / component.every) *
+                            component.consumes.amount,
+                    );
+                }
+            }
+            return credits;
+        }
+        default:
+            model satisfies never;
+            return {};
+    }
+}
+
+/** The full engine-side assembly (estimate + success settle): fn
+ *  quantities + the model's flat 1s → `{credits, evidence}`. */
+export function assembleUsage(
+    model: UsageModel,
+    fnCounts: Record<string, number>,
+): Usage {
+    const evidence = { ...fnCounts, ...flatLines(model) };
+    return { credits: creditsOf(model, evidence), evidence };
+}
+
+/**
+ * Counts ↔ model discipline (design D19/D26) — ONE exhaustive switch,
+ * placed beside the schema it interprets so every consumer shares it:
+ * the engine (wrapping violations in FN_CONTRACT at settle AND estimate),
+ * the test suites' card-invariant helpers, and the services broker.
+ * These rules govern what FNS return (QUANTITIES per metered line); the
+ * engine then appends flat 1s and folds to credits. Rules, one per kind:
+ *   - FREE      → fn counts must be {} (free bills nothing);
  *   - PER_CALL  → fn counts must be {} (the flat 1 is engine-appended);
  *   - PER_UNIT  → the single implied key is the model's unit;
- *   - COMPOSITE → every key names a PER_UNIT component (flat components
- *     are engine-appended, never fn-written).
+ *   - COMPOSITE → every key names a PER_UNIT line (flat lines are
+ *     engine-appended, never fn-written).
  * `{counts: {}}` passes everywhere. Returns the problem as a message
  * (undefined = ok) — the CALLER owns the error type.
  */
@@ -78,8 +143,8 @@ export function countsMismatch(
                 model.components[key]?.kind !== "PER_UNIT"
             );
             return bad !== undefined
-                ? `counts key "${bad}" names no metered component ` +
-                    `(components: ${Object.keys(model.components).join(", ")})`
+                ? `counts key "${bad}" names no metered line ` +
+                    `(lines: ${Object.keys(model.components).join(", ")})`
                 : undefined;
         }
         default:
@@ -88,21 +153,4 @@ export function countsMismatch(
             model satisfies never;
             return "unknown model kind";
     }
-}
-
-/**
- * The FREE discipline (design D25): free-ness is a MODEL fact — the fns
- * on a FREE doc return plain `{counts: {}}` (nothing counted, nothing
- * billed; enforced by the countsMismatch FREE arm above), and a FREE
- * usage must not carry a cost. Returns the problem as a message
- * (undefined = ok) — the CALLER owns the error type.
- */
-export function freeMismatch(
-    model: UsageModel,
-    usage: { counts: Record<string, number>; cost?: unknown },
-): string | undefined {
-    if (model.kind === "FREE" && usage.cost !== undefined) {
-        return "a FREE doc's usage carries a cost — free bills nothing";
-    }
-    return undefined;
 }

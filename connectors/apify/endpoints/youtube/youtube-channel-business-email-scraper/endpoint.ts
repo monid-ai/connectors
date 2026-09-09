@@ -35,7 +35,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zYoutubeChannelBusinessEmailScraperBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.12 },
+        },
         /** one channel record per entry (v1 ONE_PER_QUERY) — channels is
          *  non-empty by the actor's own minItems (mirrored in the schema),
          *  so the estimate is pure arithmetic (D24). */

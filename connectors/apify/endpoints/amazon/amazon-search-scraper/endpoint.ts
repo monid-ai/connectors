@@ -32,7 +32,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zAmazonSearchScraperBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0001 },
+        },
         /** One result per `input` entry — the actor keeps per-entry knobs
          *  opaque (z.any items), so the estimate counts at the granularity
          *  the mirror STATES: entries, never invented nested structure

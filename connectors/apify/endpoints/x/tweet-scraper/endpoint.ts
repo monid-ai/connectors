@@ -43,7 +43,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0004 },
+        },
         /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT — a total run
          *  cap, not per-query) — required at the binding, so the estimate
          *  is pure arithmetic (D24). */

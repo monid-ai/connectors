@@ -12,6 +12,7 @@ import {
     FnEntryKind,
     fnKey,
     type FnRef,
+    type FnUsage,
     formatZodError,
     type HookLogger,
     type HttpRequestParts,
@@ -28,7 +29,6 @@ import {
     type OutputFromResponseFn,
     type RunInput,
     type ToRequestData,
-    type Usage,
     UsageConsolidateContract,
     type UsageConsolidateFn,
     UsageEstimateContract,
@@ -60,8 +60,9 @@ export interface LinkedFns {
     fromError?: (data: EnvelopeData) => Json;
     /** THE settle fn: raw envelope → {usage, output?}. */
     usageConsolidate: (data: EnvelopeData) => Consolidated;
-    /** Pre-run estimate: validated input → estimated Usage (pure, no IO). */
-    usageEstimate?: (data: EstimateData) => Usage;
+    /** Pre-run estimate: validated input → the QUANTITY promise per
+     *  metered line (pure, no IO) — the engine folds to credits (D26). */
+    usageEstimate?: (data: EstimateData) => FnUsage;
     /** Lifecycle (async) family — effectful, so `utils` (http/request bound
      *  to THIS invocation's input + request) is passed per call. */
     lifecycleStart?: (
@@ -330,7 +331,7 @@ export async function linkFns(
     if (doc.usage.estimate) {
         linked.usageEstimate = wrapContract<
             EstimateData,
-            Usage,
+            FnUsage,
             UsageEstimateFn
         >(
             UsageEstimateContract,

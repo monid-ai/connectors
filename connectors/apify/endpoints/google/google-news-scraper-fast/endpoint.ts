@@ -42,7 +42,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.001 },
+        },
         /** maxArticles × (keywords + topics + topicUrls) — the cap applies
          *  per keyword/topic/section (v1 PER_QUERY_LIMIT; the old sum
          *  missed topicUrls). maxArticles is required at the binding; the

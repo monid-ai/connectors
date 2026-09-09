@@ -49,7 +49,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.006 },
+        },
         /** CUSTOM estimate (v1: "no single estimationLabel is true here"):
          *  detail/id modes → one result per target line; post modes →
          *  target lines × max_posts (and profile_posts_by_url emits one

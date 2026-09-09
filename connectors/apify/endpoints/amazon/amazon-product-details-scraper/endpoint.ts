@@ -31,7 +31,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zAmazonProductDetailsScraperBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0015 },
+        },
         /** one result per Params entry (ASIN/URL, v1 ONE_PER_QUERY) — an
          *  empty batch promises 0 (deduced, design D25). */
         estimate: ({ data }) => ({

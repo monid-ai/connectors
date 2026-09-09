@@ -401,3 +401,35 @@
       tinyfish expectations; 138 tests green
 - [x] 17.g Docs: design D25 (standing input-fidelity rules); schema +
       engine spec deltas; AGENT.md; version stays 0.0.1
+
+## 18. D26: consumption-aware usage models (the def IS the rate card)
+
+- [x] 18.a zCreditSystem/zConsumes; usage.credits beside the model
+      (provider ?? endpoint — opposite of hooks; single pool = default);
+      consumes REQUIRED on every billable line; PER_UNIT every
+      (default(1) at parse, UsageModelSeed generic); vendor field; ids
+      OURS (snake_case unquoted, vendor spelling is a field)
+- [x] 18.b zUsage = {credits, evidence} (no cost/receipts/flag — the
+      receipt IS the raw output); zFnUsage = {counts}; engine-owned fold
+      (flatLines + creditsOf + assembleUsage at estimate AND settle);
+      freeMismatch deleted
+- [x] 18.c Compiler: credits resolve for billable models; consumes ids
+      declared; no undrained ids; FREE = {} (endpoint-level credits on
+      FREE = compile error); doc.usage.credits emitted
+- [x] 18.d Fleet: akta pool + 4 remodels (per-section enrichment rates,
+      news 0.1/0.01, employee-reviews every:50, product-reviews
+      mode-selected) — provider CREDIT settle deleted; exa
+      0.007/0.001/0.001; octen credit rates + mode-selected embedding
+      composite; apify 46 GOLD-tier pinnings (leaf lines pin their
+      joined event in vendor; by-name/by-services shed the v1 flat
+      worst-case hold for mode-selected composites); tinyfish FREE
+      untouched
+- [x] 18.e Survey v3: JOIN (vendor ?? id ⊆ published events) + RATES
+      (pinned amount == live GOLD tier) + shape/regime — 46/46 live
+      green; engine:estimate prints {credits, evidence} + the doc's
+      declared pools
+- [x] 18.f Tests migrated (core 21 / compiler 27 / engine 60 / connectors
+      35 + apify 12): hand-computed credit folds, card-invariant helpers
+      on evidence, by-name/by-services join CUSTOM_BILLING
+- [x] 18.g Docs: design D26 (D18-reversal rationale); schema/engine/apify
+      spec rewrites; AGENT.md billing rewrite; version stays 0.0.1

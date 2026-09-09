@@ -41,7 +41,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "result",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0009 },
+        },
         /** maxComments per video url (v1 PER_QUERY_LIMIT) — maxComments
          *  is required at the binding; startUrls is actor-required, and
          *  an empty batch estimates 0, which is correct (D25). */

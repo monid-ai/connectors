@@ -52,18 +52,22 @@ export default defineEndpoint({
             // verified actor-start charge event + per-item metering (survey
             // — caught by `deno task apify:pricing` on first run)
             kind: UsageModelKind.COMPOSITE,
-            // component ids = the actor's charge-event names, VERBATIM
-            // (live survey) — the broker card row key and the join key for
-            // the stashed run-record rates (design D19)
+            // component ids are OUR snake_case row keys; `vendor` carries
+            // the actor's charge-event name verbatim when it differs
+            // (design D19/D26)
             components: {
-                "actor-start": {
+                actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    vendor: "actor-start",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
                 },
-                "result": {
+                result: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "results",
+                    consumes: { credit: "default", amount: 0.0014 },
                 },
             },
         },

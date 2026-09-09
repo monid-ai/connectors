@@ -47,14 +47,17 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "start": {
+                start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
                 },
-                "spotlight": {
+                spotlight: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "spotlights",
+                    consumes: { credit: "default", amount: 0.0015 },
                 },
             },
         },

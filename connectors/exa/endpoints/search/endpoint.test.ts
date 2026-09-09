@@ -26,29 +26,20 @@ Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidat
 
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // base-plus-overage (D19/D24): 3 results are INSIDE the base fee's
-    // included 10 — nothing metered, and the engine appends the flat base
-    // fee's 1 (the complete billed vector); vendor-reported usd cost
-    // (READ, not computed)
-    assertEquals(result.usage.counts, { "call": 1 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 5_000,
-        unit: "MICRO_DOLLAR",
-    });
-    // capture: audit receipts, read from the RAW envelope
-    assertEquals(
-        result.usage.evidence?.requestId,
-        "b5947044c4b78efa9552430b7ca5cf94",
-    );
-    assertEquals(result.usage.evidence?.costDollars, {
-        total: 0.005,
-        search: { neural: 0.005 },
+    // base-plus-overage (D19/D26): 3 results are INSIDE the base fee's
+    // included 10 — nothing metered, the engine appends the flat call 1
+    // and folds it through the doc's own card ($0.007 base fee); the
+    // vendor's costDollars receipt stays in the RAW run record
+    assertEquals(result.usage, {
+        credits: { default: 0.007 },
+        evidence: { call: 1 },
     });
     // usage.consolidate ran (engine-executed, same for every operator):
-    // billing info now lives ONLY in the structured usage above
+    // the vendor billing field is absorbed out of the payload, the rest
+    // of the envelope rides through untouched
     const output = result.output as Record<string, unknown>;
     assertEquals("costDollars" in output, false);
+    assertEquals(output.requestId, "b5947044c4b78efa9552430b7ca5cf94");
     assertEquals((output.results as unknown[]).length, 3);
 });
 
@@ -64,8 +55,7 @@ Deno.test("exa#search provider error: 401 is data, zero usage", async () => {
 
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.counts, {});
-    assertEquals(result.usage.cost, undefined);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     // raw body passes through untouched on provider error
     assertEquals(result.output, {
         error: "x-api-key header is invalid",
@@ -122,11 +112,13 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        // default numResults 10 ⇒ nothing above the included 10; the flat
-        // base fee bills 1 (engine-appended complete vector, D24)
-        assertEquals(result.usage.counts, { "call": 1 });
-        assertEquals(result.usage.cost?.unit, "MICRO_DOLLAR");
-        // consolidated — billing lives in usage, not the payload
+        // 2 results ⇒ nothing above the included 10; the flat base fee
+        // bills its $0.007 (engine-appended complete vector, D24/D26)
+        assertEquals(result.usage, {
+            credits: { default: 0.007 },
+            evidence: { call: 1 },
+        });
+        // consolidated — the vendor billing field left the payload
         assert(!("costDollars" in (result.output as Record<string, unknown>)));
     },
 });

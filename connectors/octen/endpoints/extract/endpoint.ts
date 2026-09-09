@@ -47,7 +47,13 @@ export default defineEndpoint({
     },
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "URLs",
+            // 1 credit per extracted URL — v1 makeOctenCredit(1) ($1/1k URLs)
+            consumes: { credit: "default", amount: 1 },
+        },
         /** One credit per SUBMITTED URL — `urls` is required (min 1, max
          *  20), so its length is the deducible per-call quantity (v1
          *  evidence: extract.ts `octenExtractEstimate` held `urls.length`
@@ -64,7 +70,6 @@ export default defineEndpoint({
                         "$.meta.usage.successful_urls",
                     ) ?? 0,
                 },
-                evidence: utils.json.pick(data.output, ["$.meta.usage"]),
             },
             output: utils.json.omit(data.output, ["usage"]),
         }),

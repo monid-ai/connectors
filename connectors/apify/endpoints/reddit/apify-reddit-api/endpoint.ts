@@ -45,7 +45,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "item_returned",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.002 },
+        },
         /** maxItems (required at the binding) × jobs, where jobs =
          *  startUrls + searches entries (each is billed up to maxItems —
          *  old estimate missed `searches`). An absent array is a genuine

@@ -20,15 +20,12 @@ Deno.test("octen#broad-search happy (recorded): receipt queries are the counted 
     });
     assertEquals(result.httpStatus, 200);
     // settled on the RECEIPT's num_search_queries (2), not the request's
-    // max_queries fallback; the token tier reports 0 (present in receipt)
-    assertEquals(result.usage.counts, {
-        "receipt_queries": 2,
-        "full_content_tokens": 0,
-    });
-    assertEquals(result.usage.evidence?.usage, {
-        num_search_queries: 2,
-        full_content_tokens: 0,
-        full_content_extra_count: 0,
+    // max_queries fallback; the token tier reports 0 (present in the
+    // receipt) and folds to nothing — 2 sub-queries × 1 credit is the
+    // whole bill. Both components are metered, so no flat 1 is appended.
+    assertEquals(result.usage, {
+        credits: { default: 2 },
+        evidence: { receipt_queries: 2, full_content_tokens: 0 },
     });
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);
@@ -52,6 +49,9 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(typeof result.usage.counts["receipt_queries"], "number");
+        assertEquals(
+            typeof result.usage.evidence["receipt_queries"],
+            "number",
+        );
     },
 });

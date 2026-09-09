@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zUsageConsolidateFn, zUsageEstimateFn } from "../hooks/mod.ts";
-import { zUsageModel } from "../usage/model/mod.ts";
+import { zCredits, zUsageModel } from "../usage/model/mod.ts";
 
 /**
  * Usage section — SHARED by EndpointDef and ProviderDef (leaf-wise fallback):
@@ -23,6 +23,12 @@ import { zUsageModel } from "../usage/model/mod.ts";
 export const zUsageSection = z.strictObject({
     consolidate: zUsageConsolidateFn.optional(),
     model: zUsageModel.optional(),
+    /** The credit systems this endpoint drains (design D26) — declared
+     *  INDEPENDENTLY of the rate card, resolving provider ?? endpoint (a
+     *  provider declares its pool ONCE; single-pool providers name it
+     *  `default`). Every billable line's `consumes.credit` must reference
+     *  a resolved id (compile-checked). FREE docs need none. */
+    credits: zCredits.optional(),
     estimate: zUsageEstimateFn.optional(),
 });
 export type UsageSection = z.infer<typeof zUsageSection>;

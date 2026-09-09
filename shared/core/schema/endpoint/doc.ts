@@ -12,7 +12,7 @@ import { zEndpointMeta } from "../meta/endpoint.ts";
 import { zJsonSchemaDoc } from "./json-schema-doc.ts";
 import { zFnRef } from "../fn-table/ref.ts";
 import { zTimeouts } from "../sections/timeouts.ts";
-import { zUsageModel } from "../usage/model/mod.ts";
+import { zCredits, zUsageModel } from "../usage/model/mod.ts";
 
 /**
  * zEndpointDoc — the COMPILED artifact: pure, flat, strict RFC 8259 JSON,
@@ -66,16 +66,19 @@ export const zEndpointDoc = z.strictObject({
         /** THE settle fn: RAW envelope → {usage, output?} — REQUIRED,
          *  resolved endpoint ?? provider at compile. */
         consolidate: zFnRef,
-        /** Rate-free cost-shape declaration — inline DATA (hash-covered),
-         *  never a fn: catalogs price from it without executing anything.
-         *  REQUIRED (resolved endpoint ?? provider at compile, like
-         *  consolidate): every doc must declare what is chargeable —
-         *  optionality only bought silent "nothing countable" fallbacks
-         *  (design D19 addendum). */
+        /** The billing-shape + RATE-CARD declaration (design D26) —
+         *  inline DATA (hash-covered), never a fn: catalogs and the
+         *  broker price from it without executing anything. REQUIRED
+         *  (resolved endpoint ?? provider at compile). */
         model: zUsageModel,
-        /** Pre-run estimate hook: validated input → estimated Usage in
-         *  consolidate's units. Absent ⇒ engine defaults to one CALL. */
-        estimate: zFnRef.optional(),
+        /** The credit systems the model's lines drain (design D26) —
+         *  resolved provider ?? endpoint at compile; every consumes.credit
+         *  references one of these ids (compile-checked). `{}` for FREE
+         *  docs. */
+        credits: zCredits,
+        /** Pre-run estimate hook: validated input → the QUANTITY promise
+         *  per metered line — REQUIRED (the billing triple, D25). */
+        estimate: zFnRef,
     }),
     /**
      * Async run protocol (engine ≥ config schema.async_since). When present

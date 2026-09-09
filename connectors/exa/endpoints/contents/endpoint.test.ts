@@ -10,7 +10,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
+Deno.test("exa#contents happy: per-result evidence folded to usd credits", async () => {
     const unit = await testSealedUnit("exa#contents");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -26,13 +26,14 @@ Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
     });
 
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.counts, { "RESULT": 1 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 1_000,
-        unit: "MICRO_DOLLAR",
+    // leaf PER_UNIT (D19/D26): the delivered result count is the whole
+    // evidence, folded at the pinned $0.001/page rate
+    assertEquals(result.usage, {
+        credits: { default: 0.001 },
+        evidence: { RESULT: 1 },
     });
-    // usage.consolidate absorbed the vendor billing field into usage
+    // usage.consolidate absorbed the vendor billing field out of the
+    // payload (it stays in the RAW run record)
     assert(!("costDollars" in (result.output as Record<string, unknown>)));
 });
 
@@ -46,7 +47,7 @@ Deno.test("exa#contents provider error: zero usage", async () => {
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
 Deno.test("interning: search and contents share auth; settle fns DIVERGED with the re-model", async () => {
@@ -79,6 +80,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(Object.keys(result.usage.counts), ["RESULT"]);
+        assertEquals(Object.keys(result.usage.evidence), ["RESULT"]);
     },
 });

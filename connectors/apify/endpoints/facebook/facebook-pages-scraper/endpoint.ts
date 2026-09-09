@@ -29,7 +29,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zFacebookPagesScraperBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0054 },
+        },
         /** one page record per startUrl (v1 ONE_PER_QUERY) — startUrls is
          *  actor-required; an empty batch is a no-op run and estimates 0,
          *  which is correct (D25). */

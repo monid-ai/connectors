@@ -46,7 +46,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "result",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.001 },
+        },
         /** one video per post URL, PLUS resultsPerPage related videos per
          *  URL when scrapeRelatedVideos is on (PR #2 finding — every
          *  related record bills as an item). The binding pins the actor's

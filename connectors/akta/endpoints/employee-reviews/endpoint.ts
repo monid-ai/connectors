@@ -27,22 +27,37 @@ export default defineEndpoint({
         },
     },
     usage: {
-        /** CREDIT stays the unit here (unlike news): akta bills whole
-         *  1.5-credit increments per 50 REQUESTED records and the
-         *  response exposes no block quantity to settle against — credits
-         *  ARE the vendor's native meter for this endpoint (design D25).
-         *  Consolidate stays provider-level (counts credits_consumed). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** 1.5 credits per whole 50-record increment of the caller-stated
-         *  limit — v1 evidence: employee-reviews.ts
+        /** REVIEWS are the quantity; the 50-record increment lives in
+         *  `every` and the 1.5-credit draw in `consumes` (design D26) —
+         *  the ceil fold is engine-owned. v1 evidence:
          *  `makePerUnitPrice(0.075, 50, "result")` ("a limit=3 call still
-         *  consumed the full 1.5 credits, verified in prod"). Typed read
-         *  (pre-toRequest validated input — design D25). Settle trues up
-         *  on `credits_consumed`. */
+         *  consumed the full 1.5 credits, verified in prod"). */
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "reviews",
+            every: 50,
+            consumes: { credit: "default", amount: 1.5 },
+        },
+        /** The caller-stated limit IS the review promise (typed read of
+         *  the pre-toRequest validated input — design D25). */
         estimate: ({ data }) => ({
-            counts: {
-                "CREDIT": Math.ceil(data.input.queryParams.limit / 50) * 1.5,
+            counts: { "RESULT": data.input.queryParams.limit },
+        }),
+        /** Akta bills whole increments of the REQUESTED limit regardless
+         *  of delivery (v1-verified), so settle counts the same quantity
+         *  the vendor charges on; `credits_consumed` stays in the raw
+         *  run record. */
+        consolidate: ({ data, utils }) => ({
+            usage: {
+                counts: {
+                    "RESULT": utils.json.num(
+                        data.input.queryParams ?? {},
+                        "$.limit",
+                    ),
+                },
             },
+            output: utils.json.omit(data.output, ["credits_consumed"]),
         }),
     },
 });

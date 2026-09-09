@@ -43,15 +43,72 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required ≥1
-         *  at the binding, so the estimate is pure arithmetic (D24).
-         *  (Billing basis has a known open follow-up — the model is
-         *  untouched here.) */
-        estimate: ({ data }) => ({
-            counts: {
-                "RESULT": data.input.body.maxItems,
+        /** MODE-SELECTED rate card (design D26): this actor's card has no
+         *  page event — each returned profile bills at the rate its
+         *  profileScraperMode selects. This replaces v1's flat worst-case
+         *  $0.01/result hold — the known open follow-up on this doc's
+         *  billing basis. */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                short_profile: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "short profiles",
+                    vendor: "short-profile",
+                    description: "profiles returned in 'Short' mode",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
+                },
+                full_profile: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "full profiles",
+                    vendor: "full-profile",
+                    description: "profiles enriched in 'Full' mode",
+                    consumes: { credit: "default", amount: 0.0032 },
+                },
+                full_profile_with_email: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "profiles with email",
+                    vendor: "full-profile-with-email",
+                    description:
+                        "profiles enriched in 'Full + email search' mode",
+                    consumes: { credit: "default", amount: 0.01 },
+                },
             },
-        }),
+        },
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required ≥1
+         *  at the binding, so the estimate is pure arithmetic (D24),
+         *  keyed by the mode the pinned input selects. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const profileKey = body.profileScraperMode === "Full"
+                ? "full_profile"
+                : body.profileScraperMode === "Full + email search"
+                ? "full_profile_with_email"
+                : "short_profile";
+            return { counts: { [profileKey]: body.maxItems } };
+        },
+        /** OVERRIDES the provider consolidate (≥2 metered components):
+         *  dataset items ARE the profiles, keyed by mode. */
+        consolidate: ({ data, utils }) => {
+            const profiles = Array.isArray(data.output)
+                ? data.output.length
+                : 0;
+            const mode = utils.json.optionalGet(
+                data.input.body ?? null,
+                "$.profileScraperMode",
+            );
+            const profileKey = mode === "Full"
+                ? "full_profile"
+                : mode === "Full + email search"
+                ? "full_profile_with_email"
+                : "short_profile";
+            return {
+                usage: { counts: { [profileKey]: profiles } },
+            };
+        },
     },
 });

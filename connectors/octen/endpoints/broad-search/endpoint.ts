@@ -42,16 +42,21 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "receipt_queries": {
+                receipt_queries: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "queries",
                     description: "executed sub-query searches",
+                    // 1 credit per executed sub-query — v1 makeOctenCredit(1)
+                    consumes: { credit: "default", amount: 1 },
                 },
-                "full_content_tokens": {
+                full_content_tokens: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "content tokens",
+                    // 1 credit per 1k tokens — v1 makePerUnitPrice(1cr, 1000)
+                    every: 1000,
+                    consumes: { credit: "default", amount: 1 },
                     description:
                         "full-content extraction tokens (only charged " +
                         "when search_options.full_content.enable is set)",
@@ -90,7 +95,6 @@ export default defineEndpoint({
                             ? { "full_content_tokens": tokens }
                             : {}),
                     },
-                    evidence: utils.json.pick(data.output, ["$.meta.usage"]),
                 },
                 output: utils.json.omit(data.output, ["usage"]),
             };

@@ -44,7 +44,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "result",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0015 },
+        },
         /** searchLimit (required at the binding) × comma-separated
          *  `search` TERMS (the actor treats "a,b,c" as three searches —
          *  PR #2 finding). Zero non-empty terms ⇒ estimate 0 — pure

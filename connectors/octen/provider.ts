@@ -27,4 +27,10 @@ export default defineProvider({
     },
     auth: { inject: presets.auth.header("x-api-key") },
     request: { baseUrl: "https://api.octen.ai" },
+    usage: {
+        /** THE credit system (design D26): octen prices every endpoint in
+         *  its own credits ($0.001 list — v1 OCTEN_CREDIT_DOLLARS; the
+         *  $/credit conversion is the broker card's one octen row). */
+        credits: { default: { label: "Octen credits" } },
+    },
 });

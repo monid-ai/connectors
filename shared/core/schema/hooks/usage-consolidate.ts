@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zJson } from "../json/type.ts";
-import { zUsage } from "../usage/usage.ts";
+import { zFnUsage } from "../usage/usage.ts";
 import { fnCarrier } from "./ctx.ts";
 import { zEnvelopeCtx } from "./from-response.ts";
 
@@ -11,7 +11,7 @@ import { zEnvelopeCtx } from "./from-response.ts";
  *
  * One total job with two halves that share one piece of knowledge (where the
  * vendor's billing info lives): EXTRACT the structured usage
- * ({units, cost?, evidence?}) and ABSORB those billing fields out of the
+ * ({counts}) and ABSORB those billing fields out of the
  * payload — like a parser returning {value, rest}. `output` ABSENT means
  * "unchanged" (zero boilerplate when there is nothing to remove — presets
  * like usage.perCall return {usage} only).
@@ -24,7 +24,9 @@ import { zEnvelopeCtx } from "./from-response.ts";
  * data). Vendor error ⇒ zero usage forced (the hook never runs).
  */
 export const zConsolidated = z.strictObject({
-    usage: zUsage,
+    /** Typed QUANTITIES per metered rate-card line (design D26) — the
+     *  engine appends flat 1s and folds to credits. */
+    usage: zFnUsage,
     /** The response with billing fields absorbed; absent = unchanged. */
     output: zJson.optional(),
 });

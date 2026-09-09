@@ -38,7 +38,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "profile",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0016 },
+        },
         /** one profile per username (v1 ONE_PER_QUERY) — the
          *  actor-required list: pure arithmetic (D24). */
         estimate: ({ data }) => ({

@@ -1,6 +1,11 @@
 import { assert, assertEquals } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import { flatCounts, type RunInput, type UsageModel } from "@shared/core";
+import {
+    assembleUsage,
+    flatLines,
+    type RunInput,
+    type UsageModel,
+} from "@shared/core";
 import {
     loadFixture,
     runEndpoint,
@@ -28,7 +33,11 @@ const INPUTS = JSON.parse(
 ) as Record<string, RunInput["body"]>;
 
 /** Endpoints whose consolidate is NOT the provider default. */
-const CUSTOM_BILLING = new Set(["harvestapi/linkedin-profile-search"]);
+const CUSTOM_BILLING = new Set([
+    "harvestapi/linkedin-profile-search",
+    "harvestapi/linkedin-profile-search-by-name",
+    "harvestapi/linkedin-profile-search-by-services",
+]);
 
 const endpointIds = async (): Promise<string[]> => {
     const bundle = await testBundle();
@@ -43,7 +52,7 @@ const inputFor = (id: string): RunInput => {
     return { body };
 };
 
-Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, item-priced cost)", async () => {
+Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, model-priced credits)", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
     const bundle = await testBundle();
     for (const id of await endpointIds()) {
@@ -57,25 +66,19 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ite
         });
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
-        // the COMPLETE billed vector (design D24): the metered key settles
-        // the dataset item count AND every flat component bills 1 —
-        // engine-appended, so counts × rates = the whole bill
+        // the COMPLETE billed vector (design D24/D26): the metered key
+        // settles the dataset item count AND every flat component bills 1
+        // (engine-appended), folded through EACH doc's own pinned rate
+        // card — assembleUsage is the shared fold, so the expectation is
+        // the per-endpoint 2-item bill (vendor run-record pricing signals
+        // stay in the raw record, never in usage)
         const model = bundle.endpoints[id].usage.model!;
         const keys = billedKeys(model);
         assertEquals(
-            result.usage.counts,
-            {
-                ...(keys.length === 1 ? { [keys[0]]: 2 } : {}),
-                ...flatCounts(model),
-            },
+            result.usage,
+            assembleUsage(model, keys.length === 1 ? { [keys[0]]: 2 } : {}),
             id,
         );
-        // PRICE_PER_DATASET_ITEM: 2 × $0.005 — signals threaded via state.data
-        assertEquals(result.usage.cost, {
-            currency: "USD",
-            value: 10_000,
-            unit: "MICRO_DOLLAR",
-        }, id);
         assertEquals((result.output as unknown[]).length, 2, id);
         // engine-stamped provider timing: one still-running poll + terminal
         assertEquals(result.timing.attempts, 2, id);
@@ -94,7 +97,7 @@ Deno.test("apify: actor failure chain — synthesized 500, zero usage, digested 
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 500);
     assertEquals(result.providerHttpStatus, 200); // ours/theirs (D12)
-    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     const output = result.output as Record<string, unknown>;
     assertEquals(output.message, "Actor exited with error");
     assert("raw" in output); // digest, never hide
@@ -111,7 +114,7 @@ Deno.test("apify: start-rejected chain — vendor 404 is DATA, digested", async 
     });
     assertEquals(result.isProviderError, true);
     assertEquals(result.httpStatus, 404);
-    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     const output = result.output as Record<string, unknown>;
     assertEquals(output.message, "Actor was not found");
     assertEquals(output.type, "actor-not-found");
@@ -129,20 +132,56 @@ Deno.test("apify#harvestapi/linkedin-profile-search: pages reconstructed from LI
     assertEquals(result.httpStatus, 200);
     // usageTotalUsd $0.04 at the LIVE $0.02 page rate ⇒ 2 pages; the baked
     // $0.05 fallback would have yielded 1 — proves the run-record read.
-    // "Short" mode ⇒ profiles are FREE: only the page component is counted
-    // (the mode-selected profile keys stay absent — design D19)
-    assertEquals(result.usage.counts, { "search-page": 2 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 40_000,
-        unit: "MICRO_DOLLAR",
+    // "Short" mode ⇒ profiles are free: only the page line is evidenced
+    // (the mode-selected profile keys stay absent — design D19), and the
+    // bill folds the 2 pages through the doc's PINNED $0.05 page rate
+    // (the live rate reconstructs the QUANTITY; the model prices it)
+    assertEquals(result.usage, {
+        credits: { default: 0.1 },
+        evidence: { search_page: 2 },
     });
     const output = result.output as Record<string, unknown>;
     assertEquals(output.searchPages, 2);
     assertEquals(output.profileCount, 2);
 });
 
-Deno.test("apify: PAY_PER_EVENT chain settles cost = usageTotalUsd for provider-default billing", async () => {
+Deno.test("apify#harvestapi/linkedin-profile-search-by-name: mode-selected settle (run-succeeded chain)", async () => {
+    const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
+    const id = "apify#harvestapi/linkedin-profile-search-by-name";
+    const result = await runEndpoint({
+        unit: await testSealedUnit(id),
+        input: inputFor(id),
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    // 2 delivered profiles in "Short" mode ⇒ ceil(2/25) = 1 page +
+    // 2 main-profile results; fold = 1 × $0.003 + 2 × $0.0015 = $0.006
+    assertEquals(result.usage, {
+        credits: { default: 0.006 },
+        evidence: { search_page: 1, main_profile: 2 },
+    });
+});
+
+Deno.test("apify#harvestapi/linkedin-profile-search-by-services: mode-selected settle (run-succeeded chain)", async () => {
+    const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
+    const id = "apify#harvestapi/linkedin-profile-search-by-services";
+    const result = await runEndpoint({
+        unit: await testSealedUnit(id),
+        input: inputFor(id),
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    // no page event on this actor's card: 2 delivered profiles in
+    // "Short" mode bill 2 × $0.001 under the mode-selected line only
+    assertEquals(result.usage, {
+        credits: { default: 0.002 },
+        evidence: { short_profile: 2 },
+    });
+});
+
+Deno.test("apify: PAY_PER_EVENT chain settles item evidence at the pinned model rate", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
     const id = "apify#apify/instagram-profile-scraper";
     const result = await runEndpoint({
@@ -151,11 +190,12 @@ Deno.test("apify: PAY_PER_EVENT chain settles cost = usageTotalUsd for provider-
         mode: "replay",
         fixture,
     });
-    assertEquals(result.usage.counts, { "RESULT": 2 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 40_000,
-        unit: "MICRO_DOLLAR",
+    // provider-default billing: dataset items are the evidence, folded at
+    // the doc's pinned $0.0016/result; the chain's usageTotalUsd receipt
+    // stays in the raw run record (D26 — no vendor-cost channel in usage)
+    assertEquals(result.usage, {
+        credits: { default: 0.0032 },
+        evidence: { RESULT: 2 },
     });
 });
 
@@ -173,6 +213,11 @@ Deno.test("apify docs: every doc carries lifecycle.stateSchema + usage.model", a
             `${id}: typed state (lifecycle.stateSchema) missing`,
         );
         assert(doc.usage.model, `${id}: usage.model missing`);
+        // D26: the provider's one dollar pool resolves onto every doc
+        assert(
+            doc.usage.credits.default,
+            `${id}: usage.credits.default missing`,
+        );
         assertEquals(doc.timeouts.pollMs, 2_000, id);
     }
 });
@@ -221,23 +266,23 @@ Deno.test("apify estimates: the card invariant — estimate covers every billed 
         const model = bundle.endpoints[id].usage.model;
         assert(model, `${id}: usage.model missing`);
         const estimated = await estimateFor(id, inputFor(id).body);
-        for (const amount of Object.values(estimated.counts)) {
+        for (const amount of Object.values(estimated.evidence)) {
             assert(amount >= 0, id);
         }
         const keys = billedKeys(model);
-        const flat = flatCounts(model);
-        // every flat component is promised at exactly 1 (engine-appended
-        // complete vector — design D24)
+        const flat = flatLines(model);
+        // every flat component is evidenced at exactly 1 (engine-appended
+        // complete vector — design D24/D26)
         for (const [flatKey, one] of Object.entries(flat)) {
             assertEquals(
-                estimated.counts[flatKey],
+                estimated.evidence[flatKey],
                 one,
                 `${id}: estimate misses flat key ${flatKey}`,
             );
         }
         if (keys.length === 0) {
             // flat-only doc: the vector IS the flat 1s (design D24)
-            assertEquals(estimated.counts, flat, id);
+            assertEquals(estimated.evidence, flat, id);
             continue;
         }
         // the card invariant, key-shaped (design D19/D24): every estimated
@@ -247,7 +292,7 @@ Deno.test("apify estimates: the card invariant — estimate covers every billed 
         // multi-metered composite may legitimately promise a subset
         // (linkedin: the input mode SELECTS which profile component bills;
         // "Short" selects none).
-        const meteredEstimated = Object.keys(estimated.counts)
+        const meteredEstimated = Object.keys(estimated.evidence)
             .filter((key) => !(key in flat));
         assert(
             meteredEstimated.length > 0,
@@ -261,7 +306,7 @@ Deno.test("apify estimates: the card invariant — estimate covers every billed 
         }
         if (keys.length === 1) {
             assert(
-                estimated.counts[keys[0]] !== undefined,
+                estimated.evidence[keys[0]] !== undefined,
                 `${id}: estimate misses billed key ${keys[0]} — one card ` +
                     `row must price both the estimate and the settle`,
             );
@@ -283,11 +328,11 @@ Deno.test("apify settles: the card invariant + estimate accuracy (shared chain)"
             mode: "replay",
             fixture,
         });
-        // every billed metered KEY is settled as a count (flat components
-        // never appear — billing reads the MODEL + success)
+        // every billed metered KEY is settled as evidence (flat lines are
+        // engine-appended 1s — billing reads the MODEL + success)
         for (const key of billedKeys(model)) {
             assert(
-                settled.usage.counts[key] !== undefined,
+                settled.usage.evidence[key] !== undefined,
                 `${id}: settle misses billed key ${key}`,
             );
         }
@@ -295,35 +340,36 @@ Deno.test("apify settles: the card invariant + estimate accuracy (shared chain)"
         // chain is synthetic — 2 items regardless of the estimate input)
         console.log(
             `[estimate-accuracy] ${id}: estimated=${
-                JSON.stringify(estimated.counts)
-            } settled=${JSON.stringify(settled.usage.counts)}`,
+                JSON.stringify(estimated.evidence)
+            } settled=${JSON.stringify(settled.usage.evidence)}`,
         );
     }
 });
 
 Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
-    // LIMIT_IS_EXACT: maxItems IS the count (leaf doc → unit-keyed)
+    // LIMIT_IS_EXACT: maxItems IS the count (leaf doc → unit-keyed);
+    // 7 × the pinned $0.0004/result
     assertEquals(
-        (await estimateFor("apify#apidojo/tweet-scraper", {
+        await estimateFor("apify#apidojo/tweet-scraper", {
             searchTerms: ["a"],
             maxItems: 7,
-        })).counts,
-        { "RESULT": 7 },
+        }),
+        { credits: { default: 0.0028 }, evidence: { RESULT: 7 } },
     );
-    // ONE_PER_QUERY: one per multiplier entry
+    // ONE_PER_QUERY: one per multiplier entry; 3 × $0.0016
     assertEquals(
-        (await estimateFor("apify#apify/instagram-profile-scraper", {
+        await estimateFor("apify#apify/instagram-profile-scraper", {
             usernames: ["a", "b", "c"],
-        })).counts,
-        { "RESULT": 3 },
+        }),
+        { credits: { default: 3 * 0.0016 }, evidence: { RESULT: 3 } },
     );
-    // PER_QUERY_LIMIT: limit × queries
+    // PER_QUERY_LIMIT: limit × queries; 8 × $0.0024
     assertEquals(
-        (await estimateFor("apify#streamers/youtube-scraper", {
+        await estimateFor("apify#streamers/youtube-scraper", {
             searchQueries: ["x", "y"],
             maxResults: 4,
-        })).counts,
-        { "RESULT": 8 },
+        }),
+        { credits: { default: 0.0192 }, evidence: { RESULT: 8 } },
     );
     // NO fallback constants (design D24): a body without the limiting knob
     // is REJECTED at validation — the estimate is deduced or the run never
@@ -345,44 +391,54 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         }
         assert(rejected, "missing maxItems must reject, not fall back");
     }
-    // flat-only endpoints: no estimate fn — the engine derives the whole
-    // vector from the model (leaf PER_CALL → the reserved CALL key, D24)
+    // flat-only endpoints: no metered promise — the engine derives the
+    // whole vector from the model (leaf PER_CALL → the reserved CALL key,
+    // D24) and folds the flat $0.002 request fee
     assertEquals(
-        (await estimateFor("apify#scraptik/tiktok-api", {
+        await estimateFor("apify#scraptik/tiktok-api", {
             type: "SEARCH",
             region: "US",
             url: "https://www.tiktok.com/@tiktok",
             keywords: ["deno"],
-        })).counts,
-        { "CALL": 1 },
+        }),
+        { credits: { default: 0.002 }, evidence: { CALL: 1 } },
     );
     // linkedin-profile-search (maxItems 2 → ceil(2/25) = 1 page): "Short"
-    // mode bills pages ONLY — no profile component selected (design D19)
+    // mode bills pages ONLY — no profile component selected (design D19);
+    // 1 page × $0.05
     assertEquals(
-        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
+        await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Short",
             searchQuery: "deno developer",
             maxItems: 2,
-        })).counts,
-        { "search-page": 1 },
+        }),
+        { credits: { default: 0.05 }, evidence: { search_page: 1 } },
     );
-    // the mode SELECTS the profile component: "Full" ⇒ full-profile
+    // the mode SELECTS the profile component: "Full" ⇒ full_profile
+    // ($0.05 page + 2 × $0.0032 profiles)
     assertEquals(
-        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
+        await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Full",
             searchQuery: "deno developer",
             maxItems: 2,
-        })).counts,
-        { "search-page": 1, "full-profile": 2 },
+        }),
+        {
+            credits: { default: 0.05 + 2 * 0.0032 },
+            evidence: { search_page: 1, full_profile: 2 },
+        },
     );
-    // …and "Full + email search" ⇒ full-profile-with-email
+    // …and "Full + email search" ⇒ full_profile_with_email
+    // ($0.05 page + 2 × $0.008 profiles)
     assertEquals(
-        (await estimateFor("apify#harvestapi/linkedin-profile-search", {
+        await estimateFor("apify#harvestapi/linkedin-profile-search", {
             profileScraperMode: "Full + email search",
             searchQuery: "deno developer",
             maxItems: 2,
-        })).counts,
-        { "search-page": 1, "full-profile-with-email": 2 },
+        }),
+        {
+            credits: { default: 0.066 },
+            evidence: { search_page: 1, full_profile_with_email: 2 },
+        },
     );
 });
 

@@ -17,17 +17,18 @@ Deno.test("akta: provider-level hooks interned ONCE across all six endpoints", a
     );
     assertEquals(ids.length, 6);
     const first = bundle.endpoints[ids[0]];
-    // D25: news/enrichment settle their own quantities and the FREE
-    // lookups settle the free shape — the provider credits fn now serves
-    // only the CREDIT-metered docs; toRequest/auth stay provider-shared.
-    const providerConsolidated = ids.filter((id) =>
+    // D26: every metered doc settles its OWN quantities (the provider
+    // declares only the credit pool), so the sole interned settle group
+    // left is the two byte-identical FREE lookups; toRequest/auth stay
+    // provider-shared.
+    const freeConsolidated = ids.filter((id) =>
         bundle.endpoints[id].usage.consolidate.$fn.key ===
-            bundle.endpoints["akta#v1/company/employee-reviews"].usage
+            bundle.endpoints["akta#v1/company/search"].usage
                 .consolidate.$fn.key
     );
-    assertEquals(providerConsolidated.sort(), [
-        "akta#v1/company/employee-reviews",
-        "akta#v1/company/product-reviews",
+    assertEquals(freeConsolidated.sort(), [
+        "akta#v1/company/search",
+        "akta#v1/industry/search",
     ]);
     for (const id of ids) {
         const doc = bundle.endpoints[id];
@@ -58,22 +59,21 @@ Deno.test("akta#news happy (recorded): credits are the native unit; arrays go co
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // COMPOSITE vector (D25): articles delivered + the engine-appended flat
-    // request 1; the vendor's own meter rides as cost basis + evidence
-    assertEquals(result.usage.counts, { "article": 2, "request": 1 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 6_000, // 0.12 / 20 dollars = $0.006 = 6k micro-dollars
-        unit: "MICRO_DOLLAR",
+    // COMPOSITE vector (D25/D26): articles delivered + the engine-appended
+    // flat request 1, folded through the doc's own rate card — the flat
+    // 0.1-credit request plus 0.01 credits per article (vendor receipts
+    // like credits_consumed stay in the RAW run record, never in usage)
+    assertEquals(result.usage, {
+        credits: { default: 0.1 + 2 * 0.01 },
+        evidence: { article: 2, request: 1 },
     });
-    assertEquals(result.usage.evidence?.credits_consumed, 0.12);
-    // billing field absorbed into usage — one shape, not two
+    // billing field absorbed out of the payload — the raw record keeps it
     const output = result.output as Record<string, unknown>;
     assertEquals("credits_consumed" in output, false);
     assertEquals((output.data as unknown[]).length, 2);
 });
 
-Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits", async () => {
+Deno.test("akta#news empty (recorded): unknown company is 200 — only the flat request bills", async () => {
     const unit = await testSealedUnit("akta#v1/news");
     const fixture = await loadFixture(`${fixturesDir}empty.json`);
     const result = await runEndpoint({
@@ -87,8 +87,11 @@ Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits"
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
     // money follows evidence: zero articles delivered; the flat request
-    // still bills (engine-appended)
-    assertEquals(result.usage.counts, { "article": 0, "request": 1 });
+    // still bills its 0.1 credits (engine-appended)
+    assertEquals(result.usage, {
+        credits: { default: 0.1 },
+        evidence: { article: 0, request: 1 },
+    });
     assertEquals((result.output as Record<string, unknown>).count, 0);
 });
 
@@ -152,7 +155,7 @@ Deno.test("akta#news provider error (recorded 401): zero usage", async () => {
     });
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
 Deno.test({
@@ -171,7 +174,7 @@ Deno.test({
             JSON.stringify(result.output),
         );
         assertEquals(
-            Object.keys(result.usage.counts).sort(),
+            Object.keys(result.usage.evidence).sort(),
             ["article", "request"],
         );
     },

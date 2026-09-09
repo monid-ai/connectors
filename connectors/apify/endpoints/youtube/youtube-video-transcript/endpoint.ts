@@ -42,7 +42,14 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.005 },
+        },
         /** MODE-aware (PR #2 finding): youtube_url mode returns exactly 1;
          *  channel mode caps at max_videos, defaulted at the binding to
          *  the actor's OWN server default (10) — materialized into the

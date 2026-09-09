@@ -1,38 +1,44 @@
 import { z } from "zod";
-import { zJson } from "../json/type.ts";
-import { zMonetaryValue } from "./monetary.ts";
 
 /**
- * The `usage` half of the settle fn (`usage.consolidate`) result, validated
- * at runtime (FN_CONTRACT on mismatch):
- * `counts` = COUNTED billable quantities as a plain keyed map — ONE simple
- * shape for every model type (design D19). The key names WHAT is counted:
- *   - COMPOSITE doc  → the component id (metered components only; a flat
- *     component never appears — model + success covers it);
- *   - leaf PER_UNIT  → ONE implied key, the model's unit ({"RESULT": 10});
- *   - PER_CALL / error settle → {} — the canonical "nothing counted".
- * The same key indexes the broker card row, the drift-guard event and (for
- * apify) the vendor's own charge-event name — counts, card and vendor
- * truth join on one string, so per-event prices match exactly.
- * `cost` = the vendor's OWN reported price, READ from the response (never
- * computed by us), as a MonetaryValue (micro-dollar canon);
- * `evidence` = audit receipts (raw values kept for invoices/debugging, not math).
+ * What FNS return (design D26): typed QUANTITIES only — one entry per
+ * metered rate-card line (a composite's PER_UNIT line ids / a leaf
+ * PER_UNIT's unit). No rate math, no receipts: flat lines are
+ * engine-appended, the credits fold is engine-owned, and vendor billing
+ * fields live in the RAW run record (hosts persist the raw envelope —
+ * the receipt IS the output).
+ */
+export const zFnUsage = z.object({
+    counts: z.record(z.string().min(1), z.number().nonnegative()),
+}).strict();
+export type FnUsage = z.infer<typeof zFnUsage>;
+
+/**
+ * The PUBLIC usage (design D26) — exactly two facts, both re-derivable
+ * and broker-generic:
+ *   1. `credits`  — how many credits consumed, per declared credit
+ *      system: the priced vector (broker: credits[id] × card row).
+ *   2. `evidence` — WHY: one entry per rate-card line (units consumed
+ *      for PER_UNIT lines, 1 for PER_CALL lines — engine-appended).
+ *      Anyone holding the DOC re-derives credits from evidence × the
+ *      model's every/amount: the bill is checkable from public facts.
+ * Assembled by the ENGINE (fn quantities + flat 1s → fold through the
+ * doc's rate card). No third field: vendor receipts are the raw run
+ * record's job, not usage's.
  */
 export const zUsage = z.object({
-    counts: z.record(z.string().min(1), z.number().nonnegative()),
-    cost: zMonetaryValue.optional(),
-    evidence: z.record(z.string(), zJson).optional(),
+    credits: z.record(z.string().min(1), z.number().nonnegative()),
+    evidence: z.record(z.string().min(1), z.number().nonnegative()),
 }).strict();
 export type Usage = z.infer<typeof zUsage>;
 
-/** A PER_CALL (or hookless) run consumes nothing countable — billing
- *  derives from the MODEL + success, not from a fake count. */
-export function defaultUsage(): Usage {
+/** A hookless/absent-estimate fn consumed nothing countable. */
+export function defaultFnUsage(): FnUsage {
     return { counts: {} };
 }
 
-/** Forced on vendor errors — the run consumed nothing countable and
- *  bills nothing. */
+/** Forced on vendor errors — the run billed nothing (and a FREE run's
+ *  success settles the same shape: the MODEL is the free fact). */
 export function zeroUsage(): Usage {
-    return { counts: {} };
+    return { credits: {}, evidence: {} };
 }

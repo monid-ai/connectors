@@ -3,11 +3,17 @@ import { fromFileUrl } from "@std/path";
 import { walk } from "@std/fs";
 import { z } from "zod";
 import {
+    assembleUsage,
     assertPureJson,
+    CALL_KEY,
     contractConfig,
+    countsMismatch,
+    creditsOf,
+    defaultFnUsage,
     defineEndpoint,
     defineProvider,
     docHash,
+    flatLines,
     fnKey,
     getPath,
     parseSchema,
@@ -19,6 +25,7 @@ import {
     ValidationError,
     zeroUsage,
     zJson,
+    zUsageModel,
 } from "@shared/core";
 
 // ---------------------------------------------------------------------------
@@ -143,7 +150,114 @@ Deno.test("getPath: dotted keys + numeric indexes; unsupported syntax → undefi
 });
 
 Deno.test("zeroUsage: the forced settle-shape on provider errors", () => {
-    assertEquals(zeroUsage(), { counts: {} });
+    assertEquals(zeroUsage(), { credits: {}, evidence: {} });
+});
+
+Deno.test("defaultFnUsage: a hookless estimate consumed nothing countable", () => {
+    assertEquals(defaultFnUsage(), { counts: {} });
+});
+
+// ---------------------------------------------------------------------------
+// usage validation helpers (design D26): the model's flat 1s, the credits
+// fold, the engine-side assembly, and the counts ↔ model discipline —
+// parsed through zUsageModel so PER_UNIT `every` materializes its default
+// (the compiled-doc shape every consumer folds over)
+// ---------------------------------------------------------------------------
+
+const freeModel = zUsageModel.parse({ kind: "FREE" });
+const flatModel = zUsageModel.parse({
+    kind: "PER_CALL",
+    consumes: { credit: "default", amount: 0.25 },
+});
+const meteredModel = zUsageModel.parse({
+    kind: "PER_UNIT",
+    unit: "RESULT",
+    every: 50,
+    consumes: { credit: "default", amount: 1.5 },
+});
+const compositeModel = zUsageModel.parse({
+    kind: "COMPOSITE",
+    components: {
+        "actor-start": {
+            kind: "PER_CALL",
+            consumes: { credit: "default", amount: 0.25 },
+        },
+        "comment": {
+            kind: "PER_UNIT",
+            unit: "RESULT",
+            consumes: { credit: "default", amount: 0.5 },
+        },
+    },
+});
+
+Deno.test("zUsageModel: PER_UNIT `every` defaults to 1 AT PARSE (concrete on every doc)", () => {
+    assert(meteredModel.kind === "PER_UNIT");
+    assertEquals(meteredModel.every, 50);
+    const defaulted = zUsageModel.parse({
+        kind: "PER_UNIT",
+        unit: "RESULT",
+        consumes: { credit: "default", amount: 0.5 },
+    });
+    assert(defaulted.kind === "PER_UNIT");
+    assertEquals(defaulted.every, 1);
+});
+
+Deno.test("flatLines: PER_CALL draws {CALL: 1}; composite flat components draw their own id", () => {
+    assertEquals(flatLines(flatModel), { [CALL_KEY]: 1 });
+    assertEquals(flatLines(compositeModel), { "actor-start": 1 });
+    assertEquals(flatLines(meteredModel), {});
+    assertEquals(flatLines(freeModel), {});
+});
+
+Deno.test("creditsOf: ceil(quantity / every) × amount, summed per credit id", () => {
+    // FREE folds to {} no matter what
+    assertEquals(creditsOf(freeModel, {}), {});
+    // flat: one draw iff the engine-appended CALL 1 is present
+    assertEquals(creditsOf(flatModel, { [CALL_KEY]: 1 }), { default: 0.25 });
+    assertEquals(creditsOf(flatModel, {}), {});
+    // metered, every 50 at 1.5: 120 units → 3 whole increments → 4.5
+    assertEquals(creditsOf(meteredModel, { RESULT: 120 }), { default: 4.5 });
+    // whole increments: a single unit already bills a full increment
+    assertEquals(creditsOf(meteredModel, { RESULT: 1 }), { default: 1.5 });
+    assertEquals(creditsOf(meteredModel, {}), {});
+    // composite lines draining ONE pool sum per credit id:
+    // 0.25 (flat) + 3 × 0.5 (metered) = 1.75
+    assertEquals(
+        creditsOf(compositeModel, { "actor-start": 1, "comment": 3 }),
+        { default: 1.75 },
+    );
+});
+
+Deno.test("assembleUsage: fn counts + the model's flat 1s → {credits, evidence}", () => {
+    assertEquals(assembleUsage(compositeModel, { "comment": 3 }), {
+        credits: { default: 1.75 },
+        evidence: { "comment": 3, "actor-start": 1 },
+    });
+    assertEquals(assembleUsage(flatModel, {}), {
+        credits: { default: 0.25 },
+        evidence: { CALL: 1 },
+    });
+    assertEquals(assembleUsage(freeModel, {}), { credits: {}, evidence: {} });
+});
+
+Deno.test("countsMismatch: one rule per kind; {counts: {}} passes everywhere", () => {
+    // FREE and flat docs: fns count nothing (flat 1s are engine-appended)
+    assertEquals(countsMismatch(freeModel, {}), undefined);
+    assert(
+        countsMismatch(freeModel, { RESULT: 1 })
+            ?.includes("free bills nothing"),
+    );
+    assertEquals(countsMismatch(flatModel, {}), undefined);
+    assert(countsMismatch(flatModel, { CALL: 1 })?.includes("flat doc"));
+    // leaf PER_UNIT: the single implied key is the model's unit
+    assertEquals(countsMismatch(meteredModel, { RESULT: 2 }), undefined);
+    assert(countsMismatch(meteredModel, { TOKEN: 2 })?.includes('"TOKEN"'));
+    // composite: every key names a PER_UNIT line — flat ids are rejected
+    assertEquals(countsMismatch(compositeModel, { comment: 2 }), undefined);
+    assert(
+        countsMismatch(compositeModel, { "actor-start": 1 })
+            ?.includes("names no metered line"),
+    );
 });
 
 // ---------------------------------------------------------------------------
@@ -194,10 +308,14 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             model: {
                 kind: UsageModelKind.COMPOSITE,
                 components: {
-                    "actor-start": { kind: UsageModelKind.PER_CALL },
+                    "actor-start": {
+                        kind: UsageModelKind.PER_CALL,
+                        consumes: { credit: "default", amount: 0.01 },
+                    },
                     "comment": {
                         kind: UsageModelKind.PER_UNIT,
                         unit: Unit.RESULT,
+                        consumes: { credit: "default", amount: 0.01 },
                     },
                 },
             },
@@ -224,10 +342,14 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
                 model: {
                     kind: UsageModelKind.COMPOSITE,
                     components: {
-                        "actor-start": { kind: UsageModelKind.PER_CALL },
+                        "actor-start": {
+                            kind: UsageModelKind.PER_CALL,
+                            consumes: { credit: "default", amount: 0.01 },
+                        },
                         "comment": {
                             kind: UsageModelKind.PER_UNIT,
                             unit: Unit.RESULT,
+                            consumes: { credit: "default", amount: 0.01 },
                         },
                     },
                 },
@@ -246,10 +368,14 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
                 model: {
                     kind: UsageModelKind.COMPOSITE,
                     components: {
-                        "actor-start": { kind: UsageModelKind.PER_CALL },
+                        "actor-start": {
+                            kind: UsageModelKind.PER_CALL,
+                            consumes: { credit: "default", amount: 0.01 },
+                        },
                         "comment": {
                             kind: UsageModelKind.PER_UNIT,
                             unit: Unit.RESULT,
+                            consumes: { credit: "default", amount: 0.01 },
                         },
                     },
                 },
@@ -265,9 +391,12 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_CALL },
-                // @ts-expect-error — a COUNTING fn on a flat doc: the
-                // estimate slot is `never` ("unsupported" = un-writable)
+                model: {
+                    kind: UsageModelKind.PER_CALL,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
+                // @ts-expect-error — a COUNTING fn on a flat doc: its
+                // counts type rejects every entry (only {} is writable)
                 estimate: () => ({ counts: { "RESULT": 3 } }),
             },
         }));
@@ -277,7 +406,11 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 consolidate: ({ data }) => ({
                     usage: {
                         // @ts-expect-error — the body schema has no such field
@@ -292,7 +425,11 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 // @ts-expect-error — a leaf doc keys by its unit, not TOKEN
                 estimate: () => ({
                     counts: { "TOKEN": 1 },
@@ -307,7 +444,11 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 estimate: ({ data }) => ({
                     counts: {
                         // @ts-expect-error — data.model moved to data.usage.model
@@ -339,7 +480,11 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
         request,
         input: { schema: { body } },
         usage: {
-            model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+            model: {
+                kind: UsageModelKind.PER_UNIT,
+                unit: Unit.RESULT,
+                consumes: { credit: "default", amount: 0.01 },
+            },
             consolidate: ({ data }) => ({
                 usage: {
                     counts: {
@@ -387,7 +532,11 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 consolidate: () => ({ usage: { counts: {} } }),
             },
             lifecycle: {
@@ -410,7 +559,11 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
             request,
             input: { schema: { body } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 consolidate: ({ data }) => ({
                     usage: {
                         counts: {
@@ -475,18 +628,14 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
             },
         },
         usage: {
+            // typed READ at settle: the stashed billing signal is
+            // absorbed into the OUTPUT (receipts are the raw run
+            // record's job, never usage's — design D26)
             consolidate: ({ data }) => ({
-                usage: {
-                    counts: {},
-                    ...(data.lifecycle?.state.data?.usageTotalUsd !== undefined
-                        ? {
-                            cost: {
-                                currency: "USD",
-                                value: 1,
-                                unit: "MICRO_DOLLAR",
-                            },
-                        }
-                        : {}),
+                usage: { counts: {} },
+                output: {
+                    settledUsd: data.lifecycle?.state.data?.usageTotalUsd ??
+                        null,
                 },
             }),
         },
@@ -533,13 +682,11 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
             },
             usage: {
                 consolidate: ({ data }) => ({
-                    usage: {
-                        counts: {},
-                        evidence: {
-                            // @ts-expect-error — no such field on the
-                            // provider's declared state bag (typed READ)
-                            nope: data.lifecycle?.state.data?.nope ?? null,
-                        },
+                    usage: { counts: {} },
+                    output: {
+                        // @ts-expect-error — no such field on the
+                        // provider's declared state bag (typed READ)
+                        nope: data.lifecycle?.state.data?.nope ?? null,
                     },
                 }),
             },
@@ -569,10 +716,13 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
         },
         usage: {
             model: { kind: UsageModelKind.FREE },
-            estimate: ({ data }) => ({
-                counts: {},
-                evidence: { requestedLimit: data.input.queryParams.limit },
-            }),
+            estimate: ({ data }) => {
+                // typed queryParams: the read typechecks against the
+                // doc's OWN schema (required() made limit a number)
+                const requestedLimit: number = data.input.queryParams.limit;
+                void requestedLimit;
+                return { counts: {} };
+            },
             consolidate: () => ({ usage: { counts: {} } }),
         },
     });
@@ -597,7 +747,11 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
             request,
             input: { schema: { queryParams } },
             usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                model: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
                 estimate: ({ data }) => ({
                     counts: {
                         // @ts-expect-error — no such field on the doc's own

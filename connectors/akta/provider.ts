@@ -45,22 +45,12 @@ export default defineProvider({
         }),
     },
     usage: {
-        /** Billed in akta's own meter — credits (the tier's $/credit is
-         *  the hosted rate card's row). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        consolidate: ({ data, utils }) => {
-            const credits =
-                utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
-            return {
-                usage: {
-                    counts: { "CREDIT": credits },
-                    cost: utils.money.fromDollars(credits / 20),
-                    evidence: utils.json.pick(data.output, [
-                        "$.credits_consumed",
-                    ]),
-                },
-                output: utils.json.omit(data.output, ["credits_consumed"]),
-            };
-        },
+        /** THE credit system (design D26) — akta's own meter, declared
+         *  ONCE for every endpoint (single pool ⇒ id `default`); the
+         *  tier's $/credit is the broker card's one akta row. Each
+         *  endpoint's model states its lines' credit draws (the rate
+         *  card lives in the defs); vendor receipts (`credits_consumed`)
+         *  live in the RAW run record. */
+        credits: { default: { label: "Akta credits" } },
     },
 });

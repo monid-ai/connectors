@@ -43,18 +43,23 @@ export default defineEndpoint({
         model: {
             // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
-            // component ids = the actor's charge-event names, VERBATIM
-            // (live survey) — the broker card row key and the join key for
-            // the stashed run-record rates (design D19)
+            // component ids are OUR snake_case keys; `vendor` carries the
+            // actor's charge-event name verbatim when it differs — the
+            // broker card row key and the join key for the stashed
+            // run-record rates (design D19)
             components: {
-                "apify-actor-start": {
+                actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    vendor: "apify-actor-start",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.00002 },
                 },
-                "review": {
+                review: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "reviews",
+                    consumes: { credit: "default", amount: 0.0007 },
                 },
             },
         },

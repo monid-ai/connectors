@@ -52,7 +52,13 @@ function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
             auth: { inject: presets.auth.header("x-demo-key") },
             request: { baseUrl: "https://api.demo.test" },
             usage: {
-                model: { kind: "PER_CALL" },
+                model: {
+                    kind: "PER_CALL",
+                    consumes: { credit: "default", amount: 0.01 },
+                },
+                // billable lines drain a DECLARED credit system (D26):
+                // one provider-level pool serves every test doc
+                credits: { default: { label: "Demo credits" } },
                 // billing triple (D25): a provider-level estimate resolves
                 // the compile rule for every test doc
                 estimate: () => ({ counts: {} }),
@@ -274,8 +280,16 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
     const model = {
         kind: "COMPOSITE",
         components: {
-            "page": { kind: "PER_UNIT", unit: "PAGE" },
-            "profile": { kind: "PER_UNIT", unit: "RESULT" },
+            "page": {
+                kind: "PER_UNIT",
+                unit: "PAGE",
+                consumes: { credit: "default", amount: 0.01 },
+            },
+            "profile": {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                consumes: { credit: "default", amount: 0.02 },
+            },
         },
     } as const;
     // generic (provider) consolidate can't choose a key between two
@@ -326,10 +340,144 @@ Deno.test("≥2 metered components require DOC-level consolidate + estimate (des
         }]),
         OPTS,
     );
+    // the compiled model carries `every` MATERIALIZED (parse-time
+    // default 1, design D26) — never the authored omission
     assertEquals(
         bundle.endpoints["demo#search"].usage.model,
-        model,
+        {
+            kind: "COMPOSITE",
+            components: {
+                "page": {
+                    kind: "PER_UNIT",
+                    unit: "PAGE",
+                    every: 1,
+                    consumes: { credit: "default", amount: 0.01 },
+                },
+                "profile": {
+                    kind: "PER_UNIT",
+                    unit: "RESULT",
+                    every: 1,
+                    consumes: { credit: "default", amount: 0.02 },
+                },
+            },
+        },
     );
+});
+
+// ---------------------------------------------------------------------------
+// credits (design D26) — declaration + reference checks at compile
+// ---------------------------------------------------------------------------
+
+Deno.test("usage.credits must resolve for billable models; the ENDPOINT declaration fills in", async () => {
+    // a billable provider usage block WITHOUT a credits declaration
+    const billable = {
+        model: {
+            kind: "PER_CALL",
+            consumes: { credit: "default", amount: 0.01 },
+        },
+        estimate: () => ({ counts: {} }),
+        consolidate: presets.usage.perCall(),
+    } as Partial<ProviderDefSeed>["usage"];
+    await assertRejects(
+        () =>
+            compileBundle(
+                source(
+                    [{ name: "search", def: makeEndpoint() }],
+                    makeProvider({ usage: billable }),
+                ),
+                OPTS,
+            ),
+        Error,
+        "usage.credits must resolve",
+    );
+    // the endpoint's own declaration resolves it when the provider has none
+    const bundle = await compileBundle(
+        source(
+            [{
+                name: "search",
+                def: makeEndpoint({
+                    usage: { credits: { default: { label: "Demo credits" } } },
+                }),
+            }],
+            makeProvider({ usage: billable }),
+        ),
+        OPTS,
+    );
+    assertEquals(bundle.endpoints["demo#search"].usage.credits, {
+        default: { label: "Demo credits" },
+    });
+});
+
+Deno.test("a line consuming an UNDECLARED credit fails compilation", async () => {
+    await assertRejects(
+        () =>
+            compileBundle(
+                source([{
+                    name: "search",
+                    def: makeEndpoint({
+                        usage: {
+                            model: {
+                                kind: "PER_UNIT",
+                                unit: "RESULT",
+                                consumes: { credit: "nope", amount: 0.01 },
+                            },
+                            estimate: () => ({ counts: {} }),
+                            consolidate: () => ({
+                                usage: { counts: { "RESULT": 1 } },
+                            }),
+                        },
+                    }),
+                }]),
+                OPTS,
+            ),
+        Error,
+        'consumes undeclared credit "nope"',
+    );
+});
+
+Deno.test("a declared credit no line drains fails compilation", async () => {
+    await assertRejects(
+        () =>
+            compileBundle(
+                source(
+                    [{ name: "search", def: makeEndpoint() }],
+                    makeProvider({
+                        usage: {
+                            model: {
+                                kind: "PER_CALL",
+                                consumes: { credit: "default", amount: 0.01 },
+                            },
+                            credits: {
+                                default: { label: "Demo credits" },
+                                extra: { label: "Never drained" },
+                            },
+                            estimate: () => ({ counts: {} }),
+                            consolidate: presets.usage.perCall(),
+                        } as Partial<ProviderDefSeed>["usage"],
+                    }),
+                ),
+                OPTS,
+            ),
+        Error,
+        'declared credit "extra" is drained by no line',
+    );
+});
+
+Deno.test("FREE docs compile with EMPTY credits — nothing drains, nothing declared", async () => {
+    const bundle = await compileBundle(
+        source([{
+            name: "search",
+            def: makeEndpoint({
+                usage: {
+                    model: { kind: "FREE" },
+                    estimate: () => ({ counts: {} }),
+                    consolidate: () => ({ usage: { counts: {} } }),
+                },
+            }),
+        }]),
+        OPTS,
+    );
+    assertEquals(bundle.endpoints["demo#search"].usage.credits, {});
 });
 
 Deno.test("auth.inject is REQUIRED: endpoint ?? provider, neither fails", async () => {
@@ -664,6 +812,10 @@ Deno.test("golden: compiled exa#search doc shape (zBundle round-trip)", async ()
     assert(doc.input.toRequest?.$fn.key.startsWith("sha256:"));
     assertEquals(doc.output.fromResponse, undefined);
     assert(doc.usage.consolidate.$fn.key.startsWith("sha256:"));
+    // the billing triple (D25) + the credit declaration (D26): estimate
+    // compiled, and the provider's pool resolved onto the doc
+    assert(doc.usage.estimate.$fn.key.startsWith("sha256:"));
+    assertEquals(doc.usage.credits, { default: { label: "US dollars" } });
     assertEquals(doc.timeouts, { requestMs: 30_000, runMs: 30_000 });
     // meta roles: one-line summary + full description
     assert(doc.meta.summary.length < 200);

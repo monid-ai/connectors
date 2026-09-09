@@ -34,7 +34,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zPremiumXFollowerScraperFollowingDataBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.00015 },
+        },
         /** Mode-aware: each enabled direction contributes its own cap
          *  (getFollowers → maxFollowers, getFollowing → maxFollowings —
          *  all four fields required by the schema). Both off ⇒ nothing

@@ -1,13 +1,13 @@
 import { greaterThan, parse as parseSemver } from "@std/semver";
 import {
+    assembleUsage,
     contractConfig,
     countsMismatch,
     type EndpointDoc,
     type EnvelopeData,
-    flatCounts,
     type FnState,
+    type FnUsage,
     formatZodError,
-    freeMismatch,
     type HookLogger,
     type Json,
     type LifecycleOutcome,
@@ -128,12 +128,13 @@ export class LoadedEndpoint implements RunnableEndpoint {
     // ---- Temporal-activity-shaped: stateless, strict-JSON in/out, no sleeps ----
 
     /** Pre-run cost estimate (v1 paymentLifecycle.estimate): validated
-     *  input → estimated Usage with consolidate's counts KEYS — PURE, no
-     *  IO, no state. The estimate fn is compile-REQUIRED on every doc
-     *  (the billing triple — design D25); the absent-fn arm below is
-     *  defense in depth only. Returned counts are validated against the
-     *  model exactly like settled ones (a FREE doc's fns return plain
-     *  `{counts: {}}` — free-ness is a MODEL fact, design D25). */
+     *  input → the QUANTITY promise per metered line — PURE, no IO, no
+     *  state; compile-REQUIRED on every doc (the billing triple, D25;
+     *  the absent-fn arm below is defense in depth only). The ENGINE
+     *  appends the model's flat 1s and folds through the doc's OWN rate
+     *  card (design D26): the returned Usage is `{credits, evidence}` —
+     *  the priced vector plus the per-line why, re-derivable by anyone
+     *  holding the doc. */
     estimate(runInput: RunInput): Usage {
         // PRE-toRequest input (design D25): the estimate is a promise about
         // the CALLER's request, so it reads the schema-shaped validated
@@ -141,20 +142,16 @@ export class LoadedEndpoint implements RunnableEndpoint {
         // toRequest CSV-joins arrays; typed queryParams stay sound here).
         const input = validateInput(this.doc, runInput);
         const model = this.doc.usage.model;
-        let usage: Usage = { counts: {} };
+        let fnUsage: FnUsage = { counts: {} };
         if (this.fns.usageEstimate) {
-            usage = this.fns.usageEstimate({
+            fnUsage = this.fns.usageEstimate({
                 input,
                 usage: { model },
             });
-            // the fn's promise: metered keys only, no cost on FREE
-            this.validateUsage(usage);
+            // the fn's promise: metered line quantities only
+            this.validateUsage(fnUsage);
         }
-        // COMPLETE VECTOR (design D24): the engine appends the model's flat
-        // 1s so the estimate carries every billed component — counts ×
-        // rates = the whole predicted bill, no model join (a no-op for
-        // FREE and pure PER_UNIT models)
-        return { ...usage, counts: { ...usage.counts, ...flatCounts(model) } };
+        return assembleUsage(model, fnUsage.counts);
     }
 
     async start(runInput: RunInput): Promise<RunStartResult> {
@@ -485,18 +482,12 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 usage: { model: doc.usage.model },
             };
             const settled = this.fns.usageConsolidate(envelope);
-            // fn-returned counts: metered keys only, no cost on FREE
+            // fn-returned QUANTITIES: metered line keys only
             this.validateUsage(settled.usage);
-            // COMPLETE VECTOR (design D24): flat components are billed 1 per
-            // SUCCESSFUL run — engine-appended, never fn-written (a no-op
-            // for FREE models — design D25). Error settles keep zeroUsage().
-            usage = {
-                ...settled.usage,
-                counts: {
-                    ...settled.usage.counts,
-                    ...flatCounts(doc.usage.model),
-                },
-            };
+            // D26 assembly: flat 1s appended, folded through the doc's own
+            // rate card → {credits, evidence}. Error settles keep
+            // zeroUsage() — nothing billed, nothing evidenced.
+            usage = assembleUsage(doc.usage.model, settled.usage.counts);
             output = settled.output ?? raw;
             if (this.fns.fromResponse) {
                 output = this.fns.fromResponse({
@@ -539,9 +530,8 @@ export class LoadedEndpoint implements RunnableEndpoint {
      *  and, later, the services broker); the engine owns only the error
      *  type. Applied to consolidate output at settle AND to the estimate
      *  fn's return — `{counts: {}}` passes everywhere. */
-    private validateUsage(usage: Usage): void {
-        const problem = countsMismatch(this.doc.usage.model, usage.counts) ??
-            freeMismatch(this.doc.usage.model, usage);
+    private validateUsage(usage: FnUsage): void {
+        const problem = countsMismatch(this.doc.usage.model, usage.counts);
         if (problem !== undefined) {
             throw new EngineError(
                 EngineErrorCode.FN_CONTRACT,

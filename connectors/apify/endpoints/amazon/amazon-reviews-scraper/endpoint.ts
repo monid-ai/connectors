@@ -32,7 +32,14 @@ export default defineEndpoint({
     },
     input: { schema: { body: zAmazonReviewsScraperBody } },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            // the actor's charge-event this leaf line joins to
+            vendor: "apify-default-dataset-item",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.0009 },
+        },
         /** one result per input entry (one asin each, v1 ONE_PER_QUERY) —
          *  `input` is actor-required; an empty batch is a no-op run and
          *  estimates 0, which is correct (D25). */

@@ -39,7 +39,13 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "pages",
+            // $0.001 per crawled page — v1 vendor unit price
+            consumes: { credit: "default", amount: 0.001 },
+        },
         /** One result per requested URL — `urls` is required (min 1), so
          *  its length is the deducible per-call quantity (v1 evidence:
          *  exa's contents cost "varies by number of URLs"; the settle
@@ -49,26 +55,14 @@ export default defineEndpoint({
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.urls.length },
         }),
-        consolidate: ({ data, utils }) => {
-            const total = utils.json.optionalNum(
-                data.output,
-                "$.costDollars.total",
-            );
-            return {
-                usage: {
-                    counts: {
-                        "RESULT": utils.json.len(data.output, "$.results"),
-                    },
-                    ...(total !== undefined
-                        ? { cost: utils.money.fromDollars(total) }
-                        : {}),
-                    evidence: utils.json.pick(data.output, [
-                        "$.costDollars",
-                        "$.requestId",
-                    ]),
+        consolidate: ({ data, utils }) => ({
+            usage: {
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
                 },
-                output: utils.json.omit(data.output, ["costDollars"]),
-            };
-        },
+            },
+            // costDollars stays in the RAW run record (design D26)
+            output: utils.json.omit(data.output, ["costDollars"]),
+        }),
     },
 });

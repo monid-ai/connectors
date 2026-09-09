@@ -46,71 +46,87 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "firmographic": {
+                firmographic: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 2 },
                 },
-                "business_model": {
+                business_model: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 2 },
                 },
-                "company_assessment": {
+                company_assessment: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 2 },
                 },
-                "trust_signal": {
+                trust_signal: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.5 },
                 },
-                "company_hierarchy": {
+                company_hierarchy: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.5 },
                 },
-                "digital_presence": {
+                digital_presence: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.5 },
                 },
-                "financial_estimate": {
+                financial_estimate: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.5 },
                 },
-                "location": {
+                location: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 0.5 },
                 },
-                "management_profile": {
+                management_profile: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 1.5 },
                 },
-                "product_offering": {
+                product_offering: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 2 },
                 },
-                "strategic_signal": {
+                strategic_signal: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 1.5 },
                 },
-                "customer_profile": {
+                customer_profile: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 1 },
                 },
-                "industry": {
+                industry: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 1 },
                 },
-                "technology": {
+                technology: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    consumes: { credit: "default", amount: 2 },
                 },
-                "funding_detail": {
+                funding_detail: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     description: "Enterprise-tier section",
+                    consumes: { credit: "default", amount: 3 },
                 },
-                "mna_and_investment": {
+                mna_and_investment: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     description: "Enterprise-tier section",
+                    consumes: { credit: "default", amount: 5 },
                 },
             },
         },
@@ -130,8 +146,6 @@ export default defineEndpoint({
          *  identity, not a section) + the vendor meter as
          *  cost-basis/evidence. */
         consolidate: ({ data, utils }) => {
-            const credits =
-                utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
             const sections = utils.json.optionalGet(data.output, "$.data");
             const delivered =
                 sections !== null && typeof sections === "object" &&
@@ -143,11 +157,9 @@ export default defineEndpoint({
                     counts: Object.fromEntries(
                         delivered.map((section) => [section, 1]),
                     ),
-                    cost: utils.money.fromDollars(credits / 20),
-                    evidence: utils.json.pick(data.output, [
-                        "$.credits_consumed",
-                    ]),
                 },
+                // billing fields never ride the payload — credits_consumed
+                // stays in the RAW run record (the receipt IS the output)
                 output: utils.json.omit(data.output, ["credits_consumed"]),
             };
         },

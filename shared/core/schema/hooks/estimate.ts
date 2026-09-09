@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { zRunInput } from "../run/input.ts";
 import { zUsageModel } from "../usage/model/mod.ts";
-import { zUsage } from "../usage/usage.ts";
+import { zFnUsage } from "../usage/usage.ts";
 import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
 
 /**
@@ -41,7 +41,7 @@ export const zEstimateCtx = z.object({
 
 export const UsageEstimateContract = z.function({
     input: [zEstimateCtx],
-    output: zUsage,
+    output: zFnUsage,
 });
 export type UsageEstimateFn = z.infer<typeof UsageEstimateContract>;
 export const zUsageEstimateFn = fnCarrier<UsageEstimateFn>(

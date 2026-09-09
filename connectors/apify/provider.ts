@@ -307,20 +307,23 @@ export default defineProvider({
         },
     },
     usage: {
+        /** THE credit system (design D26): apify meters directly in US
+         *  dollars (no tier-independent pool unit exists — per-event
+         *  prices tier by OUR subscription plan), so the pool IS dollars:
+         *  every endpoint's model pins its survey-verified per-line $
+         *  draws, and the drift guard (apify:pricing) alarms on vendor
+         *  repricing. One pool ⇒ id `default`. */
+        credits: { default: { label: "US dollars" } },
         // No provider-level model/estimate defaults: every ENDPOINT declares
-        // its own — the cost shape and the estimate fields are per-actor
+        // its own — the rate card and the estimate fields are per-actor
         // facts, pinned beside the input schema that defines them.
-        consolidate: ({ data, utils }) => {
+        consolidate: ({ data }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
-            // typed own-state reads (D24): the settle envelope's state bag
-            // is typed by the provider's declared lifecycle.state schema
-            const stateData = data.lifecycle?.state.data;
             // counts KEY from the doc's OWN model (design D19): leaf → the
-            // unit; composite → the sole metered component id — which for
-            // apify is the actor's charge-event name VERBATIM, so counts,
-            // card and vendor truth join on one string. Single-valued by
+            // unit; composite → the sole metered line id. Single-valued by
             // the compiler's ≥2-metered rule (multi-metered actors declare
-            // their own fns).
+            // their own fns). Vendor receipts (run-record pricing) live in
+            // the RAW record + the threaded state — never in usage (D26).
             let key;
             switch (data.usage.model.kind) {
                 case "PER_UNIT":
@@ -332,36 +335,13 @@ export default defineProvider({
                         ?.[0];
                     break;
                 case "PER_CALL":
+                case "FREE":
                     key = undefined;
                     break;
             }
-            const model = stateData?.pricingModel;
-            const perUnit = stateData?.pricePerUnitUsd;
-            const totalUsd = stateData?.usageTotalUsd;
-            // v1 actualCostFromPricing: PRICE_PER_DATASET_ITEM multiplies,
-            // PAY_PER_EVENT reads the reported total, other models → no cost
-            const cost = model === "PRICE_PER_DATASET_ITEM"
-                ? utils.money.fromDollars((perUnit ?? 0) * items)
-                : model === "PAY_PER_EVENT"
-                ? utils.money.fromDollars(totalUsd ?? 0)
-                : undefined;
-            const externalRunId = data.lifecycle?.state.externalRunId;
             return {
                 usage: {
                     counts: key === undefined ? {} : { [key]: items },
-                    ...(cost !== undefined ? { cost } : {}),
-                    evidence: {
-                        ...(externalRunId !== undefined
-                            ? { externalRunId }
-                            : {}),
-                        ...(model !== undefined ? { pricingModel: model } : {}),
-                        ...(perUnit !== undefined
-                            ? { pricePerUnitUsd: perUnit }
-                            : {}),
-                        ...(totalUsd !== undefined
-                            ? { usageTotalUsd: totalUsd }
-                            : {}),
-                    },
                 },
             };
         },

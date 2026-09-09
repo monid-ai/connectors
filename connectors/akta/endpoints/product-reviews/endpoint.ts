@@ -19,31 +19,62 @@ export default defineEndpoint({
     request: { method: "GET", path: "/v1/company/product-reviews/" },
     input: { schema: { queryParams: zProductReviewsQueryParams } },
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** TWO vendor-priced MODES, both deduced from v1
-         *  product-reviews.ts (verified against akta's real charges):
-         *  WITHOUT `products` the call is the product-list mode at a flat
-         *  0.5 credits ("Akta charges 0.5 credits ($0.025) when called
-         *  without `products`"); WITH `products` each product bills one
-         *  whole 50-record increment of 1.5 credits ("1.5 credits per 50
-         *  records … per product", regardless of `limit`). The presence
-         *  check selects between the two deduced rates — it is the
-         *  vendor's mode switch, not a fallback constant (optionalLen
-         *  still throws on a present non-array). Settle trues up on
-         *  `credits_consumed`. */
+        /** TWO vendor-priced MODES as mode-selected metered lines (design
+         *  D19/D26) — the fn populates only the active mode's key; the
+         *  rates live in `consumes`. v1 evidence (verified against akta's
+         *  real charges): WITHOUT `products` the call is the product-list
+         *  mode at a flat 0.5 credits; WITH `products` each product bills
+         *  one whole 50-record increment of 1.5 credits (regardless of
+         *  `limit`). */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                product: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "products",
+                    consumes: { credit: "default", amount: 1.5 },
+                },
+                list_lookup: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "catalog lookups",
+                    consumes: { credit: "default", amount: 0.5 },
+                },
+            },
+        },
+        /** Typed read (pre-toRequest validated input — design D25); the
+         *  presence check IS the vendor's mode switch. */
         estimate: ({ data }) => {
-            // typed read (PRE-toRequest validated input — design D25); the
-            // presence check IS the vendor's mode switch, both rates deduced
             const products = data.input.queryParams.products;
             return {
-                counts: {
-                    "CREDIT": products !== undefined && products.length > 0
-                        ? products.length * 1.5
-                        : 0.5,
+                counts: products !== undefined && products.length > 0
+                    ? { "product": products.length }
+                    : { "list_lookup": 1 },
+            };
+        },
+        /** Settle counts the REQUESTED quantities (akta bills per product
+         *  increment regardless of delivery — v1-verified); the vendor
+         *  meter stays in the raw run record. */
+        consolidate: ({ data, utils }) => {
+            // the ENVELOPE input is post-toRequest (wire shape): the
+            // provider CSV-joins arrays, so `products` is "id1,id2" here
+            const raw = utils.json.optionalGet(
+                data.input.queryParams ?? {},
+                "$.products",
+            );
+            const products = typeof raw === "string" && raw !== ""
+                ? raw.split(",").length
+                : Array.isArray(raw)
+                ? raw.length
+                : 0;
+            return {
+                usage: {
+                    counts: products > 0
+                        ? { "product": products }
+                        : { "list_lookup": 1 },
                 },
+                output: utils.json.omit(data.output, ["credits_consumed"]),
             };
         },
     },

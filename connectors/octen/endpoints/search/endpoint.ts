@@ -55,14 +55,19 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "call": {
+                call: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
+                    // 1 credit per call — v1 makeOctenCredit(1)
+                    consumes: { credit: "default", amount: 1 },
                 },
-                "full_content_tokens": {
+                full_content_tokens: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "content tokens",
+                    // 1 credit per 1k tokens — v1 makePerUnitPrice(1cr, 1000)
+                    every: 1000,
+                    consumes: { credit: "default", amount: 1 },
                     description:
                         "full-content extraction tokens (only charged " +
                         "when full_content.enable is set)",
@@ -82,14 +87,13 @@ export default defineEndpoint({
             );
             return {
                 usage: {
-                    // the flat "call" component is MODEL-declared — never a
-                    // count (design D18)
+                    // the flat "call" line is engine-appended (D24/D26);
+                    // meta.usage stays in the RAW run record
                     counts: {
                         ...(tokens !== undefined
                             ? { "full_content_tokens": tokens }
                             : {}),
                     },
-                    evidence: utils.json.pick(data.output, ["$.meta.usage"]),
                 },
                 output: utils.json.omit(data.output, ["usage"]),
             };

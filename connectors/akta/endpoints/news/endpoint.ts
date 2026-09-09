@@ -45,11 +45,19 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "request": { kind: UsageModelKind.PER_CALL, label: "base fee" },
-                "article": {
+                request: {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                    // 0.1 credits flat — v1 makePerResultPrice(0.0005, 0.005)
+                    // at $0.05/credit
+                    consumes: { credit: "default", amount: 0.1 },
+                },
+                article: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "articles",
+                    // 0.01 credits per article (same v1 evidence)
+                    consumes: { credit: "default", amount: 0.01 },
                 },
             },
         },
@@ -60,21 +68,13 @@ export default defineEndpoint({
             counts: { "article": data.input.queryParams.limit },
         }),
         /** Doc-level settle: articles DELIVERED off the raw envelope;
-         *  the vendor's own meter (`credits_consumed`) rides as
-         *  cost-basis + evidence exactly like the provider fn does. */
+         *  the vendor meter (`credits_consumed`) stays in the RAW run
+         *  record (the receipt IS the output — design D26). */
         consolidate: ({ data, utils }) => {
-            const credits =
-                utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
             const articles = utils.json.optionalLen(data.output, "$.data") ??
                 0;
             return {
-                usage: {
-                    counts: { "article": articles },
-                    cost: utils.money.fromDollars(credits / 20),
-                    evidence: utils.json.pick(data.output, [
-                        "$.credits_consumed",
-                    ]),
-                },
+                usage: { counts: { "article": articles } },
                 output: utils.json.omit(data.output, ["credits_consumed"]),
             };
         },

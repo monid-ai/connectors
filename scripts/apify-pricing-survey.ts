@@ -1,29 +1,31 @@
 /**
  * deno task apify:pricing   (requires APIFY_API_KEY)
  *
- * The PRICING drift guard — the survey behind designs D18/D19, repeatable:
- * for every apify doc, fetch the actor's CURRENT published pricing
+ * The PRICING drift guard, v3 (designs D18/D19/D26), repeatable: for
+ * every apify doc, fetch the actor's CURRENT published pricing
  * (`GET /v2/acts/{id}` → pricingInfos[latest]) and check the declared
- * `usage.model` against the published charge events on TWO levels:
+ * `usage.model` — WHICH IS the rate card (design D26) — on THREE levels:
  *
  *   1. SHAPE (all docs): published FLAT events (names matching /start/ or
  *      `request` — the run-scoped charges) → the model must carry a flat
- *      component; published METERED events (per item/page/profile…) → the
- *      model must carry a metered component.
- *   2. EXACT ids (composite docs, design D19): every declared component id
- *      MUST appear among the actor's published `actorChargeEvents` keys —
- *      component ids are the vendor's event names VERBATIM, so a vendor
- *      rename/removal fails NAMING the id instead of silently breaking
- *      the broker's per-event join. The reverse direction stays
- *      shape-level only: published add-on events we deliberately don't
- *      bill (filter-applied, video-download…) must not fail the guard.
+ *      line; published METERED events (per item/page/profile…) → the
+ *      model must carry a metered line.
+ *   2. JOIN (all billable lines): every declared line's vendor event name
+ *      (`vendor ?? id` — ids are OUR snake_case, `vendor` carries the
+ *      actor's native spelling when it differs) MUST appear among the
+ *      published `actorChargeEvents` keys, so a vendor rename/removal
+ *      fails NAMING the line instead of silently breaking the join. The
+ *      reverse direction stays shape-level only: published add-on events
+ *      we deliberately don't bill (filter-applied, video-download…) must
+ *      not fail the guard.
+ *   3. RATES (design D26 — REVERSES D18's "no rates in docs"): every
+ *      pinned `consumes.amount` must equal the LIVE GOLD-tier event price
+ *      (`eventTieredPricingUsd.GOLD.tieredEventPriceUsd ?? eventPriceUsd`
+ *      — our plan tier). The def is the rate card the broker prices from,
+ *      so a vendor repricing must fail HERE, not on an invoice.
  *
- * RATES are deliberately NOT checked — apify event prices are tiered by
- * OUR subscription plan (verified: eventTieredPricingUsd FREE→DIAMOND),
- * so rates live in the hosted rate card; reconciling card vs reported
- * cost is a services-side alert. Exit 1 on any mismatch or pricing
- * REGIME change (pricingModel ≠ PAY_PER_EVENT) — the pricing counterpart
- * of the schema drift guard.
+ * Exit 1 on any mismatch or pricing REGIME change (pricingModel ≠
+ * PAY_PER_EVENT) — the pricing counterpart of the schema drift guard.
  */
 import { type EndpointDoc, type UsageModel } from "@shared/core";
 import { compileToOutput } from "./lib.ts";
@@ -63,6 +65,51 @@ function declaredShape(
     }
 }
 
+/** The doc's billable lines as (our id, vendor join name, pinned $). */
+function declaredLines(
+    model: UsageModel,
+): Array<{ id: string; join: string; amount: number }> {
+    switch (model.kind) {
+        case "FREE":
+            return [];
+        case "PER_CALL":
+            return [{
+                id: "CALL",
+                join: model.vendor ?? "CALL",
+                amount: model.consumes.amount,
+            }];
+        case "PER_UNIT":
+            return [{
+                id: model.unit,
+                join: model.vendor ?? model.unit,
+                amount: model.consumes.amount,
+            }];
+        case "COMPOSITE":
+            return Object.entries(model.components).map(([id, component]) => ({
+                id,
+                join: component.vendor ?? id,
+                amount: component.consumes.amount,
+            }));
+        default:
+            model satisfies never;
+            throw new Error("unknown model kind");
+    }
+}
+
+type ChargeEvent = {
+    eventPriceUsd?: number;
+    eventTieredPricingUsd?: Record<
+        string,
+        { tieredEventPriceUsd?: number } | undefined
+    >;
+};
+
+/** Our plan tier's live price for one published event (GOLD = BUSINESS). */
+function livePrice(event: ChargeEvent): number | undefined {
+    return event.eventTieredPricingUsd?.["GOLD"]?.tieredEventPriceUsd ??
+        event.eventPriceUsd;
+}
+
 const { bundle } = await compileToOutput();
 const docs = Object.values(bundle.endpoints)
     .filter((doc): doc is EndpointDoc => doc.provider === "apify")
@@ -89,7 +136,7 @@ for (const doc of docs) {
             pricingInfos?: Array<{
                 pricingModel?: string;
                 pricingPerEvent?: {
-                    actorChargeEvents?: Record<string, unknown>;
+                    actorChargeEvents?: Record<string, ChargeEvent>;
                 };
             }>;
         };
@@ -103,31 +150,43 @@ for (const doc of docs) {
         );
         continue;
     }
-    const events = Object.keys(
-        pricing?.pricingPerEvent?.actorChargeEvents ?? {},
-    );
+    const events = pricing?.pricingPerEvent?.actorChargeEvents ?? {};
+    const eventNames = Object.keys(events);
     const published = {
-        flat: events.some((name) => FLAT_EVENT.test(name)),
-        metered: events.some((name) => !FLAT_EVENT.test(name)),
+        flat: eventNames.some((name) => FLAT_EVENT.test(name)),
+        metered: eventNames.some((name) => !FLAT_EVENT.test(name)),
     };
     const declared = declaredShape(doc.usage.model);
     const shapeOk = published.flat === declared.flat &&
         published.metered === declared.metered;
-    // EXACT id check (design D19): declared component ids ⊆ published
-    // event names — the reverse stays shape-level (unmodeled add-ons ok).
-    const missingIds = doc.usage.model.kind === "COMPOSITE"
-        ? Object.keys(doc.usage.model.components)
-            .filter((id) => !events.includes(id))
-        : [];
-    const ok = shapeOk && missingIds.length === 0;
+    // JOIN + RATE checks (design D26): every declared line resolves to a
+    // published event by `vendor ?? id`, at exactly the pinned amount —
+    // the reverse stays shape-level (unmodeled add-ons ok).
+    const missing: string[] = [];
+    const repriced: string[] = [];
+    for (const line of declaredLines(doc.usage.model)) {
+        const event = events[line.join];
+        if (event === undefined) {
+            missing.push(`${line.id}→"${line.join}"`);
+            continue;
+        }
+        const live = livePrice(event);
+        if (live !== line.amount) {
+            repriced.push(
+                `${line.id}→"${line.join}" pinned ${line.amount} live ${
+                    live ?? "(none)"
+                }`,
+            );
+        }
+    }
+    const ok = shapeOk && missing.length === 0 && repriced.length === 0;
     console.log(
         `${ok ? "ok  " : "DRIFT"} ${doc.id.padEnd(50)} events=[${
-            events.join(",")
+            eventNames.join(",")
         }] published(flat=${published.flat},metered=${published.metered}) ` +
             `declared(${doc.usage.model.kind}: flat=${declared.flat},metered=${declared.metered})` +
-            (missingIds.length > 0
-                ? ` MISSING ids=[${missingIds.join(",")}]`
-                : ""),
+            (missing.length > 0 ? ` MISSING=[${missing.join(",")}]` : "") +
+            (repriced.length > 0 ? ` REPRICED=[${repriced.join(",")}]` : ""),
     );
     if (!shapeOk) {
         failures.push(
@@ -135,11 +194,17 @@ for (const doc of docs) {
                 `metered=${published.metered}, declared ${doc.usage.model.kind}`,
         );
     }
-    if (missingIds.length > 0) {
+    if (missing.length > 0) {
         failures.push(
-            `${doc.id}: component id(s) [${missingIds.join(", ")}] not in ` +
-                `the actor's published charge events [${events.join(", ")}] ` +
-                `— vendor renamed/removed the event, or the id is stale`,
+            `${doc.id}: line(s) [${missing.join(", ")}] join no published ` +
+                `charge event [${eventNames.join(", ")}] — vendor renamed/` +
+                `removed the event, or the vendor/id spelling is stale`,
+        );
+    }
+    if (repriced.length > 0) {
+        failures.push(
+            `${doc.id}: RATE drift — [${repriced.join(", ")}] (GOLD tier); ` +
+                `re-pin consumes.amount to the live price`,
         );
     }
 }

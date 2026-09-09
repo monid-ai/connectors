@@ -529,6 +529,68 @@ export async function compileBundle(
                 )
                 : undefined;
 
+            // ---- credits (design D26): the credit systems the model's
+            // lines drain — declared beside the model, resolved provider
+            // ?? endpoint (OPPOSITE of hooks: the pool is a provider-wide
+            // fact; an endpoint declares one only when the provider has
+            // none), referenced by every consumes.credit. The def IS the
+            // rate card; the broker prices ONLY these ids.
+            if (usageModel.kind === "FREE" && def.usage?.credits) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.credits on a FREE doc — free drains ` +
+                        `nothing (design D26: compiled FREE credits = {})`,
+                );
+            }
+            const credits = usageModel.kind === "FREE"
+                ? {}
+                : provider.usage?.credits ?? def.usage?.credits;
+            if (credits === undefined) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.credits must resolve — a billable ` +
+                        `model's lines drain declared credit systems ` +
+                        `(design D26; single-pool providers declare ` +
+                        `{default: {...}} once at provider level)`,
+                );
+            }
+            const consumesLines: [string, { credit: string }][] =
+                usageModel.kind === "COMPOSITE"
+                    ? Object.entries(usageModel.components).map((
+                        [id, component],
+                    ) => [id, component.consumes])
+                    : usageModel.kind === "FREE"
+                    ? []
+                    : [[
+                        usageModel.kind === "PER_UNIT"
+                            ? usageModel.unit
+                            : "CALL",
+                        usageModel.consumes,
+                    ]];
+            const declaredIds = new Set(Object.keys(credits));
+            for (const [lineId, consumes] of consumesLines) {
+                if (!declaredIds.has(consumes.credit)) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: line "${lineId}" consumes undeclared ` +
+                            `credit "${consumes.credit}" (declared: ` +
+                            `${[...declaredIds].join(", ") || "none"})`,
+                    );
+                }
+            }
+            const usedIds = new Set(
+                consumesLines.map(([, consumes]) => consumes.credit),
+            );
+            for (const id of declaredIds) {
+                if (!usedIds.has(id)) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: declared credit "${id}" is drained by ` +
+                            `no line — remove it or reference it`,
+                    );
+                }
+            }
+
             // ---- input/output schemas: leaf-wise fallback -----------------
             const schemaLeaf = (
                 endpointSchema: z.ZodType | undefined,
@@ -607,6 +669,7 @@ export async function compileBundle(
                 usage: {
                     consolidate: consolidateRef as unknown as Json,
                     model: usageModel as unknown as Json,
+                    credits: credits as unknown as Json,
                     estimate: estimateRef as unknown as Json,
                 },
                 lifecycle: lifecycleStartRef

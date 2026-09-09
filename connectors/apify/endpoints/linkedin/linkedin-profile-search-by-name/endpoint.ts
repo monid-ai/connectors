@@ -44,14 +44,95 @@ export default defineEndpoint({
         },
     },
     usage: {
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems is required ≥1 at the binding (D24), so the estimate
-         *  is pure arithmetic. (Billing basis has a known open follow-up —
-         *  the model is untouched here.) */
-        estimate: ({ data }) => ({
-            counts: {
-                "RESULT": data.input.body.maxItems,
+        /** MODE-SELECTED rate card (design D26), mirroring the sibling
+         *  linkedin-profile-search: search pages are charged in every
+         *  mode, and each returned profile bills at the rate its
+         *  profileScraperMode selects ("Short" → main-profile). This
+         *  replaces v1's flat worst-case $0.01/result hold — the known
+         *  open follow-up on this doc's billing basis. */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                search_page: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "search pages",
+                    vendor: "search-page",
+                    description: "search pages scraped (charged in every mode)",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.003 },
+                },
+                main_profile: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "short profiles",
+                    vendor: "main-profile",
+                    description: "profiles returned in 'Short' mode",
+                    consumes: { credit: "default", amount: 0.0015 },
+                },
+                full_profile: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "full profiles",
+                    vendor: "full-profile",
+                    description: "profiles enriched in 'Full' mode",
+                    consumes: { credit: "default", amount: 0.003 },
+                },
+                full_profile_with_email: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "profiles with email",
+                    vendor: "full-profile-with-email",
+                    description:
+                        "profiles enriched in 'Full + email search' mode",
+                    consumes: { credit: "default", amount: 0.01 },
+                },
             },
-        }),
+        },
+        /** maxItems is required ≥1 at the binding (D24), so both quanta
+         *  are pure arithmetic: pages = ceil(maxItems/25) (the harvestapi
+         *  family's documented 25 profiles per page) and profiles =
+         *  maxItems under the MODE-selected key. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const profileKey = body.profileScraperMode === "Full"
+                ? "full_profile"
+                : body.profileScraperMode === "Full + email search"
+                ? "full_profile_with_email"
+                : "main_profile";
+            return {
+                counts: {
+                    "search_page": Math.ceil(body.maxItems / 25),
+                    [profileKey]: body.maxItems,
+                },
+            };
+        },
+        /** OVERRIDES the provider consolidate (≥2 metered components):
+         *  dataset items ARE the profiles, keyed by the mode the pinned
+         *  input selects. The actor does not report a page receipt in its
+         *  output, so pages settle on the same documented-25-per-page
+         *  arithmetic the estimate uses, over DELIVERED profiles. */
+        consolidate: ({ data, utils }) => {
+            const profiles = Array.isArray(data.output)
+                ? data.output.length
+                : 0;
+            const mode = utils.json.optionalGet(
+                data.input.body ?? null,
+                "$.profileScraperMode",
+            );
+            const profileKey = mode === "Full"
+                ? "full_profile"
+                : mode === "Full + email search"
+                ? "full_profile_with_email"
+                : "main_profile";
+            return {
+                usage: {
+                    counts: {
+                        "search_page": Math.ceil(profiles / 25),
+                        ...(profiles > 0 ? { [profileKey]: profiles } : {}),
+                    },
+                },
+            };
+        },
     },
 });

@@ -25,20 +25,15 @@ Deno.test("octen#search happy (recorded): call + gated token tier, meter absorbe
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // ONE count: the gated full-content tokens, keyed by the component
-    // id. The flat "call" component is MODEL-declared (COMPOSITE), never
-    // a count (D18/D19).
-    // metered tokens + the engine-appended flat call (complete vector, D24)
-    assertEquals(result.usage.counts, {
-        "full_content_tokens": 4112,
-        "call": 1,
+    // metered tokens + the engine-appended flat call (complete vector,
+    // D24/D26), folded through the doc's own card: 1 credit flat +
+    // ceil(4112 / 1000) = 5 token credits. The vendor's meta.usage meter
+    // block stays in the RAW run record, never in usage.
+    assertEquals(result.usage, {
+        credits: { default: 6 },
+        evidence: { full_content_tokens: 4112, call: 1 },
     });
-    assertEquals(result.usage.evidence?.usage, {
-        num_search_queries: 1,
-        full_content_tokens: 4112,
-        full_content_extra_count: 0,
-    });
-    // the meter block is billing info — absorbed into usage
+    // the meter block is billing info — absorbed out of the payload
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);
     // real envelope: results live under data
@@ -57,7 +52,7 @@ Deno.test("octen#search provider error (recorded 401): zero usage", async () => 
     });
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
 Deno.test("octen#search: non-ISO start_time/end_time rejected before the wire", async () => {
@@ -97,8 +92,12 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        // no full-content in the live probe: nothing metered — the flat
-        // call still bills 1 (engine-appended complete vector, D24)
-        assertEquals(result.usage.counts, { "call": 1 });
+        // no full-content in the live probe: no token receipt, nothing
+        // metered — the flat call still bills its 1 credit
+        // (engine-appended complete vector, D24/D26)
+        assertEquals(result.usage, {
+            credits: { default: 1 },
+            evidence: { call: 1 },
+        });
     },
 });

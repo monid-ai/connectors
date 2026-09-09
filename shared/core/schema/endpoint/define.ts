@@ -2,7 +2,7 @@ import { z } from "zod";
 import { parseSchema } from "../parse.ts";
 import { type EndpointDef, type EndpointDefSeed, zEndpointDef } from "./def.ts";
 import type { Json } from "../json/type.ts";
-import type { UsageModel } from "../usage/model/mod.ts";
+import type { UsageModelSeed } from "../usage/model/mod.ts";
 import type {
     MeteredKeyOf,
     TypedEnvelopeCtx,
@@ -23,11 +23,9 @@ type SeedLifecycle = NonNullable<EndpointDefSeed["lifecycle"]>;
  * type layer; runtime is untouched, zod stays the truth):
  *   - `M` (const, inferred from `usage.model`): `usage.counts` keys in
  *     the doc's own consolidate/estimate narrow to the model's literal
- *     metered keys. A FREE model's fns must return the free shape
- *     (`{counts: {}, free: true}`); a flat model's estimate can promise
- *     only `{}` (the engine appends the flat 1s); a billed model's
- *     ESTIMATE cannot promise `free` (settle-side dynamic free only —
- *     freeMismatch is the runtime twin).
+ *     metered keys. FREE and flat models' fns can promise only
+ *     `{counts: {}}` (the engine appends flat 1s and owns the credits
+ *     fold — countsMismatch is the runtime twin).
  *   - `BodySchema` / `QuerySchema` (inferred from `input.schema`): the
  *     fns' `data.input.body` / `data.input.queryParams` are `z.output`
  *     of the doc's OWN schemas — direct, typed property access (sound:
@@ -44,7 +42,7 @@ type SeedLifecycle = NonNullable<EndpointDefSeed["lifecycle"]>;
  * core.test.ts prove the narrowing actually holds.
  */
 export function defineEndpoint<
-    const M extends UsageModel | undefined = undefined,
+    const M extends UsageModelSeed | undefined = undefined,
     BodySchema extends z.ZodType = z.ZodType<Json | undefined>,
     StateSchema extends z.ZodType = z.ZodType<Json | undefined>,
     QuerySchema extends z.ZodType = z.ZodType<

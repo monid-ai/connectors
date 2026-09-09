@@ -57,13 +57,20 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "call": {
+                call: {
                     kind: UsageModelKind.PER_CALL,
+                    // $0.007 per search — v1 vendor unit price (exa's
+                    // published $-rates are two independent lines, so the
+                    // pool is usd; the tier concern is handled the apify
+                    // way: pinned + re-audited)
+                    consumes: { credit: "default", amount: 0.007 },
                     label: "base fee",
                     description: "base fee — includes the first 10 results",
                 },
-                "additional_result": {
+                additional_result: {
                     kind: UsageModelKind.PER_UNIT,
+                    // $0.001 per result above 10 — v1 vendor unit price
+                    consumes: { credit: "default", amount: 0.001 },
                     unit: Unit.RESULT,
                     label: "extra results",
                     description:
@@ -82,26 +89,18 @@ export default defineEndpoint({
             };
         },
         consolidate: ({ data, utils }) => {
-            const total = utils.json.optionalNum(
-                data.output,
-                "$.costDollars.total",
-            );
             const results = utils.json.len(data.output, "$.results");
             // OFFSET counting rule (v1 selector.offset: 10): the base "call"
-            // component covers the first 10 — only the surplus is counted
+            // component covers the first 10 — only the surplus is counted.
+            // costDollars stays in the RAW run record (the receipt IS the
+            // output — design D26); it is absorbed from the user-facing
+            // payload only.
             const above = Math.max(0, results - 10);
             return {
                 usage: {
                     counts: {
                         ...(above > 0 ? { "additional_result": above } : {}),
                     },
-                    ...(total !== undefined
-                        ? { cost: utils.money.fromDollars(total) }
-                        : {}),
-                    evidence: utils.json.pick(data.output, [
-                        "$.costDollars",
-                        "$.requestId",
-                    ]),
                 },
                 output: utils.json.omit(data.output, ["costDollars"]),
             };

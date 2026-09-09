@@ -40,6 +40,10 @@ export const zUsageModel = z.discriminatedUnion("kind", [
     zCompositeModel,
 ]);
 export type UsageModel = z.infer<typeof zUsageModel>;
+/** The AUTHORING shape (z.input): `every` optional before the parse
+ *  materializes its default — defineEndpoint's generic constrains on
+ *  this (design D26). */
+export type UsageModelSeed = z.input<typeof zUsageModel>;
 
 // The RUNTIME kind enum is DERIVED from the union (v1 zPriceTypes
 // pattern) — validation can never go stale against the union.
@@ -75,6 +79,7 @@ if (
     );
 }
 
+export * from "./consumes.ts";
 export * from "./free.ts";
 export * from "./per-call.ts";
 export * from "./per-unit.ts";

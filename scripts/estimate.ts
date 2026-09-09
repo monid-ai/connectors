@@ -3,11 +3,13 @@
  *                           [--query-params '<json>'] [--path-params '<json>']
  *
  * The STANDALONE estimate command: compile (or reuse the .output/ cache),
- * seal the endpoint, load it, and print `estimate()`'s Usage as JSON.
+ * seal the endpoint, load it, and print `estimate()`'s Usage as JSON —
+ * `{credits, evidence}` (design D26): the doc's own rate card folds the
+ * promised quantities to credits right here, no broker needed.
  * PURE by construction — the injected transport REJECTS every call (proof
  * that estimating does no IO), and no credential is needed. This is the
- * transparency tool: anyone can ask "what would this input count?" without
- * running anything; the hosted rate card turns the keyed counts into $.
+ * transparency tool: anyone can ask "what would this input consume?"
+ * without running anything.
  *
  * Flags mirror engine:run — zRunInput's fields in CLI kebab-case.
  */
@@ -74,6 +76,7 @@ console.log(JSON.stringify(
     {
         endpoint: endpointId,
         model: loaded.doc.usage.model ?? null,
+        credits: loaded.doc.usage.credits,
         estimate: loaded.estimate(input),
     },
     null,

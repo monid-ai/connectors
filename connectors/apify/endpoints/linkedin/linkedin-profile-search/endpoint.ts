@@ -229,24 +229,31 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "search-page": {
+                search_page: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.PAGE,
                     label: "search pages",
+                    vendor: "search-page",
                     description: "search pages scraped (charged in every mode)",
+                    // survey-pinned GOLD-tier event price
+                    consumes: { credit: "default", amount: 0.05 },
                 },
-                "full-profile": {
+                full_profile: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "full profiles",
+                    vendor: "full-profile",
                     description: "profiles enriched in 'Full' mode",
+                    consumes: { credit: "default", amount: 0.0032 },
                 },
-                "full-profile-with-email": {
+                full_profile_with_email: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "profiles with email",
+                    vendor: "full-profile-with-email",
                     description:
                         "profiles enriched in 'Full + email search' mode",
+                    consumes: { credit: "default", amount: 0.008 },
                 },
             },
         },
@@ -259,13 +266,13 @@ export default defineEndpoint({
             const body = data.input.body;
             const pages = Math.ceil(body.maxItems / 25);
             const profileKey = body.profileScraperMode === "Full"
-                ? "full-profile"
+                ? "full_profile"
                 : body.profileScraperMode === "Full + email search"
-                ? "full-profile-with-email"
+                ? "full_profile_with_email"
                 : undefined;
             return {
                 counts: {
-                    "search-page": pages,
+                    "search_page": pages,
                     ...(profileKey !== undefined
                         ? { [profileKey]: body.maxItems }
                         : {}),
@@ -277,7 +284,6 @@ export default defineEndpoint({
         // profiles land under the MODE-selected component key, so the
         // broker prices them at exactly the vendor's per-event rate.
         consolidate: ({ data, utils }) => {
-            const state = data.lifecycle?.state ?? null;
             const pages = utils.json.optionalNum(
                 data.output,
                 "$.searchPages",
@@ -291,36 +297,20 @@ export default defineEndpoint({
                 "$.profileScraperMode",
             );
             const profileKey = mode === "Full"
-                ? "full-profile"
+                ? "full_profile"
                 : mode === "Full + email search"
-                ? "full-profile-with-email"
+                ? "full_profile_with_email"
                 : undefined;
-            const model = utils.json.optionalGet(
-                state,
-                "$.data.pricingModel",
-            );
-            const totalUsd = utils.json.optionalNum(
-                state,
-                "$.data.usageTotalUsd",
-            );
+            // vendor receipts (run-record pricing, usageTotalUsd) stay in
+            // the RAW run record + the threaded state — never in usage (D26)
             return {
                 usage: {
                     counts: {
-                        "search-page": pages,
+                        "search_page": pages,
                         ...(profileKey !== undefined && profiles > 0
                             ? { [profileKey]: profiles }
                             : {}),
                     },
-                    ...(model === "PAY_PER_EVENT"
-                        ? { cost: utils.money.fromDollars(totalUsd ?? 0) }
-                        : {}),
-                    evidence: utils.json.pick(state, [
-                        "$.externalRunId",
-                        "$.data.pricingModel",
-                        "$.data.usageTotalUsd",
-                        "$.data.searchPages",
-                        "$.data.profileCount",
-                    ]),
                 },
             };
         },

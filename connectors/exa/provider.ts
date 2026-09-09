@@ -20,4 +20,11 @@ export default defineProvider({
     },
     request: { baseUrl: "https://api.exa.ai" },
     timeouts: { requestMs: 30_000, runMs: 30_000 },
+    usage: {
+        /** THE credit system (design D26): exa's published prices are two
+         *  independent $ lines (base search + per-extra-result), so the
+         *  pool is US dollars — pinned v1 vendor unit prices, re-audited
+         *  on repricing (the apify posture). */
+        credits: { default: { label: "US dollars" } },
+    },
 });

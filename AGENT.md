@@ -75,19 +75,21 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   reports at settle, sync runs included) — engine-capped
   (`schema.state_max_bytes`). `timeouts.pollMs` is the cadence default, per-tick
   `pollAfterMs` overrides. Every doc floors at `schema.fn_abi_since`.
-- **Rate-free billing shapes**: `usage.model` declares the billing ALGEBRA per
-  endpoint — LEAF (`FREE` never-bills / `PER_CALL` flat / `PER_UNIT` metered)
-  and AND (`COMPOSITE` with components KEYED BY ID — for apify the vendor's
-  charge-event names VERBATIM) — never a rate: vendor prices are
-  account/tier-dependent (apify event prices tier by subscription plan), so
-  rates live in the hosted rate card. Conditions/offsets/selection are COUNTING
-  rules owned by consolidate/estimate, never model shapes (D19 — no
-  VARIANT/TIERED kinds). The BILLING TRIPLE (model + estimate + consolidate) is
-  compile-required on every doc (D25); FREE docs return
-  `{counts: {}, free: true}` from both fns (triple-stated), and a billed model's
-  consolidate may settle `free` dynamically (suppresses the engine's flat-1s
-  completion). Estimates read the PRE-toRequest validated input (typed body AND
-  queryParams — D25).
+- **The def IS the rate card (D26 — reverses D18)**: `usage.model` declares the
+  billing ALGEBRA per endpoint — LEAF (`FREE` never-bills / `PER_CALL` flat /
+  `PER_UNIT` metered, optional block-rate `every`, default 1) and AND
+  (`COMPOSITE` with components keyed by OUR snake_case ids; the vendor's native
+  spelling, when it differs, is the line's `vendor` FIELD — the join is
+  `vendor ?? id`) — and every billable line pins `consumes: {credit, amount}`
+  against a credit system declared in `usage.credits` (resolved provider ??
+  endpoint — the pool is a provider-wide fact; single-pool providers declare
+  `default`; a dollar-priced vendor's pool IS dollars).
+  Conditions/offsets/selection are COUNTING rules owned by consolidate/estimate,
+  never model shapes (D19 — no VARIANT/TIERED kinds). The BILLING TRIPLE
+  (model + estimate + consolidate) is compile-required on every doc (D25); FREE
+  and flat docs' fns return plain `{counts: {}}` (the model interprets).
+  Estimates read the PRE-toRequest validated input (typed body AND queryParams —
+  D25).
 - **Input fidelity (D25)**: `schema/inputs.ts` is the faithful vendor mirror —
   optionality only, no `.default()`, unquoted identifier keys. ALL tightening
   lives at the BINDING, derived: `zBody.required({limit: true})` (primary
@@ -97,24 +99,27 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   defaults) / `.unwrap().min(1)` floors ONLY where the vendor documents 0 =
   unbounded. Multiplier arrays are never tightened — optional arrays read
   `arr?.length ?? 0` (honest optionality); empty input ⇒ estimate 0. Never
-  invent structure the mirror doesn't have. `usage.counts` is the COMPLETE
-  billed vector on success (D24): metered keys carry fn-settled quantities, and
-  every FLAT charge is ENGINE-appended at exactly 1 (composite flats under their
-  component id; leaf PER_CALL under the reserved `CALL` key — not a Unit) —
-  counts × rates = the whole bill, and for apify the vector maps 1:1 onto vendor
-  charge events. Fns never write flat keys (type + runtime rejected);
-  `{counts: {}}` is the ERROR-path shape only. Scalars carry optional `label`s
-  ("base fee", "reviews") — display metadata; the key is the join. ≥2 metered
-  components require doc-level fns (compile-checked); a METERED model requires
-  usage.estimate (compile-checked, D24) and estimates are DEDUCED, never
-  defaulted: no fallback constants — limiting knobs are either actor-verified
-  schema `.default(n)`s (materialized into body AND queryParams before any hook)
-  or REQUIRED at the binding site (`zBody.required({...})` in endpoint.ts;
-  schema files stay actor-faithful). The engine validates fn counts against the
-  model at settle AND estimate (FN_CONTRACT), then completes the vector.
-  `deno task engine:estimate` prints an endpoint's pre-run vector;
-  `deno task apify:pricing` guards model shape + exact component ids against
-  live published pricing (D18/D19/D24).
+  invent structure the mirror doesn't have. Fns return `{counts}` — QUANTITIES
+  per metered line only (no rate math, no receipts: vendor billing fields live
+  in the RAW run record — the receipt IS the output). The ENGINE owns the fold
+  (D26, at estimate AND success settle): it appends the model's flat 1s
+  (composite flats under their line id; leaf PER_CALL under the reserved `CALL`
+  key — not a Unit; fns never write flat keys, type + runtime rejected) and
+  folds `ceil(quantity / every) × consumes.amount` per line into the public
+  `usage = {credits, evidence}` — per-pool consumption plus the per-line
+  quantities that re-derive it; anyone holding the doc can check the bill. Error
+  settles are `{credits: {}, evidence: {}}`. Scalars carry optional `label`s
+  ("base fee", "reviews") — display metadata; the id is the join. ≥2 metered
+  components require doc-level fns (compile-checked); estimates are DEDUCED,
+  never defaulted: no fallback constants — limiting knobs are either
+  actor-verified schema `.default(n)`s (materialized into body AND queryParams
+  before any hook) or REQUIRED at the binding site (`zBody.required({...})` in
+  endpoint.ts; schema files stay actor-faithful). The engine validates fn counts
+  against the model at settle AND estimate (FN_CONTRACT) before the fold.
+  `deno task engine:estimate` prints the folded pre-run `{credits, evidence}`;
+  `deno task apify:pricing` (survey v3) guards model shape + the `vendor ?? id`
+  join + PINNED GOLD-TIER RATES against live published pricing
+  (D18/D19/D24/D26).
 - **Typed authoring (D19a/D23)**: `defineEndpoint` is generic over the model,
   the input body schema, and the lifecycle state schema — counts keys narrow to
   the model's LITERAL metered keys, `data.input.body` is `z.output` of the doc's

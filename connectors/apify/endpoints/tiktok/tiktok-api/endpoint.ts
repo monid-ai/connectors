@@ -40,6 +40,10 @@ export default defineEndpoint({
             // plain-english billing-surface name for the actor's `request`
             // charge event (design D24)
             label: "request fee",
+            // the actor's charge-event this leaf line joins to
+            vendor: "request",
+            // survey-pinned GOLD-tier event price
+            consumes: { credit: "default", amount: 0.002 },
         },
         estimate: () => ({ counts: {} }),
     },

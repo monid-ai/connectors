@@ -933,3 +933,88 @@ employee-reviews + product-reviews KEEP CREDIT (the vendor bills whole
 credit increments and exposes no block quantity to settle against —
 credits ARE its native meter there); limits REQUIRED at bindings
 ("just make it required — simpler").
+
+## D26 — Consumption-aware usage models: the def IS the rate card
+(reverses D18's "no rates in docs")
+
+**1. The reversal, and why it's safe now.** D18 kept rates out of docs
+because apify event prices tier by OUR subscription plan — a
+services-side fact. What the fleet work since proved: the TIER is one
+provider-wide constant (GOLD), the per-line prices are vendor-published
+facts we already survey live, and keeping them elsewhere split the rate
+card from the model that names its lines — every broker join and every
+audit had to re-derive the pairing D19 built the ids for. So the def
+becomes the rate card: every billable line pins what it CONSUMES, and
+the drift guard's job widens from "the ids still exist" to "the pinned
+amounts still match live" (survey v3, GOLD-tier
+`eventTieredPricingUsd.GOLD.tieredEventPriceUsd ?? eventPriceUsd`,
+joined on `vendor ?? id`). A vendor repricing now fails a CI task
+instead of surfacing on an invoice.
+
+**2. Credit systems.** `usage.credits` sits BESIDE `usage.model`:
+`Record<creditId, {label?, description?}>`, resolved provider ??
+endpoint (OPPOSITE of hooks — the pool is a provider-wide fact; an
+endpoint declares one only when the provider has none). Single-pool
+providers use id `default` unquoted (akta "Akta credits", octen "Octen
+credits", exa + apify "US dollars" — a dollar-priced vendor's pool IS
+dollars). Compiled-doc `usage.credits` is REQUIRED — `{}` for FREE, and
+an endpoint-level declaration on a FREE doc is a compile error (dead
+config). Compile checks: credits must resolve for billable models, every
+`consumes.credit` references a declared id, no declared id goes
+undrained.
+
+**3. Model lines consume.** Every billable line (PER_CALL + PER_UNIT,
+leaf or composite component) REQUIRES `consumes: {credit, amount}`.
+PER_UNIT gains model-level `every` (int ≥ 1, `.default(1)` materialized
+at parse — the define generic constrains on `UsageModelSeed` = z.input,
+since seed and output diverge on the default) for block rates (octen "1
+credit per 1000 tokens" → `every: 1000`; akta employee-reviews blocks of
+50). Optional `vendor` carries the vendor's native line name when it
+differs from OUR snake_case id (apify `actor_start` ← "actor-start",
+leaf lines pin the joined charge event explicitly). Component ids are
+OURS now — snake_case, unquoted — the vendor spelling is a FIELD, not
+the key (revises D19's verbatim-key rule; the join survives as
+`vendor ?? id`).
+
+**4. Public usage = {credits, evidence}.** Exactly two facts, both
+re-derivable: `credits` (per-pool consumption — the priced vector) and
+`evidence` (per-line quantities, flat 1s included). NO cost, NO receipt
+blobs, NO free flag: vendor receipts live in the RAW run record (the
+receipt IS the output — hosts persist the envelope), and anyone holding
+the doc re-derives credits from evidence × the model's every/amount.
+Fns return `zFnUsage = {counts}` — quantities per metered line only, no
+rate math, no receipt plumbing. `zeroUsage()` → `{credits: {},
+evidence: {}}` (error settles); `defaultFnUsage()` → `{counts: {}}`.
+
+**5. The engine owns the fold.** `flatLines(model)` (renamed from
+flatCounts; CALL_KEY survives as the leaf-flat evidence line id) +
+`creditsOf(model, quantities)` (`ceil(q / every) × amount` per line —
+whole increments — summed per credit id; FREE → `{}`) +
+`assembleUsage(model, fnCounts)` live beside the schema in
+`usage/validate.ts`; the engine applies the assembly at estimate AND
+success settle. `freeMismatch` is DELETED (no cost field left to
+reject); `countsMismatch` unchanged. `deno task engine:estimate` prints
+the folded `{credits, evidence}` — pre-run pricing with no broker.
+
+**6. Fleet remodels (v1 rate evidence).**
+  - akta: provider declares the pool; the provider-level CREDIT settle
+    DIES — endpoints own their settles. enrichment prices its 16
+    sections individually (0.5–5 credits — the CLI/MCP pricing tables);
+    news = request 0.1 + article 0.01; employee-reviews PER_UNIT·RESULT
+    `every: 50` × 1.5 (settles the REQUESTED limit — the vendor bills
+    whole increments regardless of delivery); product-reviews COMPOSITE
+    product 1.5 / list_lookup 0.5, mode-selected off the post-toRequest
+    CSV.
+  - exa: search = call $0.007 + additional_result $0.001 above 10;
+    contents = $0.001/page. The old cost/receipt plumbing (costDollars,
+    requestId picks) is gone — costDollars stays absorbed from the
+    user-facing output but lives in the raw record.
+  - octen: search = call 1cr + full_content_tokens 1cr/1000; broad-search
+    = receipt_queries 1cr + full_content_tokens 1cr/1000; extract =
+    1cr/URL; embedding becomes a MODE-SELECTED composite (embedding_0_6b
+    10cr/M, embedding_4b 40cr/M, embedding_8b 70cr/M — vendor model
+    names in `vendor`).
+  - apify: all 46 docs pin their GOLD-tier per-event dollars; the two
+    profile-search-by-* docs shed their v1 flat worst-case $0.01/result
+    hold for the sibling's mode-selected composite (the known open
+    follow-up on their billing basis).

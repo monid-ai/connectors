@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0", async () => {
+Deno.test("akta#company-search happy (recorded): free lookup — zero usage", async () => {
     const unit = await testSealedUnit("akta#v1/company/search");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -19,9 +19,9 @@ Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // FREE model (D25): nothing counted, no cost — the DOC's model says
-    // "free"; the usage carries no flag
-    assertEquals(result.usage, { counts: {} });
+    // FREE model (D25/D26): the DOC's model says "free" — nothing folds,
+    // nothing is evidenced (no flag, no cost field)
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     const output = result.output as Record<string, unknown>;
     assertEquals("credits_consumed" in output, false);
     assertEquals(
@@ -45,6 +45,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage, { counts: {} });
+        assertEquals(result.usage, { credits: {}, evidence: {} });
     },
 });

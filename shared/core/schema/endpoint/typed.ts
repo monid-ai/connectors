@@ -24,7 +24,6 @@ import type {
 import type { RunInput } from "../run/input.ts";
 import type { FnState, RunState } from "../run/state.ts";
 import type { UsageModel } from "../usage/model/mod.ts";
-import type { MonetaryValue } from "../usage/monetary.ts";
 
 /**
  * The metered counts KEYS a model bills, as LITERAL types: COMPOSITE →
@@ -44,20 +43,19 @@ export type MeteredKeyOf<M> = M extends {
     : M extends { kind: "PER_UNIT"; unit: infer U extends string } ? U
     : never;
 
-/** Usage with model-keyed counts: a SUBSET of the billed keys is legal
- *  (mode-selected components — linkedin), a foreign key is not. FREE and
- *  flat models have no metered keys, so their fns can write only
- *  `{counts: {}}` — free-ness is a MODEL fact, never a usage field
- *  (design D25). */
+/** The FN-returned usage: typed QUANTITIES per metered rate-card line —
+ *  a SUBSET of the metered line ids is legal (mode-selected lines —
+ *  linkedin), a foreign key is not. FREE and flat models have no metered
+ *  lines, so their fns can write only `{counts: {}}` (design D25/D26 —
+ *  flat 1s and the credits fold are engine-owned; fns never do rate
+ *  math or receipt plumbing). */
 export type TypedUsage<K extends string> = {
-    /** No metered keys (FREE/flat models) ⇒ only `{}` is writable —
+    /** No metered lines (FREE/flat models) ⇒ only `{}` is writable —
      *  `Record<string, never>` rejects every entry (a bare `{}` target
      *  would accept anything: TS skips excess-property checks against
      *  empty shapes). */
     counts: [K] extends [never] ? Record<string, never>
         : Partial<Record<K, number>>;
-    cost?: MonetaryValue;
-    evidence?: Record<string, Json>;
 };
 
 /** RunInput with the body AND queryParams typed by the doc's OWN schemas
@@ -206,11 +204,8 @@ export type PortableConsolidateFn = (ctx: {
     usage: {
         /** The one surviving consolidate preset (perCall) settles NO
          *  counts — Record<string, never> keeps it assignable to every
-         *  typed slot (flat, metered, free-widened) without loosening
-         *  any of them. */
+         *  typed slot (flat, metered, free) without loosening any. */
         counts: Record<string, never>;
-        cost?: MonetaryValue;
-        evidence?: Record<string, Json>;
     };
     output?: Json;
 };
