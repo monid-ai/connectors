@@ -22,21 +22,32 @@ without a resolved lifecycle.poll SHALL reject NOT_ASYNC.
 ### Requirement: Lifecycle execution replaces the declarative pipeline
 When a doc carries `lifecycle`, `start` SHALL invoke the linked
 `lifecycle.start` fn with `{input, request}` (the compiled request with
-{pathParam}s substituted) instead of executing the request itself. A
-RUNNING outcome SHALL merge the fn's state PATCH presence-based over the
-previous state, stamp engine timing, and return `{kind: RUNNING, state:
-RunState, pollAfterMs: outcome override ?? timeouts.pollMs}`; a COMPLETED
-outcome SHALL feed the ONE settle pipeline (consolidate on the raw
-envelope + merged final state → fromResponse → output.schema). A running
+{pathParam}s substituted) instead of executing the request itself. An
+outcome's `state` SHALL follow WHOLE-STATE semantics (design D21): a
+PRESENT state IS the complete next fn-state (replaces the previous one
+wholesale); an ABSENT state carries the previous fn-owned fields forward
+untouched — no field-level merge exists. A RUNNING outcome SHALL stamp
+engine timing and return `{kind: RUNNING, state: RunState, pollAfterMs:
+outcome override ?? timeouts.pollMs}`; a COMPLETED outcome SHALL feed the
+ONE settle pipeline (consolidate on the raw envelope + the final state →
+fromResponse → output.schema). A running
 outcome without a resolved lifecycle.poll SHALL fail closed
 (CONTRACT_VIOLATION).
 
 #### Scenario: Full async loop
 - **WHEN** run() drives start → RUNNING → poll (RUNNING) → poll (COMPLETED with a second fetch)
-- **THEN** the wire sequence is exactly the fn-issued calls and the result settles with the merged final state in the envelope
+- **THEN** the wire sequence is exactly the fn-issued calls and the result settles with the final state in the envelope
+
+#### Scenario: Present state replaces wholesale
+- **WHEN** a poll returns a state without the earlier data bag
+- **THEN** the threaded state carries no data — replaced, never field-merged
+
+#### Scenario: Absent state keeps everything
+- **WHEN** a poll returns RUNNING with no state
+- **THEN** the previous fn-owned fields carry forward untouched
 
 ### Requirement: Engine-owned timing on state and result
-The engine SHALL stamp `state.timing` itself (fns return patches with no
+The engine SHALL stamp `state.timing` itself (fn-states carry no
 timing field): first tick initializes {startedAt, startRequestMs,
 attempts 0, pollMsTotal 0, deadlineAt = startedAt + timeouts.runMs};
 every poll tick stamps lastPolledAt, increments attempts, accumulates
@@ -50,7 +61,7 @@ host-measured.
 - **THEN** attempts increments, pollMsTotal accumulates the tick duration, and start-tick facts survive untouched
 
 ### Requirement: State validation on every boundary
-After each start/poll return the engine SHALL validate the merged state
+After each start/poll return the engine SHALL validate the threaded state
 (zRunState structure; `state.data` against `doc.lifecycle.stateSchema`
 when declared; the `schema.state_max_bytes` size cap) — failure is
 FN_CONTRACT (the fn wrote it). Before each poll/stop invocation the

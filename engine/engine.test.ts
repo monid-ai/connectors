@@ -661,8 +661,9 @@ function asyncConnector(): ConnectorSource[] {
                     }
                     const status = utils.json.get(res.body, "$.status");
                     if (status === "running") {
-                        // `{}` — presence-based merge keeps the prior state
-                        return { kind: "RUNNING", state: {} };
+                        // ABSENT state — the previous fn-state carries
+                        // forward untouched (whole-state semantics, D21)
+                        return { kind: "RUNNING" };
                     }
                     if (status === "failed") {
                         // in-body vendor failure → synthesized 500 (error-as-data)
@@ -841,7 +842,7 @@ Deno.test("lifecycle: poll advances engine timing (attempts, pollMsTotal, lastPo
     assert(started.kind === "RUNNING");
     const polled = await loaded.poll({ body: { q: "x" } }, started.state);
     assert(polled.kind === "RUNNING");
-    // fn returned `{}` — externalRunId inherited via the presence merge
+    // fn returned NO state — the previous fn-state carried forward (D21)
     assertEquals(polled.state.externalRunId, "j9");
     assertEquals(polled.state.timing.attempts, 1);
     assertEquals(polled.state.timing.pollMsTotal, 100);
@@ -849,6 +850,70 @@ Deno.test("lifecycle: poll advances engine timing (attempts, pollMsTotal, lastPo
     // start-tick facts survive untouched
     assertEquals(polled.state.timing.startedAt, new Date(100).toISOString());
     assertEquals(polled.state.timing.startRequestMs, 100);
+});
+
+Deno.test("lifecycle: whole-state semantics — present replaces WHOLESALE, absent keeps", async () => {
+    // the poll returns a state WITHOUT `data` on the second tick — under
+    // whole-state semantics the earlier data bag is GONE (replaced
+    // wholesale), not inherited; a third tick with NO state keeps all
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j1" } },
+            { status: 200, body: { status: "stash" } },
+            { status: 200, body: { status: "replace" } },
+            { status: 200, body: { status: "running" } },
+        ]),
+        ...INSTANT_SLEEP,
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.lifecycle!.poll = async (
+                { data, utils },
+            ) => {
+                const jobId = String(
+                    utils.json.get(data.state, "$.externalRunId"),
+                );
+                const res = await utils.http({
+                    method: "GET",
+                    path: "/jobs/" + jobId,
+                });
+                const status = utils.json.get(res.body, "$.status");
+                if (status === "stash") {
+                    return {
+                        kind: "RUNNING",
+                        state: {
+                            externalRunId: jobId,
+                            stage: "s1",
+                            data: { usd: 1 },
+                        },
+                    };
+                }
+                if (status === "replace") {
+                    // WHOLE next state — no `data`: the bag must vanish
+                    return {
+                        kind: "RUNNING",
+                        state: { externalRunId: jobId, stage: "s2" },
+                    };
+                }
+                // absent state — everything carries forward untouched
+                return { kind: "RUNNING" };
+            };
+        }),
+    );
+    const started = await loaded.start({ body: { q: "x" } });
+    assert(started.kind === "RUNNING");
+    const first = await loaded.poll({ body: { q: "x" } }, started.state);
+    assert(first.kind === "RUNNING");
+    assertEquals(first.state.stage, "s1");
+    assertEquals(first.state.data, { usd: 1 });
+    const second = await loaded.poll({ body: { q: "x" } }, first.state);
+    assert(second.kind === "RUNNING");
+    assertEquals(second.state.stage, "s2");
+    assertEquals(second.state.data, undefined); // replaced WHOLESALE
+    const third = await loaded.poll({ body: { q: "x" } }, second.state);
+    assert(third.kind === "RUNNING");
+    assertEquals(third.state.externalRunId, "j1"); // absent state keeps
+    assertEquals(third.state.stage, "s2");
 });
 
 Deno.test("lifecycle: corrupt threaded state fails closed on the way in (INVALID_INPUT)", async () => {

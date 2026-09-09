@@ -24,7 +24,7 @@ export type RunKind = (typeof RunKind)[keyof typeof RunKind];
  * t_provider_total_ms). ISO strings: state crosses payload boundaries BY
  * VALUE (v1: "never rely on Date instances surviving payload conversion").
  * Fns READ it (adaptive cadence off attempts/deadlineAt) but cannot write
- * it — they return `zStatePatch`, which has no timing field, and the
+ * it — they return `zFnState`, which has no timing field, and the
  * engine stamps/advances `timing` itself every tick.
  */
 export const zRunTimingInFlight = z.strictObject({
@@ -66,15 +66,18 @@ export const zRunState = z.strictObject({
 export type RunState = z.infer<typeof zRunState>;
 
 /**
- * What lifecycle fns RETURN — the fn-owned subset only. Presence-based
- * merge over the previous state: a present field replaces, an absent field
- * inherits (so `state: {}` means "keep everything"); `data` replaces
- * WHOLESALE when present (predictable, no deep-merge surprises). The
- * engine merges the patch and stamps `timing` itself.
+ * What lifecycle fns RETURN — the fn-owned subset, WHOLE-STATE semantics
+ * (no field-level merge exists): a PRESENT `state` on an outcome IS the
+ * complete next fn-state and replaces the previous one WHOLESALE; an
+ * ABSENT `state` carries the previous fn-owned fields forward untouched.
+ * Two cases, zero patch rules — the null-vs-undefined merge ambiguity
+ * class ("does `data: null` clear or inherit?") is structurally gone
+ * (PR #2 finding; the old zStatePatch presence-merge is deleted). States
+ * are immutable constants per tick; the engine attaches `timing` itself.
  */
-export const zStatePatch = z.strictObject({
+export const zFnState = z.strictObject({
     externalRunId: z.string().min(1).optional(),
     stage: z.string().optional(),
     data: zJson.optional(),
 });
-export type StatePatch = z.infer<typeof zStatePatch>;
+export type FnState = z.infer<typeof zFnState>;

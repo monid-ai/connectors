@@ -3,6 +3,7 @@ import {
     contractConfig,
     type EndpointDoc,
     type EnvelopeData,
+    type FnState,
     formatZodError,
     type HookLogger,
     type Json,
@@ -17,7 +18,6 @@ import {
     type RunState,
     type RunTiming,
     type RunTimingInFlight,
-    type StatePatch,
     type Usage,
     zeroUsage,
     zRunState,
@@ -321,25 +321,28 @@ export class LoadedEndpoint implements RunnableEndpoint {
         return parsed.data;
     }
 
-    /** Presence-based patch merge: a present field replaces, an absent
-     *  field inherits from the previous state (`{}` keeps everything);
-     *  `data` replaces WHOLESALE when present. */
-    private mergePatch(
-        patch: StatePatch | undefined,
+    /** WHOLE-STATE semantics (design D21): a PRESENT outcome.state IS the
+     *  complete next fn-state (replaces the previous one wholesale); an
+     *  ABSENT one carries the previous fn-owned fields forward untouched.
+     *  No field-level merge exists — the null-vs-undefined patch
+     *  ambiguity ("does data: null clear or inherit?") is structurally
+     *  gone (PR #2 finding). Engine-owned timing is attached separately. */
+    private nextFnState(
+        outcomeState: FnState | undefined,
         prev: RunState | undefined,
-    ): StatePatch {
-        const externalRunId = patch?.externalRunId ?? prev?.externalRunId;
-        const stage = patch?.stage ?? prev?.stage;
-        const data = patch?.data ?? prev?.data;
+    ): FnState {
+        if (outcomeState !== undefined) return outcomeState;
         return {
-            ...(externalRunId !== undefined ? { externalRunId } : {}),
-            ...(stage !== undefined ? { stage } : {}),
-            ...(data !== undefined ? { data } : {}),
+            ...(prev?.externalRunId !== undefined
+                ? { externalRunId: prev.externalRunId }
+                : {}),
+            ...(prev?.stage !== undefined ? { stage: prev.stage } : {}),
+            ...(prev?.data !== undefined ? { data: prev.data } : {}),
         };
     }
 
-    /** ENGINE-owned timing advance — fns cannot tamper (they return
-     *  patches, which have no timing field). First tick initializes;
+    /** ENGINE-owned timing advance — fns cannot tamper (fn-states have
+     *  no timing field). First tick initializes;
      *  every poll tick stamps lastPolledAt and accumulates. */
     private advanceTiming(
         prev: RunTimingInFlight | undefined,
@@ -374,7 +377,7 @@ export class LoadedEndpoint implements RunnableEndpoint {
     ): RunStartResult {
         const completedAt = this.now();
         const tickMs = Math.max(0, completedAt.getTime() - t0.getTime());
-        const fnFields = this.mergePatch(outcome.state, prevState);
+        const fnFields = this.nextFnState(outcome.state, prevState);
         const timing = this.advanceTiming(prevState?.timing, t0, tickMs);
 
         if (outcome.kind === RunKind.RUNNING) {

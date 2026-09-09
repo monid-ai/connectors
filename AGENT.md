@@ -65,10 +65,12 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   default, leaf-wise, closest wins.
 - **Async protocol**: `request` stays REQUIRED and is DATA into the lifecycle
   (`ctx.data.request`); `lifecycle.start` (when present) replaces the engine's
-  declarative execution and returns `RUNNING{state: patch}` |
-  `COMPLETED{httpStatus, output, state?: patch}` (RunKind, UPPERCASE). State is
-  STRUCTURED (`zRunState`): fn-owned `externalRunId`/`stage`/`data` (ids +
-  billing signals; typed per doc via `lifecycle.state` → `stateSchema`) +
+  declarative execution and returns `RUNNING{state?}` |
+  `COMPLETED{httpStatus, output, state?}` (RunKind, UPPERCASE) — WHOLE-STATE
+  semantics: a present `state` IS the complete next fn-state (replaces
+  wholesale), an absent one carries the previous forward (no field merge — D21).
+  State is STRUCTURED (`zRunState`): fn-owned `externalRunId`/`stage`/`data`
+  (ids + billing signals; typed per doc via `lifecycle.state` → `stateSchema`) +
   ENGINE-owned `timing` (the ClickHouse provider slices; `RunCompleted.timing`
   reports at settle, sync runs included) — engine-capped
   (`schema.state_max_bytes`). `timeouts.pollMs` is the cadence default, per-tick

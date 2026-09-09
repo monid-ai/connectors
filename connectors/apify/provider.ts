@@ -137,7 +137,8 @@ export default defineProvider({
             );
             if (exitCode === undefined) {
                 // still running — `{}` inherits the previous state
-                return { kind: "RUNNING", state: {} };
+                // absent state — the previous fn-state carries forward (D21)
+                return { kind: "RUNNING" };
             }
             const status = utils.json.optionalGet(res.body, "$.data.status");
             if (exitCode === 0 && status === "SUCCEEDED") {

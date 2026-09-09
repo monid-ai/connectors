@@ -83,7 +83,8 @@ export default defineEndpoint({
                 "$.data.exitCode",
             );
             if (exitCode === undefined) {
-                return { kind: "RUNNING", state: {} };
+                // absent state — the previous fn-state carries forward (D21)
+                return { kind: "RUNNING" };
             }
             const status = utils.json.optionalGet(res.body, "$.data.status");
             if (exitCode === 0 && status === "SUCCEEDED") {

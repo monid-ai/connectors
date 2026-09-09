@@ -307,10 +307,10 @@ its Temporal `endpointExecution` workflow.
   v1 UPPERCASE convention.
 - **`zRunState` replaces the opaque Json handle** (run/state.ts): a
   structured envelope `{externalRunId?, stage?, data?, timing}`, split by
-  OWNERSHIP: fns return `zStatePatch` (the three fn-owned fields;
-  presence-based merge — `{}` keeps everything, `data` replaces
-  wholesale), the ENGINE stamps `timing` (fns structurally cannot tamper:
-  the patch has no timing field). D14's "a rigid state schema stays
+  OWNERSHIP: fns return the three fn-owned fields, the ENGINE stamps
+  `timing` (fns structurally cannot tamper: the fn-state has no timing
+  field). [The original zStatePatch presence-merge is SUPERSEDED by D21's
+  whole-state semantics.] D14's "a rigid state schema stays
   rejected" is SUPERSEDED for the envelope (the bag stays free-form
   unless typed, below).
 - **Engine-owned timing rides state** (`zRunTimingInFlight`: startedAt,
@@ -559,13 +559,58 @@ its Temporal `endpointExecution` workflow.
   linkedin-profile-search (PER_UNIT·PAGE → the three published events,
   mode-keyed fns).
 
+## D20 — Review-round fixes: state-size projection, presence overrides, bounded naps, recorder scrub, coded compile errors
+
+- apify's poll PROJECTS `actorChargeEvents` to `{eventPriceUsd}` per event
+  (verbatim event-name keys kept — the D19 join): the raw card carries
+  marketing text + per-plan tier tables and could push serialized state
+  over `schema.state_max_bytes`, failing a completed, already-paid run.
+- `utils.request` body override is PRESENCE-based (`{body: null}` egresses
+  null — null is valid JSON, `??` treated it as absent).
+- `run()` caps each nap at the remaining runMs budget — a fn-requested
+  long `pollAfterMs` cannot delay TIMEOUT + best-effort stop.
+- The recorder scrubs REQUEST bodies too (always-on; URLs kept for the
+  replay matcher + `{{request.url}}` binding); test data follows the
+  placeholder-identity convention (consented or public-figure names —
+  "Feiyou Guo" / "Steve Jobs" — never third-party living individuals).
+- Compiler-boundary `parseSchema` failures rethrow as
+  `CompileError(DOC_MALFORMED)` with the ValidationError as cause — every
+  compiler rejection is coded (author-time `defineEndpoint` keeps
+  ValidationError: that IS the authoring surface).
+- DECLINED per review: http `baseUrl` schema pin (defs are hand-written
+  and manually reviewed); the VARIANT-selector finding (targets the kind
+  D19 deleted).
+- Versions RESET to the 0.0.1 pre-release floor (engine, doc_format_since,
+  fn_abi_since, async_since); version:check requires the version to
+  DIFFER from base when contract paths change (not to increase).
+
+## D21 — Whole-state outcomes replace the patch merge
+
+- Context: PR #2 found the presence-merge used `??`, so an explicit
+  `data: null` ("clear my bag") was treated as absent and stale billing
+  signals survived. Review counter-proposal (adopted): don't fix the
+  merge — DELETE it.
+- **Each lifecycle fn returns the COMPLETE next fn-state or nothing**:
+  `Outcome.state` PRESENT ⇒ it IS the whole next `{externalRunId?,
+  stage?, data?}` (replaces wholesale); ABSENT ⇒ the previous fn-state
+  carries forward untouched. Two cases, zero field-level rules — the
+  null-vs-undefined ambiguity class is structurally gone. States are
+  immutable constants per tick.
+- `zStatePatch`/`mergePatch` deleted; `zFnState` is the outcome state
+  shape; `RUNNING.state` became optional (the old `state: {}`
+  keep-everything idiom reads `{ kind: "RUNNING" }` now). Engine-owned
+  `timing` stays engine-attached — fns never see or return it.
+- Fn fallout was two lines: the apify provider poll and the linkedin
+  poll each dropped `state: {}` from their keep-running arms; every
+  other return was already whole-state.
+
 ## Concepts delta
 
 | Term | Definition |
 | --- | --- |
 | **Lifecycle** (`lifecycle.start/poll/stop` + `lifecycle.state`) | The effectful hook family — the async run protocol. Start replaces declarative execution (request = data into it); poll = one status tick (RUNNING ∣ COMPLETED envelope); stop = best-effort abort; `state` = the OPTIONAL zod schema typing the fn-owned `data` bag (compiled to `doc.lifecycle.stateSchema`, engine-validated per tick). Leaf-wise per phase. |
 | **Provider runtime** (`utils.http` + `utils.request`) | v1 `ProviderRuntime` re-homed as host ABI, bound per invocation: `http` = raw ZERO-defaults calls (path resolves against the request origin; headers ARE the outbound set); `request` = the default relay over the compiled request + caller input, presence-based overrides INCLUDING the target — request can do anything http can, they differ only in defaults. Same-origin credential rule + https-only on both (D16); sniff-decoded `{status, body}`; non-2xx returned, transport failures throw EXECUTION_FAILED. |
-| **Outcome** | A lifecycle fn's return: `RUNNING{state: patch, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?: patch}` — the completed arm IS the raw envelope the settle pipeline consumes; state patches merge presence-based over the previous state. |
+| **Outcome** | A lifecycle fn's return: `RUNNING{state?, pollAfterMs?}` ∣ `COMPLETED{httpStatus, providerHttpStatus?, output, state?}` — the completed arm IS the raw envelope the settle pipeline consumes. WHOLE-STATE semantics (D21): a present `state` is the complete next fn-state (replaces wholesale); absent carries the previous forward — no field merge. |
 | **State** (`zRunState`) | The STRUCTURED envelope threaded between ticks by value: fn-owned `externalRunId`/`stage`/`data` (ids + billing signals, typed when the doc declares `lifecycle.state`) + ENGINE-owned `timing` (the v1 providerRun clock — feeds the ClickHouse provider slices). Hard-capped (`schema.state_max_bytes`). |
 | **Timing** (`zRunTiming`) | The settle-side provider-timing report on every RunCompleted (async AND sync): startedAt/completedAt/attempts/startRequestMs/pollMsTotal/providerTotalMs → t_provider_* usage-event slices. Engine-stamped; hosts keep measuring their own slices. |
 | **Estimate** (`usage.estimate`) | The pre-run cost hook: validated input → estimated Usage with consolidate's counts KEYS, engine-executed with no IO (`estimate(runInput)`, also `deno task engine:estimate`); absent ⇒ `{counts: {}}` (the PER_CALL posture). `data.model` rides in so presets derive their key (D19). |

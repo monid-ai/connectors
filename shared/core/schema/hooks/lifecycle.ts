@@ -2,7 +2,7 @@ import { z } from "zod";
 import { zHttpMethod } from "../common/http.ts";
 import { type Json, zJson } from "../json/type.ts";
 import { zRunInput } from "../run/input.ts";
-import { RunKind, zRunState, zStatePatch } from "../run/state.ts";
+import { RunKind, zFnState, zRunState } from "../run/state.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
 
 /**
@@ -146,7 +146,7 @@ export type LifecycleStartData = z.infer<typeof zLifecycleStartData>;
 /** ctx.data for lifecycle.poll / lifecycle.stop — plus the threaded state
  *  (the FULL structured RunState: the previous tick's fn-owned fields +
  *  the engine-owned timing, which fns may READ — adaptive cadence off
- *  attempts/deadlineAt — but not write; they return zStatePatch). */
+ *  attempts/deadlineAt — but not write; they return zFnState). */
 export const zLifecycleTickData = z.strictObject({
     input: zRunInput,
     request: zLifecycleRequestInfo,
@@ -159,20 +159,21 @@ export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
 // ---------------------------------------------------------------------------
 
 /**
- * A run still in flight. `state` is the fn-owned PATCH (zStatePatch):
- * `externalRunId` (the vendor's run/job id — the correlation handle hosts
- * read: teardown, webhooks), `stage` (dispatch marker) and `data` (billing
- * signals: dataset ids, pricing fields — never payloads). Presence-based
- * merge over the previous state; `state: {}` keeps everything. The engine
- * stamps `timing` itself, validates `data` against the doc's
- * `lifecycle.stateSchema` when declared, and caps the WHOLE merged state's
- * serialized size (config schema.state_max_bytes → FN_CONTRACT).
- * `pollAfterMs` overrides the doc's `timeouts.pollMs` for the NEXT tick
- * only (adaptive cadence).
+ * A run still in flight. `state` is the fn-owned WHOLE next state
+ * (zFnState): `externalRunId` (the vendor's run/job id — the correlation
+ * handle hosts read: teardown, webhooks), `stage` (dispatch marker) and
+ * `data` (billing signals: dataset ids, pricing fields — never payloads).
+ * WHOLE-STATE semantics: PRESENT replaces the previous fn-state
+ * wholesale; ABSENT carries it forward untouched (no field-level merge —
+ * design D21). The engine stamps `timing` itself, validates `data`
+ * against the doc's `lifecycle.stateSchema` when declared, and caps the
+ * WHOLE state's serialized size (config schema.state_max_bytes →
+ * FN_CONTRACT). `pollAfterMs` overrides the doc's `timeouts.pollMs` for
+ * the NEXT tick only (adaptive cadence).
  */
 export const zLifecycleRunning = z.strictObject({
     kind: z.literal(RunKind.RUNNING),
-    state: zStatePatch,
+    state: zFnState.optional(),
     pollAfterMs: z.number().int().positive().optional(),
 });
 
@@ -183,16 +184,17 @@ export const zLifecycleRunning = z.strictObject({
  * ours/theirs pair — design D12) is stated ONLY when the fn SYNTHESIZED
  * `httpStatus` (e.g. a failed actor: httpStatus 500, providerHttpStatus
  * 200 — the upstream exchange itself succeeded); absent = relayed
- * verbatim. `state` is a final fn-owned PATCH (absent = keep the previous
- * tick's fields); the MERGED state rides into the settle envelope so
- * usage.consolidate can read billing signals stashed during polling.
+ * verbatim. `state` is the final fn-owned WHOLE state (absent = the
+ * previous tick's fn-state carries forward untouched — design D21); the
+ * final state rides into the settle envelope so usage.consolidate can
+ * read billing signals stashed during polling.
  */
 export const zLifecycleCompleted = z.strictObject({
     kind: z.literal(RunKind.COMPLETED),
     httpStatus: z.number().int(),
     providerHttpStatus: z.number().int().optional(),
     output: zJson,
-    state: zStatePatch.optional(),
+    state: zFnState.optional(),
 });
 
 export const zLifecycleOutcome = z.discriminatedUnion("kind", [
