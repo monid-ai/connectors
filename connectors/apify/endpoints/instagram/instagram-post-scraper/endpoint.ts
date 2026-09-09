@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramPostScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -34,10 +34,16 @@ export default defineEndpoint({
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        estimate: presets.estimate.perQueryLimit(
-            "resultsLimit",
-            "username",
-            3,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "RESULT": body.resultsLimit !== undefined
+                        ? body.resultsLimit *
+                            Math.max(body.username.length, 1)
+                        : 3,
+                },
+            };
+        },
     },
 });

@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinPostSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -45,10 +45,16 @@ export default defineEndpoint({
         },
         /** maxPosts (schema default 10) per query — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            "maxPosts",
-            "searchQueries",
-            10,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "post": body.maxPosts !== undefined && body.maxPosts > 0
+                        ? Math.floor(body.maxPosts) *
+                            Math.max(body.searchQueries?.length ?? 0, 1)
+                        : 10,
+                },
+            };
+        },
     },
 });

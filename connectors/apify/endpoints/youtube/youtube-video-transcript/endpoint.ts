@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeVideoTranscriptBody } from "./schema/inputs.ts";
 
 /**
@@ -36,12 +36,12 @@ export default defineEndpoint({
          *  channel mode caps at max_videos, whose schema default (10) is
          *  the actor's OWN server default — materialized into the body
          *  before any hook runs, so the estimate is exact. */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const channel = utils.json.optionalGet(body, "$.channel_url");
-            const amount = typeof channel === "string" && channel !== ""
-                ? utils.json.optionalNum(body, "$.max_videos") ?? 10
-                : 1;
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const amount =
+                body.channel_url !== undefined && body.channel_url !== ""
+                    ? body.max_videos
+                    : 1;
             return { counts: { "RESULT": amount } };
         },
     },

@@ -37,21 +37,20 @@ export default defineEndpoint({
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** CUSTOM estimate (v1: "no single estimationLabel is true here"):
-         *  ONE actor, SIX modes, and NEWLINE-separated target textareas the
-         *  shared array-multiplier presets cannot see. Detail/id modes →
+         *  ONE actor, SIX modes, and NEWLINE-separated target textareas no
+         *  flat array-multiplier rule can see. Detail/id modes →
          *  one result per target; post modes → targets × max_posts (and
          *  profile_posts_by_url emits one extra profile-id record per
          *  target — confirmed live in v1). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const mode = utils.json.optionalGet(body, "$.endpoint");
-            const field = mode === "profile_posts" || mode === "details_by_id"
-                ? "$.ids_text"
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const mode = body.endpoint;
+            const text = mode === "profile_posts" || mode === "details_by_id"
+                ? body.ids_text
                 : mode === "search_posts_by_keyword"
-                ? "$.keywords_text"
-                : "$.urls_text";
-            const text = utils.json.optionalGet(body, field);
-            const targets = typeof text === "string"
+                ? body.keywords_text
+                : body.urls_text;
+            const targets = text !== undefined
                 ? text.split("\n").map((line) => line.trim())
                     .filter((line) => line !== "").length
                 : 0;
@@ -59,7 +58,7 @@ export default defineEndpoint({
             const isPostMode = mode === "profile_posts_by_url" ||
                 mode === "profile_posts" ||
                 mode === "search_posts_by_keyword";
-            const cap = utils.json.optionalNum(body, "$.max_posts") ?? 3;
+            const cap = body.max_posts ?? 3;
             const amount = isPostMode
                 ? n * cap + (mode === "profile_posts_by_url" ? n : 0)
                 : n;

@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinJobSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -46,10 +46,16 @@ export default defineEndpoint({
         },
         /** maxItems per location — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            "maxItems",
-            "locations",
-            3,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "job": body.maxItems !== undefined && body.maxItems > 0
+                        ? Math.floor(body.maxItems) *
+                            Math.max(body.locations?.length ?? 0, 1)
+                        : 3,
+                },
+            };
+        },
     },
 });

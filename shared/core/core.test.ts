@@ -265,9 +265,9 @@ Deno.test("typed defineEndpoint: the generics narrow (and reject) as designed", 
             input: { schema: { body } },
             usage: {
                 model: { kind: UsageModelKind.PER_CALL },
-                // @ts-expect-error — a COUNTING preset on a flat doc: the
+                // @ts-expect-error — a COUNTING fn on a flat doc: the
                 // estimate slot is `never` ("unsupported" = un-writable)
-                estimate: presets.estimate.limitIsExact("maxItems", 3),
+                estimate: () => ({ counts: { "RESULT": 3 } }),
             },
         }));
     void (() =>

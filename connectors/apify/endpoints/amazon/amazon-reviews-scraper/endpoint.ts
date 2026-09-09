@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zAmazonReviewsScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -35,6 +35,10 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one result per input entry (one asin each) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery("input"),
+        estimate: ({ data }) => ({
+            counts: {
+                "RESULT": Math.max(data.input.body.input.length, 1),
+            },
+        }),
     },
 });

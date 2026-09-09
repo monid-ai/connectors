@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zAmazonReviewsExtractorBody } from "./schema/inputs.ts";
 
 /**
@@ -43,20 +43,14 @@ export default defineEndpoint({
                 "review": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
             },
         },
-        /** limit review-pages (~10 reviews each) per product — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
         /** limit review-PAGES (~10 reviews each) × products — single-use
-         *  counting rule, so an inline fn, not a preset (D19 addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const pages = utils.json.optionalNum(body, "$.limit");
-            if (pages === undefined) return { counts: { "review": 3 } };
-            const products = utils.json.optionalGet(body, "$.products");
-            const n = Math.max(
-                Array.isArray(products) ? products.length : 0,
-                1,
-            );
-            return { counts: { "review": pages * 10 * n } };
+         *  counting rule, so an inline fn (D19 addendum). The schema is the
+         *  source of truth: typed body access, no probing. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.limit === undefined) return { counts: { "review": 3 } };
+            const n = Math.max(body.products.length, 1);
+            return { counts: { "review": body.limit * 10 * n } };
         },
     },
 });

@@ -14,10 +14,11 @@ import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
  * the vendor is touched (engine-executed via `estimate(runInput)`).
  *
  * Absent ⇒ the engine defaults to `{counts: {}}` — a flat doc needs no
- * estimate, the model + success is its whole story (design D18/D19). The
- * common input-derived shapes ship as presets (`presets.estimate.*` — the
- * v1 EstimationLabel machinery: onePerQuery, limitIsExact, perQueryLimit,
- * limitIsPages, dualLimit).
+ * estimate, the model + success is its whole story (design D18/D19).
+ * Estimates are TYPED INLINE fns on their docs (design D23 — no estimate
+ * presets): the body is `z.output` of the doc's own input schema and the
+ * counts keys are the model's literal metered keys, so field typos and
+ * foreign keys fail `deno task check`.
  *
  * `model` mirrors the envelope ctx: the doc's own usage.model, so generic
  * presets derive their counts KEY (leaf → unit, composite → the sole

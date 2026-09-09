@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zGoogleShoppingApifyBody } from "./schema/inputs.ts";
 
 /**
@@ -32,19 +32,18 @@ export default defineEndpoint({
     input: { schema: { body: zGoogleShoppingApifyBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** max_pages pages of num results each — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        /** max_pages × num results/page (else the 10-per-page guess; the
-         *  actor's `num` is a STRING enum "10"…"100") — single-use
-         *  counting rule, inline (D19 addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const pages = utils.json.optionalNum(body, "$.max_pages");
-            if (pages === undefined) return { counts: { "RESULT": 3 } };
-            const size = Number(utils.json.optionalGet(body, "$.num"));
+        /** max_pages × num results/page (the actor's `num` is a REQUIRED
+         *  STRING enum "10"…"100", so Number() always yields a finite
+         *  page size) — single-use counting rule, inline (D19 addendum).
+         *  The schema is the source of truth: typed body access. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.max_pages === undefined) {
+                return { counts: { "RESULT": 3 } };
+            }
             return {
                 counts: {
-                    "RESULT": pages * (Number.isFinite(size) ? size : 10),
+                    "RESULT": body.max_pages * Number(body.num),
                 },
             };
         },

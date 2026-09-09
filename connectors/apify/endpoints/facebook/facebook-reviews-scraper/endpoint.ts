@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zFacebookReviewsScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -42,10 +42,16 @@ export default defineEndpoint({
         },
         /** resultsLimit reviews per page url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            "resultsLimit",
-            "startUrls",
-            3,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "review": body.resultsLimit !== undefined
+                        ? body.resultsLimit *
+                            Math.max(body.startUrls.length, 1)
+                        : 3,
+                },
+            };
+        },
     },
 });

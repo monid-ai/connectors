@@ -60,12 +60,8 @@ export default defineEndpoint({
         },
         /** OFFSET estimate: exa's request defaults to 10 results — only the
          *  requested surplus above the included 10 is promisable. */
-        estimate: ({ data, utils }) => {
-            const requested = utils.json.optionalNum(
-                data.input.body ?? {},
-                "$.numResults",
-            ) ?? 10;
-            const above = Math.max(0, Math.floor(requested) - 10);
+        estimate: ({ data }) => {
+            const above = Math.max(0, data.input.body.numResults - 10);
             return {
                 counts: {
                     ...(above > 0 ? { "additional_result": above } : {}),

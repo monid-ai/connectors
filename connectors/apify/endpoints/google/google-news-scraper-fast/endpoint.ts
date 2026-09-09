@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zGoogleNewsScraperFastBody } from "./schema/inputs.ts";
 
 /**
@@ -32,19 +32,21 @@ export default defineEndpoint({
     input: { schema: { body: zGoogleNewsScraperFastBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxArticles per keyword/topic — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
         /** maxArticles × (keywords + topics) — TWO multiplier arrays, so
-         *  an inline fn (presets take single fields — D19 addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.maxArticles");
-            if (limit === undefined) return { counts: { "RESULT": 3 } };
-            const keywords = utils.json.optionalGet(body, "$.keywords");
-            const topics = utils.json.optionalGet(body, "$.topics");
-            const queries = (Array.isArray(keywords) ? keywords.length : 0) +
-                (Array.isArray(topics) ? topics.length : 0);
-            return { counts: { "RESULT": limit * Math.max(queries, 1) } };
+         *  an inline fn (D19 addendum). The schema is the source of truth:
+         *  typed body access, no probing. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.maxArticles === undefined) {
+                return { counts: { "RESULT": 3 } };
+            }
+            const queries = (body.keywords?.length ?? 0) +
+                (body.topics?.length ?? 0);
+            return {
+                counts: {
+                    "RESULT": body.maxArticles * Math.max(queries, 1),
+                },
+            };
         },
     },
 });

@@ -35,13 +35,17 @@ export default defineEndpoint({
         /** maxItems wins; else maxPages × 25 profiles/page — a dual-knob
          *  rule used ONCE, so an inline fn (the dualLimit preset is
          *  deleted — D19 addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const items = utils.json.optionalNum(body, "$.maxItems");
-            if (items !== undefined) return { counts: { "RESULT": items } };
-            const pages = utils.json.optionalNum(body, "$.maxPages");
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.maxItems !== undefined) {
+                return { counts: { "RESULT": body.maxItems } };
+            }
             return {
-                counts: { "RESULT": pages !== undefined ? pages * 25 : 3 },
+                counts: {
+                    "RESULT": body.maxPages !== undefined
+                        ? body.maxPages * 25
+                        : 3,
+                },
             };
         },
     },

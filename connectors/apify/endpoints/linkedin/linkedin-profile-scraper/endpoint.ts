@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinProfileScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -40,6 +40,10 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one profile per url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery("profileUrls"),
+        estimate: ({ data }) => ({
+            counts: {
+                "RESULT": Math.max(data.input.body.profileUrls.length, 1),
+            },
+        }),
     },
 });

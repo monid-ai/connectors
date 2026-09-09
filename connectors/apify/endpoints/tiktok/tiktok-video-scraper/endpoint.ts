@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zTiktokVideoScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -38,14 +38,10 @@ export default defineEndpoint({
          *  related record bills as an item). The schema pins the actor's
          *  OWN server defaults (scrapeRelatedVideos false, resultsPerPage
          *  1), materialized into the body before any hook runs. */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const urls = utils.json.optionalGet(body, "$.postURLs");
-            const n = Math.max(Array.isArray(urls) ? urls.length : 0, 1);
-            const related =
-                utils.json.optionalGet(body, "$.scrapeRelatedVideos") === true
-                    ? utils.json.optionalNum(body, "$.resultsPerPage") ?? 1
-                    : 0;
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const n = Math.max(body.postURLs.length, 1);
+            const related = body.scrapeRelatedVideos ? body.resultsPerPage : 0;
             return { counts: { "RESULT": n * (1 + related) } };
         },
     },

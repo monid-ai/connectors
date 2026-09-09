@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zRedditCommentScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -48,10 +48,16 @@ export default defineEndpoint({
         },
         /** maxComments per keyword — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            "maxComments",
-            "keywords",
-            3,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "apify-default-dataset-item": body.maxComments !== undefined
+                        ? body.maxComments *
+                            Math.max(body.keywords?.length ?? 0, 1)
+                        : 3,
+                },
+            };
+        },
     },
 });

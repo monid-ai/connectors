@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zGoogleShoppingScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -47,6 +47,10 @@ export default defineEndpoint({
         },
         /** limit = products per call (schema default 10) — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact("limit", 10),
+        estimate: ({ data }) => ({
+            counts: {
+                "apify-default-dataset-item": data.input.body.limit ?? 10,
+            },
+        }),
     },
 });

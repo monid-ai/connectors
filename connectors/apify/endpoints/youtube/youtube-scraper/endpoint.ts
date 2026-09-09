@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -36,19 +36,17 @@ export default defineEndpoint({
     input: { schema: { body: zYoutubeScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxResults per url/query — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
         /** maxResults × (startUrls + searchQueries) — TWO multiplier
-         *  arrays, so an inline fn (presets take single fields). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.maxResults");
-            if (limit === undefined) return { counts: { "RESULT": 3 } };
-            const urls = utils.json.optionalGet(body, "$.startUrls");
-            const queries = utils.json.optionalGet(body, "$.searchQueries");
-            const n = (Array.isArray(urls) ? urls.length : 0) +
-                (Array.isArray(queries) ? queries.length : 0);
-            return { counts: { "RESULT": limit * Math.max(n, 1) } };
+         *  arrays, so an inline fn. The schema is the source of truth:
+         *  typed body access, no probing. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.maxResults === undefined) {
+                return { counts: { "RESULT": 3 } };
+            }
+            const n = (body.startUrls?.length ?? 0) +
+                (body.searchQueries?.length ?? 0);
+            return { counts: { "RESULT": body.maxResults * Math.max(n, 1) } };
         },
     },
 });

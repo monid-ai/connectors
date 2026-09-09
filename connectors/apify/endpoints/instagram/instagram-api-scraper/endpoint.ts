@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramApiScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -44,18 +44,15 @@ export default defineEndpoint({
                 "result": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
             },
         },
-        /** resultsLimit posts per direct url (searchLimit in search mode) — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
         /** resultsLimit (direct-url runs) or searchLimit (search runs) —
-         *  TWO alternative limit knobs, so an inline fn (presets take
-         *  single fields — D19 addendum); × directUrls. */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.resultsLimit") ??
-                utils.json.optionalNum(body, "$.searchLimit");
+         *  TWO alternative limit knobs, so an inline fn over the endpoint's
+         *  OWN pinned input fields (the schema is the source of truth);
+         *  × directUrls. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const limit = body.resultsLimit ?? body.searchLimit;
             if (limit === undefined) return { counts: { "result": 3 } };
-            const urls = utils.json.optionalGet(body, "$.directUrls");
-            const n = Math.max(Array.isArray(urls) ? urls.length : 0, 1);
+            const n = Math.max(body.directUrls?.length ?? 0, 1);
             return { counts: { "result": limit * n } };
         },
     },

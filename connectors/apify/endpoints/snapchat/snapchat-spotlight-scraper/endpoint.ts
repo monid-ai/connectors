@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zSnapchatSpotlightScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -48,6 +48,13 @@ export default defineEndpoint({
         },
         /** one spotlight per url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.onePerQuery("spotlightUrls"),
+        estimate: ({ data }) => ({
+            counts: {
+                "spotlight": Math.max(
+                    data.input.body.spotlightUrls?.length ?? 0,
+                    1,
+                ),
+            },
+        }),
     },
 });

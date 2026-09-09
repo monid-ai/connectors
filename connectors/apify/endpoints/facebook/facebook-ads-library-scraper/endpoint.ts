@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zFacebookAdsLibraryScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -48,10 +48,18 @@ export default defineEndpoint({
         },
         /** limitPerSource ads per url — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.perQueryLimit(
-            "limitPerSource",
-            "urls",
-            3,
-        ),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "apify-default-dataset-item":
+                        body.limitPerSource !== undefined &&
+                            body.limitPerSource > 0
+                            ? body.limitPerSource *
+                                Math.max(body.urls.length, 1)
+                            : 3,
+                },
+            };
+        },
     },
 });

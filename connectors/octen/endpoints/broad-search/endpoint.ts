@@ -47,16 +47,13 @@ export default defineEndpoint({
                 },
             },
         },
-        /** Queries = the requested max_queries ?? the vendor default 5 (the
-         *  v1 fallback rule). Tokens are NOT promisable from the input
-         *  (page-content-sized) — omitted, settle trues them up. */
-        estimate: ({ data, utils }) => {
-            const queries = utils.json.optionalNum(
-                data.input.body ?? {},
-                "$.max_queries",
-            ) ?? 5;
-            return { counts: { "receipt_queries": queries } };
-        },
+        /** Queries = the requested max_queries (schema default 5 — the v1
+         *  fallback rule, applied at parse time). Tokens are NOT promisable
+         *  from the input (page-content-sized) — omitted, settle trues them
+         *  up. */
+        estimate: ({ data }) => ({
+            counts: { "receipt_queries": data.input.body.max_queries },
+        }),
         consolidate: ({ data, utils }) => {
             const queries = utils.json.optionalNum(
                 data.output,

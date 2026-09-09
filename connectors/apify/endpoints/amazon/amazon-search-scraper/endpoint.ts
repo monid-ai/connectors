@@ -35,16 +35,12 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** CUSTOM estimate: the page knob lives INSIDE the `input` array
          *  items (one entry per keyword, each with its own maxPages) — no
-         *  flat-field preset can see it. Σ over items of (maxPages ?? 1)
-         *  × ~10 results/page. */
-        estimate: ({ data, utils }) => {
-            const items = utils.json.optionalGet(
-                data.input.body ?? null,
-                "$.input",
-            );
-            const list = Array.isArray(items) ? items : [];
+         *  flat body field carries it. Σ over items of (maxPages ?? 1)
+         *  × ~10 results/page. Items are schema-typed as `any`, so the
+         *  per-item shape guards stay. */
+        estimate: ({ data }) => {
             let pages = 0;
-            for (const item of list) {
+            for (const item of data.input.body.input) {
                 const n = item !== null && typeof item === "object" &&
                         !Array.isArray(item)
                     ? Number(item.maxPages)

@@ -234,26 +234,22 @@ export default defineEndpoint({
         /** v1 DUAL_LIMIT (resultsPerPage 25): takePages, else
          *  ceil(maxItems/25), else 1 page — with the profile count keyed
          *  by the mode the pinned input SELECTS ("Short": page rate only). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const takePages = utils.json.optionalNum(body, "$.takePages");
-            const maxItems = utils.json.optionalNum(body, "$.maxItems");
-            const pages = takePages ??
-                (maxItems !== undefined ? Math.ceil(maxItems / 25) : 1);
-            const mode = utils.json.optionalGet(
-                body,
-                "$.profileScraperMode",
-            );
-            const profileKey = mode === "Full"
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const pages = body.takePages ??
+                (body.maxItems !== undefined
+                    ? Math.ceil(body.maxItems / 25)
+                    : 1);
+            const profileKey = body.profileScraperMode === "Full"
                 ? "full-profile"
-                : mode === "Full + email search"
+                : body.profileScraperMode === "Full + email search"
                 ? "full-profile-with-email"
                 : undefined;
             return {
                 counts: {
                     "search-page": pages,
                     ...(profileKey !== undefined
-                        ? { [profileKey]: maxItems ?? pages * 25 }
+                        ? { [profileKey]: body.maxItems ?? pages * 25 }
                         : {}),
                 },
             };

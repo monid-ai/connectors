@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zFacebookEventsScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -41,17 +41,16 @@ export default defineEndpoint({
             },
         },
         /** maxEvents × (searchQueries + startUrls) — TWO multiplier
-         *  arrays, so an inline fn (presets take single fields — D19
-         *  addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.maxEvents");
-            if (limit === undefined) return { counts: { "event": 3 } };
-            const queries = utils.json.optionalGet(body, "$.searchQueries");
-            const urls = utils.json.optionalGet(body, "$.startUrls");
-            const n = (Array.isArray(queries) ? queries.length : 0) +
-                (Array.isArray(urls) ? urls.length : 0);
-            return { counts: { "event": limit * Math.max(n, 1) } };
+         *  arrays, so an inline fn (D19 addendum). The schema is the
+         *  source of truth: typed body access, no probing. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            if (body.maxEvents === undefined) {
+                return { counts: { "event": 3 } };
+            }
+            const n = (body.searchQueries?.length ?? 0) +
+                (body.startUrls?.length ?? 0);
+            return { counts: { "event": body.maxEvents * Math.max(n, 1) } };
         },
     },
 });

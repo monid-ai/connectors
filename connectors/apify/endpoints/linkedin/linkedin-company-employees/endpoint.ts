@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinCompanyEmployeesBody } from "./schema/inputs.ts";
 
 /**
@@ -49,6 +49,16 @@ export default defineEndpoint({
         },
         /** maxItems caps the run — the endpoint's OWN pinned input fields
          *  (no probing: the schema is the source of truth). */
-        estimate: presets.estimate.limitIsExact("maxItems", 3),
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "full-profile":
+                        body.maxItems !== undefined && body.maxItems > 0
+                            ? Math.floor(body.maxItems)
+                            : 3,
+                },
+            };
+        },
     },
 });

@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramSearchScraperBody } from "./schema/inputs.ts";
 
 /**
@@ -38,13 +38,11 @@ export default defineEndpoint({
          *  "a,b,c" as three searches — PR #2 finding; the actor publishes
          *  no searchLimit server default, so absent stays a conservative
          *  in-fn fallback rather than a schema default). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.searchLimit") ?? 3;
-            const raw = utils.json.optionalGet(body, "$.search");
-            const terms = typeof raw === "string"
-                ? raw.split(",").filter((t) => t.trim() !== "").length
-                : 0;
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const limit = body.searchLimit ?? 3;
+            const terms = body.search
+                .split(",").filter((t) => t.trim() !== "").length;
             return { counts: { "RESULT": limit * Math.max(terms, 1) } };
         },
     },

@@ -1369,7 +1369,20 @@ Deno.test("estimate matches actual when counts are true (counts deep-equal)", as
                 schema: { body: z.object({ queries: z.array(z.string()) }) },
             };
             connectors[0].endpoints[0].def.usage = {
-                estimate: presets.estimate.onePerQuery("queries"),
+                // raw-def slot (no defineEndpoint typing here): accept the
+                // broad ctx, narrow inside — doc-authored fns get this typed
+                estimate: (
+                    { data }: { data: { input: { body?: unknown } } },
+                ) => {
+                    const body = data.input.body as
+                        | { queries?: string[] }
+                        | undefined;
+                    return {
+                        counts: {
+                            "RESULT": Math.max(body?.queries?.length ?? 0, 1),
+                        },
+                    };
+                },
             };
         }),
     );
@@ -1505,9 +1518,45 @@ Deno.test("FN_CONTRACT: estimate counts are validated like settled ones", async 
     );
 });
 
-Deno.test("generic keying: presets derive the counts key from data.model", async () => {
-    // leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id
-    const engine = new Engine({ transport: jsonTransport(200, {}) });
+Deno.test("generic keying: provider-seam fns derive the counts key from data.model", async () => {
+    // leaf PER_UNIT → the unit; COMPOSITE → the sole metered component id.
+    // The generic idiom survives ONLY at the provider seam (apify's shared
+    // consolidate) — doc-local fns hardcode their literal key (design D23).
+    const keyedConsolidate = (ctx: {
+        data: { output: unknown; model: unknown };
+        utils: unknown;
+    }) => {
+        const { len } = (ctx.utils as {
+            json: { len: (v: unknown, p: string) => number };
+        }).json;
+        const model = ctx.data.model as
+            | { kind: "PER_UNIT"; unit: string }
+            | {
+                kind: "COMPOSITE";
+                components: Record<string, { kind: string; unit?: string }>;
+            }
+            | { kind: "PER_CALL" };
+        let key;
+        switch (model.kind) {
+            case "PER_UNIT":
+                key = model.unit;
+                break;
+            case "COMPOSITE":
+                key = Object.entries(model.components)
+                    .find(([, c]) => c.kind === "PER_UNIT")?.[0];
+                break;
+            case "PER_CALL":
+                key = undefined;
+                break;
+        }
+        const amount = len(ctx.data.output, "$.results");
+        return {
+            usage: { counts: key === undefined ? {} : { [key]: amount } },
+        };
+    };
+    const engine = new Engine({
+        transport: jsonTransport(200, { results: [{ id: "a" }] }),
+    });
     const composite = await engine.load(
         await usageUnit({
             model: {
@@ -1517,13 +1566,27 @@ Deno.test("generic keying: presets derive the counts key from data.model", async
                     "comment": { kind: "PER_UNIT", unit: "RESULT" },
                 },
             },
-            consolidate: presets.usage.perResult("$.results"),
-            estimate: presets.estimate.limitIsExact("q", 3),
+            consolidate: keyedConsolidate,
+            estimate: ({ data }: { data: { model: unknown } }) => {
+                const model = data.model as {
+                    kind: string;
+                    components?: Record<string, { kind: string }>;
+                };
+                const key = model.kind === "COMPOSITE"
+                    ? Object.entries(model.components ?? {})
+                        .find(([, c]) => c.kind === "PER_UNIT")?.[0]
+                    : undefined;
+                return { counts: key === undefined ? {} : { [key]: 3 } };
+            },
         }),
     );
     assertEquals(
         composite.estimate({ body: { q: "x" } }).counts,
         { "comment": 3 },
+    );
+    assertEquals(
+        (await composite.run({ body: { q: "x" } })).usage.counts,
+        { "comment": 1 },
     );
     const leafEngine = new Engine({
         transport: jsonTransport(200, { results: [{ id: "a" }] }),
@@ -1531,7 +1594,7 @@ Deno.test("generic keying: presets derive the counts key from data.model", async
     const leaf = await leafEngine.load(
         await usageUnit({
             model: { kind: "PER_UNIT", unit: "RESULT" },
-            consolidate: presets.usage.perResult("$.results"),
+            consolidate: keyedConsolidate,
         }),
     );
     assertEquals(

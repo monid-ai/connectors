@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zPremiumXFollowerScraperFollowingDataBody } from "./schema/inputs.ts";
 
 /**
@@ -35,13 +35,18 @@ export default defineEndpoint({
     input: { schema: { body: zPremiumXFollowerScraperFollowingDataBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** whichever follower cap is set — TWO alternative limit knobs,
-         *  so an inline fn (presets take single fields — D19 addendum). */
-        estimate: ({ data, utils }) => {
-            const body = data.input.body ?? null;
-            const limit = utils.json.optionalNum(body, "$.maxFollowers") ??
-                utils.json.optionalNum(body, "$.maxFollowings") ?? 3;
-            return { counts: { "RESULT": limit } };
+        /** Mode-aware: each enabled direction contributes its own cap
+         *  (getFollowers → maxFollowers, getFollowing → maxFollowings —
+         *  all four fields required by the schema). Both off ⇒ nothing
+         *  scraped, but the actor still starts — estimate 0. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "RESULT": (body.getFollowers ? body.maxFollowers : 0) +
+                        (body.getFollowing ? body.maxFollowings : 0),
+                },
+            };
         },
     },
 });

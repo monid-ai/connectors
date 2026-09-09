@@ -74,25 +74,12 @@ export interface TypedEstimateCtx<B> {
 }
 
 /**
- * The PORTABLE fn shapes presets return: body-agnostic (`body?: unknown`
- * — a preset guards its own reads), so one preset term slots into ANY
- * doc's typed consolidate/estimate position via plain assignability…
- * except a flat doc's estimate slot (`never`), where nothing is
- * assignable — exactly the point.
+ * The PORTABLE fn shape the remaining consolidate preset returns:
+ * body-agnostic (`body?: unknown` — a preset guards its own reads), so
+ * one preset term slots into ANY doc's typed consolidate position via
+ * plain assignability. (The estimate twin died with the estimate presets
+ * — design D23: a typed inline fn IS the typed estimate.)
  */
-export type PortableEstimateFn = (ctx: {
-    data: {
-        input: Omit<RunInput, "body"> & { body?: unknown };
-        model: UsageModel;
-    };
-    utils: FnUtils;
-    logger: HookLogger;
-}) => {
-    counts: Record<string, number>;
-    cost?: MonetaryValue;
-    evidence?: Record<string, Json>;
-};
-
 export type PortableConsolidateFn = (ctx: {
     data: {
         input: Omit<RunInput, "body"> & { body?: unknown };
