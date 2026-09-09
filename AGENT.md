@@ -82,14 +82,23 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
   event prices tier by subscription plan), so rates live in the hosted rate
   card. Conditions/offsets/selection are COUNTING rules owned by
   consolidate/estimate, never model shapes (D19 — no VARIANT/TIERED kinds).
-  `usage.counts` is ONE keyed map for every model type: component id (composite,
-  metered only) / the model's unit (leaf) / `{}` (PER_CALL, error settles — the
-  canonical "nothing counted"); the key joins counts ↔ broker card row ↔ drift
-  guard ↔ stashed vendor rates. ≥2 metered components require doc-level fns
-  (compile-checked); the engine validates counts against the model at settle AND
-  estimate (FN_CONTRACT). `deno task engine:estimate` prints an endpoint's
-  pre-run estimate; `deno task apify:pricing` guards model shape + exact
-  component ids against live published pricing (D18/D19).
+  `usage.counts` is the COMPLETE billed vector on success (D24): metered keys
+  carry fn-settled quantities, and every FLAT charge is ENGINE-appended at
+  exactly 1 (composite flats under their component id; leaf PER_CALL under the
+  reserved `CALL` key — not a Unit) — counts × rates = the whole bill, and for
+  apify the vector maps 1:1 onto vendor charge events. Fns never write flat keys
+  (type + runtime rejected); `{counts: {}}` is the ERROR-path shape only.
+  Scalars carry optional `label`s ("base fee", "reviews") — display metadata;
+  the key is the join. ≥2 metered components require doc-level fns
+  (compile-checked); a METERED model requires usage.estimate (compile-checked,
+  D24) and estimates are DEDUCED, never defaulted: no fallback constants —
+  limiting knobs are either actor-verified schema `.default(n)`s (materialized
+  into body AND queryParams before any hook) or REQUIRED at the binding site
+  (`zBody.required({...})` in endpoint.ts; schema files stay actor-faithful).
+  The engine validates fn counts against the model at settle AND estimate
+  (FN_CONTRACT), then completes the vector. `deno task engine:estimate` prints
+  an endpoint's pre-run vector; `deno task apify:pricing` guards model shape +
+  exact component ids against live published pricing (D18/D19/D24).
 - **Typed authoring (D19a/D23)**: `defineEndpoint` is generic over the model,
   the input body schema, and the lifecycle state schema — counts keys narrow to
   the model's LITERAL metered keys, `data.input.body` is `z.output` of the doc's

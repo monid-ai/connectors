@@ -54,6 +54,8 @@ function demoConnector(): ConnectorSource[] {
                 },
                 usage: {
                     model: { kind: "PER_UNIT", unit: "RESULT" },
+                    // metered docs must estimate (D24)
+                    estimate: () => ({ counts: { "RESULT": 1 } }),
                     consolidate: ({ data, utils }) => ({
                         usage: {
                             counts: {
@@ -302,6 +304,7 @@ Deno.test("FN_CONTRACT: compute returning junk fails closed (slot z.function enf
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         model: { kind: "PER_UNIT", unit: "RESULT" },
+        estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
         consolidate: ((_ctx: never) => 42) as never,
     };
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
@@ -319,6 +322,7 @@ Deno.test("FN_CONTRACT: fn that throws fails closed", async () => {
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         model: { kind: "PER_UNIT", unit: "RESULT" },
+        estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
         consolidate: ((_ctx: never) => {
             throw new Error("boom");
         }) as never,
@@ -421,6 +425,7 @@ Deno.test("usage.consolidate: settles the RAW envelope before fromResponse", asy
         input: { schema: { body: z.object({ q: z.string().min(1) }) } },
         usage: {
             model: { kind: "PER_UNIT", unit: "RESULT" },
+            estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
             // ONE settle fn: extract usage AND absorb the billing field
             consolidate: ({ data, utils }) => ({
                 usage: {
@@ -713,6 +718,8 @@ function asyncConnector(): ConnectorSource[] {
             },
             usage: {
                 model: { kind: "PER_UNIT", unit: "RESULT" },
+                // metered docs must estimate (D24)
+                estimate: () => ({ counts: { "RESULT": 1 } }),
                 consolidate: ({ data, utils }) => {
                     const usd = utils.json.optionalNum(
                         data.lifecycle?.state ?? null,
@@ -1393,7 +1400,7 @@ Deno.test("estimate matches actual when counts are true (counts deep-equal)", as
     assertEquals(estimated.counts, actual.usage.counts);
 });
 
-Deno.test("estimate: pure (no IO) and `{}` without an estimate fn (the PER_CALL posture)", async () => {
+Deno.test("estimate: pure (no IO); a flat doc's vector is engine-derived (D24)", async () => {
     let fetched = false;
     const engine = new Engine({
         transport: directTransport({
@@ -1404,8 +1411,17 @@ Deno.test("estimate: pure (no IO) and `{}` without an estimate fn (the PER_CALL 
             },
         }),
     });
-    const loaded = await engine.load(await demoUnit()); // no estimate fn
-    assertEquals(loaded.estimate({ body: { q: "x" } }), { counts: {} });
+    // flat doc, NO estimate fn: the engine derives the whole vector from
+    // the model — the flat charge under the reserved CALL key (D24)
+    const loaded = await engine.load(
+        await usageUnit({
+            model: { kind: "PER_CALL" },
+            consolidate: () => ({ usage: { counts: {} } }),
+        }),
+    );
+    assertEquals(loaded.estimate({ body: { q: "x" } }), {
+        counts: { "CALL": 1 },
+    });
     assertEquals(fetched, false);
 });
 
@@ -1418,7 +1434,17 @@ async function usageUnit(
     usage: ConnectorSource["endpoints"][number]["def"]["usage"],
 ): Promise<SealedUnit> {
     const connectors = demoConnector();
-    connectors[0].endpoints[0].def.usage = usage;
+    // metered docs must declare an estimate (D24 compile rule) — splice a
+    // benign one when the test under-specifies ({} passes countsMismatch)
+    const metered = usage?.model !== undefined &&
+        (usage.model.kind === "PER_UNIT" ||
+            (usage.model.kind === "COMPOSITE" &&
+                Object.values(usage.model.components)
+                    .some((c) => c.kind === "PER_UNIT")));
+    connectors[0].endpoints[0].def.usage =
+        metered && usage?.estimate === undefined
+            ? { ...usage, estimate: () => ({ counts: {} }) }
+            : usage;
     delete connectors[0].endpoints[0].def.output; // free-form outputs
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
     return sealUnit(bundle, "demo#search");
@@ -1488,7 +1514,9 @@ Deno.test("composite settle: counts keyed by component id pass; {} always passes
         }),
     );
     const result = await loaded.run({ body: { q: "x" } });
-    assertEquals(result.usage.counts, { "item": 7 });
+    // COMPLETE VECTOR (D24): the engine appends the flat component's 1 —
+    // counts × rates = the whole bill, no model join
+    assertEquals(result.usage.counts, { "item": 7, "start": 1 });
 
     const empty = await engine.load(
         await usageUnit({
@@ -1496,9 +1524,10 @@ Deno.test("composite settle: counts keyed by component id pass; {} always passes
             consolidate: () => ({ usage: { counts: {} } }),
         }),
     );
+    // leaf PER_CALL bills under the reserved CALL key (D24)
     assertEquals(
         (await empty.run({ body: { q: "x" } })).usage.counts,
-        {},
+        { "CALL": 1 },
     );
 });
 
@@ -1582,11 +1611,11 @@ Deno.test("generic keying: provider-seam fns derive the counts key from data.usa
     );
     assertEquals(
         composite.estimate({ body: { q: "x" } }).counts,
-        { "comment": 3 },
+        { "comment": 3, "actor-start": 1 },
     );
     assertEquals(
         (await composite.run({ body: { q: "x" } })).usage.counts,
-        { "comment": 1 },
+        { "comment": 1, "actor-start": 1 },
     );
     const leafEngine = new Engine({
         transport: jsonTransport(200, { results: [{ id: "a" }] }),

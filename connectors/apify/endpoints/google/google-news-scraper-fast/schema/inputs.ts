@@ -11,7 +11,7 @@ import { z } from "zod";
 export const zGoogleNewsScraperFastBody = z.object({
     "keywords": z.array(z.any()).describe(
         "List of keywords to search for. You can use Google News search operators: - Use '-' to exclude words (e.g. 'bitcoin -ethereum') - Use 'site:' to filter by specific website (e.g. 'bitcoin site:cnn.com') - Use 'OR' to search for multiple terms (e.g. 'bitcoin OR ethereum') - Use quotes for exact mat...",
-    ).optional(),
+    ).default([]), // actor server default, verified live
     "topics": z.array(
         z.enum([
             "WORLD",
@@ -24,13 +24,13 @@ export const zGoogleNewsScraperFastBody = z.object({
             "HEALTH",
         ]),
     ).describe("Select one or more predefined Google News topics to scrape.")
-        .optional(),
+        .default([]), // actor server default, verified live
     "topicUrls": z.array(z.any()).describe(
         "Provide custom Google News topic or section URLs to scrape. Useful for niche topics not in the predefined list. Example: https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB",
-    ).optional(),
+    ).default([]), // actor server default, verified live
     "maxArticles": z.number().int().min(0).describe(
         "Maximum number of news to extract per keyword or topic (0 = no limit)",
-    ).optional(),
+    ).default(100), // actor server default, verified live
     "timeframe": z.enum(["1h", "1d", "7d", "30d", "1y", "all"]).describe(
         "Time period for the news search. Note: this filter applies mainly to keyword searches. Topic pages return their own curated results.",
     ).optional(),

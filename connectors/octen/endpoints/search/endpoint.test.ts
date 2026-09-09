@@ -28,7 +28,11 @@ Deno.test("octen#search happy (recorded): call + gated token tier, meter absorbe
     // ONE count: the gated full-content tokens, keyed by the component
     // id. The flat "call" component is MODEL-declared (COMPOSITE), never
     // a count (D18/D19).
-    assertEquals(result.usage.counts, { "full_content_tokens": 4112 });
+    // metered tokens + the engine-appended flat call (complete vector, D24)
+    assertEquals(result.usage.counts, {
+        "full_content_tokens": 4112,
+        "call": 1,
+    });
     assertEquals(result.usage.evidence?.usage, {
         num_search_queries: 1,
         full_content_tokens: 4112,
@@ -93,8 +97,8 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        // no full-content in the live probe: nothing counted (flat call
-        // charge is model-declared, not a measure)
-        assertEquals(result.usage.counts, {});
+        // no full-content in the live probe: nothing metered — the flat
+        // call still bills 1 (engine-appended complete vector, D24)
+        assertEquals(result.usage.counts, { "call": 1 });
     },
 });

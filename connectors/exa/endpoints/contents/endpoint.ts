@@ -28,6 +28,15 @@ export default defineEndpoint({
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        /** One result per requested URL — `urls` is required (min 1), so
+         *  its length is the deducible per-call quantity (v1 evidence:
+         *  exa's contents cost "varies by number of URLs"; the settle
+         *  counts `$.results`). `ids` (deprecated alias) and subpage
+         *  crawls can add results beyond this floor — settle trues the
+         *  count up from the response. */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.urls.length },
+        }),
         consolidate: ({ data, utils }) => {
             const total = utils.json.optionalNum(
                 data.output,

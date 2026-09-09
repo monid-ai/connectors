@@ -83,7 +83,7 @@ export const zEuAmazonSellersEmailLeadsBody = z.object({
     ).optional(),
     "max_results": z.number().int().max(100000).describe(
         "Maximum results you want to get",
-    ).optional(),
+    ).default(100), // actor server default, verified live
     "offset": z.number().int().max(999999).describe(
         "How many rows to skip. Useful when you already downloaded x rows and don't want to get duplicates",
     ).optional(),

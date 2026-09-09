@@ -69,14 +69,21 @@ fn on every doc (design D23 — estimate presets deleted): it reads the
 endpoint's OWN input-schema fields by direct typed property access
 (v1's allow-list probing is NOT ported, and `utils.json` never touches
 `data.input.body`), and its counts key is the doc's literal metered key
-— field typos and foreign keys fail `deno task check`. Estimate-driving
-knobs whose ACTOR publishes a
-server default pin it as a schema `.default(…)` — materialized into the
-validated body before any hook, so the estimate reads the same effective
-value the vendor applies (tiktok-video-scraper resultsPerPage 1 /
-scrapeRelatedVideos false; youtube-video-transcript max_videos 10 — all
-verified live). Flat-only endpoints declare no estimate (the engine
-default `{counts: {}}` is already exact).
+— field typos and foreign keys fail `deno task check`. Estimates are
+DEDUCED, never defaulted (design D24 — every limiting knob was audited
+against three sources: our schema, the actor's LIVE published input
+schema, and the v1 monid-services impl; the disposition table lives in
+design D24): a knob whose ACTOR publishes a server `default` pins it as
+a schema `.default(…)` — materialized into the validated body before any
+hook, so the estimate reads the same effective value the vendor applies
+— and a knob with NO usable server default (`prefill`-only, or an
+"absent/0 = unbounded" sentinel) is REQUIRED AT THE BINDING SITE
+(`zBody.required({...})` in endpoint.ts; schema/inputs.ts stays the
+faithful actor mirror). No fallback constants exist; a body without its
+limiting knob is rejected at validation. Composite components carry
+`label`s where the charge-event key is vendor jargon ("base fee",
+"reviews", "ads"). Flat-only endpoints declare no estimate — the engine
+derives their whole vector from the model (design D24).
 
 #### Scenario: Comma-separated search terms counted
 - **WHEN** instagram-search-scraper estimates {search: "a,b,c", searchLimit: 2}

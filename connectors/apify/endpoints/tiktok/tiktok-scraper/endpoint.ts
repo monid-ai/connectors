@@ -30,20 +30,26 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apidojo~tiktok-scraper/runs",
     },
-    input: { schema: { body: zTiktokScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (scrapes unbounded; live
+            // schema has prefill 1000 only — an editor hint, NOT a server
+            // default) — WE require it ≥ 1: the estimate must be deducible
+            // to price the hold (D24). v1 declared NO estimation label here
+            // (fell back to a constant); the actor's own docs make maxItems
+            // the total-output cap, so it IS the limiting knob.
+            body: zTiktokScraperBody.extend({
+                "maxItems": zTiktokScraperBody.shape.maxItems
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems caps the run — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "RESULT": body.maxItems !== undefined && body.maxItems > 0
-                        ? Math.floor(body.maxItems)
-                        : 3,
-                },
-            };
-        },
+        /** maxItems caps the total run output — required ≥ 1 at the
+         *  binding, so the estimate is pure arithmetic (D24). */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.maxItems },
+        }),
     },
 });

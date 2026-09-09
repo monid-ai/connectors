@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zNewsQueryParams } from "./schema/inputs.ts";
 
 /** GET /v1/news — enriched, entity-resolved news signals. */
@@ -28,4 +28,24 @@ export default defineEndpoint({
     },
     request: { method: "GET", path: "/v1/news/" },
     input: { schema: { queryParams: zNewsQueryParams } },
+    usage: {
+        /** The provider's model, restated so the estimate's counts key
+         *  narrows to the doc's own literal metered key (design D23/D24 —
+         *  consolidate stays provider-level). */
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
+        /** Akta news bills 0.01 CREDITS PER ARTICLE + a 0.1-credit flat
+         *  part — v1 evidence: news.ts priced
+         *  `makePerResultPrice(0.0005, 0.005)` ($0.0005/article + $0.005
+         *  flat) at the fixed $0.05/credit rate (v1 common.ts
+         *  DOLLARS_PER_CREDIT). `limit` carries the verified vendor
+         *  default 10 (materialized at validation), so the STRICT num
+         *  read cannot miss. Settle trues up on `credits_consumed`. */
+        estimate: ({ data, utils }) => ({
+            counts: {
+                "CREDIT": 0.1 +
+                    utils.json.num(data.input.queryParams ?? {}, "$.limit") *
+                        0.01,
+            },
+        }),
+    },
 });

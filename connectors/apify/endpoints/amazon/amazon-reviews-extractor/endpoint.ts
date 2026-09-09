@@ -30,7 +30,17 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/web_wanderer~amazon-reviews-extractor/runs",
     },
-    input: { schema: { body: zAmazonReviewsExtractorBody } },
+    input: {
+        schema: {
+            // the actor requires `products` but accepts an empty batch (a
+            // no-op run) — WE require it non-empty: it is the estimate's
+            // multiplier, which must be deducible to price the hold (D24)
+            body: zAmazonReviewsExtractorBody.extend({
+                "products": zAmazonReviewsExtractorBody.shape.products
+                    .min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -39,18 +49,28 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
-                "review": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "review": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "reviews",
+                },
             },
         },
-        /** limit review-PAGES (~10 reviews each) × products — single-use
-         *  counting rule, so an inline fn (D19 addendum). The schema is the
-         *  source of truth: typed body access, no probing. */
+        /** limit review-PAGES (~10 reviews each, v1 LIMIT_IS_PAGES) ×
+         *  products — limit carries the actor's server default (20) and
+         *  products is non-empty at the binding, so the estimate is pure
+         *  arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            if (body.limit === undefined) return { counts: { "review": 3 } };
-            const n = Math.max(body.products.length, 1);
-            return { counts: { "review": body.limit * 10 * n } };
+            return {
+                counts: {
+                    "review": body.limit * 10 * body.products.length,
+                },
+            };
         },
     },
 });

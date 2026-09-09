@@ -30,7 +30,22 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-post-search/runs",
     },
-    input: { schema: { body: zLinkedinPostSearchBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxPosts (prefill 20 is
+            // editor-only, NOT a server default) and reads 0 as "scrape ALL
+            // posts"; it also accepts absent searchQueries — WE require
+            // maxPosts ≥ 1 and a non-empty searchQueries (the per-query
+            // multiplier, v1 PER_QUERY_LIMIT): the estimate must be
+            // deducible to price the hold (D24)
+            body: zLinkedinPostSearchBody.extend({
+                "maxPosts": zLinkedinPostSearchBody.shape.maxPosts
+                    .unwrap().min(1),
+                "searchQueries": zLinkedinPostSearchBody.shape.searchQueries
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -39,20 +54,24 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
-                "post": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "post": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "posts",
+                },
             },
         },
-        /** maxPosts (schema default 10) per query — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxPosts per search query — both required at the binding, so the
+         *  estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "post": body.maxPosts !== undefined && body.maxPosts > 0
-                        ? Math.floor(body.maxPosts) *
-                            Math.max(body.searchQueries?.length ?? 0, 1)
-                        : 10,
+                    "post": body.maxPosts * body.searchQueries.length,
                 },
             };
         },

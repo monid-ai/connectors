@@ -35,14 +35,25 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/dev_fusion~linkedin-profile-scraper/runs",
     },
-    input: { schema: { body: zLinkedinProfileScraperBody } },
+    input: {
+        schema: {
+            // the actor requires profileUrls but accepts an empty array —
+            // WE require it non-empty (it is the whole billing basis: one
+            // result per url): the estimate must be deducible to price the
+            // hold (D24)
+            body: zLinkedinProfileScraperBody.extend({
+                "profileUrls": zLinkedinProfileScraperBody.shape.profileUrls
+                    .min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one profile per url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** one profile per url — non-empty at the binding, so the estimate
+         *  is pure arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: {
-                "RESULT": Math.max(data.input.body.profileUrls.length, 1),
+                "RESULT": data.input.body.profileUrls.length,
             },
         }),
     },

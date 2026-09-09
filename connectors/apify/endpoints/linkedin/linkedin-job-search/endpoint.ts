@@ -31,7 +31,21 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-job-search/runs",
     },
-    input: { schema: { body: zLinkedinJobSearchBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (prefill 10 is
+            // editor-only, NOT a server default) and an absent locations —
+            // WE require maxItems ≥ 1 and a non-empty locations (the
+            // per-query multiplier, v1 PER_QUERY_LIMIT): the estimate must
+            // be deducible to price the hold (D24)
+            body: zLinkedinJobSearchBody.extend({
+                "maxItems": zLinkedinJobSearchBody.shape.maxItems
+                    .unwrap().min(1),
+                "locations": zLinkedinJobSearchBody.shape.locations
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -40,20 +54,24 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "actor-start": { kind: UsageModelKind.PER_CALL },
-                "job": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "job": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "jobs",
+                },
             },
         },
-        /** maxItems per location — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxItems per location — both required at the binding, so the
+         *  estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "job": body.maxItems !== undefined && body.maxItems > 0
-                        ? Math.floor(body.maxItems) *
-                            Math.max(body.locations?.length ?? 0, 1)
-                        : 3,
+                    "job": body.maxItems * body.locations.length,
                 },
             };
         },

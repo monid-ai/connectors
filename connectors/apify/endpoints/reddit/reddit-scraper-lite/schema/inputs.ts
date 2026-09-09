@@ -59,7 +59,7 @@ export const zRedditScraperLiteBody = z.object({
     ).optional(),
     "maxItems": z.number().int().describe(
         "The maximum number of items that will be saved in the dataset. If you are scrapping for Communities&Users, remember to consider that each category inside a community is saved as a separated item.",
-    ).optional(),
+    ).default(10), // actor server default, verified live
     "maxPostCount": z.number().int().describe(
         "The maximum number of posts that will be scraped for each Posts Page or Communities&Users URL",
     ).optional(),

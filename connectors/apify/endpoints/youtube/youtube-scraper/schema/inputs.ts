@@ -14,16 +14,16 @@ export const zYoutubeScraperBody = z.object({
     ).optional(),
     "maxResults": z.number().int().min(0).max(999999).describe(
         "Limit the number of videos you want to crawl. If you scrape a channel, acts as a limit for regular videos.",
-    ).optional(),
+    ).default(0), // actor server default, verified live (0 = no regular videos)
     "maxResultsShorts": z.number().int().min(0).max(999999).describe(
         "Limit the number of Shorts videos you want to crawl.",
-    ).optional(),
+    ).default(0), // actor server default, verified live
     "maxResultStreams": z.number().int().min(0).max(999999).describe(
         "Limit the number of Stream videos you want to crawl.",
-    ).optional(),
+    ).default(0), // actor server default, verified live
     "startUrls": z.array(z.any()).describe(
         "Enter a link to a YouTube video, channel, playlist, hashtag or search results page. You can also import a CSV file or Google Sheet with a list of URLs.Note: Input from Search term will be ignored when using this option. If you only want to scrape shorts/streams, set Maximum search results to 0, o...",
-    ).optional(),
+    ).default([]), // actor server default, verified live
     "downloadSubtitles": z.boolean().describe(
         "If set to true, the scraper will download subtitles for the video and convert them to .srt format.",
     ).optional(),

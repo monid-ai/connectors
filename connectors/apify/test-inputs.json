@@ -60,7 +60,8 @@
             "https://www.instagram.com/instagram/"
         ],
         "resultsType": "posts",
-        "resultsLimit": 2
+        "resultsLimit": 2,
+        "searchLimit": 1
     },
     "apify/instagram-hashtag-scraper": {
         "hashtags": [
@@ -217,7 +218,8 @@
         "profileScraperMode": "Short",
         "firstName": "Steve",
         "lastName": "Jobs",
-        "maxPages": 1
+        "maxPages": 1,
+        "maxItems": 2
     },
     "harvestapi/linkedin-profile-search-by-services": {
         "profileScraperMode": "Short",

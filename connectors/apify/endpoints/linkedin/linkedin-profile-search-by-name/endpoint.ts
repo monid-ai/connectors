@@ -1,4 +1,4 @@
-import { defineEndpoint, presets, Unit, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zLinkedinProfileSearchByNameBody } from "./schema/inputs.ts";
 
 /**
@@ -29,24 +29,29 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-profile-search-by-name/runs",
     },
-    input: { schema: { body: zLinkedinProfileSearchByNameBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (scrapes unbounded; no
+            // server default published) — WE require it ≥1: the estimate
+            // must be deducible to price the hold (D24). maxItems is the
+            // PRIMARY bound (v1 DUAL_LIMIT probes it first, and it maps
+            // 1:1 onto the billed RESULT); maxPages stays optional and no
+            // longer feeds the estimate.
+            body: zLinkedinProfileSearchByNameBody.extend({
+                "maxItems": zLinkedinProfileSearchByNameBody.shape.maxItems
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems wins; else maxPages × 25 profiles/page — a dual-knob
-         *  rule used ONCE, so an inline fn (the dualLimit preset is
-         *  deleted — D19 addendum). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            if (body.maxItems !== undefined) {
-                return { counts: { "RESULT": body.maxItems } };
-            }
-            return {
-                counts: {
-                    "RESULT": body.maxPages !== undefined
-                        ? body.maxPages * 25
-                        : 3,
-                },
-            };
-        },
+        /** maxItems is required ≥1 at the binding (D24), so the estimate
+         *  is pure arithmetic. (Billing basis has a known open follow-up —
+         *  the model is untouched here.) */
+        estimate: ({ data }) => ({
+            counts: {
+                "RESULT": data.input.body.maxItems,
+            },
+        }),
     },
 });

@@ -33,16 +33,26 @@ export default defineEndpoint({
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
-                "call": { kind: UsageModelKind.PER_CALL },
+                "call": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "full_content_tokens": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
+                    label: "content tokens",
                     description:
                         "full-content extraction tokens (only charged " +
                         "when full_content.enable is set)",
                 },
             },
         },
+        /** Full-content tokens depend on PAGE CONTENT — not deducible from
+         *  the input, so the metered key is promised at the deducible
+         *  floor 0 (design D24); settle trues it up from
+         *  `meta.usage.full_content_tokens`. The flat "call" is
+         *  engine-appended, never promised here. */
+        estimate: () => ({ counts: { "full_content_tokens": 0 } }),
         consolidate: ({ data, utils }) => {
             const tokens = utils.json.optionalNum(
                 data.output,

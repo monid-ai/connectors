@@ -30,19 +30,30 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/clockworks~tiktok-video-scraper/runs",
     },
-    input: { schema: { body: zTiktokVideoScraperBody } },
+    input: {
+        schema: {
+            // postURLs is the per-url multiplier — the actor requires the
+            // field but accepts an empty list; WE require it non-empty:
+            // the estimate must be deducible to price the hold (D24)
+            body: zTiktokVideoScraperBody.extend({
+                "postURLs": zTiktokVideoScraperBody.shape.postURLs.min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one video per post URL, PLUS resultsPerPage related videos per
          *  URL when scrapeRelatedVideos is on (PR #2 finding — every
          *  related record bills as an item). The schema pins the actor's
          *  OWN server defaults (scrapeRelatedVideos false, resultsPerPage
-         *  1), materialized into the body before any hook runs. */
+         *  1), materialized into the body before any hook runs; postURLs
+         *  is required non-empty at the binding — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const n = Math.max(body.postURLs.length, 1);
             const related = body.scrapeRelatedVideos ? body.resultsPerPage : 0;
-            return { counts: { "RESULT": n * (1 + related) } };
+            return {
+                counts: { "RESULT": body.postURLs.length * (1 + related) },
+            };
         },
     },
 });

@@ -36,11 +36,12 @@ export default defineEndpoint({
     input: { schema: { body: zYoutubeChannelBusinessEmailScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one channel record per entry — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** one channel record per entry (v1 ONE_PER_QUERY) — channels is
+         *  non-empty by the actor's own minItems (mirrored in the schema),
+         *  so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: {
-                "RESULT": Math.max(data.input.body.channels.length, 1),
+                "RESULT": data.input.body.channels.length,
             },
         }),
     },

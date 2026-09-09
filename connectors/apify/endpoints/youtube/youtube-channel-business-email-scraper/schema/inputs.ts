@@ -9,9 +9,9 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zYoutubeChannelBusinessEmailScraperBody = z.object({
-    "channels": z.array(z.any()).describe(
+    "channels": z.array(z.any()).min(1).describe(
         "Provide a list of YouTube channel URLs, channel handles (starting with '@'), or 24-character channel IDs. Each entry should identify a unique YouTube channel from which to extract business emails.",
-    ),
+    ), // .min(1): the actor's own minItems, verified live
     "scrape_fresh_emails": z.boolean().describe(
         "Forces a new scrape directly from YouTube for every channel in this run. A surcharge of $0.28 per result applies on top of the standard $0.12 rate ($0.40 total).",
     ).optional(),

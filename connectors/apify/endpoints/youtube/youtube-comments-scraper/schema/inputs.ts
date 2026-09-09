@@ -14,7 +14,7 @@ export const zYoutubeCommentsScraperBody = z.object({
     ),
     "maxComments": z.number().int().min(1).describe(
         "Limit the number of comments you want to scrape per video.",
-    ).optional(),
+    ).default(1), // actor server default, verified live (prefill is 10)
     "sortCommentsBy": z.enum(["TOP_COMMENTS", "NEWEST_FIRST"]).describe(
         "Select Youtube sorting parameter for comments",
     ).optional(),

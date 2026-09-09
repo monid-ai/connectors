@@ -14,7 +14,7 @@ export const zRedditCommentScraperBody = z.object({
     ),
     "maxComments": z.number().int().min(1).max(100000).describe(
         "Maximum number of comments to scrape from each post (including nested replies).",
-    ).optional(),
+    ).default(100), // actor server default, verified live
     "commentSort": z.enum([
         "confidence",
         "top",

@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zCompanySearchQueryParams } from "./schema/inputs.ts";
 
 /** GET /v1/company/search — free lookup step for the other Akta endpoints. */
@@ -20,5 +20,16 @@ export default defineEndpoint({
     },
     request: { method: "GET", path: "/v1/company/search/" },
     input: { schema: { queryParams: zCompanySearchQueryParams } },
-    // auth, toRequest (array→CSV), and usage (credits) inherit from the provider
+    // auth, toRequest (array→CSV), and usage model/consolidate (credits)
+    // inherit from the provider
+    usage: {
+        /** The provider's model, restated so the estimate's counts key
+         *  narrows to the doc's own literal metered key (design D23/D24 —
+         *  consolidate stays provider-level). */
+        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
+        /** FREE lookup — a DEDUCED flat 0 credits per call (v1 evidence:
+         *  company-search.ts priced `makePerCallPrice(0)`). Settle trues
+         *  up on `credits_consumed`. */
+        estimate: () => ({ counts: { "CREDIT": 0 } }),
+    },
 });

@@ -32,21 +32,34 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/practicaltools~apify-reddit-api/runs",
     },
-    input: { schema: { body: zApifyRedditApiBody } },
+    input: {
+        schema: {
+            // maxItems applies PER JOB, and every search query, subreddit or
+            // URL is its own job (actor docs: "2 search queries × maxItems
+            // 25 = up to 50 posts") — the actor accepts a run with neither
+            // input; WE require at least one job so the multiplier is
+            // non-zero: the estimate must be deducible to price the hold
+            // (D24). startUrls and searches are ALTERNATIVES, so neither is
+            // individually required.
+            body: zApifyRedditApiBody.refine(
+                (b) =>
+                    (b.startUrls?.length ?? 0) + (b.searches?.length ?? 0) > 0,
+                "at least one of startUrls or searches must be non-empty",
+            ),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems per startUrl — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxItems (actor server default 25, verified live) × jobs, where
+         *  jobs = startUrls + searches entries (each is billed up to
+         *  maxItems — old estimate missed `searches`). The binding
+         *  guarantees ≥ 1 job, so an absent array is a genuine zero-job
+         *  term, not a masked default (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            return {
-                counts: {
-                    "RESULT": body.maxItems !== undefined
-                        ? body.maxItems *
-                            Math.max(body.startUrls?.length ?? 0, 1)
-                        : 3,
-                },
-            };
+            const jobs = (body.startUrls?.length ?? 0) +
+                (body.searches?.length ?? 0);
+            return { counts: { "RESULT": body.maxItems * jobs } };
         },
     },
 });

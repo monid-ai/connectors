@@ -730,3 +730,124 @@ typing to lose.
 | **Model** (`usage.model`) | The rate-free billing ALGEBRA on the doc: LEAF (PER_CALL flat / PER_UNIT metered) and AND (COMPOSITE — scalar components KEYED BY ID; for apify the vendor's charge-event names verbatim). Conditions/offsets/selection are COUNTING rules owned by the fns, never model shapes (D19 — VARIANT deleted). Rates and tier schedules live in the services rate card (D18). |
 | **Counts** (`usage.counts`) | The settled/estimated quantities as ONE keyed map for every model type: component id (composite) / the model's unit (leaf PER_UNIT) / `{}` (PER_CALL, error settles). The key is the join across counts ↔ broker card row ↔ drift guard ↔ stashed vendor rates (D19). |
 | **Tick** (informal) | One `poll(runInput, state)` activity invocation. |
+
+## D24 — Complete counts vector + deduced estimates (reverses two D18/D19 calls)
+
+Review direction: "it should be counted… and there shouldn't be a default
+because all should be deduced." Two reversals, plus labels and the provider
+half of the type layer.
+
+**1. Flat components ARE counted — counts is the COMPLETE billed vector.**
+On success, `usage.counts` carries EVERY billed component, so
+`counts × rates = the whole bill` with no model join (and for apify the
+vector maps 1:1 onto the vendor's own charge events): leaf PER_CALL bills
+under the reserved `CALL` key (deliberately NOT a Unit); a composite's flat
+components bill under their own ids (`{"apify-actor-start": 1, "review":
+20}`). The ENGINE appends the flat 1s (`flatCounts(model)`, beside
+`countsMismatch`) at estimate AND success settle — fns still never write
+flat keys (type layer + countsMismatch keep rejecting them: a fn stating
+`"actor-start": 2` is unrepresentable), so the constant has one source.
+Error settles stay `zeroUsage()` — `{counts: {}}` is now the ERROR-PATH
+shape only.
+
+**2. Estimates are DEDUCED, never defaulted.** A `?? 3` under-holds — the
+admission hold is priced from the estimate, and a fallback constant is a
+guess. Rules:
+- Every METERED doc (≥1 PER_UNIT part in its model) MUST declare
+  `usage.estimate` — compile-enforced (HOOK_UNRESOLVED), the old ≥2-metered
+  keying rule kept (checked first: more specific diagnosis wins).
+- The estimate is PURE ARITHMETIC over the validated input — no fallback
+  constants, no presence-branches over billing knobs. A FIXED quantity that
+  follows from the vendor's price structure (akta: 1.5 credits per 50
+  records) is deduced, not a fallback — cite the evidence.
+- Every knob an estimate reads is deterministic post-validation: a schema
+  `.default(n)` ONLY where it mirrors the actor's VERIFIED server default
+  (`default` in the published input schema — `prefill` is editor-only text
+  and justifies nothing), otherwise REQUIRED.
+- Required-ness lives AT THE BINDING SITE, never in the schema file:
+  `schema/inputs.ts` stays the faithful actor mirror; the endpoint tightens
+  with `zBody.required({ "maxItems": true })` (zod keeps inner checks) or
+  derives extra floors via `zBody.extend({ f: zBody.shape.f.unwrap().min(1) })`
+  — the actor's contract and OUR billing precondition stay separately visible.
+- Query arrays feeding multiplication: required + `.min(1)` (or vendor-default
+  `[]` materialized when absent ≡ empty on the actor); the `Math.max(len, 1)`
+  masks died with the branches.
+- Schema defaults now materialize for queryParams/pathParams too (the engine's
+  validateInput clones + `useDefaults` across all three input channels — akta's
+  `limit` default rides the wire exactly as the vendor would apply it).
+
+**3. Labels — keys stay verbatim, display rides beside.** Model scalars gain
+an OPTIONAL `label` (≤40 chars): flat components → "base fee" (exa's model
+reads exactly that way), metered → a plain-english plural ("reviews",
+"extra results", "content tokens"). Rendering is services-side with the KEY
+as fallback (`${label ?? key} × ${count}`); the key is the vendor join and
+never changes for display reasons.
+
+**4. Typed provider state.** The slot-override shapes are factored into
+shared types (`TypedLifecycleSlots`/`TypedOutputSlots` in typed.ts) composed
+by BOTH define fns; `defineProvider<StateSchema>` types the provider's
+fn-owned `state.data` bag at read AND write sites (the apify poll stashing
+an unprojected pricing card is now a TYPE error — review finding #12 made
+unrepresentable). The provider body stays `Json | undefined` (a provider fn
+serves every endpoint — D23's documented seam). The apify provider's
+own-state reads converted to typed access; a missing `externalRunId` throws
+`{retriable: false}` (deterministic corruption → FN_CONTRACT, preserving
+the old JsonPathError taxonomy).
+
+### Limit-knob disposition (three-source audit: our schema · live actor input schema · v1 impl)
+
+Decisions: `default n` = actor-published server default pinned in the schema
+file; `required` = required-at-binding (no usable server default — prefill-only,
+or an "absent/0 = unbounded" sentinel); `deduced` = constant justified by the
+vendor's price structure.
+
+| endpoint | knob(s) | decision |
+|---|---|---|
+| amazon-reviews-scraper | input[] | required (min 1) |
+| amazon-product-details-scraper | Params[] | required (min 1) |
+| amazon-reviews-extractor | limit ×10 × products[] | default 20; products min 1 |
+| amazon-search-scraper | per-item maxPages ×10 | required (nested item field) |
+| eu-amazon-sellers-email-leads | max_results | default 100 |
+| google-maps-scraper | max_results | default 100 |
+| google-shopping-scraper | limit | default 10 |
+| google-maps-reviews-scraper | maxReviews × (startUrls+placeIds) | required (published 10000000 is an "all" sentinel); fix: placeIds now counted |
+| google-news-scraper-fast | maxArticles × 3 arrays | default 100 (+min 1 floor: 0 = unbounded); arrays default []; fix: topicUrls now counted |
+| google-shopping-apify | max_pages × num × queries | defaults 1/[]; fix: multi-query multiplier |
+| youtube-channel-business-email-scraper | channels[] | required, minItems 1 (actor-published) |
+| youtube-comments-scraper | maxComments × startUrls | default 1 (prefill 10 is editor-only); urls min 1 |
+| youtube-scraper | 3 caps × sources | defaults 0/0/0 (literal caps); fix: shorts/streams counted |
+| youtube-video-transcript | max_videos / mode | default 10 (D19a, kept) |
+| facebook-ads-library-scraper | count (total cap) | required; fix: count replaces limitPerSource (wrong knob) |
+| facebook-{comments,groups,reviews}-scraper | resultsLimit × startUrls | required; urls min 1 |
+| facebook-pages-scraper | startUrls[] | required (min 1) |
+| facebook-profile-posts-scraper | mode textarea + max_posts | required via per-mode discriminated union binding |
+| facebook-events-scraper | maxEvents × 2 arrays | required; arrays default [] |
+| reddit-scraper-lite | maxItems | default 10 |
+| reddit-comment-scraper | maxComments × postUrls | default 100; urls min 1; fix: multiplier was v1's keywords (a filter) |
+| apify-reddit-api | maxItems × jobs | default 25; refine ≥1 job; fix: searches counted |
+| tiktok-profile-scraper / tiktok-scraper / tweet-scraper | maxItems | required (prefill-only) |
+| tiktok-video-scraper | postURLs × (1+related) | urls min 1; D19a defaults kept |
+| instagram-{hashtag,post}-scraper | resultsLimit × array | required; array min 1 |
+| instagram-search-scraper | searchLimit × comma-terms | required; ≥1 non-empty term |
+| instagram-api-scraper | resultsLimit + searchLimit (dual-mode) | both required; refine ≥1 mode |
+| premium-x-follower… | mode-gated caps | already required by the actor |
+| snapchat-scraper | usernames + relatedProfilesLimit | urls min 1; default 0; fix: related profiles counted |
+| snapchat-spotlight-scraper | spotlightUrls | required (min 1) |
+| linkedin (6 metered) | maxItems/maxPosts × arrays | all required min 1 (harvestapi reads non-positive as "no limit"); profile-search: maxItems primary, takePages dropped from estimate |
+| akta enrichment | sections × 2.5 credits | required; v1 $0.125/section ÷ $0.05/credit |
+| akta news | 0.1 + limit × 0.01 credits | default 10 (vendor-documented); v1 rates |
+| akta employee-reviews | ceil(limit/50) × 1.5 credits | default 10; v1 increment billing |
+| akta product-reviews | products×1.5 / 0.5 list-mode | vendor mode switch, both rates v1-cited |
+| akta company/industry-search | 0 credits | free (v1 makePerCallPrice(0)) |
+| exa#contents | urls.length | already required |
+| octen#embedding | UTF-8 bytes of input[] | v1's exact hold basis |
+| octen#extract | urls.length | v1: one credit per URL |
+| octen#search / broad-search | tokens floor 0 (+ queries) | content-dependent — settle trues up |
+
+Verification: 134 tests; live pricing survey 46/46; estimate spot vectors
+(amazon-reviews `{review: 20, apify-actor-start: 1}` / absent-limit → 200 via
+the actor's own default; tiktok-api `{CALL: 1}`; exa `{additional_result: 20,
+call: 1}`; akta news `{CREDIT: 0.2}`); two akta#news fixtures URL-updated for
+the now-explicit vendor-default `limit=10` (identical semantic request); two
+test inputs gained newly-required fields (instagram-api searchLimit 1,
+linkedin-by-name maxItems 2) — no re-records needed.

@@ -17,7 +17,7 @@ export const zAmazonReviewsExtractorBody = z.object({
     ),
     "limit": z.number().int().min(1).max(50).describe(
         "Set number of pages to scrape, Amazon limits the number to 10 pages per product which are 100 review max. You can get more by setting Stars (one star, two stars, etc.), changing Variant, and Sort type.",
-    ).optional(),
+    ).default(20), // actor server default, verified live
     "sort": z.enum(["helpful", "recent"]).describe("Select Sort type")
         .optional(),
     "stars": z.array(

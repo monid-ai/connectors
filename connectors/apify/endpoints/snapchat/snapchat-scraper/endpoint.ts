@@ -33,7 +33,17 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/automation-lab~snapchat-scraper/runs",
     },
-    input: { schema: { body: zSnapchatScraperBody } },
+    input: {
+        schema: {
+            // usernames is the seed-profile multiplier (one billed profile
+            // each) — the actor requires the field but accepts an empty
+            // list; WE require it non-empty: the estimate must be
+            // deducible to price the hold (D24)
+            body: zSnapchatScraperBody.extend({
+                "usernames": zSnapchatScraperBody.shape.usernames.min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -42,22 +52,31 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "start": { kind: UsageModelKind.PER_CALL },
+                "start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "profile-scraped": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "profiles",
                 },
             },
         },
-        /** one profile per username — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => ({
-            counts: {
-                "profile-scraped": Math.max(
-                    data.input.body.usernames.length,
-                    1,
-                ),
-            },
-        }),
+        /** one profile per seed username, PLUS up to relatedProfilesLimit
+         *  related profiles per RUN — each emitted related profile is a
+         *  billed `profile-scraped` event (v1 held it via `buffer`). The
+         *  schema pins the actor's OWN server default (0, verified live)
+         *  and usernames is required non-empty at the binding — pure
+         *  arithmetic (D24). */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            return {
+                counts: {
+                    "profile-scraped": body.usernames.length +
+                        body.relatedProfilesLimit,
+                },
+            };
+        },
     },
 });

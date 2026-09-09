@@ -31,20 +31,24 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apidojo~tweet-scraper/runs",
     },
-    input: { schema: { body: zTweetScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (scrapes unbounded; live
+            // schema has prefill 1000 only — an editor hint, NOT a server
+            // default) — WE require it ≥ 1: the estimate must be deducible
+            // to price the hold (D24)
+            body: zTweetScraperBody.extend({
+                "maxItems": zTweetScraperBody.shape.maxItems.unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems caps the run — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "RESULT": body.maxItems !== undefined && body.maxItems > 0
-                        ? Math.floor(body.maxItems)
-                        : 3,
-                },
-            };
-        },
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT — a total run
+         *  cap, not per-query) — required ≥ 1 at the binding, so the
+         *  estimate is pure arithmetic (D24). */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.maxItems },
+        }),
     },
 });

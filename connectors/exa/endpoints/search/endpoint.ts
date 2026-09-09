@@ -48,11 +48,13 @@ export default defineEndpoint({
             components: {
                 "call": {
                     kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
                     description: "base fee — includes the first 10 results",
                 },
                 "additional_result": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "extra results",
                     description:
                         "results above the 10 included in the base fee",
                 },

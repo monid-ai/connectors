@@ -29,11 +29,11 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
  *     plus the profile count under the MODE-selected component
  *     ("full-profile" / "full-profile-with-email"; "Short" adds none).
  *
- * NOT ported (hosted concerns): the tiered price card, the maxItems/
- * takePages admission estimate (an unbounded run means ~2,500 profiles per
- * query to this actor — hosts should require a bound before holding).
- * `profileScraperMode` is REQUIRED in the input schema (the v1 admission
- * rule, declaratively).
+ * NOT ported (hosted concerns): the tiered price card. The v1 admission
+ * rules live in the schema instead: `profileScraperMode` is REQUIRED in
+ * the input schema, and `maxItems` is required ≥1 at the binding (D24) —
+ * an unbounded run means ~2,500 profiles per query to this actor, so the
+ * estimate must be deducible before holding.
  */
 export default defineEndpoint({
     meta: {
@@ -47,9 +47,9 @@ export default defineEndpoint({
             "broad searches. `profileScraperMode` is required and priced " +
             "separately: 'Short' returns search-card data, 'Full' enriches " +
             "each profile, 'Full + email search' additionally discovers " +
-            "emails. Cap the run with `maxItems` (profiles) or `takePages` " +
-            "(pages of up to 25 profiles) — without a bound the actor " +
-            "fetches up to ~2,500 profiles per query. Returns " +
+            "emails. `maxItems` (profile cap) is required — without a " +
+            "bound the actor fetches up to ~2,500 profiles per query; " +
+            "`takePages` optionally caps 25-profile pages. Returns " +
             "`{searchPages, profileCount, profiles}` so the billed page " +
             "and profile counts ride the output. Runs asynchronously.",
         docsUrl: "https://apify.com/harvestapi/linkedin-profile-search",
@@ -62,7 +62,21 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-profile-search/runs",
     },
-    input: { schema: { body: zLinkedinProfileSearchBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (scrapes unbounded —
+            // ~2,500 profiles per query; prefill 20 is editor-only, NOT a
+            // server default) and reads a non-positive limit as "no limit"
+            // — WE require it ≥1: the estimate must be deducible to price
+            // the hold (D24). maxItems is the PRIMARY bound (v1 DUAL_LIMIT
+            // probes it first); takePages stays optional and no longer
+            // feeds the estimate.
+            body: zLinkedinProfileSearchBody.extend({
+                "maxItems": zLinkedinProfileSearchBody.shape.maxItems
+                    .unwrap().min(1),
+            }),
+        },
+    },
     lifecycle: {
         // OVERRIDES the provider poll: same actor-run protocol, plus the
         // page reconstruction stamped onto the output + state.data.
@@ -218,30 +232,32 @@ export default defineEndpoint({
                 "search-page": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.PAGE,
+                    label: "search pages",
                     description: "search pages scraped (charged in every mode)",
                 },
                 "full-profile": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "full profiles",
                     description: "profiles enriched in 'Full' mode",
                 },
                 "full-profile-with-email": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "profiles with email",
                     description:
                         "profiles enriched in 'Full + email search' mode",
                 },
             },
         },
-        /** v1 DUAL_LIMIT (resultsPerPage 25): takePages, else
-         *  ceil(maxItems/25), else 1 page — with the profile count keyed
-         *  by the mode the pinned input SELECTS ("Short": page rate only). */
+        /** maxItems is required ≥1 at the binding (D24), so both quanta are
+         *  pure arithmetic: pages = ceil(maxItems/25) (the actor's
+         *  documented 25 profiles per page, v1 DUAL_LIMIT constant) and the
+         *  profile count = maxItems, keyed by the mode the pinned input
+         *  SELECTS ("Short": page rate only). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const pages = body.takePages ??
-                (body.maxItems !== undefined
-                    ? Math.ceil(body.maxItems / 25)
-                    : 1);
+            const pages = Math.ceil(body.maxItems / 25);
             const profileKey = body.profileScraperMode === "Full"
                 ? "full-profile"
                 : body.profileScraperMode === "Full + email search"
@@ -251,7 +267,7 @@ export default defineEndpoint({
                 counts: {
                     "search-page": pages,
                     ...(profileKey !== undefined
-                        ? { [profileKey]: body.maxItems ?? pages * 25 }
+                        ? { [profileKey]: body.maxItems }
                         : {}),
                 },
             };

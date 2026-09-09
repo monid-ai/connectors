@@ -34,5 +34,12 @@ export default defineEndpoint({
      *  run is the product: nothing to count, so no estimate fn (the
      *  engine default `{units: []}` is already exact) and the settle
      *  reports no measures. */
-    usage: { model: { kind: UsageModelKind.PER_CALL } },
+    usage: {
+        model: {
+            kind: UsageModelKind.PER_CALL,
+            // plain-english billing-surface name for the actor's `request`
+            // charge event (design D24)
+            label: "request fee",
+        },
+    },
 });

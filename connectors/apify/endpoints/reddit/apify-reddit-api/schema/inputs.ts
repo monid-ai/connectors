@@ -33,7 +33,7 @@ export const zApifyRedditApiBody = z.object({
     ).optional(),
     "maxItems": z.number().int().min(1).max(100).describe(
         "Maximum number of results per job. Each search query, subreddit, or URL counts as a separate job, so total output can exceed this number when you have multiple inputs. Example: 2 search queries × maxItems 25 = up to 50 posts total.",
-    ).optional(),
+    ).default(25), // actor server default, verified live
     "includeNSFW": z.boolean().describe(
         "Include NSFW (Not Safe For Work) content.",
     ).optional(),

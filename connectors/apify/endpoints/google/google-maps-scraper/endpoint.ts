@@ -32,18 +32,13 @@ export default defineEndpoint({
     input: { schema: { body: zGoogleMapsScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** max_results caps the run — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "RESULT": body.max_results !== undefined &&
-                            body.max_results > 0
-                        ? body.max_results
-                        : 3,
-                },
-            };
-        },
+        /** max_results caps the run exactly (v1 LIMIT_IS_EXACT) — it
+         *  carries the actor's server default (100), so the estimate is
+         *  pure arithmetic (D24). */
+        estimate: ({ data }) => ({
+            counts: {
+                "RESULT": data.input.body.max_results,
+            },
+        }),
     },
 });

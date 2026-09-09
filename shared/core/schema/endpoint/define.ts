@@ -7,9 +7,8 @@ import type {
     MeteredKeyOf,
     TypedEnvelopeCtx,
     TypedEstimateCtx,
-    TypedLifecycleOutcome,
-    TypedLifecycleStartCtx,
-    TypedLifecycleTickCtx,
+    TypedLifecycleSlots,
+    TypedOutputSlots,
     TypedUsage,
 } from "./typed.ts";
 
@@ -53,20 +52,11 @@ export function defineEndpoint<
                     body?: BodySchema;
                 };
             };
-            output?: Omit<SeedOutput, "fromResponse" | "fromError"> & {
-                fromResponse?: (
-                    ctx: TypedEnvelopeCtx<
-                        z.output<BodySchema>,
-                        z.output<StateSchema>
-                    >,
-                ) => Json;
-                fromError?: (
-                    ctx: TypedEnvelopeCtx<
-                        z.output<BodySchema>,
-                        z.output<StateSchema>
-                    >,
-                ) => Json;
-            };
+            output?: TypedOutputSlots<
+                z.output<BodySchema>,
+                z.output<StateSchema>,
+                SeedOutput
+            >;
             usage?:
                 & Omit<SeedUsage, "model" | "consolidate" | "estimate">
                 & {
@@ -85,26 +75,11 @@ export function defineEndpoint<
                             ctx: TypedEstimateCtx<z.output<BodySchema>>,
                         ) => TypedUsage<MeteredKeyOf<M>>;
                 };
-            lifecycle?:
-                & Omit<SeedLifecycle, "state" | "start" | "poll" | "stop">
-                & {
-                    state?: StateSchema;
-                    start?: (
-                        ctx: TypedLifecycleStartCtx<z.output<BodySchema>>,
-                    ) => Promise<TypedLifecycleOutcome<z.output<StateSchema>>>;
-                    poll?: (
-                        ctx: TypedLifecycleTickCtx<
-                            z.output<BodySchema>,
-                            z.output<StateSchema>
-                        >,
-                    ) => Promise<TypedLifecycleOutcome<z.output<StateSchema>>>;
-                    stop?: (
-                        ctx: TypedLifecycleTickCtx<
-                            z.output<BodySchema>,
-                            z.output<StateSchema>
-                        >,
-                    ) => Promise<void>;
-                };
+            lifecycle?: TypedLifecycleSlots<
+                z.output<BodySchema>,
+                StateSchema,
+                SeedLifecycle
+            >;
         },
 ): EndpointDef {
     return parseSchema(zEndpointDef, seed as EndpointDefSeed, "defineEndpoint");

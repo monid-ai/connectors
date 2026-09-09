@@ -27,7 +27,25 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/compass~google-maps-reviews-scraper/runs",
     },
-    input: { schema: { body: zGoogleMapsReviewsScraperBody } },
+    input: {
+        schema: {
+            // the actor's published maxReviews "default" is 10000000 — an
+            // "all reviews" sentinel, not a usable server default — WE
+            // require it (inner min(1) kept by .required, zod 4): the
+            // estimate must be deducible to price the hold (D24). The two
+            // target lists (startUrls, placeIds) are either/or on the
+            // actor with absent ≡ empty — WE materialize [] so the
+            // multiplier is deterministic after validation (D24).
+            body: zGoogleMapsReviewsScraperBody
+                .required({ "maxReviews": true })
+                .extend({
+                    "startUrls": zGoogleMapsReviewsScraperBody.shape
+                        .startUrls.unwrap().default([]),
+                    "placeIds": zGoogleMapsReviewsScraperBody.shape
+                        .placeIds.unwrap().default([]),
+                }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -36,23 +54,27 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "review-scraped": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "reviews",
                 },
             },
         },
-        /** maxReviews per place url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxReviews per place (v1 PER_QUERY_LIMIT) × BOTH target lists
+         *  (startUrls AND placeIds — the old startUrls-only multiplier
+         *  undercounted placeIds runs) — required/materialized at the
+         *  binding, so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "review-scraped": body.maxReviews !== undefined
-                        ? body.maxReviews *
-                            Math.max(body.startUrls?.length ?? 0, 1)
-                        : 3,
+                    "review-scraped": body.maxReviews *
+                        (body.startUrls.length + body.placeIds.length),
                 },
             };
         },

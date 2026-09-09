@@ -29,15 +29,25 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-profile-scraper/runs",
     },
-    input: { schema: { body: zInstagramProfileScraperBody } },
+    input: {
+        schema: {
+            // usernames is the whole billed quantity (one profile each) —
+            // the actor requires the field but accepts an empty list; WE
+            // require it non-empty: the estimate must be deducible to
+            // price the hold (D24)
+            body: zInstagramProfileScraperBody.extend({
+                "usernames": zInstagramProfileScraperBody.shape.usernames
+                    .min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one profile per username — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** one profile per username (v1 ONE_PER_QUERY) — required
+         *  non-empty at the binding, so the estimate is pure arithmetic
+         *  (D24). */
         estimate: ({ data }) => ({
-            counts: {
-                "RESULT": Math.max(data.input.body.usernames.length, 1),
-            },
+            counts: { "RESULT": data.input.body.usernames.length },
         }),
     },
 });

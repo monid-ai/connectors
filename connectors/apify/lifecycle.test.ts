@@ -1,6 +1,6 @@
 import { assert, assertEquals } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import type { RunInput, UsageModel } from "@shared/core";
+import { flatCounts, type RunInput, type UsageModel } from "@shared/core";
 import {
     loadFixture,
     runEndpoint,
@@ -57,13 +57,17 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ite
         });
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
-        // counts keyed by the doc's OWN metered key (design D19): the
-        // model's unit (leaf) / the sole metered component id (composite —
-        // the actor's charge-event name); flat-only docs count nothing
-        const keys = billedKeys(bundle.endpoints[id].usage.model!);
+        // the COMPLETE billed vector (design D24): the metered key settles
+        // the dataset item count AND every flat component bills 1 —
+        // engine-appended, so counts × rates = the whole bill
+        const model = bundle.endpoints[id].usage.model!;
+        const keys = billedKeys(model);
         assertEquals(
             result.usage.counts,
-            keys.length === 1 ? { [keys[0]]: 2 } : {},
+            {
+                ...(keys.length === 1 ? { [keys[0]]: 2 } : {}),
+                ...flatCounts(model),
+            },
             id,
         );
         // PRICE_PER_DATASET_ITEM: 2 × $0.005 — signals threaded via state.data
@@ -220,24 +224,35 @@ Deno.test("apify estimates: the card invariant — estimate covers every billed 
             assert(amount >= 0, id);
         }
         const keys = billedKeys(model);
+        const flat = flatCounts(model);
+        // every flat component is promised at exactly 1 (engine-appended
+        // complete vector — design D24)
+        for (const [flatKey, one] of Object.entries(flat)) {
+            assertEquals(
+                estimated.counts[flatKey],
+                one,
+                `${id}: estimate misses flat key ${flatKey}`,
+            );
+        }
         if (keys.length === 0) {
-            // nothing countable to predict — the flat charge(s) are fully
-            // described by the model + success (design D18)
-            assertEquals(estimated.counts, {}, id);
+            // flat-only doc: the vector IS the flat 1s (design D24)
+            assertEquals(estimated.counts, flat, id);
             continue;
         }
-        // the card invariant, key-shaped (design D19): every estimated key
-        // must be a billed one (same card row prices estimate + settle),
-        // and a metered model must promise SOMETHING. Full coverage is only
-        // demanded of single-metered docs — a multi-metered composite may
-        // legitimately promise a subset (linkedin: the input mode SELECTS
-        // which profile component bills; "Short" selects none).
-        const estimatedKeys = Object.keys(estimated.counts);
+        // the card invariant, key-shaped (design D19/D24): every estimated
+        // key must be a billed one (same card row prices estimate + settle),
+        // and a metered model must promise SOMETHING beyond the flat 1s.
+        // Full metered coverage is only demanded of single-metered docs — a
+        // multi-metered composite may legitimately promise a subset
+        // (linkedin: the input mode SELECTS which profile component bills;
+        // "Short" selects none).
+        const meteredEstimated = Object.keys(estimated.counts)
+            .filter((key) => !(key in flat));
         assert(
-            estimatedKeys.length > 0,
+            meteredEstimated.length > 0,
             `${id}: estimate promises nothing for a metered model`,
         );
-        for (const key of estimatedKeys) {
+        for (const key of meteredEstimated) {
             assert(
                 keys.includes(key),
                 `${id}: estimate key ${key} is not billed by the model`,
@@ -309,15 +324,28 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         })).counts,
         { "RESULT": 8 },
     );
-    // FALLBACK_DEFAULT (v1 DEFAULT_ESTIMATED_RESULTS = 3) when nothing probes
-    assertEquals(
-        (await estimateFor("apify#apidojo/tweet-scraper", {
-            searchTerms: ["a"],
-        }))
-            .counts,
-        { "RESULT": 3 },
-    );
-    // flat-only endpoints: the engine default — nothing countable, `{}`
+    // NO fallback constants (design D24): a body without the limiting knob
+    // is REJECTED at validation — the estimate is deduced or the run never
+    // starts (v1's DEFAULT_ESTIMATED_RESULTS = 3 posture is dead)
+    {
+        const unit = await testSealedUnit("apify#apidojo/tweet-scraper");
+        const engine = new Engine({
+            transport: directTransport({
+                params: () => Promise.resolve({}),
+                fetch: () => Promise.reject(new Error("no IO in estimate")),
+            }),
+        });
+        const loaded = await engine.load(unit);
+        let rejected = false;
+        try {
+            loaded.estimate({ body: { searchTerms: ["a"] } });
+        } catch {
+            rejected = true;
+        }
+        assert(rejected, "missing maxItems must reject, not fall back");
+    }
+    // flat-only endpoints: no estimate fn — the engine derives the whole
+    // vector from the model (leaf PER_CALL → the reserved CALL key, D24)
     assertEquals(
         (await estimateFor("apify#scraptik/tiktok-api", {
             type: "SEARCH",
@@ -325,7 +353,7 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
             url: "https://www.tiktok.com/@tiktok",
             keywords: ["deno"],
         })).counts,
-        {},
+        { "CALL": 1 },
     );
     // linkedin-profile-search (maxItems 2 → ceil(2/25) = 1 page): "Short"
     // mode bills pages ONLY — no profile component selected (design D19)

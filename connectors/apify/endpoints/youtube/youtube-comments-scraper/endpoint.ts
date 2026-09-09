@@ -29,19 +29,29 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/streamers~youtube-comments-scraper/runs",
     },
-    input: { schema: { body: zYoutubeCommentsScraperBody } },
+    input: {
+        schema: {
+            // the actor requires `startUrls` but accepts an empty batch
+            // (a no-op run) — WE require it non-empty: it is the
+            // estimate's multiplier, which must be deducible to price
+            // the hold (D24)
+            body: zYoutubeCommentsScraperBody.extend({
+                "startUrls": zYoutubeCommentsScraperBody.shape.startUrls
+                    .min(1),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxComments per video url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxComments per video url (v1 PER_QUERY_LIMIT) — maxComments
+         *  carries the actor's server default (1) and startUrls is
+         *  non-empty at the binding, so the estimate is pure arithmetic
+         *  (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "RESULT": body.maxComments !== undefined
-                        ? body.maxComments *
-                            Math.max(body.startUrls.length, 1)
-                        : 3,
+                    "RESULT": body.maxComments * body.startUrls.length,
                 },
             };
         },

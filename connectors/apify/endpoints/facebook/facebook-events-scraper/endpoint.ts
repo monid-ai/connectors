@@ -27,7 +27,15 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~facebook-events-scraper/runs",
     },
-    input: { schema: { body: zFacebookEventsScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxEvents (extracts unbounded;
+            // prefill 30 is editor-only, NOT a server default) — WE
+            // require it (inner min(1) kept by .required, zod 4): the
+            // estimate must be deducible to price the hold (D24)
+            body: zFacebookEventsScraperBody.required({ "maxEvents": true }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -36,21 +44,25 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "actor-start": { kind: UsageModelKind.PER_CALL },
-                "event": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "event": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "events",
+                },
             },
         },
-        /** maxEvents × (searchQueries + startUrls) — TWO multiplier
-         *  arrays, so an inline fn (D19 addendum). The schema is the
-         *  source of truth: typed body access, no probing. */
+        /** maxEvents × (searchQueries + startUrls) — maxEvents required at
+         *  the binding (v1 PER_QUERY_LIMIT) and both query arrays carry
+         *  the actor's server default ([]), so the estimate is pure
+         *  arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            if (body.maxEvents === undefined) {
-                return { counts: { "event": 3 } };
-            }
-            const n = (body.searchQueries?.length ?? 0) +
-                (body.startUrls?.length ?? 0);
-            return { counts: { "event": body.maxEvents * Math.max(n, 1) } };
+            const n = body.searchQueries.length + body.startUrls.length;
+            return { counts: { "event": body.maxEvents * n } };
         },
     },
 });

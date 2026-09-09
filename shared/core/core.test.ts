@@ -6,6 +6,7 @@ import {
     assertPureJson,
     contractConfig,
     defineEndpoint,
+    defineProvider,
     docHash,
     fnKey,
     getPath,
@@ -430,6 +431,117 @@ Deno.test("typed lifecycle.state: the declared schema types reads AND writes", (
                         output: r.body,
                     };
                 },
+            },
+        }));
+});
+
+Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fns", () => {
+    const stateData = z.strictObject({
+        datasetId: z.string().optional(),
+        usageTotalUsd: z.number().optional(),
+    });
+
+    // POSITIVE control — typed state read (poll + consolidate) and a
+    // conforming write compile; the BODY stays Json | undefined (a provider
+    // fn serves every endpoint — D23's documented seam):
+    const good = defineProvider({
+        name: "demo",
+        meta: { displayName: "Demo", summary: "Demo provider." },
+        request: { baseUrl: "https://api.demo.test" },
+        auth: { inject: presets.auth.header("x-demo-key") },
+        lifecycle: {
+            state: stateData,
+            start: async ({ utils }) => {
+                const res = await utils.request();
+                return {
+                    kind: "RUNNING",
+                    state: { externalRunId: String(res.status) },
+                };
+            },
+            poll: async ({ data, utils }) => {
+                // typed READ of the provider-declared bag
+                const id = data.lifecycle.state.data?.datasetId ?? "none";
+                const res = await utils.http({
+                    method: "GET",
+                    path: `/runs/${id}`,
+                });
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: res.status,
+                    output: res.body,
+                    // typed WRITE — checked against stateData
+                    state: { data: { datasetId: id, usageTotalUsd: 0.1 } },
+                };
+            },
+        },
+        usage: {
+            consolidate: ({ data }) => ({
+                usage: {
+                    counts: {},
+                    ...(data.lifecycle?.state.data?.usageTotalUsd !== undefined
+                        ? {
+                            cost: {
+                                currency: "USD",
+                                value: 1,
+                                unit: "MICRO_DOLLAR",
+                            },
+                        }
+                        : {}),
+                },
+            }),
+        },
+    });
+    void good;
+
+    void (() =>
+        defineProvider({
+            name: "demo",
+            meta: { displayName: "Demo", summary: "Demo provider." },
+            request: { baseUrl: "https://api.demo.test" },
+            auth: { inject: presets.auth.header("x-demo-key") },
+            lifecycle: {
+                state: stateData,
+                // @ts-expect-error — mis-shaped state bag (datasetID,
+                // typo-cased): the provider WRITE site fails check —
+                // e.g. stashing an unprojected pricing card would too
+                start: async ({ utils }) => {
+                    await utils.request();
+                    return {
+                        kind: "RUNNING",
+                        state: { data: { datasetID: "typo-cased" } },
+                    };
+                },
+            },
+            usage: { consolidate: () => ({ usage: { counts: {} } }) },
+        }));
+    void (() =>
+        defineProvider({
+            name: "demo",
+            meta: { displayName: "Demo", summary: "Demo provider." },
+            request: { baseUrl: "https://api.demo.test" },
+            auth: { inject: presets.auth.header("x-demo-key") },
+            lifecycle: {
+                state: stateData,
+                start: async ({ utils }) => {
+                    const res = await utils.request();
+                    return {
+                        kind: "COMPLETED",
+                        httpStatus: res.status,
+                        output: res.body,
+                    };
+                },
+            },
+            usage: {
+                consolidate: ({ data }) => ({
+                    usage: {
+                        counts: {},
+                        evidence: {
+                            // @ts-expect-error — no such field on the
+                            // provider's declared state bag (typed READ)
+                            nope: data.lifecycle?.state.data?.nope ?? null,
+                        },
+                    },
+                }),
             },
         }));
 });

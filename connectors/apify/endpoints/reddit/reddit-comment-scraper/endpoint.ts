@@ -30,7 +30,17 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/crawlerbros~reddit-comment-scraper/runs",
     },
-    input: { schema: { body: zRedditCommentScraperBody } },
+    input: {
+        schema: {
+            // postUrls is the per-post multiplier (maxComments caps EACH
+            // post) — the actor requires the field but accepts an empty
+            // list; WE require it non-empty: the estimate must be
+            // deducible to price the hold (D24)
+            body: zRedditCommentScraperBody.extend({
+                "postUrls": zRedditCommentScraperBody.shape.postUrls.min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -39,23 +49,28 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "apify-default-dataset-item": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "comments",
                 },
             },
         },
-        /** maxComments per keyword — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** maxComments (actor server default 100, verified live) caps EACH
+         *  post — × the non-empty postUrls list required at the binding:
+         *  pure arithmetic, no fallbacks (D24). The old estimate multiplied
+         *  by `keywords` — wrong knob: keywords is a content FILTER, not a
+         *  query multiplier; the actor scrapes per POST URL. */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "apify-default-dataset-item": body.maxComments !== undefined
-                        ? body.maxComments *
-                            Math.max(body.keywords?.length ?? 0, 1)
-                        : 3,
+                    "apify-default-dataset-item": body.maxComments *
+                        body.postUrls.length,
                 },
             };
         },

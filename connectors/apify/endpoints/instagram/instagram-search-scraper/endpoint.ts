@@ -31,19 +31,34 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-search-scraper/runs",
     },
-    input: { schema: { body: zInstagramSearchScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent searchLimit (live schema has
+            // prefill 1 only — an editor hint, NOT a server default) — WE
+            // require it, and require `search` to carry at least one
+            // non-empty comma-separated term (the term count is the
+            // multiplier): the estimate must be deducible to price the
+            // hold (D24)
+            body: zInstagramSearchScraperBody.required({ "searchLimit": true })
+                .extend({
+                    "search": zInstagramSearchScraperBody.shape.search.refine(
+                        (s) => s.split(",").some((t) => t.trim() !== ""),
+                        "search must contain at least one non-empty term",
+                    ),
+                }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** searchLimit × comma-separated `search` TERMS (the actor treats
-         *  "a,b,c" as three searches — PR #2 finding; the actor publishes
-         *  no searchLimit server default, so absent stays a conservative
-         *  in-fn fallback rather than a schema default). */
+         *  "a,b,c" as three searches — PR #2 finding). Both deterministic
+         *  after validation: searchLimit required and the binding
+         *  guarantees ≥ 1 term — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const limit = body.searchLimit ?? 3;
             const terms = body.search
                 .split(",").filter((t) => t.trim() !== "").length;
-            return { counts: { "RESULT": limit * Math.max(terms, 1) } };
+            return { counts: { "RESULT": body.searchLimit * terms } };
         },
     },
 });

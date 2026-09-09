@@ -43,7 +43,8 @@ Deno.test("tinyfish#search happy (synthetic): free — one call unit, no cost", 
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.counts, {});
+    // flat doc: the engine bills the run under the reserved CALL key (D24)
+    assertEquals(result.usage.counts, { "CALL": 1 });
     assertEquals(result.usage.cost, undefined);
     const output = result.output as Record<string, unknown>;
     assertEquals((output.results as unknown[]).length, 2);
@@ -79,7 +80,7 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.counts, {});
+        assertEquals(result.usage.counts, { "CALL": 1 });
         assert(
             Array.isArray((result.output as Record<string, unknown>).results),
             "results array present",

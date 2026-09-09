@@ -38,18 +38,23 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "apify-default-dataset-item": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "products",
                 },
             },
         },
-        /** limit = products per call (schema default 10) — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** limit = products per call (v1 LIMIT_IS_EXACT) — it carries the
+         *  actor's server default (10), so the estimate is pure
+         *  arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: {
-                "apify-default-dataset-item": data.input.body.limit ?? 10,
+                "apify-default-dataset-item": data.input.body.limit,
             },
         }),
     },

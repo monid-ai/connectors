@@ -5,7 +5,7 @@
         {
             "req": {
                 "method": "GET",
-                "url": "https://api.akta.pro/api/v1/news/?company=https%3A%2F%2Fcanva.com"
+                "url": "https://api.akta.pro/api/v1/news/?company=https%3A%2F%2Fcanva.com&limit=10"
             },
             "res": {
                 "status": 401,

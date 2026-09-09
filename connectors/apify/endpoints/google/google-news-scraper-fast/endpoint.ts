@@ -29,22 +29,30 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/data_xplorer~google-news-scraper-fast/runs",
     },
-    input: { schema: { body: zGoogleNewsScraperFastBody } },
+    input: {
+        schema: {
+            // the actor reads maxArticles 0 as "no limit" (unbounded) —
+            // WE forbid it, keeping the actor's server default (100):
+            // the estimate must be deducible to price the hold (D24)
+            body: zGoogleNewsScraperFastBody.extend({
+                "maxArticles": zGoogleNewsScraperFastBody.shape.maxArticles
+                    .unwrap().min(1).default(100),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxArticles × (keywords + topics) — TWO multiplier arrays, so
-         *  an inline fn (D19 addendum). The schema is the source of truth:
-         *  typed body access, no probing. */
+        /** maxArticles × (keywords + topics + topicUrls) — the cap applies
+         *  per keyword/topic/section (v1 PER_QUERY_LIMIT; the old sum
+         *  missed topicUrls). All three query arrays carry the actor's
+         *  server default ([]), so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            if (body.maxArticles === undefined) {
-                return { counts: { "RESULT": 3 } };
-            }
-            const queries = (body.keywords?.length ?? 0) +
-                (body.topics?.length ?? 0);
+            const queries = body.keywords.length + body.topics.length +
+                body.topicUrls.length;
             return {
                 counts: {
-                    "RESULT": body.maxArticles * Math.max(queries, 1),
+                    "RESULT": body.maxArticles * queries,
                 },
             };
         },

@@ -467,32 +467,54 @@ export async function compileBundle(
                         `chargeable (rate-free shape, design D19).`,
                 );
             }
+            const meteredCount = usageModel.kind === "COMPOSITE"
+                ? Object.values(usageModel.components)
+                    .filter((component) => component.kind === "PER_UNIT")
+                    .length
+                : usageModel.kind === "PER_UNIT"
+                ? 1
+                : 0;
             // ≥2 METERED components ⇒ only DOC-owned fns can know which
             // component a count belongs to — a GENERIC provider consolidate
             // keys by "the sole PER_UNIT component" and would have no basis
             // to choose between two (design D19). Reject at build time, not
-            // at the first live run.
-            if (usageModel?.kind === "COMPOSITE") {
-                const metered = Object.values(usageModel.components)
-                    .filter((component) => component.kind === "PER_UNIT");
-                if (metered.length >= 2) {
-                    if (def.usage?.consolidate === undefined) {
-                        throw new CompileError(
-                            CompileErrorCode.HOOK_UNRESOLVED,
-                            `${where}: ${metered.length} metered components — ` +
-                                `a doc-level usage.consolidate must key its ` +
-                                `own counts (the generic provider fn cannot ` +
-                                `choose between them)`,
-                        );
-                    }
-                    if (def.usage?.estimate === undefined) {
-                        throw new CompileError(
-                            CompileErrorCode.HOOK_UNRESOLVED,
-                            `${where}: ≥2 metered components require a ` +
-                                `doc-level usage.estimate too (same keying)`,
-                        );
-                    }
+            // at the first live run. (Checked FIRST — the more specific
+            // diagnosis wins over the general estimate-required rule.)
+            if (usageModel.kind === "COMPOSITE" && meteredCount >= 2) {
+                if (def.usage?.consolidate === undefined) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: ${meteredCount} metered components — ` +
+                            `a doc-level usage.consolidate must key its ` +
+                            `own counts (the generic provider fn cannot ` +
+                            `choose between them)`,
+                    );
                 }
+                if (def.usage?.estimate === undefined) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: ≥2 metered components require a ` +
+                            `doc-level usage.estimate too (same keying)`,
+                    );
+                }
+            }
+            // METERED model (≥1 PER_UNIT part — a countable quantity that
+            // VARIES per run) ⇒ usage.estimate must RESOLVE: the admission
+            // hold is priced from the deduced counts, and a metered doc
+            // with no promise cannot hold (design D24). Flat-only docs
+            // (leaf PER_CALL, all-flat composites) have nothing to deduce —
+            // the engine derives their whole vector from the model.
+            if (
+                meteredCount >= 1 &&
+                def.usage?.estimate === undefined &&
+                provider.usage?.estimate === undefined
+            ) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: a metered model (≥1 PER_UNIT part) requires ` +
+                        `usage.estimate — the admission hold is priced from ` +
+                        `the deduced counts (design D24)`,
+                );
             }
             const estimateFn = resolve(
                 def.usage?.estimate,

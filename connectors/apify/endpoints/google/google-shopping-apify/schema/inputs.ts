@@ -14,7 +14,7 @@ export const zGoogleShoppingApifyBody = z.object({
     ).optional(),
     "queries": z.array(z.any()).describe(
         "List of queries to search for in a single run. If provided, this takes priority over the single 'query' field.",
-    ).optional(),
+    ).default([]), // actor server default, verified live
     "country": z.enum([
         "af",
         "al",
@@ -413,7 +413,7 @@ export const zGoogleShoppingApifyBody = z.object({
     ),
     "max_pages": z.number().int().describe(
         "The maximum number of pages to scrape.",
-    ).optional(),
+    ).default(1), // actor server default, verified live
     "date_range": z.enum(["anytime", "qdr:h", "qdr:d", "qdr:w", "qdr:m"])
         .describe("The date range to search for."),
 });

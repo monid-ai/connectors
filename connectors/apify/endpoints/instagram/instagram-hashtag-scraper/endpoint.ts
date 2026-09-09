@@ -29,19 +29,31 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-hashtag-scraper/runs",
     },
-    input: { schema: { body: zInstagramHashtagScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent resultsLimit (scrapes unbounded;
+            // live schema has prefill 20 only — an editor hint, NOT a
+            // server default) — WE require it, and require the per-hashtag
+            // multiplier array non-empty: the estimate must be deducible
+            // to price the hold (D24)
+            body: zInstagramHashtagScraperBody.extend({
+                "hashtags": zInstagramHashtagScraperBody.shape.hashtags
+                    .min(1),
+            }).required({ "resultsLimit": true }),
+        },
+    },
     usage: {
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        /** resultsLimit caps EACH hashtag (actor docs: 7 hashtags ×
+         *  limit 5 = 35 posts) — both required at the binding, so the
+         *  estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "RESULT": body.resultsLimit !== undefined
-                        ? body.resultsLimit *
-                            Math.max(body.hashtags.length, 1)
-                        : 3,
+                    "RESULT": body.resultsLimit * body.hashtags.length,
                 },
             };
         },

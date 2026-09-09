@@ -31,7 +31,19 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/harvestapi~linkedin-company-employees/runs",
     },
-    input: { schema: { body: zLinkedinCompanyEmployeesBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent maxItems (scrapes unbounded; live
+            // schema has prefill 25 only — an editor hint, NOT a server
+            // default) — WE require it, and require it POSITIVE (this
+            // vendor reads a non-positive limit as "no limit"): the
+            // estimate must be deducible to price the hold (D24)
+            body: zLinkedinCompanyEmployeesBody.extend({
+                "maxItems": zLinkedinCompanyEmployeesBody.shape.maxItems
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -40,25 +52,23 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "actor-start": { kind: UsageModelKind.PER_CALL },
+                "actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "full-profile": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "full profiles",
                 },
             },
         },
-        /** maxItems caps the run — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "full-profile":
-                        body.maxItems !== undefined && body.maxItems > 0
-                            ? Math.floor(body.maxItems)
-                            : 3,
-                },
-            };
-        },
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required ≥1
+         *  at the binding, so the estimate is pure arithmetic (D24). */
+        estimate: ({ data }) => ({
+            counts: {
+                "full-profile": data.input.body.maxItems,
+            },
+        }),
     },
 });

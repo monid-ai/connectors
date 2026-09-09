@@ -29,19 +29,30 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-post-scraper/runs",
     },
-    input: { schema: { body: zInstagramPostScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent resultsLimit (scrapes unbounded;
+            // live schema has prefill 20 only — an editor hint, NOT a
+            // server default) — WE require it, and require the per-profile
+            // multiplier array non-empty: the estimate must be deducible
+            // to price the hold (D24)
+            body: zInstagramPostScraperBody.extend({
+                "username": zInstagramPostScraperBody.shape.username.min(1),
+            }).required({ "resultsLimit": true }),
+        },
+    },
     usage: {
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        /** resultsLimit caps EACH profile entry (post-URL entries yield one
+         *  item each, so this bounds them too) — both required at the
+         *  binding, so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "RESULT": body.resultsLimit !== undefined
-                        ? body.resultsLimit *
-                            Math.max(body.username.length, 1)
-                        : 3,
+                    "RESULT": body.resultsLimit * body.username.length,
                 },
             };
         },

@@ -42,17 +42,22 @@ const OPTS = {
 } as const;
 
 function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
-    return defineProvider({
-        name: "demo",
-        meta: { displayName: "Demo", summary: "A demo provider." },
-        auth: { inject: presets.auth.header("x-demo-key") },
-        request: { baseUrl: "https://api.demo.test" },
-        usage: {
-            model: { kind: "PER_CALL" },
-            consolidate: presets.usage.perCall(),
-        },
-        ...overrides,
-    });
+    // splices ARBITRARY seed fragments (that is its job), so it deliberately
+    // bypasses defineProvider's typed generics via the cast — the zod schema
+    // still validates at runtime (same posture as makeEndpoint below)
+    return defineProvider(
+        {
+            name: "demo",
+            meta: { displayName: "Demo", summary: "A demo provider." },
+            auth: { inject: presets.auth.header("x-demo-key") },
+            request: { baseUrl: "https://api.demo.test" },
+            usage: {
+                model: { kind: "PER_CALL" },
+                consolidate: presets.usage.perCall(),
+            },
+            ...overrides,
+        } as Parameters<typeof defineProvider>[0],
+    );
 }
 
 function makeEndpoint(overrides: Partial<EndpointDefSeed> = {}) {

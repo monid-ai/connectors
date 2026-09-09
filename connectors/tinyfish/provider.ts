@@ -22,7 +22,9 @@ export default defineProvider({
     },
     auth: { inject: presets.auth.header("X-API-Key") },
     usage: {
-        model: { kind: UsageModelKind.PER_CALL },
+        // label (design D24): the flat CALL line reads as the base fee on
+        // billing surfaces (a $0 one on every tinyfish plan today).
+        model: { kind: UsageModelKind.PER_CALL, label: "base fee" },
         consolidate: presets.usage.perCall(),
     },
 });

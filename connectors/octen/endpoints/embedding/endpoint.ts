@@ -25,6 +25,30 @@ export default defineEndpoint({
     input: { schema: { body: zOctenEmbeddingBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
+        /** Tokens deduced from TEXT LENGTH as the UTF-8 byte count of the
+         *  input strings — v1's exact basis (embedding.ts
+         *  `embeddingHoldTokens`): these models tokenize with byte-level
+         *  BPE, where every token consumes ≥1 input byte, so the byte
+         *  count is a provable ceiling the settle trues DOWN from
+         *  (`meta.usage.input_tokens` is the receipt). Byte width per code
+         *  point is plain arithmetic (TextEncoder is not a whitelisted
+         *  global in closed-term fns). */
+        estimate: ({ data }) => {
+            let bytes = 0;
+            for (const text of data.input.body.input) {
+                for (const ch of text) {
+                    const cp = ch.codePointAt(0) ?? 0;
+                    bytes += cp <= 0x7f
+                        ? 1
+                        : cp <= 0x7ff
+                        ? 2
+                        : cp <= 0xffff
+                        ? 3
+                        : 4;
+                }
+            }
+            return { counts: { "TOKEN": bytes } };
+        },
         consolidate: ({ data, utils }) => ({
             usage: {
                 counts: {

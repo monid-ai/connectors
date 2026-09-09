@@ -5,7 +5,7 @@
         {
             "req": {
                 "method": "GET",
-                "url": "https://api.akta.pro/api/v1/news/?company=nope"
+                "url": "https://api.akta.pro/api/v1/news/?company=nope&limit=10"
             },
             "res": {
                 "status": 200,

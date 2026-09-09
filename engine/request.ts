@@ -42,18 +42,31 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
         }
         runInput.body = body;
     }
-    const checks: [string, JsonSchemaDoc | undefined, unknown][] = [
-        ["queryParams", schemas.queryParams, runInput.queryParams ?? {}],
-        ["pathParams", schemas.pathParams, runInput.pathParams ?? {}],
+    // QUERY/PATH PARAMS: same defaults-materializing validation as the
+    // body (design D24 — a queryParams-shaped endpoint's estimate must
+    // read the SAME effective knobs the vendor applies, e.g. akta's
+    // limit default). Cloned — the caller's object is never mutated.
+    const checks: [
+        "queryParams" | "pathParams",
+        JsonSchemaDoc | undefined,
+    ][] = [
+        ["queryParams", schemas.queryParams],
+        ["pathParams", schemas.pathParams],
     ];
-    for (const [label, schema, value] of checks) {
+    for (const [label, schema] of checks) {
         if (!schema) continue;
-        const result = validateAgainst(schema, value ?? null);
+        const value = structuredClone(runInput[label] ?? {});
+        const result = validateInputAgainst(schema, value);
         if (!result.ok) {
             throw new EngineError(
                 EngineErrorCode.INVALID_INPUT,
                 `${doc.id}: input.${label} ${result.message}`,
             );
+        }
+        if (label === "queryParams") {
+            runInput.queryParams = value as RunInput["queryParams"];
+        } else {
+            runInput.pathParams = value as RunInput["pathParams"];
         }
     }
     return runInput;

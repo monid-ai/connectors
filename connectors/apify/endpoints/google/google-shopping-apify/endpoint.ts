@@ -32,18 +32,20 @@ export default defineEndpoint({
     input: { schema: { body: zGoogleShoppingApifyBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** max_pages × num results/page (the actor's `num` is a REQUIRED
-         *  STRING enum "10"…"100", so Number() always yields a finite
-         *  page size) — single-use counting rule, inline (D19 addendum).
-         *  The schema is the source of truth: typed body access. */
+        /** max_pages × num results/page × queries (the actor's `num` is a
+         *  REQUIRED STRING enum "10"…"100", so Number() always yields a
+         *  finite page size; v1 LIMIT_IS_PAGES missed the multi-query
+         *  multiplier). max_pages (1) and queries ([]) carry the actor's
+         *  server defaults, so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            if (body.max_pages === undefined) {
-                return { counts: { "RESULT": 3 } };
-            }
+            // empty `queries` ⇒ the actor runs the single `query` field
+            // (itself server-defaulted) — exactly one search (deduced
+            // mode, not a fallback)
+            const queries = body.queries.length > 0 ? body.queries.length : 1;
             return {
                 counts: {
-                    "RESULT": body.max_pages * Number(body.num),
+                    "RESULT": body.max_pages * Number(body.num) * queries,
                 },
             };
         },

@@ -4,6 +4,7 @@ import {
     countsMismatch,
     type EndpointDoc,
     type EnvelopeData,
+    flatCounts,
     type FnState,
     formatZodError,
     type HookLogger,
@@ -134,15 +135,20 @@ export class LoadedEndpoint implements RunnableEndpoint {
      *  exactly like settled ones. */
     estimate(runInput: RunInput): Usage {
         const input = this.deriveInput(runInput);
+        const model = this.doc.usage.model;
+        let usage: Usage = { counts: {} };
         if (this.fns.usageEstimate) {
-            const usage = this.fns.usageEstimate({
+            usage = this.fns.usageEstimate({
                 input,
-                usage: { model: this.doc.usage.model },
+                usage: { model },
             });
+            // the fn's promise: metered keys only (countsMismatch)
             this.validateUsage(usage);
-            return usage;
         }
-        return { counts: {} };
+        // COMPLETE VECTOR (design D24): the engine appends the model's flat
+        // 1s so the estimate carries every billed component — counts ×
+        // rates = the whole predicted bill, no model join
+        return { ...usage, counts: { ...usage.counts, ...flatCounts(model) } };
     }
 
     async start(runInput: RunInput): Promise<RunStartResult> {
@@ -473,8 +479,18 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 usage: { model: doc.usage.model },
             };
             const settled = this.fns.usageConsolidate(envelope);
+            // fn-returned counts: metered keys only (countsMismatch)
             this.validateUsage(settled.usage);
-            usage = settled.usage;
+            // COMPLETE VECTOR (design D24): flat components are billed 1 per
+            // SUCCESSFUL run — engine-appended, never fn-written. Error
+            // settles keep zeroUsage() (nothing billed, nothing counted).
+            usage = {
+                ...settled.usage,
+                counts: {
+                    ...settled.usage.counts,
+                    ...flatCounts(doc.usage.model),
+                },
+            };
             output = settled.output ?? raw;
             if (this.fns.fromResponse) {
                 output = this.fns.fromResponse({

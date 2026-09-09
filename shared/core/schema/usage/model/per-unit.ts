@@ -14,6 +14,11 @@ export const PER_UNIT_MODEL_KIND = "PER_UNIT" as const;
 export const zPerUnitModel = z.strictObject({
     kind: z.literal(PER_UNIT_MODEL_KIND),
     unit: zUnit,
+    /** OPTIONAL short display name for billing surfaces (e.g. "reviews",
+     *  "extra results"). Rendering is services-side with the KEY as
+     *  fallback: `${label ?? key} × ${count}` — the key itself is the
+     *  vendor join and never changes for display reasons (design D24). */
+    label: z.string().min(1).max(40).optional(),
     /** Human note on WHAT the count means when the fn derives it (e.g.
      *  exa: "results above the 10 included in the base fee"; linkedin:
      *  "profiles scraped in 'Full' mode"). Documentation only — never a

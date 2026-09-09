@@ -27,6 +27,14 @@ export default defineEndpoint({
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+        /** One credit per SUBMITTED URL — `urls` is required (min 1, max
+         *  20), so its length is the deducible per-call quantity (v1
+         *  evidence: extract.ts `octenExtractEstimate` held `urls.length`
+         *  credits; the docs price "$1 / 1k URLs"). Settle trues DOWN to
+         *  `meta.usage.successful_urls` — failed URLs are not billed. */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.urls.length },
+        }),
         consolidate: ({ data, utils }) => ({
             usage: {
                 counts: {

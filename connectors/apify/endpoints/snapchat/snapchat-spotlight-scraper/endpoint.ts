@@ -30,7 +30,18 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/tri_angle~snapchat-spotlight-scraper/runs",
     },
-    input: { schema: { body: zSnapchatSpotlightScraperBody } },
+    input: {
+        schema: {
+            // the actor accepts an absent/empty spotlightUrls (an empty run)
+            // and the field is the whole billed quantity (one spotlight
+            // record each) — WE require it non-empty: the estimate must be
+            // deducible to price the hold (D24)
+            body: zSnapchatSpotlightScraperBody.extend({
+                "spotlightUrls": zSnapchatSpotlightScraperBody.shape
+                    .spotlightUrls.unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -39,21 +50,22 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "start": { kind: UsageModelKind.PER_CALL },
+                "start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "spotlight": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "spotlights",
                 },
             },
         },
-        /** one spotlight per url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
+        /** one spotlight per url (v1 ONE_PER_QUERY) — required non-empty
+         *  at the binding, so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: {
-                "spotlight": Math.max(
-                    data.input.body.spotlightUrls?.length ?? 0,
-                    1,
-                ),
+                "spotlight": data.input.body.spotlightUrls.length,
             },
         }),
     },

@@ -116,9 +116,16 @@ export default defineProvider({
             };
         },
         poll: async ({ data, utils, logger }) => {
-            const runId = String(
-                utils.json.get(data.lifecycle.state, "$.externalRunId"),
-            );
+            // typed own-state read (D24): the threaded state is typed by the
+            // provider's OWN lifecycle.state schema. A missing run id is
+            // corrupted thread state — deterministic (never retriable).
+            const runId = data.lifecycle.state.externalRunId;
+            if (runId === undefined) {
+                throw Object.assign(
+                    new Error("apify poll without externalRunId in state"),
+                    { retriable: false },
+                );
+            }
             const res = await utils.http({
                 method: "GET",
                 path: "/v2/actor-runs/" + encodeURIComponent(runId),
@@ -145,11 +152,9 @@ export default defineProvider({
                 const datasetId = utils.json.optionalGet(
                     res.body,
                     "$.data.defaultDatasetId",
-                ) ??
-                    utils.json.optionalGet(
-                        data.lifecycle.state,
-                        "$.data.datasetId",
-                    );
+                    // raw vendor probing above; the FALLBACK is a typed
+                    // own-state read (stashed by start — D24)
+                ) ?? data.lifecycle.state.data?.datasetId;
                 if (typeof datasetId !== "string" || datasetId === "") {
                     throw new Error("Apify run has no default dataset id");
                 }
@@ -252,9 +257,15 @@ export default defineProvider({
             };
         },
         stop: async ({ data, utils, logger }) => {
-            const runId = String(
-                utils.json.get(data.lifecycle.state, "$.externalRunId"),
-            );
+            // typed own-state read (D24); stop is best-effort — the engine
+            // swallows the throw either way
+            const runId = data.lifecycle.state.externalRunId;
+            if (runId === undefined) {
+                throw Object.assign(
+                    new Error("apify stop without externalRunId in state"),
+                    { retriable: false },
+                );
+            }
             const res = await utils.http({
                 method: "POST",
                 path: "/v2/actor-runs/" + encodeURIComponent(runId) +
@@ -301,7 +312,9 @@ export default defineProvider({
         // facts, pinned beside the input schema that defines them.
         consolidate: ({ data, utils }) => {
             const items = Array.isArray(data.output) ? data.output.length : 0;
-            const state = data.lifecycle?.state ?? null;
+            // typed own-state reads (D24): the settle envelope's state bag
+            // is typed by the provider's declared lifecycle.state schema
+            const stateData = data.lifecycle?.state.data;
             // counts KEY from the doc's OWN model (design D19): leaf → the
             // unit; composite → the sole metered component id — which for
             // apify is the actor's charge-event name VERBATIM, so counts,
@@ -322,18 +335,9 @@ export default defineProvider({
                     key = undefined;
                     break;
             }
-            const model = utils.json.optionalGet(
-                state,
-                "$.data.pricingModel",
-            );
-            const perUnit = utils.json.optionalNum(
-                state,
-                "$.data.pricePerUnitUsd",
-            );
-            const totalUsd = utils.json.optionalNum(
-                state,
-                "$.data.usageTotalUsd",
-            );
+            const model = stateData?.pricingModel;
+            const perUnit = stateData?.pricePerUnitUsd;
+            const totalUsd = stateData?.usageTotalUsd;
             // v1 actualCostFromPricing: PRICE_PER_DATASET_ITEM multiplies,
             // PAY_PER_EVENT reads the reported total, other models → no cost
             const cost = model === "PRICE_PER_DATASET_ITEM"
@@ -341,16 +345,23 @@ export default defineProvider({
                 : model === "PAY_PER_EVENT"
                 ? utils.money.fromDollars(totalUsd ?? 0)
                 : undefined;
+            const externalRunId = data.lifecycle?.state.externalRunId;
             return {
                 usage: {
                     counts: key === undefined ? {} : { [key]: items },
                     ...(cost !== undefined ? { cost } : {}),
-                    evidence: utils.json.pick(state, [
-                        "$.externalRunId",
-                        "$.data.pricingModel",
-                        "$.data.pricePerUnitUsd",
-                        "$.data.usageTotalUsd",
-                    ]),
+                    evidence: {
+                        ...(externalRunId !== undefined
+                            ? { externalRunId }
+                            : {}),
+                        ...(model !== undefined ? { pricingModel: model } : {}),
+                        ...(perUnit !== undefined
+                            ? { pricePerUnitUsd: perUnit }
+                            : {}),
+                        ...(totalUsd !== undefined
+                            ? { usageTotalUsd: totalUsd }
+                            : {}),
+                    },
                 },
             };
         },

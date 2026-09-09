@@ -35,21 +35,23 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "actor-start-gb": { kind: UsageModelKind.PER_CALL },
-                "result": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "actor-start-gb": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "result": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "results",
+                },
             },
         },
-        /** maxItems caps the run — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "result": body.maxItems !== undefined && body.maxItems > 0
-                        ? Math.floor(body.maxItems)
-                        : 3,
-                },
-            };
-        },
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT); the schema
+         *  pins the actor's OWN server default (10, verified live),
+         *  materialized into the body before any hook runs — pure
+         *  arithmetic, no fallbacks (D24). */
+        estimate: ({ data }) => ({
+            counts: { "result": data.input.body.maxItems },
+        }),
     },
 });

@@ -334,3 +334,34 @@
 - [x] 15.e Docs: design D23; schema/engine/apify spec deltas; AGENT.md
       typed-authoring section; 133 tests green; estimate spot checks
       byte-identical; live pricing survey green
+
+## 16. D24: complete counts vector, deduced estimates, labels, typed provider
+
+- [x] 16.a Complete vector: flatCounts + reserved CALL key beside
+      countsMismatch; engine appends the model's flat 1s at estimate +
+      success settle (error settles stay zeroUsage); fns still never
+      write flat keys (type + runtime); tests updated fleet-wide
+- [x] 16.b Compile rule: metered model (≥1 PER_UNIT part) requires
+      usage.estimate (≥2-metered keying rule kept, checked first)
+- [x] 16.c Deduced estimates fleet-wide: three-source limit audit (our
+      schema · live actor input schema · v1 monid-services impl;
+      disposition table in design D24); fallback constants purged;
+      knobs actor-default-pinned or REQUIRED at the binding site
+      (schema files stay actor-faithful; zBody.required/unwrap derive,
+      never restate); arithmetic fixes found by the audit (placeIds,
+      topicUrls, shorts/streams, searches, related profiles, count vs
+      limitPerSource, reddit multiplier); akta/exa/octen estimates
+      authored from v1 credit math
+- [x] 16.d Engine: schema defaults materialize for queryParams/pathParams
+      too (cloned, useDefaults) — akta's limit default rides the wire
+- [x] 16.e Labels: optional `label` on model scalars; "base fee" +
+      plain-english plurals across apify/exa/octen/tinyfish docs;
+      rendering services-side, key = fallback
+- [x] 16.f Typed provider: shared TypedLifecycleSlots/TypedOutputSlots
+      composed by defineEndpoint AND defineProvider<StateSchema>; apify
+      provider own-state reads typed (corruption throws retriable:false),
+      state writes compile-checked; ts-expect-error proofs
+- [x] 16.g Docs: design D24 (+ disposition table); schema/engine/apify
+      spec deltas; AGENT.md; 134 tests green; live survey 46/46; two
+      test inputs gained required fields; two akta#news fixture URLs
+      carry the now-explicit vendor default (no re-records)

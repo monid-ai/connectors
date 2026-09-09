@@ -36,11 +36,13 @@ export default defineEndpoint({
                 "receipt_queries": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "queries",
                     description: "executed sub-query searches",
                 },
                 "full_content_tokens": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
+                    label: "content tokens",
                     description:
                         "full-content extraction tokens (only charged " +
                         "when search_options.full_content.enable is set)",
@@ -48,11 +50,15 @@ export default defineEndpoint({
             },
         },
         /** Queries = the requested max_queries (schema default 5 — the v1
-         *  fallback rule, applied at parse time). Tokens are NOT promisable
-         *  from the input (page-content-sized) — omitted, settle trues them
-         *  up. */
+         *  fallback rule, applied at parse time). Full-content tokens
+         *  depend on PAGE CONTENT — not deducible from the input, so that
+         *  key is promised at the deducible floor 0 (design D24); settle
+         *  trues it up from `meta.usage.full_content_tokens`. */
         estimate: ({ data }) => ({
-            counts: { "receipt_queries": data.input.body.max_queries },
+            counts: {
+                "receipt_queries": data.input.body.max_queries,
+                "full_content_tokens": 0,
+            },
         }),
         consolidate: ({ data, utils }) => {
             const queries = utils.json.optionalNum(

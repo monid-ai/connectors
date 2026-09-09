@@ -106,24 +106,37 @@ SECOND, MINUTE, CREDIT, PAGE) with UPPERCASE keys AND values (the repo
 enum rule; lowercase is display-only). CALL SHALL NOT be a unit: a flat
 charge is the PER_CALL model kind, never a count.
 
-### Requirement: usage.counts — ONE keyed map for every model type
+### Requirement: usage.counts — the COMPLETE billed vector (D24)
 `zUsage.counts` SHALL be a plain `Record<string, number>` (zMeasure is
-DELETED — design D19) whose key names WHAT is counted: the component id
-for a COMPOSITE doc (metered components only — a flat component never
-appears; model + success covers it); the model's unit for a leaf
-PER_UNIT doc (`{"RESULT": 10}`); `{}` for PER_CALL docs and every
-zero/error path (`zeroUsage()`/`defaultUsage()` return `{counts: {}}`,
-`presets.usage.perCall()` settles `{usage: {counts: {}}}`). The key is
-the join across counts, the broker card row, the drift guard and (apify)
-the vendor's own charge-event names — per-event prices match exactly.
+DELETED — design D19) that, on SUCCESS, carries EVERY billed component —
+`counts × rates = the whole bill`, no model join: the metered component
+ids (composite) or the model's unit (leaf PER_UNIT, `{"RESULT": 10}`)
+carry the fn-settled quantities, and every FLAT charge is ENGINE-appended
+at exactly 1 (`flatCounts(model)`, applied at estimate AND success
+settle): a composite's PER_CALL components under their own ids
+(`{"apify-actor-start": 1, "review": 20}`), a leaf PER_CALL model under
+the reserved `CALL` key (NOT a Unit). FNS never write flat keys — the
+type layer and `countsMismatch` reject them, so the constant has one
+source. `{counts: {}}` is the ERROR-PATH shape only (`zeroUsage()`
+unchanged: nothing billed, nothing counted). The key is the join across
+counts, the broker card row, the drift guard and (apify) the vendor's
+own charge-event names — the vector maps 1:1 onto vendor charge events.
 
 #### Scenario: Zero counts nothing
 - **WHEN** a provider error forces zero usage
-- **THEN** the settled usage is `{counts: {}}` — no fake count of any kind
+- **THEN** the settled usage is `{counts: {}}` — no fake count of any kind, no flat 1s
 
-#### Scenario: Composite counts key the component
+#### Scenario: Composite settles the complete vector
 - **WHEN** facebook-comments-scraper settles 23 dataset items
-- **THEN** the usage is `{counts: {"comment": 23}}` — the actor's charge-event name verbatim
+- **THEN** the usage is `{counts: {"comment": 23, "actor-start": 1}}` — metered fn-settled, flat engine-appended
+
+#### Scenario: Leaf flat bills under CALL
+- **WHEN** tinyfish#fetch (leaf PER_CALL) succeeds
+- **THEN** the usage is `{counts: {"CALL": 1}}` — engine-derived, no estimate fn needed
+
+#### Scenario: A fn writing a flat key fails closed
+- **WHEN** a consolidate returns `{"actor-start": 2}`
+- **THEN** FN_CONTRACT (and the typed layer rejects it at `deno task check`)
 
 ### Requirement: usage.model — the rate-free billing ALGEBRA
 `zUsageModel` SHALL be the discriminated union of two operators, one kind
@@ -131,10 +144,14 @@ per file under `usage/model/` with the runtime kind enum DERIVED from the
 union (extractZodDiscriminatorKeys — the v1 zPriceTypes pattern; a
 literal-typed authoring const is kept in sync by a load-time staleness
 guard):
-- LEAF: `PER_CALL` ({kind, description?} — billed 1 iff success, no
-  count) and `PER_UNIT` ({kind, unit, description?} — metered per N of
-  unit; pure, no base-fee side pocket). `description` is a human note on
-  what a derived count means; documentation only, never a join key.
+- LEAF: `PER_CALL` ({kind, label?, description?} — billed 1 iff success,
+  engine-counted under its key — design D24) and `PER_UNIT` ({kind, unit,
+  label?, description?} — metered per N of unit; pure, no base-fee side
+  pocket). `description` is a human note on what a derived count means;
+  `label` (≤40 chars, OPTIONAL) is a SHORT display name for billing
+  surfaces ("base fee", "reviews", "extra results") — rendering is
+  services-side with the KEY as fallback (`${label ?? key} × ${count}`);
+  neither is ever a join key.
 - AND: `COMPOSITE` ({kind, components: `Record<componentId, scalar>`,
   min 2}) — scalar components KEYED BY ID (design D19): id uniqueness is
   structural, and the old constraints (≤1 PER_CALL, distinct PER_UNIT
@@ -150,8 +167,16 @@ rate field anywhere: apify event prices are tiered by OUR subscription
 plan (verified), so rates are services config. `zUsageSection` carries
 `model?` (and `estimate?`) per level — but the model MUST RESOLVE
 (endpoint ?? provider, compile error if neither: every doc declares what
-is chargeable); `doc.usage` carries the resolved `model` REQUIRED inline
-(hash-covered) and `estimate` as a FnRef.
+is chargeable), and a METERED model (≥1 PER_UNIT part) additionally
+requires `usage.estimate` to resolve (design D24 — the admission hold is
+priced from the deduced counts; flat-only docs need no estimate: the
+engine derives their whole vector from the model). `doc.usage` carries
+the resolved `model` REQUIRED inline (hash-covered) and `estimate` as a
+FnRef.
+
+#### Scenario: Metered doc without an estimate fails compile
+- **WHEN** a doc resolves a PER_UNIT model but no usage.estimate (endpoint or provider)
+- **THEN** compile fails HOOK_UNRESOLVED citing design D24
 
 #### Scenario: Same-unit components are legal, keyed
 - **WHEN** a composite declares full-profile and full-profile-with-email (both RESULT)
@@ -230,6 +255,33 @@ tests.
 #### Scenario: Mis-shaped state write fails the typecheck
 - **WHEN** a doc declares `lifecycle.state: z.object({datasetId: z.string()})` and its poll returns `state: {data: {datasetID: "x"}}`
 - **THEN** `deno task check` fails at the write site (not just the runtime tick gate)
+
+### Requirement: Estimates are DEDUCED, never defaulted (D24)
+Every estimate SHALL be pure arithmetic over the VALIDATED input — no
+fallback constants, no presence-branches over billing knobs. A fixed
+quantity that follows from the vendor's price structure (akta: 1.5
+credits per 50 records) is deduced, not a fallback — the evidence rides
+in a comment. Every knob an estimate reads SHALL be deterministic after
+validation: a schema `.default(n)` ONLY where it mirrors the actor's
+VERIFIED server default (`default` in the published input schema —
+`prefill` is editor text and justifies nothing), otherwise REQUIRED.
+Required-ness SHALL live at the BINDING SITE, never in the schema file:
+`schema/inputs.ts` stays the faithful vendor mirror; the endpoint def
+tightens with `zBody.required({...})` / `zBody.extend({f:
+zBody.shape.f.unwrap().min(1)})` — deriving from the base schema, never
+restating it. Query arrays feeding multiplication: required non-empty
+(or vendor-default `[]` where absent ≡ empty). The engine SHALL
+materialize schema defaults for body AND queryParams/pathParams
+(cloned, `useDefaults`) so estimates read the same effective knobs the
+vendor applies.
+
+#### Scenario: Missing limiting knob rejects, never falls back
+- **WHEN** a caller omits a required-at-binding limit (tweet-scraper without maxItems)
+- **THEN** validation rejects the input — no run, no guessed hold
+
+#### Scenario: Vendor default rides the wire
+- **WHEN** akta#news is called without `limit` (schema default 10, vendor-documented)
+- **THEN** the validated queryParams carry limit=10 and the estimate reads it
 
 ### Requirement: No estimate presets — the typed inline fn IS the typed preset (D23)
 `presets.estimate.*` SHALL NOT exist: preset field args were unchecked

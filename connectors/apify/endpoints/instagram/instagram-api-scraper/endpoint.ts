@@ -30,7 +30,26 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-api-scraper/runs",
     },
-    input: { schema: { body: zInstagramApiScraperBody } },
+    input: {
+        schema: {
+            // TWO alternative run modes bill items: direct-url runs (each
+            // directUrls entry yields up to resultsLimit items) and search
+            // runs (one `search` query yields up to searchLimit items).
+            // The actor publishes NO server default for either limit
+            // (prefills 200/1 are editor hints) and accepts absent limits
+            // (unbounded) — WE require BOTH limits and at least one active
+            // mode: the estimate must be deducible to price the hold (D24)
+            body: zInstagramApiScraperBody.required({
+                "resultsLimit": true,
+                "searchLimit": true,
+            }).refine(
+                (b) =>
+                    (b.directUrls?.length ?? 0) > 0 ||
+                    (b.search !== undefined && b.search.trim() !== ""),
+                "provide a non-empty directUrls and/or a search query",
+            ),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey
@@ -40,20 +59,31 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "actor-start": { kind: UsageModelKind.PER_CALL },
-                "result": { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                "actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
+                "result": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "results",
+                },
             },
         },
-        /** resultsLimit (direct-url runs) or searchLimit (search runs) —
-         *  TWO alternative limit knobs, so an inline fn over the endpoint's
-         *  OWN pinned input fields (the schema is the source of truth);
-         *  × directUrls. */
+        /** Dual-mode sum: resultsLimit × directUrls entries, plus
+         *  searchLimit × one query when `search` is set. Both limits are
+         *  required at the binding (which also guarantees ≥ 1 active
+         *  mode); an absent directUrls / search is a genuine zero-term
+         *  mode, not a masked default — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const limit = body.resultsLimit ?? body.searchLimit;
-            if (limit === undefined) return { counts: { "result": 3 } };
-            const n = Math.max(body.directUrls?.length ?? 0, 1);
-            return { counts: { "result": limit * n } };
+            const urlItems = body.resultsLimit *
+                (body.directUrls?.length ?? 0);
+            const searchItems = body.searchLimit *
+                (body.search !== undefined && body.search.trim() !== ""
+                    ? 1
+                    : 0);
+            return { counts: { "result": urlItems + searchItems } };
         },
     },
 });

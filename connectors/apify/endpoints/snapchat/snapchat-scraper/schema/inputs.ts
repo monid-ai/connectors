@@ -14,5 +14,5 @@ export const zSnapchatScraperBody = z.object({
     ),
     "relatedProfilesLimit": z.number().int().min(0).max(50).describe(
         "Optionally scrape up to this many unique related accounts after all seed profiles. Expansion is limited to one hop. Each emitted related profile incurs the normal additional profile charge.",
-    ).optional(),
+    ).default(0), // actor server default, verified live
 });

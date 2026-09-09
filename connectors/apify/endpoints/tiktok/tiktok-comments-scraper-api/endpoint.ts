@@ -39,10 +39,12 @@ export default defineEndpoint({
             components: {
                 "apify-actor-start": {
                     kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
                     description: "run start fee",
                 },
                 "request": {
                     kind: UsageModelKind.PER_CALL,
+                    label: "request fee",
                     description: "per-run request fee",
                 },
             },

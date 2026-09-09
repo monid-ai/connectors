@@ -116,13 +116,15 @@ resolve the credential). Absolute targets SHALL be https-only
 
 ### Requirement: Pre-run estimate entrypoint
 `estimate(runInput)` SHALL derive the input (validate + toRequest) and
-run the linked `usage.estimate` fn — PURE, no IO, no state; absent
-estimate ⇒ `{counts: {}}` (nothing countable to predict — the PER_CALL
-posture: the flat charge is fully described by the model + success). The
-doc's own `usage.model` SHALL ride into the estimate ctx
-(`data.usage.model` — provenance-named, design D23) so provider-seam fns
-can derive a counts key generically, and the returned counts are
-validated against the model exactly like settled ones (see the counts
+run the linked `usage.estimate` fn — PURE, no IO, no state — then
+COMPLETE the vector with the model's flat 1s (design D24:
+`{...fnCounts, ...flatCounts(model)}` — the returned usage carries every
+billed component). Absent estimate fn (flat-only docs) ⇒ the vector IS
+`flatCounts(model)` (leaf PER_CALL → `{"CALL": 1}`). The doc's own
+`usage.model` SHALL ride into the estimate ctx (`data.usage.model` —
+provenance-named, design D23) so provider-seam fns can derive a counts
+key generically, and the FN-returned counts are validated against the
+model exactly like settled ones BEFORE completion (see the counts
 discipline requirement). A standalone command
 (`deno task engine:estimate`) SHALL print the model + estimated counts,
 loading against a transport that rejects every call.
@@ -130,6 +132,10 @@ loading against a transport that rejects every call.
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
 - **THEN** it returns the estimated Usage without touching the wire
+
+#### Scenario: Flat doc estimates without a fn
+- **WHEN** estimate() runs on a leaf PER_CALL doc with no estimate fn
+- **THEN** it returns `{counts: {"CALL": 1}}` — engine-derived from the model
 
 ### Requirement: The card invariant — estimate and settle share counts KEYS
 For a doc with a metered `usage.model`, estimate() AND the settled usage
@@ -145,27 +151,35 @@ estimated counts SHALL deep-equal the settled counts.
 - **WHEN** 2 queries produce a 2-item chain and the estimate counts queries
 - **THEN** estimate(input).counts deep-equals run(input).usage.counts
 
-### Requirement: Counts ↔ model discipline (validateUsage)
+### Requirement: Counts ↔ model discipline (validateUsage) + vector completion (D24)
 The engine SHALL validate consolidate output at settle AND the estimate
 fn's return against the doc's model, fail-closed as FN_CONTRACT: a
 COMPOSITE doc's counts keys must each name a PER_UNIT component in
-`model.components` (flat components never appear); a leaf PER_UNIT doc's
-single key must equal the model's unit; PER_CALL / model-less docs may
-count nothing (`{}` only). `{counts: {}}` passes everywhere. The doc's
-model SHALL ride into the consolidate envelope (`data.usage.model` —
-provenance-named, design D23; the final async state rides beside it at
-`data.lifecycle.state`) so a
-GENERIC provider consolidate keys its count with zero per-doc code (leaf
-→ the unit; composite → the sole metered component id — single-valued by
-the compiler's ≥2-metered rule).
+`model.components` (flat components are ENGINE-appended, never
+fn-written); a leaf PER_UNIT doc's single key must equal the model's
+unit; PER_CALL / model-less docs may count nothing (`{}` only).
+`{counts: {}}` passes everywhere as a FN return. AFTER validation, on
+SUCCESS settles and estimates, the engine SHALL complete the vector with
+`flatCounts(model)` — every flat component at exactly 1 (leaf PER_CALL
+under `CALL`) — so the PUBLIC usage is the complete billed vector; error
+settles stay `zeroUsage()` untouched. The doc's model SHALL ride into
+the consolidate envelope (`data.usage.model` — provenance-named, design
+D23; the final async state rides beside it at `data.lifecycle.state`) so
+a GENERIC provider consolidate keys its count with zero per-doc code
+(leaf → the unit; composite → the sole metered component id —
+single-valued by the compiler's ≥2-metered rule).
 
 #### Scenario: Unknown key fails closed
 - **WHEN** a consolidate returns counts keyed by a name not in the composite's components
 - **THEN** the run fails FN_CONTRACT naming the key and the declared components
 
-#### Scenario: Flat components never appear in counts
+#### Scenario: Flat keys are engine-owned
 - **WHEN** a consolidate keys a count by a PER_CALL component id
-- **THEN** the run fails FN_CONTRACT — the flat charge is model + success, never a count
+- **THEN** the run fails FN_CONTRACT — the flat 1 is engine-appended, never fn-written
+
+#### Scenario: Success settle carries the complete vector
+- **WHEN** a composite doc settles 23 metered items on a 2xx envelope
+- **THEN** the public usage counts every flat component at 1 beside the 23
 
 ### Requirement: Zero usage forced on every non-2xx envelope
 The settle pipeline SHALL force zero usage whenever the envelope's

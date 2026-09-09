@@ -33,20 +33,32 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/streamers~youtube-scraper/runs",
     },
-    input: { schema: { body: zYoutubeScraperBody } },
+    input: {
+        schema: {
+            // the two source lists (searchQueries, startUrls) are
+            // either/or on the actor with absent ≡ empty; startUrls has a
+            // live server default ([], in the schema) but searchQueries
+            // does not — WE materialize [] for it so the multiplier is
+            // deterministic after validation (D24)
+            body: zYoutubeScraperBody.extend({
+                "searchQueries": zYoutubeScraperBody.shape.searchQueries
+                    .unwrap().default([]),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxResults × (startUrls + searchQueries) — TWO multiplier
-         *  arrays, so an inline fn. The schema is the source of truth:
-         *  typed body access, no probing. */
+        /** (maxResults + maxResultsShorts + maxResultStreams) ×
+         *  (searchQueries + startUrls) — all three caps carry the actor's
+         *  server default (0) and are summed (the old estimate missed the
+         *  shorts/streams caps; v1 PER_QUERY_LIMIT read maxResults only),
+         *  so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            if (body.maxResults === undefined) {
-                return { counts: { "RESULT": 3 } };
-            }
-            const n = (body.startUrls?.length ?? 0) +
-                (body.searchQueries?.length ?? 0);
-            return { counts: { "RESULT": body.maxResults * Math.max(n, 1) } };
+            const cap = body.maxResults + body.maxResultsShorts +
+                body.maxResultStreams;
+            const n = body.searchQueries.length + body.startUrls.length;
+            return { counts: { "RESULT": cap * n } };
         },
     },
 });

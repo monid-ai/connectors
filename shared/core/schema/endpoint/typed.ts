@@ -133,6 +133,37 @@ export type TypedLifecycleOutcome<SD = Json> =
     };
 
 /**
+ * The SHARED seed slot-override shapes (design D24) — written once,
+ * composed by BOTH `defineEndpoint` (B = the doc's own body type) and
+ * `defineProvider` (B = `Json | undefined`: a provider fn serves every
+ * endpoint, so its body is genuinely untypeable — D23's documented seam).
+ * A builder API or z.function factories would be slimmer to write but
+ * trade away seed-literal inference — the thing that keeps doc authoring
+ * annotation-free.
+ */
+export type TypedLifecycleSlots<B, StateSchema extends z.ZodType, Seed> =
+    & Omit<Seed, "state" | "start" | "poll" | "stop">
+    & {
+        state?: StateSchema;
+        start?: (
+            ctx: TypedLifecycleStartCtx<B>,
+        ) => Promise<TypedLifecycleOutcome<z.output<StateSchema>>>;
+        poll?: (
+            ctx: TypedLifecycleTickCtx<B, z.output<StateSchema>>,
+        ) => Promise<TypedLifecycleOutcome<z.output<StateSchema>>>;
+        stop?: (
+            ctx: TypedLifecycleTickCtx<B, z.output<StateSchema>>,
+        ) => Promise<void>;
+    };
+
+export type TypedOutputSlots<B, SD, Seed> =
+    & Omit<Seed, "fromResponse" | "fromError">
+    & {
+        fromResponse?: (ctx: TypedEnvelopeCtx<B, SD>) => Json;
+        fromError?: (ctx: TypedEnvelopeCtx<B, SD>) => Json;
+    };
+
+/**
  * The PORTABLE fn shape the remaining consolidate preset returns:
  * body-agnostic (`body?: unknown` — a preset guards its own reads), so
  * one preset term slots into ANY doc's typed consolidate position via

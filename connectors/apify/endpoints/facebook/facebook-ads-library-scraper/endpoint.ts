@@ -30,7 +30,21 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/curious_coder~facebook-ads-library-scraper/runs",
     },
-    input: { schema: { body: zFacebookAdsLibraryScraperBody } },
+    input: {
+        schema: {
+            // the actor caps ads via `count` (TOTAL across the run,
+            // prefill 100 — editor-only, NOT a server default) and
+            // optionally `limitPerSource` (per URL); with both absent it
+            // scrapes ALL ads — WE require count ≥ 1 (the actor states no
+            // floor): the estimate must be deducible to price the hold
+            // (D24). limitPerSource stays optional (it can only lower the
+            // total below count).
+            body: zFacebookAdsLibraryScraperBody.extend({
+                "count": zFacebookAdsLibraryScraperBody.shape.count
+                    .unwrap().min(1),
+            }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -39,27 +53,25 @@ export default defineEndpoint({
             // (live survey) — the broker card row key and the join key for
             // the stashed run-record rates (design D19)
             components: {
-                "apify-actor-start": { kind: UsageModelKind.PER_CALL },
+                "apify-actor-start": {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                },
                 "apify-default-dataset-item": {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
+                    label: "ads",
                 },
             },
         },
-        /** limitPerSource ads per url — the endpoint's OWN pinned input fields
-         *  (no probing: the schema is the source of truth). */
-        estimate: ({ data }) => {
-            const body = data.input.body;
-            return {
-                counts: {
-                    "apify-default-dataset-item":
-                        body.limitPerSource !== undefined &&
-                            body.limitPerSource > 0
-                            ? body.limitPerSource *
-                                Math.max(body.urls.length, 1)
-                            : 3,
-                },
-            };
-        },
+        /** count = the run's TOTAL ad cap (the old estimate read the
+         *  optional per-URL limitPerSource and fell back to a constant) —
+         *  required ≥ 1 at the binding, so the estimate is pure
+         *  arithmetic (D24). */
+        estimate: ({ data }) => ({
+            counts: {
+                "apify-default-dataset-item": data.input.body.count,
+            },
+        }),
     },
 });

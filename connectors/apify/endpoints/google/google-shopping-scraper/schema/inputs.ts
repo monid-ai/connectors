@@ -40,7 +40,7 @@ export const zGoogleShoppingScraperBody = z.object({
     ).optional(),
     "limit": z.number().int().min(10).max(100).describe(
         "Number of products to fetch per API call. Min 1, Max 100. Default is 10.",
-    ).optional(),
+    ).default(10), // actor server default, verified live
     "stores": z.string().describe(
         "Filter results by specific stores. Enter comma-separated store names. Example: 'Amazon,Walmart,Best Buy'.",
     ).optional(),

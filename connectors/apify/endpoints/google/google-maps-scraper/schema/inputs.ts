@@ -170,5 +170,5 @@ export const zGoogleMapsScraperBody = z.object({
     ]).describe("The language to search in.").optional(),
     "max_results": z.number().int().describe(
         "The maximum number of results to scrape.",
-    ).optional(),
+    ).default(100), // actor server default, verified live
 });
