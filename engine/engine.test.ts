@@ -1441,12 +1441,7 @@ async function usageUnit(
     // FREE models must state the free shape)
     connectors[0].endpoints[0].def.usage =
         usage !== undefined && usage.estimate === undefined
-            ? {
-                ...usage,
-                estimate: usage.model?.kind === "FREE"
-                    ? () => ({ counts: {}, free: true })
-                    : () => ({ counts: {} }),
-            }
+            ? { ...usage, estimate: () => ({ counts: {} }) }
             : usage;
     delete connectors[0].endpoints[0].def.output; // free-form outputs
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
@@ -1674,24 +1669,22 @@ Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not a
 // FREE (design D25) — the free billing shape at estimate + settle
 // ---------------------------------------------------------------------------
 
-Deno.test("FREE model: both fns state the free shape; error settles stay zeroUsage", async () => {
+Deno.test("FREE model: fns return plain empty counts — the MODEL is the free fact", async () => {
     const free = {
         model: { kind: "FREE" },
-        estimate: () => ({ counts: {}, free: true }),
-        consolidate: () => ({ usage: { counts: {}, free: true } }),
+        estimate: () => ({ counts: {} }),
+        consolidate: () => ({ usage: { counts: {} } }),
     } as ConnectorSource["endpoints"][number]["def"]["usage"];
     const engine = new Engine({ transport: jsonTransport(200, { ok: true }) });
     const loaded = await engine.load(await usageUnit(free));
-    // estimate: free promise, NO engine completion
-    assertEquals(loaded.estimate({ body: { q: "x" } }), {
-        counts: {},
-        free: true,
-    });
-    // success settle: free vector, no flat 1s
+    // estimate: nothing counted, nothing billed — flat completion is a
+    // no-op for FREE (no CALL key, design D25)
+    assertEquals(loaded.estimate({ body: { q: "x" } }), { counts: {} });
+    // success settle: same shape; the doc's model says "free"
     const result = await loaded.run({ body: { q: "x" } });
-    assertEquals(result.usage.counts, {});
-    assertEquals(result.usage.free, true);
-    // provider error: zeroUsage WITHOUT the flag — failed ≠ free
+    assertEquals(result.usage, { counts: {} });
+    // provider error: identical zeroUsage (the model distinguishes
+    // nothing here — failed and free both bill nothing)
     const errEngine = new Engine({
         transport: jsonTransport(500, { error: "boom" }),
     });
@@ -1700,15 +1693,15 @@ Deno.test("FREE model: both fns state the free shape; error settles stay zeroUsa
     assertEquals(errResult.usage, { counts: {} });
 });
 
-Deno.test("FREE discipline: FN_CONTRACT on every free-shape violation", async () => {
-    // FREE model whose consolidate forgets the flag
+Deno.test("FREE discipline: FN_CONTRACT on counts or cost from a FREE doc's fns", async () => {
+    // a FREE doc counting something — free bills nothing
     {
         const engine = new Engine({ transport: jsonTransport(200, {}) });
         const loaded = await engine.load(
             await usageUnit({
                 model: { kind: "FREE" },
-                estimate: () => ({ counts: {}, free: true }),
-                consolidate: () => ({ usage: { counts: {} } }),
+                estimate: () => ({ counts: {} }),
+                consolidate: () => ({ usage: { counts: { "RESULT": 1 } } }),
             }),
         );
         await expectCode(
@@ -1716,15 +1709,22 @@ Deno.test("FREE discipline: FN_CONTRACT on every free-shape violation", async ()
             EngineErrorCode.FN_CONTRACT,
         );
     }
-    // free WITH counts (billed model, dynamic-free settle gone wrong)
+    // a FREE doc reporting a cost — free bills nothing (freeMismatch)
     {
         const engine = new Engine({ transport: jsonTransport(200, {}) });
         const loaded = await engine.load(
             await usageUnit({
-                model: { kind: "PER_UNIT", unit: "RESULT" },
+                model: { kind: "FREE" },
                 estimate: () => ({ counts: {} }),
                 consolidate: () => ({
-                    usage: { counts: { "RESULT": 2 }, free: true },
+                    usage: {
+                        counts: {},
+                        cost: {
+                            currency: "USD",
+                            value: 1,
+                            unit: "MICRO_DOLLAR",
+                        },
+                    },
                 }),
             }),
         );
@@ -1733,44 +1733,4 @@ Deno.test("FREE discipline: FN_CONTRACT on every free-shape violation", async ()
             EngineErrorCode.FN_CONTRACT,
         );
     }
-    // a free ESTIMATE on a billed model holds nothing — rejected
-    {
-        const engine = new Engine({ transport: jsonTransport(200, {}) });
-        const loaded = await engine.load(
-            await usageUnit({
-                model: { kind: "PER_CALL" },
-                estimate: () => ({ counts: {}, free: true }),
-                consolidate: () => ({ usage: { counts: {} } }),
-            }),
-        );
-        assertThrows(
-            () => loaded.estimate({ body: { q: "x" } }),
-            EngineError,
-            "FN_CONTRACT",
-        );
-    }
-});
-
-Deno.test("dynamic free: a billed model's CONSOLIDATE may settle free — flat 1s suppressed", async () => {
-    const engine = new Engine({
-        transport: jsonTransport(200, { promo: true }),
-    });
-    const loaded = await engine.load(
-        await usageUnit({
-            model: {
-                kind: "COMPOSITE",
-                components: {
-                    "start": { kind: "PER_CALL" },
-                    "item": { kind: "PER_UNIT", unit: "RESULT" },
-                },
-            },
-            estimate: () => ({ counts: { "item": 1 } }),
-            // the vendor demonstrably charged nothing this run
-            consolidate: () => ({ usage: { counts: {}, free: true } }),
-        }),
-    );
-    const result = await loaded.run({ body: { q: "x" } });
-    // no engine-appended start: 1 — a free run never bills the base fee
-    assertEquals(result.usage.counts, {});
-    assertEquals(result.usage.free, true);
 });

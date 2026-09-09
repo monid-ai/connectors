@@ -854,22 +854,21 @@ linkedin-by-name maxItems 2) — no re-records needed.
 
 ## D25 — FREE billing shape + the required usage triple + input fidelity
 
-**1. FREE is a billing SHAPE, not "0 credits".** `zFreeModel` joins the
-model union as a third leaf (`{kind: "FREE"}` — kind only: description/
-label explain derived counts and price lines, FREE has neither), and
-`zUsage` gains `free?: true` — the canonical free usage is
-`{counts: {}, free: true}` (empty counts ride WITH the flag; no cost).
-Rules (shared `freeMismatch` beside `countsMismatch`; engine wraps in
-FN_CONTRACT):
-  - model FREE ⇒ BOTH fns return the free shape — free-ness is
-    triple-stated (model + estimate + settle), nothing silently defaults;
-  - billed model ⇒ `free` is legal from CONSOLIDATE only (dynamic: the
-    vendor demonstrably charged nothing); a free ESTIMATE on a billed
-    model holds nothing against a run that can bill — FN_CONTRACT, and a
-    TYPE error (`free?: never` on the estimate arm — conditional return
-    types defeat excess-property checks, so it's structural);
-  - `usage.free` suppresses the engine's flat-1s completion; error
-    settles stay `zeroUsage()` WITHOUT the flag (failed ≠ free).
+**1. FREE is a billing SHAPE, not "0 credits" — and the MODEL is the
+free fact.** `zFreeModel` joins the model union as a third leaf
+(`{kind: "FREE"}` — kind only: description/label explain derived counts
+and price lines, FREE has neither). REVISED per review ("the free field
+in usage is very ugly"): `zUsage` carries NO free flag — a FREE doc's
+fns return plain `{counts: {}}` and the MODEL interprets. Rules:
+  - countsMismatch FREE arm: any counts key from a FREE doc's fns is
+    FN_CONTRACT (free bills nothing);
+  - freeMismatch (shared, beside countsMismatch): a cost on a FREE doc's
+    usage is FN_CONTRACT;
+  - the engine's flat-1s completion is a structural no-op for FREE
+    (`flatCounts(FREE) = {}`), so the public usage of a free run is
+    `{counts: {}}` — consumers read `doc.usage.model.kind === "FREE"`
+    to render "free". (The earlier dynamic-free-on-billed-models idea
+    died with the flag — a vendor promo is a rate-card fact.)
 Remodels: tinyfish provider PER_CALL→FREE (v1: "$0 wins verbatim … both
 endpoints are free"); akta company-search + industry-search →FREE (v1
 `makePerCallPrice(0)`). exa's `cost` does NOT fold into counts: counts =
@@ -878,11 +877,13 @@ them needs a degenerate usd-pseudo-component and kills the
 card-vs-vendor drift check.
 
 **2. The required TRIPLE.** `usage.model` + `usage.consolidate` +
-`usage.estimate` are ALL compile-required on every doc (estimate:
-endpoint ?? provider). Every doc states its billing story end-to-end:
-what is chargeable, what this run will cost, what it did cost. Flat docs
-state `estimate: () => ({counts: {}})` (the engine appends the flat 1s);
-FREE docs state the free pair inline (3 sites — no new presets).
+`usage.estimate` are ALL compile-required on the COMPILED DOC — each
+resolves endpoint ?? provider, so a provider-level fallback satisfies it
+(akta employee/product-reviews inherit the provider's CREDIT settle).
+Every doc states its billing story end-to-end: what is chargeable, what
+this run will cost, what it did cost. Flat docs state
+`estimate: () => ({counts: {}})` (the engine appends the flat 1s); FREE
+docs state the same plain shape (the model interprets).
 
 **3. Input fidelity (the standing rules, learned from review edits).**
   - `schema/inputs.ts` is the FAITHFUL VENDOR MIRROR: optionality only —

@@ -558,8 +558,9 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
         limit: z.number().int().min(1).optional(),
     });
 
-    // POSITIVE control — a FREE doc states the free shape from both fns,
-    // and the estimate reads TYPED queryParams (pre-toRequest input):
+    // POSITIVE control — a FREE doc's fns return plain empty counts (the
+    // MODEL is the free fact, D25), and the estimate reads TYPED
+    // queryParams (pre-toRequest input):
     const good = defineEndpoint({
         meta,
         request,
@@ -570,9 +571,9 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
             model: { kind: UsageModelKind.FREE },
             estimate: ({ data }) => ({
                 counts: {},
-                free: data.input.queryParams.limit > 0 ? true : true,
+                evidence: { requestedLimit: data.input.queryParams.limit },
             }),
-            consolidate: () => ({ usage: { counts: {}, free: true } }),
+            consolidate: () => ({ usage: { counts: {} } }),
         },
     });
     void good;
@@ -584,22 +585,9 @@ Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as design
             input: { schema: { queryParams } },
             usage: {
                 model: { kind: UsageModelKind.FREE },
-                // @ts-expect-error — a FREE doc's estimate must state
-                // free: true (the billing triple agrees — D25)
-                estimate: () => ({ counts: {} }),
-                consolidate: () => ({ usage: { counts: {}, free: true } }),
-            },
-        }));
-    void (() =>
-        defineEndpoint({
-            meta,
-            request,
-            input: { schema: { queryParams } },
-            usage: {
-                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-                // @ts-expect-error — a free PROMISE on a billed model holds
-                // nothing against a run that can bill (freeMismatch's twin)
-                estimate: () => ({ counts: {}, free: true }),
+                // @ts-expect-error — a FREE doc has no metered keys: its
+                // fns can write only {} (free bills nothing — D25)
+                estimate: () => ({ counts: { "RESULT": 1 } }),
                 consolidate: () => ({ usage: { counts: {} } }),
             },
         }));

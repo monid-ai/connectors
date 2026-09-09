@@ -7,7 +7,6 @@ import type {
     MeteredKeyOf,
     TypedEnvelopeCtx,
     TypedEstimateCtx,
-    TypedFreeUsage,
     TypedLifecycleSlots,
     TypedOutputSlots,
     TypedUsage,
@@ -82,8 +81,7 @@ export function defineEndpoint<
                             z.output<QuerySchema>
                         >,
                     ) => {
-                        usage: M extends { kind: "FREE" } ? TypedFreeUsage
-                            : TypedUsage<MeteredKeyOf<M>> & { free?: true };
+                        usage: TypedUsage<MeteredKeyOf<M>>;
                         output?: Json;
                     };
                     estimate?: (
@@ -91,11 +89,7 @@ export function defineEndpoint<
                             z.output<BodySchema>,
                             z.output<QuerySchema>
                         >,
-                    ) => M extends { kind: "FREE" } ? TypedFreeUsage
-                        // free?: never — structural (conditional returns
-                        // defeat excess-property checks): a free PROMISE on
-                        // a billed model is a type error (freeMismatch twin)
-                        : TypedUsage<MeteredKeyOf<M>> & { free?: never };
+                    ) => TypedUsage<MeteredKeyOf<M>>;
                 };
             lifecycle?: TypedLifecycleSlots<
                 z.output<BodySchema>,

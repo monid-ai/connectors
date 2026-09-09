@@ -45,27 +45,18 @@ export type MeteredKeyOf<M> = M extends {
     : never;
 
 /** Usage with model-keyed counts: a SUBSET of the billed keys is legal
- *  (mode-selected components — linkedin), a foreign key is not. `free`
- *  is settle-side only on billed models (dynamic vendor-$0, design D25)
- *  — the CONSOLIDATE position widens with it; the estimate position uses
- *  this shape verbatim, so a free promise on a billed model is a type
- *  error (matching the runtime freeMismatch rule). */
+ *  (mode-selected components — linkedin), a foreign key is not. FREE and
+ *  flat models have no metered keys, so their fns can write only
+ *  `{counts: {}}` — free-ness is a MODEL fact, never a usage field
+ *  (design D25). */
 export type TypedUsage<K extends string> = {
-    /** No metered keys (flat models) ⇒ only `{}` is writable —
+    /** No metered keys (FREE/flat models) ⇒ only `{}` is writable —
      *  `Record<string, never>` rejects every entry (a bare `{}` target
      *  would accept anything: TS skips excess-property checks against
      *  empty shapes). */
     counts: [K] extends [never] ? Record<string, never>
         : Partial<Record<K, number>>;
     cost?: MonetaryValue;
-    evidence?: Record<string, Json>;
-};
-
-/** The FREE-model fn return (design D25): free-ness is triple-stated —
- *  the model declares it, and BOTH fns return exactly this. */
-export type TypedFreeUsage = {
-    counts: Record<string, never>;
-    free: true;
     evidence?: Record<string, Json>;
 };
 

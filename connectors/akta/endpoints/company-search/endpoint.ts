@@ -23,13 +23,13 @@ export default defineEndpoint({
     // auth + toRequest (array→CSV) inherit from the provider
     usage: {
         /** FREE (design D25) — the lookup bills nothing: v1 evidence
-         *  company-search.ts priced `makePerCallPrice(0)`. The triple
-         *  states it three times over (model + estimate + settle);
-         *  free-ness is a billing SHAPE, not "0 credits". */
+         *  company-search.ts priced `makePerCallPrice(0)`. Free-ness is
+         *  a MODEL fact — the fns return plain {counts: {}} and the
+         *  model interprets: a billing SHAPE, not "0 credits". */
         model: { kind: UsageModelKind.FREE },
-        estimate: () => ({ counts: {}, free: true }),
+        estimate: () => ({ counts: {} }),
         consolidate: ({ data, utils }) => ({
-            usage: { counts: {}, free: true },
+            usage: { counts: {} },
             // still absorb the vendor's billing field (always 0 here) —
             // billing facts never ride the payload
             output: utils.json.omit(data.output, ["credits_consumed"]),

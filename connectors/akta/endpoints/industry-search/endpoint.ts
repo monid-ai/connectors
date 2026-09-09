@@ -21,12 +21,12 @@ export default defineEndpoint({
     usage: {
         /** FREE (design D25) — resolution bills nothing: v1 evidence
          *  industry-search.ts priced `makePerCallPrice(0)`; the akta docs
-         *  say "Free — consumes 0 credits". The triple states it three
-         *  times over (model + estimate + settle). */
+         *  say "Free — consumes 0 credits". Free-ness is a MODEL fact — the
+         *  fns return plain {counts: {}} and the model interprets. */
         model: { kind: UsageModelKind.FREE },
-        estimate: () => ({ counts: {}, free: true }),
+        estimate: () => ({ counts: {} }),
         consolidate: ({ data, utils }) => ({
-            usage: { counts: {}, free: true },
+            usage: { counts: {} },
             // still absorb the vendor's billing field (always 0 here) —
             // billing facts never ride the payload
             output: utils.json.omit(data.output, ["credits_consumed"]),

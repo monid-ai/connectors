@@ -132,9 +132,8 @@ export class LoadedEndpoint implements RunnableEndpoint {
      *  IO, no state. The estimate fn is compile-REQUIRED on every doc
      *  (the billing triple — design D25); the absent-fn arm below is
      *  defense in depth only. Returned counts are validated against the
-     *  model exactly like settled ones; a FREE-model doc must promise
-     *  `{counts: {}, free: true}` and a free promise on a billed model
-     *  fails (freeMismatch — design D25). */
+     *  model exactly like settled ones (a FREE doc's fns return plain
+     *  `{counts: {}}` — free-ness is a MODEL fact, design D25). */
     estimate(runInput: RunInput): Usage {
         // PRE-toRequest input (design D25): the estimate is a promise about
         // the CALLER's request, so it reads the schema-shaped validated
@@ -148,14 +147,13 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 input,
                 usage: { model },
             });
-            // the fn's promise: metered keys only + free discipline
-            this.validateUsage(usage, "estimate");
+            // the fn's promise: metered keys only, no cost on FREE
+            this.validateUsage(usage);
         }
-        // free promise: bills nothing, completes with nothing (D25)
-        if (usage.free === true) return usage;
         // COMPLETE VECTOR (design D24): the engine appends the model's flat
         // 1s so the estimate carries every billed component — counts ×
-        // rates = the whole predicted bill, no model join
+        // rates = the whole predicted bill, no model join (a no-op for
+        // FREE and pure PER_UNIT models)
         return { ...usage, counts: { ...usage.counts, ...flatCounts(model) } };
     }
 
@@ -487,13 +485,12 @@ export class LoadedEndpoint implements RunnableEndpoint {
                 usage: { model: doc.usage.model },
             };
             const settled = this.fns.usageConsolidate(envelope);
-            // fn-returned counts: metered keys only + free discipline
-            this.validateUsage(settled.usage, "settle");
+            // fn-returned counts: metered keys only, no cost on FREE
+            this.validateUsage(settled.usage);
             // COMPLETE VECTOR (design D24): flat components are billed 1 per
-            // SUCCESSFUL run — engine-appended, never fn-written — UNLESS
-            // the settle declared the run free (D25: a free run never bills
-            // the base fee). Error settles keep zeroUsage().
-            usage = settled.usage.free === true ? settled.usage : {
+            // SUCCESSFUL run — engine-appended, never fn-written (a no-op
+            // for FREE models — design D25). Error settles keep zeroUsage().
+            usage = {
                 ...settled.usage,
                 counts: {
                     ...settled.usage.counts,
@@ -542,9 +539,9 @@ export class LoadedEndpoint implements RunnableEndpoint {
      *  and, later, the services broker); the engine owns only the error
      *  type. Applied to consolidate output at settle AND to the estimate
      *  fn's return — `{counts: {}}` passes everywhere. */
-    private validateUsage(usage: Usage, phase: "estimate" | "settle"): void {
+    private validateUsage(usage: Usage): void {
         const problem = countsMismatch(this.doc.usage.model, usage.counts) ??
-            freeMismatch(this.doc.usage.model, usage, phase);
+            freeMismatch(this.doc.usage.model, usage);
         if (problem !== undefined) {
             throw new EngineError(
                 EngineErrorCode.FN_CONTRACT,

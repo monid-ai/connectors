@@ -368,14 +368,15 @@
 
 ## 17. D25: FREE billing shape, the required triple, input fidelity
 
-- [x] 17.a zFreeModel (third leaf, kind-only) + zUsage.free; freeMismatch
-      beside countsMismatch; engine: free suppresses flat completion,
-      error settles stay zeroUsage without the flag; FREE/PER_UNIT arms
-      across every exhaustive consumer
-- [x] 17.b The billing TRIPLE compile-required (model + estimate +
-      consolidate on every doc); flat docs state {counts:{}}, FREE docs
-      the free pair; typed slots per model kind (free?: never on billed
-      estimates — structural, conditional returns defeat EPC)
+- [x] 17.a zFreeModel (third leaf, kind-only); NO usage flag (review:
+      the model IS the free fact) — FREE fns return plain {counts: {}},
+      countsMismatch FREE arm rejects keys, freeMismatch rejects cost,
+      flat completion is a structural no-op; FREE arms across every
+      exhaustive consumer
+- [x] 17.b The billing TRIPLE compile-required on the COMPILED doc
+      (endpoint ?? provider — provider fallbacks satisfy it, e.g. akta
+      employee/product-reviews inherit the provider settle); flat + FREE
+      docs state {counts:{}}; typed slots per model kind
 - [x] 17.c Input-fidelity repair fleet-wide: mirrors = optionality only
       (all .default()s moved to bindings, incl. D19a-era + exa/octen
       pre-existing); required/default/floor tightening DERIVED at
@@ -388,10 +389,13 @@
       akta's toRequest CSV-joins arrays); akta estimates on direct typed
       reads
 - [x] 17.e akta remodels: news COMPOSITE (request + article, doc-level
-      consolidate off $.data); enrichment PER_UNIT sections (settle =
-      delivered sections); employee/product-reviews keep CREDIT (native
-      meter, no settleable block quantity); search/industry FREE;
-      tinyfish FREE
+      consolidate off $.data); enrichment COMPOSITE with one component
+      PER SECTION (16 verbatim vendor section ids — per-section credit
+      prices differ, verified on the CLI and MCP pricing tables, so a
+      uniform count cannot price the run; estimate = 1 per requested
+      section, settle = 1 per delivered section);
+      employee/product-reviews keep CREDIT (native meter, no settleable
+      block quantity); search/industry FREE; tinyfish FREE
 - [x] 17.f Tests: FREE/dynamic-free/discipline engine tests; typed
       proofs (free omitted, free-on-billed, queryParams typo); akta/
       tinyfish expectations; 138 tests green

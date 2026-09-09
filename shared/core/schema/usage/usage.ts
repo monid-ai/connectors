@@ -20,15 +20,6 @@ import { zMonetaryValue } from "./monetary.ts";
  */
 export const zUsage = z.object({
     counts: z.record(z.string().min(1), z.number().nonnegative()),
-    /** This run bills NOTHING (design D25). Canonical free shape:
-     *  `{counts: {}, free: true}` — empty counts ride WITH the flag, no
-     *  cost. REQUIRED from both fns on a FREE-model doc (free-ness is
-     *  triple-stated: model + estimate + consolidate); a consolidate on a
-     *  billed model MAY settle it dynamically (the vendor demonstrably
-     *  charged nothing — evidence-backed). It suppresses the engine's
-     *  flat-1s completion: a free run never bills the base fee. Error
-     *  settles stay zeroUsage() WITHOUT the flag — failed ≠ free. */
-    free: z.literal(true).optional(),
     cost: zMonetaryValue.optional(),
     evidence: z.record(z.string(), zJson).optional(),
 }).strict();

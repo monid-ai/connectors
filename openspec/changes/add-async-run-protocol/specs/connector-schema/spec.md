@@ -180,28 +180,22 @@ REQUIRED inline (hash-covered) and `estimate` as a FnRef.
 - **WHEN** a doc resolves neither an endpoint- nor provider-level usage.estimate
 - **THEN** compile fails HOOK_UNRESOLVED citing the D25 billing triple
 
-### Requirement: FREE usage — a billing shape, triple-stated (D25)
-`zUsage` SHALL carry `free?: true`: the canonical free usage is
-`{counts: {}, free: true}` (empty counts ride WITH the flag; no cost —
-`freeMismatch`, shared beside `countsMismatch`, enforces it). A
-FREE-model doc's estimate AND consolidate SHALL return the free shape; a
-billed model MAY settle `free` dynamically from CONSOLIDATE only (the
-vendor demonstrably charged nothing) — a free ESTIMATE on a billed model
-SHALL fail (FN_CONTRACT at runtime; `free?: never` at the type layer).
-`usage.free` suppresses the engine's flat-1s completion; error settles
-stay `zeroUsage()` WITHOUT the flag (failed ≠ free).
+### Requirement: FREE usage — the MODEL is the free fact (D25)
+Free-ness SHALL live in the MODEL only — `zUsage` carries NO free field.
+A FREE-model doc's estimate and consolidate return plain `{counts: {}}`
+(nothing counted; the countsMismatch FREE arm rejects any key) and never
+a cost (`freeMismatch`, shared beside countsMismatch). The engine's
+flat-1s completion is a structural no-op for FREE (`flatCounts(FREE) =
+{}`), so the public usage of a free run is `{counts: {}}` — consumers
+read the DOC's model (`kind: "FREE"`) to render "free".
 
-#### Scenario: FREE doc settles free
+#### Scenario: FREE doc settles empty
 - **WHEN** tinyfish#fetch (model FREE) succeeds
-- **THEN** the usage is `{counts: {}, free: true}` — no CALL key, no cost
+- **THEN** the usage is `{counts: {}}` — no CALL key, no cost; the doc's model says free
 
-#### Scenario: FREE model demands the flag
-- **WHEN** a FREE doc's consolidate returns `{counts: {}}` without `free`
-- **THEN** the run fails FN_CONTRACT (the billing triple must agree)
-
-#### Scenario: Dynamic free suppresses the base fee
-- **WHEN** a composite doc's consolidate settles `{counts: {}, free: true}`
-- **THEN** the public usage carries NO engine-appended flat 1s
+#### Scenario: FREE doc counting fails closed
+- **WHEN** a FREE doc's consolidate returns any counts key (or a cost)
+- **THEN** the run fails FN_CONTRACT — free bills nothing
 
 #### Scenario: Same-unit components are legal, keyed
 - **WHEN** a composite declares full-profile and full-profile-with-email (both RESULT)

@@ -120,11 +120,12 @@ resolve the credential). Absolute targets SHALL be https-only
 CALLER's request — schema-shaped, defaults materialized; a reshaping
 toRequest like akta's array→CSV would make typed input reads lie) and
 run the linked `usage.estimate` fn — PURE, no IO, no state; the fn is
-compile-required on every doc (the D25 billing triple). Then the engine
-COMPLETES the vector with the model's flat 1s (design D24:
-`{...fnCounts, ...flatCounts(model)}`) — UNLESS the fn promised
-`free: true`, which returns as-is (a free run never bills the base
-fee). The doc's own `usage.model` SHALL ride into the estimate ctx
+compile-required on every doc (the D25 billing triple: model + estimate
++ consolidate must all RESOLVE, endpoint ?? provider — a provider-level
+fallback satisfies the compiled doc). Then the engine COMPLETES the
+vector with the model's flat 1s (design D24: `{...fnCounts,
+...flatCounts(model)}` — a structural no-op for FREE and pure PER_UNIT
+models). The doc's own `usage.model` SHALL ride into the estimate ctx
 (`data.usage.model` — provenance-named, design D23), and the FN-returned
 usage is validated (countsMismatch + freeMismatch) BEFORE completion. A
 standalone command (`deno task engine:estimate`) SHALL print the model +
@@ -138,9 +139,9 @@ estimated counts, loading against a transport that rejects every call.
 - **WHEN** an akta estimate reads queryParams the provider toRequest would CSV-join
 - **THEN** it sees the schema-shaped arrays/scalars (pre-toRequest), typed
 
-#### Scenario: FREE doc estimates free
+#### Scenario: FREE doc estimates empty
 - **WHEN** estimate() runs on a FREE-model doc
-- **THEN** it returns `{counts: {}, free: true}` — no flat completion
+- **THEN** it returns `{counts: {}}` — the doc's model is the free fact
 
 ### Requirement: The card invariant — estimate and settle share counts KEYS
 For a doc with a metered `usage.model`, estimate() AND the settled usage
