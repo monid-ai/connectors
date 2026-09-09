@@ -1,45 +1,5 @@
-import { z } from "zod";
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zFacebookProfilePostsScraperBody } from "./schema/inputs.ts";
-
-// ─── Binding-site mode variants (D24) ───────────────────────────────────────
-// The actor mirror (schema/inputs.ts) keeps every field optional; the
-// BINDING requires, per mode, the one textarea that mode reads (non-empty)
-// and — in post modes, where max_posts caps billed output and absent/0
-// means "fetch ALL" — max_posts ≥ 1.
-const zBase = zFacebookProfilePostsScraperBody;
-const zUrlsText = zBase.shape.urls_text.unwrap().min(1);
-const zIdsText = zBase.shape.ids_text.unwrap().min(1);
-const zKeywordsText = zBase.shape.keywords_text.unwrap().min(1);
-const zMaxPosts = zBase.shape.max_posts.unwrap().min(1);
-
-const zModePostsByUrl = zBase.extend({
-    "endpoint": z.literal("profile_posts_by_url"),
-    "urls_text": zUrlsText,
-    "max_posts": zMaxPosts,
-});
-const zModePostsById = zBase.extend({
-    "endpoint": z.literal("profile_posts"),
-    "ids_text": zIdsText,
-    "max_posts": zMaxPosts,
-});
-const zModeSearchPosts = zBase.extend({
-    "endpoint": z.literal("search_posts_by_keyword"),
-    "keywords_text": zKeywordsText,
-    "max_posts": zMaxPosts,
-});
-const zModeDetailsById = zBase.extend({
-    "endpoint": z.literal("details_by_id"),
-    "ids_text": zIdsText,
-});
-const zModeDetailsByUrl = zBase.extend({
-    "endpoint": z.literal("details_by_url"),
-    "urls_text": zUrlsText,
-});
-const zModeProfileIdByUrl = zBase.extend({
-    "endpoint": z.literal("profile_id_by_url"),
-    "urls_text": zUrlsText,
-});
 
 /**
  * cleansyntax/facebook-profile-posts-scraper — Pull Facebook Profile Posts. Pure data; the async machinery
@@ -75,21 +35,17 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // ONE actor, SIX modes — each mode reads exactly one target
-            // textarea, and the actor reads absent/0 max_posts as "fetch
-            // ALL" — WE bind a per-mode variant (discriminated on
-            // `endpoint`) that requires that mode's textarea and, in post
-            // modes, max_posts ≥ 1: the estimate must be deducible to
-            // price the hold (D24). schema/inputs.ts stays the faithful
-            // actor mirror.
-            body: z.discriminatedUnion("endpoint", [
-                zModePostsByUrl,
-                zModePostsById,
-                zModeSearchPosts,
-                zModeDetailsById,
-                zModeDetailsByUrl,
-                zModeProfileIdByUrl,
-            ]),
+            // max_posts is the primary limiting knob in post modes, and
+            // the actor documents "Set 0 (default) to fetch all
+            // available" (unbounded) — WE require it and floor it at 1
+            // (unwrap keeps the inner int/min(0) checks): the estimate
+            // must be deducible to price the hold (D25). The mode
+            // textareas stay optional, as on the actor; `endpoint` is
+            // actor-required via the mirror.
+            body: zFacebookProfilePostsScraperBody.extend({
+                max_posts: zFacebookProfilePostsScraperBody.shape
+                    .max_posts.unwrap().min(1),
+            }),
         },
     },
     usage: {
@@ -98,8 +54,9 @@ export default defineEndpoint({
          *  detail/id modes → one result per target line; post modes →
          *  target lines × max_posts (and profile_posts_by_url emits one
          *  extra profile-id record per target — confirmed live in v1).
-         *  Every field read is guaranteed by the mode's binding variant,
-         *  so the estimate is pure arithmetic (D24). */
+         *  max_posts is required at the binding; the mode textareas are
+         *  optional and absent ≡ blank, so a missing textarea yields 0
+         *  lines and an estimate of 0, which is correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             // targets are one-per-line — count non-blank lines (inlined:
@@ -110,7 +67,7 @@ export default defineEndpoint({
             // leaf PER_UNIT·RESULT doc: the counts key is the model's unit
             switch (body.endpoint) {
                 case "profile_posts_by_url": {
-                    const n = lines(body.urls_text);
+                    const n = lines(body.urls_text ?? "");
                     return {
                         counts: { "RESULT": n * body.max_posts + n },
                     };
@@ -118,25 +75,25 @@ export default defineEndpoint({
                 case "profile_posts":
                     return {
                         counts: {
-                            "RESULT": lines(body.ids_text) *
+                            "RESULT": lines(body.ids_text ?? "") *
                                 body.max_posts,
                         },
                     };
                 case "search_posts_by_keyword":
                     return {
                         counts: {
-                            "RESULT": lines(body.keywords_text) *
+                            "RESULT": lines(body.keywords_text ?? "") *
                                 body.max_posts,
                         },
                     };
                 case "details_by_id":
                     return {
-                        counts: { "RESULT": lines(body.ids_text) },
+                        counts: { "RESULT": lines(body.ids_text ?? "") },
                     };
                 default:
                     // details_by_url | profile_id_by_url
                     return {
-                        counts: { "RESULT": lines(body.urls_text) },
+                        counts: { "RESULT": lines(body.urls_text ?? "") },
                     };
             }
         },

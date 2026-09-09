@@ -45,15 +45,36 @@ export type MeteredKeyOf<M> = M extends {
     : never;
 
 /** Usage with model-keyed counts: a SUBSET of the billed keys is legal
- *  (mode-selected components — linkedin), a foreign key is not. */
+ *  (mode-selected components — linkedin), a foreign key is not. `free`
+ *  is settle-side only on billed models (dynamic vendor-$0, design D25)
+ *  — the CONSOLIDATE position widens with it; the estimate position uses
+ *  this shape verbatim, so a free promise on a billed model is a type
+ *  error (matching the runtime freeMismatch rule). */
 export type TypedUsage<K extends string> = {
-    counts: Partial<Record<K, number>>;
+    /** No metered keys (flat models) ⇒ only `{}` is writable —
+     *  `Record<string, never>` rejects every entry (a bare `{}` target
+     *  would accept anything: TS skips excess-property checks against
+     *  empty shapes). */
+    counts: [K] extends [never] ? Record<string, never>
+        : Partial<Record<K, number>>;
     cost?: MonetaryValue;
     evidence?: Record<string, Json>;
 };
 
-/** RunInput with the body typed by the doc's OWN schema. */
-export type TypedRunInput<B> = Omit<RunInput, "body"> & { body: B };
+/** The FREE-model fn return (design D25): free-ness is triple-stated —
+ *  the model declares it, and BOTH fns return exactly this. */
+export type TypedFreeUsage = {
+    counts: Record<string, never>;
+    free: true;
+    evidence?: Record<string, Json>;
+};
+
+/** RunInput with the body AND queryParams typed by the doc's OWN schemas
+ *  (design D25 — queryParams joins the typed layer; sound: validateInput
+ *  clones + materializes defaults for all input channels first). */
+export type TypedRunInput<B, Q = Record<string, Json> | undefined> =
+    & Omit<RunInput, "body" | "queryParams">
+    & { body: B; queryParams: Q };
 
 /**
  * RunState / FnState with the fn-owned `data` bag typed by the doc's OWN
@@ -68,9 +89,13 @@ export type TypedFnState<SD> = Omit<FnState, "data"> & { data?: SD };
 /** The consolidate/fromResponse envelope ctx, body- and state-typed. Ctx
  *  paths name their PROVENANCE: `data.lifecycle.state` (the async run's
  *  final threaded state), `data.usage.model` (the doc's own model). */
-export interface TypedEnvelopeCtx<B, SD = Json> {
+export interface TypedEnvelopeCtx<
+    B,
+    SD = Json,
+    Q = Record<string, Json> | undefined,
+> {
     data: {
-        input: TypedRunInput<B>;
+        input: TypedRunInput<B, Q>;
         output: Json;
         lifecycle?: { state: TypedRunState<SD> };
         usage: { model: UsageModel };
@@ -81,9 +106,9 @@ export interface TypedEnvelopeCtx<B, SD = Json> {
 
 /** The estimate ctx, body-typed (input-only — the estimate is the
  *  settle's promise, made before the vendor is touched). */
-export interface TypedEstimateCtx<B> {
+export interface TypedEstimateCtx<B, Q = Record<string, Json> | undefined> {
     data: {
-        input: TypedRunInput<B>;
+        input: TypedRunInput<B, Q>;
         usage: { model: UsageModel };
     };
     utils: FnUtils;
@@ -99,18 +124,25 @@ export interface TypedEstimateCtx<B> {
  * schema AT THE WRITE SITE — a poll fn stashing a mis-shaped billing
  * signal fails `deno task check`, not just the runtime gate.
  */
-export interface TypedLifecycleStartCtx<B> {
+export interface TypedLifecycleStartCtx<
+    B,
+    Q = Record<string, Json> | undefined,
+> {
     data: {
-        input: TypedRunInput<B>;
+        input: TypedRunInput<B, Q>;
         request: LifecycleRequestInfo;
     };
     utils: LifecycleUtils;
     logger: HookLogger;
 }
 
-export interface TypedLifecycleTickCtx<B, SD = Json> {
+export interface TypedLifecycleTickCtx<
+    B,
+    SD = Json,
+    Q = Record<string, Json> | undefined,
+> {
     data: {
-        input: TypedRunInput<B>;
+        input: TypedRunInput<B, Q>;
         request: LifecycleRequestInfo;
         lifecycle: { state: TypedRunState<SD> };
     };
@@ -181,7 +213,11 @@ export type PortableConsolidateFn = (ctx: {
     logger: HookLogger;
 }) => {
     usage: {
-        counts: Record<string, number>;
+        /** The one surviving consolidate preset (perCall) settles NO
+         *  counts — Record<string, never> keeps it assignable to every
+         *  typed slot (flat, metered, free-widened) without loosening
+         *  any of them. */
+        counts: Record<string, never>;
         cost?: MonetaryValue;
         evidence?: Record<string, Json>;
     };

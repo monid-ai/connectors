@@ -10,7 +10,7 @@ import { z } from "zod";
  */
 export const zLinkedinProfileScraperBody = z.object({
     // curated: stringList editor — items are profile URL strings
-    "profileUrls": z.array(z.string()).describe(
+    profileUrls: z.array(z.string()).describe(
         "Enter the Linkedin URLs of the people, you want to enrich data.",
     ),
 });

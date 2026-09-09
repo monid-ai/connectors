@@ -9,13 +9,13 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zGoogleShoppingApifyBody = z.object({
-    "query": z.string().describe(
+    query: z.string().describe(
         "A single query to search for. If you need multiple queries, use the 'queries' field instead.",
     ).optional(),
-    "queries": z.array(z.any()).describe(
+    queries: z.array(z.any()).describe(
         "List of queries to search for in a single run. If provided, this takes priority over the single 'query' field.",
-    ).default([]), // actor server default, verified live
-    "country": z.enum([
+    ).optional(),
+    country: z.enum([
         "af",
         "al",
         "dz",
@@ -256,7 +256,7 @@ export const zGoogleShoppingApifyBody = z.object({
         "zm",
         "zw",
     ]).describe("The country to search in."),
-    "language": z.enum([
+    language: z.enum([
         "af",
         "ak",
         "sq",
@@ -408,12 +408,12 @@ export const zGoogleShoppingApifyBody = z.object({
         "yo",
         "zu",
     ]).describe("The language to search in."),
-    "num": z.enum(["10", "20", "30", "40", "50", "100"]).describe(
+    num: z.enum(["10", "20", "30", "40", "50", "100"]).describe(
         "Number of results per page to scrape.",
     ),
-    "max_pages": z.number().int().describe(
+    max_pages: z.number().int().describe(
         "The maximum number of pages to scrape.",
-    ).default(1), // actor server default, verified live
-    "date_range": z.enum(["anytime", "qdr:h", "qdr:d", "qdr:w", "qdr:m"])
+    ).optional(),
+    date_range: z.enum(["anytime", "qdr:h", "qdr:d", "qdr:w", "qdr:m"])
         .describe("The date range to search for."),
 });

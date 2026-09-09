@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zAmazonProductDetailsScraperBody = z.object({
-    "Params": z.array(z.any()).describe(
+    Params: z.array(z.any()).describe(
         "Enter the Amazon Standard Identification Numbers (ASINs) or the full product page URLs you want to scrape. You can mix both formats. Examples: - ASIN: B077Z99YGY - URL: https://www.amazon.com/dp/B077Z99YGY Use this field to get deep insights for specific items you already know.",
     ),
 });

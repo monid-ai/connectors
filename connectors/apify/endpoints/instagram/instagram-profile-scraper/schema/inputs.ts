@@ -10,10 +10,10 @@ import { z } from "zod";
  */
 export const zInstagramProfileScraperBody = z.object({
     // curated: stringList editor — items are username strings
-    "usernames": z.array(z.string()).describe(
+    usernames: z.array(z.string()).describe(
         "Provide one or several Instagram user names you want to scrape the posts from. The actor will also handle user name IDs.",
     ),
-    "includeAboutSection": z.boolean().describe(
+    includeAboutSection: z.boolean().describe(
         "This feature is for paying users only. If enabled, the scraper will extract information about the account, including date joined, country of origin, and the profile's channel information. Please beware that the country is there ONLY if the user filled in this information.",
     ).optional(),
 });

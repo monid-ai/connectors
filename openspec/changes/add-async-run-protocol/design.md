@@ -851,3 +851,84 @@ call: 1}`; akta news `{CREDIT: 0.2}`); two akta#news fixtures URL-updated for
 the now-explicit vendor-default `limit=10` (identical semantic request); two
 test inputs gained newly-required fields (instagram-api searchLimit 1,
 linkedin-by-name maxItems 2) — no re-records needed.
+
+## D25 — FREE billing shape + the required usage triple + input fidelity
+
+**1. FREE is a billing SHAPE, not "0 credits".** `zFreeModel` joins the
+model union as a third leaf (`{kind: "FREE"}` — kind only: description/
+label explain derived counts and price lines, FREE has neither), and
+`zUsage` gains `free?: true` — the canonical free usage is
+`{counts: {}, free: true}` (empty counts ride WITH the flag; no cost).
+Rules (shared `freeMismatch` beside `countsMismatch`; engine wraps in
+FN_CONTRACT):
+  - model FREE ⇒ BOTH fns return the free shape — free-ness is
+    triple-stated (model + estimate + settle), nothing silently defaults;
+  - billed model ⇒ `free` is legal from CONSOLIDATE only (dynamic: the
+    vendor demonstrably charged nothing); a free ESTIMATE on a billed
+    model holds nothing against a run that can bill — FN_CONTRACT, and a
+    TYPE error (`free?: never` on the estimate arm — conditional return
+    types defeat excess-property checks, so it's structural);
+  - `usage.free` suppresses the engine's flat-1s completion; error
+    settles stay `zeroUsage()` WITHOUT the flag (failed ≠ free).
+Remodels: tinyfish provider PER_CALL→FREE (v1: "$0 wins verbatim … both
+endpoints are free"); akta company-search + industry-search →FREE (v1
+`makePerCallPrice(0)`). exa's `cost` does NOT fold into counts: counts =
+card-priceable quantities, cost = the vendor's own money claim — folding
+them needs a degenerate usd-pseudo-component and kills the
+card-vs-vendor drift check.
+
+**2. The required TRIPLE.** `usage.model` + `usage.consolidate` +
+`usage.estimate` are ALL compile-required on every doc (estimate:
+endpoint ?? provider). Every doc states its billing story end-to-end:
+what is chargeable, what this run will cost, what it did cost. Flat docs
+state `estimate: () => ({counts: {}})` (the engine appends the flat 1s);
+FREE docs state the free pair inline (3 sites — no new presets).
+
+**3. Input fidelity (the standing rules, learned from review edits).**
+  - `schema/inputs.ts` is the FAITHFUL VENDOR MIRROR: optionality only —
+    never `.default()`, never our floors, unquoted identifier keys. Even
+    vendor-documented defaults live at the binding (exa/octen moved).
+  - ALL our tightening lives AT THE BINDING, DERIVED from the base
+    schema, never restated: `zBody.required({limit: true})` /
+    `.extend({f: shape.f.unwrap().default(n)})` / `.unwrap().min(1)`
+    floors ONLY where the vendor documents 0/absent = unbounded
+    (harvestapi "0 = scrape all", cleansyntax max_posts, compass
+    maxReviews sentinel, google-news maxArticles "0 = no limit").
+  - Binding policy: the PRIMARY limiting knob is REQUIRED (caller states
+    the cap — even when the actor publishes a default); secondary/
+    behavior knobs the estimate reads carry binding `.default(verified
+    actor default)` (tiktok-video scrapeRelatedVideos/resultsPerPage,
+    youtube-transcript max_videos, youtube-scraper shorts/streams,
+    snapchat relatedProfilesLimit).
+  - Multiplier ARRAYS are never tightened: actor-required stays plain
+    (`arr.length`), actor-optional stays optional and the estimate reads
+    `arr?.length ?? 0` — HONEST OPTIONALITY, not a fallback. Empty/absent
+    ⇒ estimate 0 (deduced ≠ non-zero). All the D24 `.min(1)` array
+    floors and mode-`refine`s died; facebook-profile-posts' invented
+    discriminated-union binding reverted (never invent structure the
+    mirror doesn't have — count at the granularity the mirror states).
+  - youtube-scraper 0-semantics VERIFIED live: the actor's own startUrls
+    description says "If you only want to scrape shorts/streams, set
+    Maximum search results to 0" ⇒ 0 is a literal cap, not a sentinel —
+    required, no floor.
+
+**4. Typed queryParams + pre-toRequest estimates.** `defineEndpoint`
+gains a QuerySchema generic (`TypedRunInput<B, Q>`); akta estimates read
+`data.input.queryParams.limit` directly. SOUNDNESS FIX riding along: the
+estimate ctx now receives the PRE-toRequest validated input — the
+estimate is a promise about the CALLER's request, and akta's toRequest
+CSV-joins arrays (post-toRequest typing would lie). Envelope/lifecycle
+ctxs keep the wire-shaped input; providers with reshaping toRequest fns
+must not rely on typed input there (akta's consolidates read output
+only).
+
+**5. akta remodels — quantities, not credit arithmetic.** news →
+COMPOSITE {request PER_CALL "base fee", article PER_UNIT·RESULT
+"articles"} with a doc-level consolidate (articles delivered off
+`$.data`; `credits_consumed` as cost basis + evidence); enrichment →
+PER_UNIT·RESULT "sections" (estimate = requested sections, settle =
+delivered sections off the response's section-keyed `data`);
+employee-reviews + product-reviews KEEP CREDIT (the vendor bills whole
+credit increments and exposes no block quantity to settle against —
+credits ARE its native meter there); limits REQUIRED at bindings
+("just make it required — simpler").

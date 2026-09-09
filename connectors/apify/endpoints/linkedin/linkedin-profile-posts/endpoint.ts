@@ -33,14 +33,13 @@ export default defineEndpoint({
     input: {
         schema: {
             // the actor accepts an absent maxPosts (prefill 5 is editor-only,
-            // NOT a server default) and reads 0 as "scrape ALL posts"; it
-            // also accepts absent targetUrls — WE require maxPosts ≥ 1 and
-            // a non-empty targetUrls (the per-url multiplier): the estimate
-            // must be deducible to price the hold (D24)
+            // NOT a server default) and reads 0 as "scrape ALL posts" — WE
+            // require maxPosts ≥ 1 (the PRIMARY limiting knob): the estimate
+            // must be deducible to price the hold (D24). targetUrls stays
+            // the plain mirror optionality (multiplier array — an absent
+            // array is honestly 0 in the estimate, D25).
             body: zLinkedinProfilePostsBody.extend({
-                "maxPosts": zLinkedinProfilePostsBody.shape.maxPosts
-                    .unwrap().min(1),
-                "targetUrls": zLinkedinProfilePostsBody.shape.targetUrls
+                maxPosts: zLinkedinProfilePostsBody.shape.maxPosts
                     .unwrap().min(1),
             }),
         },
@@ -64,13 +63,14 @@ export default defineEndpoint({
                 },
             },
         },
-        /** maxPosts per target url — both required at the binding, so the
-         *  estimate is pure arithmetic (D24). */
+        /** maxPosts (required ≥1 at the binding) per target url —
+         *  targetUrls is honestly optional, so an absent array promises 0
+         *  (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "post": body.maxPosts * body.targetUrls.length,
+                    "post": body.maxPosts * (body.targetUrls?.length ?? 0),
                 },
             };
         },

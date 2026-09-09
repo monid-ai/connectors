@@ -34,14 +34,12 @@ export default defineEndpoint({
         schema: {
             // the actor accepts an absent maxPosts (prefill 20 is
             // editor-only, NOT a server default) and reads 0 as "scrape ALL
-            // posts"; it also accepts absent searchQueries — WE require
-            // maxPosts ≥ 1 and a non-empty searchQueries (the per-query
-            // multiplier, v1 PER_QUERY_LIMIT): the estimate must be
-            // deducible to price the hold (D24)
+            // posts" — WE require maxPosts ≥ 1 (the PRIMARY limiting knob):
+            // the estimate must be deducible to price the hold (D24).
+            // searchQueries stays the plain mirror optionality (multiplier
+            // array — an absent array is honestly 0 in the estimate, D25).
             body: zLinkedinPostSearchBody.extend({
-                "maxPosts": zLinkedinPostSearchBody.shape.maxPosts
-                    .unwrap().min(1),
-                "searchQueries": zLinkedinPostSearchBody.shape.searchQueries
+                maxPosts: zLinkedinPostSearchBody.shape.maxPosts
                     .unwrap().min(1),
             }),
         },
@@ -65,13 +63,15 @@ export default defineEndpoint({
                 },
             },
         },
-        /** maxPosts per search query — both required at the binding, so the
-         *  estimate is pure arithmetic (D24). */
+        /** maxPosts (required ≥1 at the binding) per search query —
+         *  searchQueries is honestly optional, so an absent array promises
+         *  0 (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "post": body.maxPosts * body.searchQueries.length,
+                    "post": body.maxPosts *
+                        (body.searchQueries?.length ?? 0),
                 },
             };
         },

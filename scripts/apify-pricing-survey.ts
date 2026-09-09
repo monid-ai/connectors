@@ -40,6 +40,9 @@ function declaredShape(
     model: UsageModel,
 ): { flat: boolean; metered: boolean } {
     switch (model.kind) {
+        case "FREE":
+            // defensive — no apify actor is free-modeled (design D25)
+            return { flat: false, metered: false };
         case "PER_CALL":
             return { flat: true, metered: false };
         case "PER_UNIT":

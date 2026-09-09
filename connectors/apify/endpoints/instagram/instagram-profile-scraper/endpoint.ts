@@ -32,20 +32,15 @@ export default defineEndpoint({
     input: {
         schema: {
             // usernames is the whole billed quantity (one profile each) —
-            // the actor requires the field but accepts an empty list; WE
-            // require it non-empty: the estimate must be deducible to
-            // price the hold (D24)
-            body: zInstagramProfileScraperBody.extend({
-                "usernames": zInstagramProfileScraperBody.shape.usernames
-                    .min(1),
-            }),
+            // the plain actor-required mirror; an empty list is a genuine
+            // zero-item promise, not an error (D24/D25).
+            body: zInstagramProfileScraperBody,
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one profile per username (v1 ONE_PER_QUERY) — required
-         *  non-empty at the binding, so the estimate is pure arithmetic
-         *  (D24). */
+        /** one profile per username (v1 ONE_PER_QUERY) — the
+         *  actor-required list: pure arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.usernames.length },
         }),

@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zFacebookPagesScraperBody = z.object({
-    "startUrls": z.array(z.any()).describe(
+    startUrls: z.array(z.any()).describe(
         "Provide urls of Facebook pages you want to get information from. Only works on facebook pages, not personal profiles (not even public ones).",
     ),
 });

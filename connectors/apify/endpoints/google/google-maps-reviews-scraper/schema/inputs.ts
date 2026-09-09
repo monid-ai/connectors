@@ -9,28 +9,28 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zGoogleMapsReviewsScraperBody = z.object({
-    "startUrls": z.array(z.any()).describe(
+    startUrls: z.array(z.any()).describe(
         "List of URLs to be crawled. They can be search URLs, place URLs or review detail URLs. Valid Google Maps place URLs must contain one of the following subpaths: /maps/search, /maps/place or /maps/reviews. This feature also supports uncommon URL formats such as: https://google.com/maps?cid=***.",
     ).optional(),
-    "placeIds": z.array(z.string()).describe(
+    placeIds: z.array(z.string()).describe(
         "List of place IDs. Add them one by one or upload a list using the Bulk edit option. A place ID has the format ChIJreV9aqYWdkgROM_boL6YbwA - only 27-character IDs starting with ChIJ or GhIJ are supported.",
     ).optional(),
-    "maxReviews": z.number().int().min(1).describe(
+    maxReviews: z.number().int().min(1).describe(
         "Max number of reviews per place to scrape. If you want to scrape all reviews, remove the prefilled value.",
     ).optional(),
-    "reviewsSort": z.enum([
+    reviewsSort: z.enum([
         "newest",
         "mostRelevant",
         "highestRanking",
         "lowestRanking",
     ]).describe("Define how reviews are sorted.").optional(),
-    "reviewsStartDate": z.string().describe(
+    reviewsStartDate: z.string().describe(
         "Either absolute date (e.g. `2024-05-03`) or relative date from now into the past (e.g. `8 days`, `3 months`). JSON input also supports adding time in both absolute (ISO standard, e.g. `2024-05-03T20:00:00`) and relative (e.g. `3 hours`) formats. Absolute time is always interpreted in the UTC time...",
     ).optional(),
-    "reviewsFilterString": z.string().describe(
+    reviewsFilterString: z.string().describe(
         "If you enter keywords, only reviews containing those keywords will be scraped. Leave it blank to scrape all reviews.",
     ).optional(),
-    "language": z.enum([
+    language: z.enum([
         "en",
         "af",
         "az",
@@ -106,10 +106,10 @@ export const zGoogleMapsReviewsScraperBody = z.object({
         "zh-CN",
         "zh-TW",
     ]).describe("Results will be scraped in this language.").optional(),
-    "reviewsOrigin": z.enum(["all", "google"]).describe(
+    reviewsOrigin: z.enum(["all", "google"]).describe(
         "Select whether you want all reviews (from Google, Tripadvisor, etc.) or only reviews from Google.",
     ).optional(),
-    "personalData": z.boolean().describe(
+    personalData: z.boolean().describe(
         "This setting allows you to get personal data about the reviewer (their ID, name, URL, and photo URL) and about the review (URL). Note: review ID (reviewId) is always included regardless of this setting. ⚠️ Personal data is protected by the GDPR in the European Union and by other regulations aroun...",
     ).optional(),
 });

@@ -27,6 +27,9 @@ export function flatCounts(model: UsageModel): Record<string, number> {
                     .map(([id]) => [id, 1]),
             );
         case "PER_UNIT":
+        case "FREE":
+            // FREE bills nothing — and its fns carry `free: true`, which
+            // suppresses completion entirely (design D25)
             return {};
         default:
             model satisfies never;
@@ -55,6 +58,12 @@ export function countsMismatch(
 ): string | undefined {
     const keys = Object.keys(counts);
     switch (model.kind) {
+        case "FREE":
+            return keys.length > 0
+                ? `counts on a FREE doc (${
+                    keys.join(", ")
+                }) — free bills nothing`
+                : undefined;
         case "PER_CALL":
             return keys.length > 0
                 ? `counts on a flat doc (${keys.join(", ")})`
@@ -80,4 +89,47 @@ export function countsMismatch(
             model satisfies never;
             return "unknown model kind";
     }
+}
+
+/**
+ * The FREE discipline (design D25), beside countsMismatch so every
+ * consumer shares one rulebook. `free: true` means "this run bills
+ * NOTHING": it must ride with empty counts and no cost, a FREE-model doc
+ * must state it from BOTH fns (model + estimate + consolidate agree —
+ * the required billing triple), and a billed model may only settle it
+ * DYNAMICALLY (consolidate — the vendor demonstrably charged nothing);
+ * an ESTIMATE promising free on a billed model would hold nothing
+ * against a run that can bill. Returns the problem as a message
+ * (undefined = ok) — the CALLER owns the error type.
+ */
+export function freeMismatch(
+    model: UsageModel,
+    usage: {
+        counts: Record<string, number>;
+        free?: true;
+        cost?: unknown;
+    },
+    phase: "estimate" | "settle",
+): string | undefined {
+    if (usage.free === true) {
+        const keys = Object.keys(usage.counts);
+        if (keys.length > 0) {
+            return `free usage carries counts (${keys.join(", ")}) — ` +
+                `free bills nothing`;
+        }
+        if (usage.cost !== undefined) {
+            return "free usage carries a cost — free bills nothing";
+        }
+        if (model.kind !== "FREE" && phase === "estimate") {
+            return "a free ESTIMATE on a billed model holds nothing " +
+                "against a run that can bill (dynamic free is a " +
+                "settle-side fact)";
+        }
+        return undefined;
+    }
+    if (model.kind === "FREE") {
+        return "a FREE-model doc must state free: true from its fns " +
+            "(the billing triple agrees — design D25)";
+    }
+    return undefined;
 }

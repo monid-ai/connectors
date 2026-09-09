@@ -35,12 +35,15 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // usernames is the seed-profile multiplier (one billed profile
-            // each) — the actor requires the field but accepts an empty
-            // list; WE require it non-empty: the estimate must be
-            // deducible to price the hold (D24)
+            // usernames (the seed-profile multiplier) stays the plain
+            // actor-required mirror — an empty list is a genuine zero-item
+            // promise. relatedProfilesLimit is a secondary knob the
+            // estimate reads: the binding pins the actor's OWN verified
+            // server default (0), materialized into the body before any
+            // hook runs (D24/D25).
             body: zSnapchatScraperBody.extend({
-                "usernames": zSnapchatScraperBody.shape.usernames.min(1),
+                relatedProfilesLimit: zSnapchatScraperBody.shape
+                    .relatedProfilesLimit.unwrap().default(0),
             }),
         },
     },
@@ -66,9 +69,8 @@ export default defineEndpoint({
         /** one profile per seed username, PLUS up to relatedProfilesLimit
          *  related profiles per RUN — each emitted related profile is a
          *  billed `profile-scraped` event (v1 held it via `buffer`). The
-         *  schema pins the actor's OWN server default (0, verified live)
-         *  and usernames is required non-empty at the binding — pure
-         *  arithmetic (D24). */
+         *  binding pins the actor's OWN server default (0, verified live)
+         *  and usernames is actor-required — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

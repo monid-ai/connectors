@@ -37,20 +37,17 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor requires profileUrls but accepts an empty array —
-            // WE require it non-empty (it is the whole billing basis: one
-            // result per url): the estimate must be deducible to price the
-            // hold (D24)
-            body: zLinkedinProfileScraperBody.extend({
-                "profileUrls": zLinkedinProfileScraperBody.shape.profileUrls
-                    .min(1),
-            }),
+            // profileUrls is actor-REQUIRED and stays the plain mirror
+            // shape (no binding tightening — D25): it is the whole billing
+            // basis (one result per url), and an empty array honestly
+            // estimates 0.
+            body: zLinkedinProfileScraperBody,
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one profile per url — non-empty at the binding, so the estimate
-         *  is pure arithmetic (D24). */
+        /** one profile per url — profileUrls is actor-required, so its
+         *  length is the deducible per-call quantity (D24). */
         estimate: ({ data }) => ({
             counts: {
                 "RESULT": data.input.body.profileUrls.length,

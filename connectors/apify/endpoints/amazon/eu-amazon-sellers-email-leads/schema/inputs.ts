@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zEuAmazonSellersEmailLeadsBody = z.object({
-    "amazon_category": z.enum([
+    amazon_category: z.enum([
         "Automotive",
         "Baby Products",
         "Beauty",
@@ -38,7 +38,7 @@ export const zEuAmazonSellersEmailLeadsBody = z.object({
         "Tools",
         "Toys",
     ]).describe("Select the Amazon category").optional(),
-    "seller_country": z.enum([
+    seller_country: z.enum([
         "US",
         "CN",
         "DE",
@@ -78,13 +78,13 @@ export const zEuAmazonSellersEmailLeadsBody = z.object({
     ]).describe(
         "Select sellers country of residence. Useful when you want to filter out sellers from countries you are not interested in.",
     ).optional(),
-    "date_added": z.string().describe(
+    date_added: z.string().describe(
         "Select only leads discovered after this date (YYYY-MM-DD)",
     ).optional(),
-    "max_results": z.number().int().max(100000).describe(
+    max_results: z.number().int().max(100000).describe(
         "Maximum results you want to get",
-    ).default(100), // actor server default, verified live
-    "offset": z.number().int().max(999999).describe(
+    ).optional(),
+    offset: z.number().int().max(999999).describe(
         "How many rows to skip. Useful when you already downloaded x rows and don't want to get duplicates",
     ).optional(),
 });

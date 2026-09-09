@@ -31,12 +31,13 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor reads maxArticles 0 as "no limit" (unbounded) —
-            // WE forbid it, keeping the actor's server default (100):
-            // the estimate must be deducible to price the hold (D24)
+            // maxArticles is the primary limiting knob and the actor
+            // documents "0 = no limit" (unbounded) — WE require it and
+            // floor it at 1 (unwrap keeps the inner int/min(0) checks):
+            // the estimate must be deducible to price the hold (D25)
             body: zGoogleNewsScraperFastBody.extend({
-                "maxArticles": zGoogleNewsScraperFastBody.shape.maxArticles
-                    .unwrap().min(1).default(100),
+                maxArticles: zGoogleNewsScraperFastBody.shape.maxArticles
+                    .unwrap().min(1),
             }),
         },
     },
@@ -44,12 +45,14 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxArticles × (keywords + topics + topicUrls) — the cap applies
          *  per keyword/topic/section (v1 PER_QUERY_LIMIT; the old sum
-         *  missed topicUrls). All three query arrays carry the actor's
-         *  server default ([]), so the estimate is pure arithmetic (D24). */
+         *  missed topicUrls). maxArticles is required at the binding; the
+         *  three query arrays are optional and absent ≡ empty, so an
+         *  all-empty query set estimates 0, which is correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const queries = body.keywords.length + body.topics.length +
-                body.topicUrls.length;
+            const queries = (body.keywords?.length ?? 0) +
+                (body.topics?.length ?? 0) +
+                (body.topicUrls?.length ?? 0);
             return {
                 counts: {
                     "RESULT": body.maxArticles * queries,

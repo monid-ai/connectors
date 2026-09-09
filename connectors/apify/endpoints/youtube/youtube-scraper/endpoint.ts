@@ -35,29 +35,42 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the two source lists (searchQueries, startUrls) are
-            // either/or on the actor with absent ≡ empty; startUrls has a
-            // live server default ([], in the schema) but searchQueries
-            // does not — WE materialize [] for it so the multiplier is
-            // deterministic after validation (D24)
-            body: zYoutubeScraperBody.extend({
-                "searchQueries": zYoutubeScraperBody.shape.searchQueries
-                    .unwrap().default([]),
-            }),
+            // maxResults is the primary limiting knob — WE require it at
+            // the binding, but keep the published floor min(0): 0 is a
+            // MEANINGFUL literal ("crawl no regular videos"), not an
+            // unbounded sentinel — the actor's own startUrls description
+            // says "If you only want to scrape shorts/streams, set
+            // Maximum search results to 0" (published schema, verified
+            // 2026-09-08). The secondary caps (maxResultsShorts,
+            // maxResultStreams) get the actor's VERIFIED published
+            // default (0) at the binding so the estimate can read them.
+            // The two source lists (searchQueries, startUrls) stay
+            // optional, as on the actor (D25).
+            body: zYoutubeScraperBody.required({ maxResults: true })
+                .extend({
+                    maxResultsShorts: zYoutubeScraperBody.shape
+                        .maxResultsShorts.unwrap().default(0),
+                    maxResultStreams: zYoutubeScraperBody.shape
+                        .maxResultStreams.unwrap().default(0),
+                }),
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** (maxResults + maxResultsShorts + maxResultStreams) ×
-         *  (searchQueries + startUrls) — all three caps carry the actor's
-         *  server default (0) and are summed (the old estimate missed the
-         *  shorts/streams caps; v1 PER_QUERY_LIMIT read maxResults only),
-         *  so the estimate is pure arithmetic (D24). */
+         *  (searchQueries + startUrls) — maxResults is required at the
+         *  binding and the shorts/streams caps carry the actor's
+         *  published default (0); the caps are summed (the old estimate
+         *  missed the shorts/streams caps; v1 PER_QUERY_LIMIT read
+         *  maxResults only). The source lists are optional and absent ≡
+         *  empty, so an all-empty source set estimates 0, which is
+         *  correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const cap = body.maxResults + body.maxResultsShorts +
                 body.maxResultStreams;
-            const n = body.searchQueries.length + body.startUrls.length;
+            const n = (body.searchQueries?.length ?? 0) +
+                (body.startUrls?.length ?? 0);
             return { counts: { "RESULT": cap * n } };
         },
     },

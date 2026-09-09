@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zAmazonSearchScraperBody } from "./schema/inputs.ts";
 
@@ -31,36 +30,15 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/axesso_data~amazon-search-scraper/runs",
     },
-    input: {
-        schema: {
-            // the page knob lives INSIDE the `input` array items (one
-            // entry per keyword, each with its own maxPages) and the
-            // actor accepts entries WITHOUT it (pages then unbounded/
-            // unknown) — WE require maxPages ≥ 1 on every entry and a
-            // non-empty batch: the estimate must be deducible to price
-            // the hold (D24). Other per-entry keys stay open (loose):
-            // schema/inputs.ts remains the faithful actor mirror.
-            body: zAmazonSearchScraperBody.extend({
-                "input": z.array(z.looseObject({
-                    "maxPages": z.number().int().min(1),
-                })).min(1).describe(
-                    "List of inputs, each entry refers to one keyword to be pulled. Full list of valid parameter can be found in the README tab.",
-                ),
-            }),
-        },
-    },
+    input: { schema: { body: zAmazonSearchScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** Σ over entries of maxPages × ~10 results/page (v1
-         *  PER_QUERY_PAGE_LIMIT) — maxPages required per entry at the
-         *  binding, so the estimate is pure arithmetic (D24). */
-        estimate: ({ data }) => {
-            let pages = 0;
-            for (const item of data.input.body.input) {
-                pages += item.maxPages;
-            }
-            // leaf PER_UNIT·RESULT doc: the counts key is the model's unit
-            return { counts: { "RESULT": pages * 10 } };
-        },
+        /** One result per `input` entry — the actor keeps per-entry knobs
+         *  opaque (z.any items), so the estimate counts at the granularity
+         *  the mirror STATES: entries, never invented nested structure
+         *  (design D25). */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.input.length },
+        }),
     },
 });

@@ -33,19 +33,18 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor accepts an absent maxItems (scrapes the full post
-            // history; live schema has prefill 1000 only — an editor hint,
-            // NOT a server default) — WE require it ≥ 1: the estimate must
-            // be deducible to price the hold (D24)
-            body: zTiktokProfileScraperBody.extend({
-                "maxItems": zTiktokProfileScraperBody.shape.maxItems
-                    .unwrap().min(1),
-            }),
+            // maxItems is the PRIMARY limiting knob (the actor accepts an
+            // absent maxItems = full post history; live schema has prefill
+            // 1000 only — an editor hint, NOT a server default) — WE
+            // require it: the estimate must be deducible to price the hold
+            // (D24/D25). No extra .min(1) floor: the actor documents
+            // absent = unbounded, but publishes no 0-sentinel.
+            body: zTiktokProfileScraperBody.required({ maxItems: true }),
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required ≥ 1
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required
          *  at the binding, so the estimate is pure arithmetic (D24). */
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.maxItems },

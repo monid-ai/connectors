@@ -72,7 +72,7 @@ export default defineEndpoint({
             // probes it first); takePages stays optional and no longer
             // feeds the estimate.
             body: zLinkedinProfileSearchBody.extend({
-                "maxItems": zLinkedinProfileSearchBody.shape.maxItems
+                maxItems: zLinkedinProfileSearchBody.shape.maxItems
                     .unwrap().min(1),
             }),
         },

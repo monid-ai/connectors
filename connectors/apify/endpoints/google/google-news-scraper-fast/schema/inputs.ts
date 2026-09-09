@@ -9,10 +9,10 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zGoogleNewsScraperFastBody = z.object({
-    "keywords": z.array(z.any()).describe(
+    keywords: z.array(z.any()).describe(
         "List of keywords to search for. You can use Google News search operators: - Use '-' to exclude words (e.g. 'bitcoin -ethereum') - Use 'site:' to filter by specific website (e.g. 'bitcoin site:cnn.com') - Use 'OR' to search for multiple terms (e.g. 'bitcoin OR ethereum') - Use quotes for exact mat...",
-    ).default([]), // actor server default, verified live
-    "topics": z.array(
+    ).optional(),
+    topics: z.array(
         z.enum([
             "WORLD",
             "NATION",
@@ -24,17 +24,17 @@ export const zGoogleNewsScraperFastBody = z.object({
             "HEALTH",
         ]),
     ).describe("Select one or more predefined Google News topics to scrape.")
-        .default([]), // actor server default, verified live
-    "topicUrls": z.array(z.any()).describe(
+        .optional(),
+    topicUrls: z.array(z.any()).describe(
         "Provide custom Google News topic or section URLs to scrape. Useful for niche topics not in the predefined list. Example: https://news.google.com/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB",
-    ).default([]), // actor server default, verified live
-    "maxArticles": z.number().int().min(0).describe(
+    ).optional(),
+    maxArticles: z.number().int().min(0).describe(
         "Maximum number of news to extract per keyword or topic (0 = no limit)",
-    ).default(100), // actor server default, verified live
-    "timeframe": z.enum(["1h", "1d", "7d", "30d", "1y", "all"]).describe(
+    ).optional(),
+    timeframe: z.enum(["1h", "1d", "7d", "30d", "1y", "all"]).describe(
         "Time period for the news search. Note: this filter applies mainly to keyword searches. Topic pages return their own curated results.",
     ).optional(),
-    "region_language": z.enum([
+    region_language: z.enum([
         "US:en",
         "SK:sk",
         "AU:en",
@@ -120,16 +120,16 @@ export const zGoogleNewsScraperFastBody = z.object({
         "JP:ja",
         "KR:ko",
     ]).describe("Region and language for news search").optional(),
-    "decodeUrls": z.boolean().describe(
+    decodeUrls: z.boolean().describe(
         "If enabled, decodes Google News URLs to get the original article URLs. Note: This will significantly slow down the scraping process as each URL needs to be decoded individually.",
     ).optional(),
-    "extractDescriptions": z.boolean().describe(
+    extractDescriptions: z.boolean().describe(
         "If enabled, extracts the meta description from each article page. Note: This will significantly slow down the scraping process.",
     ).optional(),
-    "extractImages": z.boolean().describe(
+    extractImages: z.boolean().describe(
         "Fetches the og:image from each article page when no image is available (mainly for RSS/topic results). When this option is not explicitly set, images are extracted by default. Toggle OFF to skip image extraction and speed up scraping.",
     ).optional(),
-    "proxyConfiguration": z.record(z.string(), z.any()).describe(
+    proxyConfiguration: z.record(z.string(), z.any()).describe(
         "Configure Apify Proxy. Residential proxies recommended for best results.",
     ).optional(),
 });

@@ -30,12 +30,21 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/xmiso_scrapers~eu-amazon-sellers-email-leads/runs",
     },
-    input: { schema: { body: zEuAmazonSellersEmailLeadsBody } },
+    input: {
+        schema: {
+            // `max_results` is the primary limiting knob (exact result
+            // cap) — WE require it at the binding: the estimate must be
+            // deducible to price the hold (D25)
+            body: zEuAmazonSellersEmailLeadsBody.required({
+                max_results: true,
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** max_results caps the run exactly (v1 LIMIT_IS_EXACT) — it
-         *  carries the actor's server default (100), so the estimate is
-         *  pure arithmetic (D24). */
+        /** max_results caps the run exactly (v1 LIMIT_IS_EXACT) —
+         *  required at the binding, so the estimate is pure arithmetic
+         *  (D25). */
         estimate: ({ data }) => ({
             counts: {
                 "RESULT": data.input.body.max_results,

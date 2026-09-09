@@ -21,8 +21,9 @@ Deno.test("tinyfish#fetch happy (synthetic): free — one call unit for the batc
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // flat doc: the engine bills the run under the reserved CALL key (D24)
-    assertEquals(result.usage.counts, { "CALL": 1 });
+    // FREE model (D25): the billing shape says it — no counts, free flag
+    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage.free, true);
     const output = result.output as Record<string, unknown>;
     assertEquals((output.errors as unknown[]).length, 0);
 });

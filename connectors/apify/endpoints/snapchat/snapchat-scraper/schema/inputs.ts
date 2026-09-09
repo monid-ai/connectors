@@ -9,10 +9,10 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zSnapchatScraperBody = z.object({
-    "usernames": z.array(z.any()).describe(
+    usernames: z.array(z.any()).describe(
         "Enter Snapchat usernames, profile URLs, or @handles. Examples: therock, @nba, https://www.snapchat.com/add/djkhaled",
     ),
-    "relatedProfilesLimit": z.number().int().min(0).max(50).describe(
+    relatedProfilesLimit: z.number().int().min(0).max(50).describe(
         "Optionally scrape up to this many unique related accounts after all seed profiles. Expansion is limited to one hop. Each emitted related profile incurs the normal additional profile charge.",
-    ).default(0), // actor server default, verified live
+    ).optional(),
 });

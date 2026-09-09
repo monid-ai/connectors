@@ -394,6 +394,7 @@ Deno.test("hook fallback: endpoint fromResponse REPLACES the provider's", async 
         },
         usage: {
             model: { kind: "PER_CALL" },
+            estimate: () => ({ counts: {} }), // billing triple (D25)
             consolidate: presets.usage.perCall(),
         },
     });
@@ -485,6 +486,7 @@ Deno.test("FN_CONTRACT: bad OUTPUT half of the settle pair fails closed", async 
     const connectors = demoConnector();
     connectors[0].endpoints[0].def.usage = {
         model: { kind: "PER_CALL" },
+        estimate: () => ({ counts: {} }), // billing triple (D25)
         consolidate: ((_ctx: never) => ({
             usage: { counts: {} },
             output: () => 1, // not Json — the pair contract rejects it
@@ -1434,16 +1436,17 @@ async function usageUnit(
     usage: ConnectorSource["endpoints"][number]["def"]["usage"],
 ): Promise<SealedUnit> {
     const connectors = demoConnector();
-    // metered docs must declare an estimate (D24 compile rule) — splice a
-    // benign one when the test under-specifies ({} passes countsMismatch)
-    const metered = usage?.model !== undefined &&
-        (usage.model.kind === "PER_UNIT" ||
-            (usage.model.kind === "COMPOSITE" &&
-                Object.values(usage.model.components)
-                    .some((c) => c.kind === "PER_UNIT")));
+    // every doc must declare an estimate (D25 billing triple) — splice a
+    // benign one when the test under-specifies ({} passes countsMismatch;
+    // FREE models must state the free shape)
     connectors[0].endpoints[0].def.usage =
-        metered && usage?.estimate === undefined
-            ? { ...usage, estimate: () => ({ counts: {} }) }
+        usage !== undefined && usage.estimate === undefined
+            ? {
+                ...usage,
+                estimate: usage.model?.kind === "FREE"
+                    ? () => ({ counts: {}, free: true })
+                    : () => ({ counts: {} }),
+            }
             : usage;
     delete connectors[0].endpoints[0].def.output; // free-form outputs
     const bundle = await compileBundle(connectors, COMPILE_OPTS);
@@ -1665,4 +1668,109 @@ Deno.test("sync docs: no lifecycle/pollMs; floor = fn_abi_since (ctx ABI), not a
     );
     assertEquals(bundle.endpoints["demo#search"].lifecycle, undefined);
     assertEquals(bundle.endpoints["demo#search"].timeouts.pollMs, undefined);
+});
+
+// ---------------------------------------------------------------------------
+// FREE (design D25) — the free billing shape at estimate + settle
+// ---------------------------------------------------------------------------
+
+Deno.test("FREE model: both fns state the free shape; error settles stay zeroUsage", async () => {
+    const free = {
+        model: { kind: "FREE" },
+        estimate: () => ({ counts: {}, free: true }),
+        consolidate: () => ({ usage: { counts: {}, free: true } }),
+    } as ConnectorSource["endpoints"][number]["def"]["usage"];
+    const engine = new Engine({ transport: jsonTransport(200, { ok: true }) });
+    const loaded = await engine.load(await usageUnit(free));
+    // estimate: free promise, NO engine completion
+    assertEquals(loaded.estimate({ body: { q: "x" } }), {
+        counts: {},
+        free: true,
+    });
+    // success settle: free vector, no flat 1s
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage.free, true);
+    // provider error: zeroUsage WITHOUT the flag — failed ≠ free
+    const errEngine = new Engine({
+        transport: jsonTransport(500, { error: "boom" }),
+    });
+    const errLoaded = await errEngine.load(await usageUnit(free));
+    const errResult = await errLoaded.run({ body: { q: "x" } });
+    assertEquals(errResult.usage, { counts: {} });
+});
+
+Deno.test("FREE discipline: FN_CONTRACT on every free-shape violation", async () => {
+    // FREE model whose consolidate forgets the flag
+    {
+        const engine = new Engine({ transport: jsonTransport(200, {}) });
+        const loaded = await engine.load(
+            await usageUnit({
+                model: { kind: "FREE" },
+                estimate: () => ({ counts: {}, free: true }),
+                consolidate: () => ({ usage: { counts: {} } }),
+            }),
+        );
+        await expectCode(
+            loaded.run({ body: { q: "x" } }),
+            EngineErrorCode.FN_CONTRACT,
+        );
+    }
+    // free WITH counts (billed model, dynamic-free settle gone wrong)
+    {
+        const engine = new Engine({ transport: jsonTransport(200, {}) });
+        const loaded = await engine.load(
+            await usageUnit({
+                model: { kind: "PER_UNIT", unit: "RESULT" },
+                estimate: () => ({ counts: {} }),
+                consolidate: () => ({
+                    usage: { counts: { "RESULT": 2 }, free: true },
+                }),
+            }),
+        );
+        await expectCode(
+            loaded.run({ body: { q: "x" } }),
+            EngineErrorCode.FN_CONTRACT,
+        );
+    }
+    // a free ESTIMATE on a billed model holds nothing — rejected
+    {
+        const engine = new Engine({ transport: jsonTransport(200, {}) });
+        const loaded = await engine.load(
+            await usageUnit({
+                model: { kind: "PER_CALL" },
+                estimate: () => ({ counts: {}, free: true }),
+                consolidate: () => ({ usage: { counts: {} } }),
+            }),
+        );
+        assertThrows(
+            () => loaded.estimate({ body: { q: "x" } }),
+            EngineError,
+            "FN_CONTRACT",
+        );
+    }
+});
+
+Deno.test("dynamic free: a billed model's CONSOLIDATE may settle free — flat 1s suppressed", async () => {
+    const engine = new Engine({
+        transport: jsonTransport(200, { promo: true }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "COMPOSITE",
+                components: {
+                    "start": { kind: "PER_CALL" },
+                    "item": { kind: "PER_UNIT", unit: "RESULT" },
+                },
+            },
+            estimate: () => ({ counts: { "item": 1 } }),
+            // the vendor demonstrably charged nothing this run
+            consolidate: () => ({ usage: { counts: {}, free: true } }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+    // no engine-appended start: 1 — a free run never bills the base fee
+    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage.free, true);
 });

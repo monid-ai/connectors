@@ -29,7 +29,15 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/burbn~google-shopping-scraper/runs",
     },
-    input: { schema: { body: zGoogleShoppingScraperBody } },
+    input: {
+        schema: {
+            // `limit` is the primary limiting knob (products per call) —
+            // WE require it at the binding (inner int/min(10)/max(100)
+            // kept by .required, zod 4): the estimate must be deducible
+            // to price the hold (D25)
+            body: zGoogleShoppingScraperBody.required({ limit: true }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -49,9 +57,8 @@ export default defineEndpoint({
                 },
             },
         },
-        /** limit = products per call (v1 LIMIT_IS_EXACT) — it carries the
-         *  actor's server default (10), so the estimate is pure
-         *  arithmetic (D24). */
+        /** limit = products per call (v1 LIMIT_IS_EXACT) — required at
+         *  the binding, so the estimate is pure arithmetic (D25). */
         estimate: ({ data }) => ({
             counts: {
                 "apify-default-dataset-item": data.input.body.limit,

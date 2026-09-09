@@ -31,9 +31,9 @@ export default defineEndpoint({
     },
     input: { schema: { body: zTiktokApiBody } },
     /** Flat per-run pricing (survey: the `request` charge event) — the
-     *  run is the product: nothing to count, so no estimate fn (the
-     *  engine default `{units: []}` is already exact) and the settle
-     *  reports no measures. */
+     *  run is the product. The estimate states the flat posture
+     *  explicitly (billing triple, D25): nothing metered to promise, the
+     *  engine appends the CALL 1. */
     usage: {
         model: {
             kind: UsageModelKind.PER_CALL,
@@ -41,5 +41,6 @@ export default defineEndpoint({
             // charge event (design D24)
             label: "request fee",
         },
+        estimate: () => ({ counts: {} }),
     },
 });

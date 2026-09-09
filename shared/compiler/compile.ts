@@ -498,22 +498,21 @@ export async function compileBundle(
                     );
                 }
             }
-            // METERED model (≥1 PER_UNIT part — a countable quantity that
-            // VARIES per run) ⇒ usage.estimate must RESOLVE: the admission
-            // hold is priced from the deduced counts, and a metered doc
-            // with no promise cannot hold (design D24). Flat-only docs
-            // (leaf PER_CALL, all-flat composites) have nothing to deduce —
-            // the engine derives their whole vector from the model.
+            // THE BILLING TRIPLE (design D25): usage.model +
+            // usage.consolidate + usage.estimate are ALL required on every
+            // doc — what is chargeable, what this run will cost, what it
+            // did cost. Nothing silently defaults: a flat doc's estimate
+            // states {counts: {}} (the engine appends the flat 1s), a FREE
+            // doc's states {counts: {}, free: true}.
             if (
-                meteredCount >= 1 &&
                 def.usage?.estimate === undefined &&
                 provider.usage?.estimate === undefined
             ) {
                 throw new CompileError(
                     CompileErrorCode.HOOK_UNRESOLVED,
-                    `${where}: a metered model (≥1 PER_UNIT part) requires ` +
-                        `usage.estimate — the admission hold is priced from ` +
-                        `the deduced counts (design D24)`,
+                    `${where}: usage.estimate must resolve — model + ` +
+                        `estimate + consolidate are the required billing ` +
+                        `triple (design D25)`,
                 );
             }
             const estimateFn = resolve(

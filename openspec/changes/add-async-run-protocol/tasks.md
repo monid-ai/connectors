@@ -365,3 +365,35 @@
       spec deltas; AGENT.md; 134 tests green; live survey 46/46; two
       test inputs gained required fields; two akta#news fixture URLs
       carry the now-explicit vendor default (no re-records)
+
+## 17. D25: FREE billing shape, the required triple, input fidelity
+
+- [x] 17.a zFreeModel (third leaf, kind-only) + zUsage.free; freeMismatch
+      beside countsMismatch; engine: free suppresses flat completion,
+      error settles stay zeroUsage without the flag; FREE/PER_UNIT arms
+      across every exhaustive consumer
+- [x] 17.b The billing TRIPLE compile-required (model + estimate +
+      consolidate on every doc); flat docs state {counts:{}}, FREE docs
+      the free pair; typed slots per model kind (free?: never on billed
+      estimates — structural, conditional returns defeat EPC)
+- [x] 17.c Input-fidelity repair fleet-wide: mirrors = optionality only
+      (all .default()s moved to bindings, incl. D19a-era + exa/octen
+      pre-existing); required/default/floor tightening DERIVED at
+      bindings; primary limits REQUIRED, behavior knobs binding-default;
+      array min(1)s + mode-refines removed (empty ⇒ estimate 0);
+      facebook-profile-posts union reverted; identifier keys unquoted;
+      youtube-scraper 0-semantics verified live (literal cap)
+- [x] 17.d Typed queryParams (QuerySchema generic, TypedRunInput<B,Q>);
+      estimate ctx reads the PRE-toRequest validated input (soundness:
+      akta's toRequest CSV-joins arrays); akta estimates on direct typed
+      reads
+- [x] 17.e akta remodels: news COMPOSITE (request + article, doc-level
+      consolidate off $.data); enrichment PER_UNIT sections (settle =
+      delivered sections); employee/product-reviews keep CREDIT (native
+      meter, no settleable block quantity); search/industry FREE;
+      tinyfish FREE
+- [x] 17.f Tests: FREE/dynamic-free/discipline engine tests; typed
+      proofs (free omitted, free-on-billed, queryParams typo); akta/
+      tinyfish expectations; 138 tests green
+- [x] 17.g Docs: design D25 (standing input-fidelity rules); schema +
+      engine spec deltas; AGENT.md; version stays 0.0.1

@@ -32,8 +32,8 @@ export default defineEndpoint({
             // the actor accepts an absent maxEvents (extracts unbounded;
             // prefill 30 is editor-only, NOT a server default) — WE
             // require it (inner min(1) kept by .required, zod 4): the
-            // estimate must be deducible to price the hold (D24)
-            body: zFacebookEventsScraperBody.required({ "maxEvents": true }),
+            // estimate must be deducible to price the hold (D25)
+            body: zFacebookEventsScraperBody.required({ maxEvents: true }),
         },
     },
     usage: {
@@ -56,12 +56,13 @@ export default defineEndpoint({
             },
         },
         /** maxEvents × (searchQueries + startUrls) — maxEvents required at
-         *  the binding (v1 PER_QUERY_LIMIT) and both query arrays carry
-         *  the actor's server default ([]), so the estimate is pure
-         *  arithmetic (D24). */
+         *  the binding (v1 PER_QUERY_LIMIT); both query arrays are
+         *  optional and absent ≡ empty, so an all-empty query set
+         *  estimates 0, which is correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            const n = body.searchQueries.length + body.startUrls.length;
+            const n = (body.searchQueries?.length ?? 0) +
+                (body.startUrls?.length ?? 0);
             return { counts: { "event": body.maxEvents * n } };
         },
     },

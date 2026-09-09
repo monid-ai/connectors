@@ -115,27 +115,32 @@ resolve the credential). Absolute targets SHALL be https-only
 - **THEN** the request egresses without the provider's credentials
 
 ### Requirement: Pre-run estimate entrypoint
-`estimate(runInput)` SHALL derive the input (validate + toRequest) and
-run the linked `usage.estimate` fn — PURE, no IO, no state — then
-COMPLETE the vector with the model's flat 1s (design D24:
-`{...fnCounts, ...flatCounts(model)}` — the returned usage carries every
-billed component). Absent estimate fn (flat-only docs) ⇒ the vector IS
-`flatCounts(model)` (leaf PER_CALL → `{"CALL": 1}`). The doc's own
-`usage.model` SHALL ride into the estimate ctx (`data.usage.model` —
-provenance-named, design D23) so provider-seam fns can derive a counts
-key generically, and the FN-returned counts are validated against the
-model exactly like settled ones BEFORE completion (see the counts
-discipline requirement). A standalone command
-(`deno task engine:estimate`) SHALL print the model + estimated counts,
-loading against a transport that rejects every call.
+`estimate(runInput)` SHALL validate the input WITHOUT applying
+`input.toRequest` (design D25: the estimate is a promise about the
+CALLER's request — schema-shaped, defaults materialized; a reshaping
+toRequest like akta's array→CSV would make typed input reads lie) and
+run the linked `usage.estimate` fn — PURE, no IO, no state; the fn is
+compile-required on every doc (the D25 billing triple). Then the engine
+COMPLETES the vector with the model's flat 1s (design D24:
+`{...fnCounts, ...flatCounts(model)}`) — UNLESS the fn promised
+`free: true`, which returns as-is (a free run never bills the base
+fee). The doc's own `usage.model` SHALL ride into the estimate ctx
+(`data.usage.model` — provenance-named, design D23), and the FN-returned
+usage is validated (countsMismatch + freeMismatch) BEFORE completion. A
+standalone command (`deno task engine:estimate`) SHALL print the model +
+estimated counts, loading against a transport that rejects every call.
 
 #### Scenario: Estimate does no IO
 - **WHEN** estimate() runs against a transport that rejects every call
 - **THEN** it returns the estimated Usage without touching the wire
 
-#### Scenario: Flat doc estimates without a fn
-- **WHEN** estimate() runs on a leaf PER_CALL doc with no estimate fn
-- **THEN** it returns `{counts: {"CALL": 1}}` — engine-derived from the model
+#### Scenario: Estimate reads the caller-shaped input
+- **WHEN** an akta estimate reads queryParams the provider toRequest would CSV-join
+- **THEN** it sees the schema-shaped arrays/scalars (pre-toRequest), typed
+
+#### Scenario: FREE doc estimates free
+- **WHEN** estimate() runs on a FREE-model doc
+- **THEN** it returns `{counts: {}, free: true}` — no flat completion
 
 ### Requirement: The card invariant — estimate and settle share counts KEYS
 For a doc with a metered `usage.model`, estimate() AND the settled usage

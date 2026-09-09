@@ -38,7 +38,7 @@ export default defineEndpoint({
             // 1:1 onto the billed RESULT); maxPages stays optional and no
             // longer feeds the estimate.
             body: zLinkedinProfileSearchByNameBody.extend({
-                "maxItems": zLinkedinProfileSearchByNameBody.shape.maxItems
+                maxItems: zLinkedinProfileSearchByNameBody.shape.maxItems
                     .unwrap().min(1),
             }),
         },

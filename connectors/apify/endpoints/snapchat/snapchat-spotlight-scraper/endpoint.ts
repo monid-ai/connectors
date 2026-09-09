@@ -32,14 +32,11 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor accepts an absent/empty spotlightUrls (an empty run)
-            // and the field is the whole billed quantity (one spotlight
-            // record each) — WE require it non-empty: the estimate must be
-            // deducible to price the hold (D24)
-            body: zSnapchatSpotlightScraperBody.extend({
-                "spotlightUrls": zSnapchatSpotlightScraperBody.shape
-                    .spotlightUrls.unwrap().min(1),
-            }),
+            // spotlightUrls is the whole billed quantity (one spotlight
+            // record each) and the only multiplier — the plain
+            // actor-OPTIONAL mirror; an absent/empty list is a genuine
+            // zero-item promise, not an error (D24/D25).
+            body: zSnapchatSpotlightScraperBody,
         },
     },
     usage: {
@@ -61,11 +58,12 @@ export default defineEndpoint({
                 },
             },
         },
-        /** one spotlight per url (v1 ONE_PER_QUERY) — required non-empty
-         *  at the binding, so the estimate is pure arithmetic (D24). */
+        /** one spotlight per url (v1 ONE_PER_QUERY) — actor-optional, so
+         *  an absent list is an honest zero-item promise: pure arithmetic
+         *  (D24). */
         estimate: ({ data }) => ({
             counts: {
-                "spotlight": data.input.body.spotlightUrls.length,
+                "spotlight": data.input.body.spotlightUrls?.length ?? 0,
             },
         }),
     },

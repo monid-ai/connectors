@@ -144,7 +144,9 @@ per file under `usage/model/` with the runtime kind enum DERIVED from the
 union (extractZodDiscriminatorKeys — the v1 zPriceTypes pattern; a
 literal-typed authoring const is kept in sync by a load-time staleness
 guard):
-- LEAF: `PER_CALL` ({kind, label?, description?} — billed 1 iff success,
+- LEAF: `FREE` ({kind} only — never bills, design D25: no description/
+  label, the kind says everything; never a composite component),
+  `PER_CALL` ({kind, label?, description?} — billed 1 iff success,
   engine-counted under its key — design D24) and `PER_UNIT` ({kind, unit,
   label?, description?} — metered per N of unit; pure, no base-fee side
   pocket). `description` is a human note on what a derived count means;
@@ -167,16 +169,39 @@ rate field anywhere: apify event prices are tiered by OUR subscription
 plan (verified), so rates are services config. `zUsageSection` carries
 `model?` (and `estimate?`) per level — but the model MUST RESOLVE
 (endpoint ?? provider, compile error if neither: every doc declares what
-is chargeable), and a METERED model (≥1 PER_UNIT part) additionally
-requires `usage.estimate` to resolve (design D24 — the admission hold is
-priced from the deduced counts; flat-only docs need no estimate: the
-engine derives their whole vector from the model). `doc.usage` carries
-the resolved `model` REQUIRED inline (hash-covered) and `estimate` as a
-FnRef.
+is chargeable), and `usage.estimate` must resolve on EVERY doc (design D25
+— the required billing TRIPLE: model + estimate + consolidate state
+what is chargeable, what this run will cost, and what it did cost; a
+flat doc's estimate states `{counts: {}}`, a FREE doc's states
+`{counts: {}, free: true}`). `doc.usage` carries the resolved `model`
+REQUIRED inline (hash-covered) and `estimate` as a FnRef.
 
-#### Scenario: Metered doc without an estimate fails compile
-- **WHEN** a doc resolves a PER_UNIT model but no usage.estimate (endpoint or provider)
-- **THEN** compile fails HOOK_UNRESOLVED citing design D24
+#### Scenario: Doc without an estimate fails compile
+- **WHEN** a doc resolves neither an endpoint- nor provider-level usage.estimate
+- **THEN** compile fails HOOK_UNRESOLVED citing the D25 billing triple
+
+### Requirement: FREE usage — a billing shape, triple-stated (D25)
+`zUsage` SHALL carry `free?: true`: the canonical free usage is
+`{counts: {}, free: true}` (empty counts ride WITH the flag; no cost —
+`freeMismatch`, shared beside `countsMismatch`, enforces it). A
+FREE-model doc's estimate AND consolidate SHALL return the free shape; a
+billed model MAY settle `free` dynamically from CONSOLIDATE only (the
+vendor demonstrably charged nothing) — a free ESTIMATE on a billed model
+SHALL fail (FN_CONTRACT at runtime; `free?: never` at the type layer).
+`usage.free` suppresses the engine's flat-1s completion; error settles
+stay `zeroUsage()` WITHOUT the flag (failed ≠ free).
+
+#### Scenario: FREE doc settles free
+- **WHEN** tinyfish#fetch (model FREE) succeeds
+- **THEN** the usage is `{counts: {}, free: true}` — no CALL key, no cost
+
+#### Scenario: FREE model demands the flag
+- **WHEN** a FREE doc's consolidate returns `{counts: {}}` without `free`
+- **THEN** the run fails FN_CONTRACT (the billing triple must agree)
+
+#### Scenario: Dynamic free suppresses the base fee
+- **WHEN** a composite doc's consolidate settles `{counts: {}, free: true}`
+- **THEN** the public usage carries NO engine-appended flat 1s
 
 #### Scenario: Same-unit components are legal, keyed
 - **WHEN** a composite declares full-profile and full-profile-with-email (both RESULT)
@@ -226,14 +251,16 @@ tinyfish pins explicitly (its `request.path` is "/").
 - **WHEN** an apify def pins endpoint "/apidojo/tweet-scraper"
 - **THEN** the doc id is "apify#apidojo/tweet-scraper" (the actor's own slug, v1 parity)
 
-### Requirement: Typed authoring — model keys, input bodies, lifecycle state (D19a/D22/D23)
-`defineEndpoint` SHALL be generic over the declared model, the input body
-schema, AND the lifecycle state schema (types only; zod stays the runtime
-truth): the doc's own consolidate/estimate return counts keyed by the
-model's LITERAL metered keys (a typo'd key, a flat-component key, or a
-counting fn on a flat doc fails the typecheck — the flat doc's estimate
-slot is `never`); `data.input.body` is typed by the doc's OWN input
-schema; and the fn-owned `state.data` bag is typed by the doc's OWN
+### Requirement: Typed authoring — model keys, inputs, lifecycle state (D19a/D22/D23/D25)
+`defineEndpoint` SHALL be generic over the declared model, the input
+body AND queryParams schemas, and the lifecycle state schema (types
+only; zod stays the runtime truth): the doc's own consolidate/estimate
+return counts keyed by the model's LITERAL metered keys (a typo'd key or
+a flat-component key fails the typecheck; a flat doc's estimate can
+promise only `{}`; a FREE doc's fns must return `{counts: {}, free:
+true}` and a billed doc's estimate cannot promise `free` — `free?:
+never`); `data.input.body` / `data.input.queryParams` are typed by the
+doc's OWN schemas; and the fn-owned `state.data` bag is typed by the doc's OWN
 `lifecycle.state` schema at BOTH the read sites (`data.lifecycle.state`
 in tick/envelope ctxs) and the write sites (lifecycle outcome `state`) —
 sound in every case because the engine validates the same schema on the
@@ -256,32 +283,45 @@ tests.
 - **WHEN** a doc declares `lifecycle.state: z.object({datasetId: z.string()})` and its poll returns `state: {data: {datasetID: "x"}}`
 - **THEN** `deno task check` fails at the write site (not just the runtime tick gate)
 
-### Requirement: Estimates are DEDUCED, never defaulted (D24)
+### Requirement: Estimates are DEDUCED, never defaulted (D24/D25)
 Every estimate SHALL be pure arithmetic over the VALIDATED input — no
 fallback constants, no presence-branches over billing knobs. A fixed
 quantity that follows from the vendor's price structure (akta: 1.5
 credits per 50 records) is deduced, not a fallback — the evidence rides
-in a comment. Every knob an estimate reads SHALL be deterministic after
-validation: a schema `.default(n)` ONLY where it mirrors the actor's
-VERIFIED server default (`default` in the published input schema —
-`prefill` is editor text and justifies nothing), otherwise REQUIRED.
-Required-ness SHALL live at the BINDING SITE, never in the schema file:
-`schema/inputs.ts` stays the faithful vendor mirror; the endpoint def
-tightens with `zBody.required({...})` / `zBody.extend({f:
-zBody.shape.f.unwrap().min(1)})` — deriving from the base schema, never
-restating it. Query arrays feeding multiplication: required non-empty
-(or vendor-default `[]` where absent ≡ empty). The engine SHALL
-materialize schema defaults for body AND queryParams/pathParams
-(cloned, `useDefaults`) so estimates read the same effective knobs the
-vendor applies.
+in a comment. Input-fidelity rules (design D25):
+- `schema/inputs.ts` is the FAITHFUL VENDOR MIRROR: optionality only —
+  never `.default()` (even vendor-documented ones), never our floors;
+  identifier keys unquoted.
+- ALL our tightening lives AT THE BINDING, DERIVED from the base schema,
+  never restated: `zBody.required({limit: true})` /
+  `.extend({f: shape.f.unwrap().default(n)})` / `.unwrap().min(1)` floors
+  ONLY where the vendor documents 0/absent = unbounded.
+- The PRIMARY limiting knob is REQUIRED at the binding (the caller states
+  the cap — even when the actor publishes a default); secondary/behavior
+  knobs the estimate reads carry binding `.default(verified actor
+  default)` (`default` in the published input schema — `prefill` is
+  editor text and justifies nothing).
+- Multiplier ARRAYS are never tightened: actor-required stays plain,
+  actor-optional stays optional and the estimate reads
+  `arr?.length ?? 0` — honest optionality handling, NOT a fallback.
+  Empty/absent input ⇒ estimate 0 (deduced ≠ non-zero).
+- Never invent structure the mirror doesn't have — estimate at the
+  granularity the mirror states.
+The engine SHALL materialize schema defaults for body AND
+queryParams/pathParams (cloned, `useDefaults`) so estimates read the
+same effective knobs the vendor applies.
 
 #### Scenario: Missing limiting knob rejects, never falls back
 - **WHEN** a caller omits a required-at-binding limit (tweet-scraper without maxItems)
 - **THEN** validation rejects the input — no run, no guessed hold
 
-#### Scenario: Vendor default rides the wire
-- **WHEN** akta#news is called without `limit` (schema default 10, vendor-documented)
-- **THEN** the validated queryParams carry limit=10 and the estimate reads it
+#### Scenario: Empty multiplier promises zero
+- **WHEN** amazon-product-details is called with `Params: []`
+- **THEN** the estimate is `{"RESULT": 0}` plus the flat vector — a 0 hold, not an error
+
+#### Scenario: Binding default rides the wire
+- **WHEN** youtube-video-transcript is called without `max_videos` (binding default 10, actor-verified)
+- **THEN** the validated body carries max_videos=10 and the estimate reads it
 
 ### Requirement: No estimate presets — the typed inline fn IS the typed preset (D23)
 `presets.estimate.*` SHALL NOT exist: preset field args were unchecked

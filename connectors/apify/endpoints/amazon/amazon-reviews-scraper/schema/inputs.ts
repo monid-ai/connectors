@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zAmazonReviewsScraperBody = z.object({
-    "input": z.array(z.any()).describe(
+    input: z.array(z.any()).describe(
         "List of inputs, each entry refers to one asin to be pulled. Full list of valid parameter can be found in the README tab.",
     ),
 });

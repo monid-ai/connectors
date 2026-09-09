@@ -34,24 +34,45 @@ export default defineEndpoint({
         },
     },
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** Akta enrichment bills 2.5 CREDITS PER SECTION — v1 evidence:
-         *  company-enrichment.ts priced `makePerResultPrice(0.125)` per
-         *  section at the fixed $0.05/credit rate (v1 common.ts
-         *  DOLLARS_PER_CREDIT), i.e. $0.125 / $0.05 = 2.5 credits; its
-         *  estimate held #sections × that rate ("all 16 sections = $2.00"
-         *  = 40 credits). `sections` is required at this binding, so the
-         *  STRICT len read cannot miss post-validation. Settle trues up
-         *  on `credits_consumed`. */
-        estimate: ({ data, utils }) => ({
-            counts: {
-                "CREDIT":
-                    utils.json.len(data.input.queryParams ?? {}, "$.sections") *
-                    2.5,
-            },
+        /** SECTIONS are the quantity (design D25) — akta bills per
+         *  requested section (v1 evidence: company-enrichment.ts
+         *  `makePerResultPrice(0.125)` per section; "all 16 sections =
+         *  $2.00"); the per-section credit rate lives in the services
+         *  card, keyed by this doc's metered key. */
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "sections",
+        },
+        /** One per requested section — typed read of the PRE-toRequest
+         *  validated input (design D25; `sections` is required at this
+         *  binding). */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.queryParams.sections.length },
         }),
+        /** Doc-level settle: sections DELIVERED off the raw envelope (the
+         *  response's `data` is keyed by section; `uuid` is identity, not
+         *  a section) + the vendor meter as cost-basis/evidence. */
+        consolidate: ({ data, utils }) => {
+            const credits =
+                utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
+            const sections = utils.json.optionalGet(data.output, "$.data");
+            const delivered =
+                sections !== null && typeof sections === "object" &&
+                    !Array.isArray(sections)
+                    ? Object.keys(sections).filter((key) => key !== "uuid")
+                        .length
+                    : 0;
+            return {
+                usage: {
+                    counts: { "RESULT": delivered },
+                    cost: utils.money.fromDollars(credits / 20),
+                    evidence: utils.json.pick(data.output, [
+                        "$.credits_consumed",
+                    ]),
+                },
+                output: utils.json.omit(data.output, ["credits_consumed"]),
+            };
+        },
     },
 });

@@ -19,14 +19,17 @@ export default defineEndpoint({
     request: { method: "GET", path: "/v1/industry/search/" },
     input: { schema: { queryParams: zIndustrySearchQueryParams } },
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** FREE lookup — a DEDUCED flat 0 credits per call (v1 evidence:
+        /** FREE (design D25) — resolution bills nothing: v1 evidence
          *  industry-search.ts priced `makePerCallPrice(0)`; the akta docs
-         *  say "Free — consumes 0 credits"). Settle trues up on
-         *  `credits_consumed`. */
-        estimate: () => ({ counts: { "CREDIT": 0 } }),
+         *  say "Free — consumes 0 credits". The triple states it three
+         *  times over (model + estimate + settle). */
+        model: { kind: UsageModelKind.FREE },
+        estimate: () => ({ counts: {}, free: true }),
+        consolidate: ({ data, utils }) => ({
+            usage: { counts: {}, free: true },
+            // still absorb the vendor's billing field (always 0 here) —
+            // billing facts never ride the payload
+            output: utils.json.omit(data.output, ["credits_consumed"]),
+        }),
     },
 });

@@ -32,13 +32,12 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // postUrls is the per-post multiplier (maxComments caps EACH
-            // post) — the actor requires the field but accepts an empty
-            // list; WE require it non-empty: the estimate must be
-            // deducible to price the hold (D24)
-            body: zRedditCommentScraperBody.extend({
-                "postUrls": zRedditCommentScraperBody.shape.postUrls.min(1),
-            }),
+            // maxComments is the PRIMARY limiting knob — required at the
+            // binding (even though the actor publishes a default): the
+            // estimate must be deducible to price the hold (D24/D25).
+            // postUrls (the per-post multiplier) stays the plain mirror —
+            // the actor itself requires it non-empty (minItems 1).
+            body: zRedditCommentScraperBody.required({ maxComments: true }),
         },
     },
     usage: {
@@ -60,11 +59,11 @@ export default defineEndpoint({
                 },
             },
         },
-        /** maxComments (actor server default 100, verified live) caps EACH
-         *  post — × the non-empty postUrls list required at the binding:
-         *  pure arithmetic, no fallbacks (D24). The old estimate multiplied
-         *  by `keywords` — wrong knob: keywords is a content FILTER, not a
-         *  query multiplier; the actor scrapes per POST URL. */
+        /** maxComments (required at the binding) caps EACH post — × the
+         *  postUrls list (actor-required non-empty): pure arithmetic, no
+         *  fallbacks (D24). The old estimate multiplied by `keywords` —
+         *  wrong knob: keywords is a content FILTER, not a query
+         *  multiplier; the actor scrapes per POST URL. */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

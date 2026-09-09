@@ -29,23 +29,11 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/delicious_zebu~amazon-product-details-scraper/runs",
     },
-    input: {
-        schema: {
-            // the actor requires `Params` but its server default is []
-            // (a no-op run) — WE require it non-empty: it is the
-            // estimate's multiplier, which must be deducible to price
-            // the hold (D24)
-            body: zAmazonProductDetailsScraperBody.extend({
-                "Params": zAmazonProductDetailsScraperBody.shape.Params
-                    .min(1),
-            }),
-        },
-    },
+    input: { schema: { body: zAmazonProductDetailsScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one result per Params entry (ASIN/URL, v1 ONE_PER_QUERY) —
-         *  non-empty at the binding, so the estimate is pure arithmetic
-         *  (D24). */
+        /** one result per Params entry (ASIN/URL, v1 ONE_PER_QUERY) — an
+         *  empty batch promises 0 (deduced, design D25). */
         estimate: ({ data }) => ({
             counts: {
                 "RESULT": data.input.body.Params.length,

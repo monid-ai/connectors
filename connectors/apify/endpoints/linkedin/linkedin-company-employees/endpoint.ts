@@ -39,7 +39,7 @@ export default defineEndpoint({
             // vendor reads a non-positive limit as "no limit"): the
             // estimate must be deducible to price the hold (D24)
             body: zLinkedinCompanyEmployeesBody.extend({
-                "maxItems": zLinkedinCompanyEmployeesBody.shape.maxItems
+                maxItems: zLinkedinCompanyEmployeesBody.shape.maxItems
                     .unwrap().min(1),
             }),
         },

@@ -9,16 +9,16 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zTiktokScraperBody = z.object({
-    "startUrls": z.array(z.any()).describe(
+    startUrls: z.array(z.any()).describe(
         "Paste the TikTok URLs, and get the results immediately. Video, Photo, User, Search, Tag, Music and Location URLs are supported.",
     ).optional(),
-    "maxItems": z.number().int().describe(
+    maxItems: z.number().int().describe(
         "Maximum number of items that you want as output.",
     ).optional(),
-    "keywords": z.array(z.any()).describe(
+    keywords: z.array(z.any()).describe(
         "Search keywords/terms you want to search from TikTok.",
     ).optional(),
-    "dateRange": z.enum([
+    dateRange: z.enum([
         "DEFAULT",
         "ALL_TIME",
         "YESTERDAY",
@@ -29,7 +29,7 @@ export const zTiktokScraperBody = z.object({
     ]).describe(
         "Date range for search. It uses the standard date filtering of TikTok search.",
     ).optional(),
-    "location": z.enum([
+    location: z.enum([
         "AF",
         "AL",
         "DZ",
@@ -282,13 +282,13 @@ export const zTiktokScraperBody = z.object({
     ]).describe(
         "Enables the actor to retrieve the results from that specific region/location, given by an ISO 3166-1 alpha-2 country code.",
     ).optional(),
-    "sortType": z.enum(["RELEVANCE", "MOST_LIKED", "DATE_POSTED"]).describe(
+    sortType: z.enum(["RELEVANCE", "MOST_LIKED", "DATE_POSTED"]).describe(
         "Sort type for search. Only works with keyword search — does not apply to startUrls or other input methods.",
     ).optional(),
-    "customMapFunction": z.string().describe(
+    customMapFunction: z.string().describe(
         "Function that takes each of the objects as argument and returns data that will be mapped by the function itself. This function is not intended for filtering, please don't use it for filtering purposes or you will get banned automatically.",
     ).optional(),
-    "includeSearchKeywords": z.boolean().describe(
+    includeSearchKeywords: z.boolean().describe(
         "If selected, a field will be added to each tweets about the search keyword that was used to find it.",
     ).optional(),
 });

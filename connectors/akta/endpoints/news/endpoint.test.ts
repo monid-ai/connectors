@@ -17,13 +17,21 @@ Deno.test("akta: provider-level hooks interned ONCE across all six endpoints", a
     );
     assertEquals(ids.length, 6);
     const first = bundle.endpoints[ids[0]];
+    // D25: news/enrichment settle their own quantities and the FREE
+    // lookups settle the free shape — the provider credits fn now serves
+    // only the CREDIT-metered docs; toRequest/auth stay provider-shared.
+    const providerConsolidated = ids.filter((id) =>
+        bundle.endpoints[id].usage.consolidate.$fn.key ===
+            bundle.endpoints["akta#v1/company/employee-reviews"].usage
+                .consolidate.$fn.key
+    );
+    assertEquals(providerConsolidated.sort(), [
+        "akta#v1/company/employee-reviews",
+        "akta#v1/company/product-reviews",
+    ]);
     for (const id of ids) {
         const doc = bundle.endpoints[id];
-        // one credits settle fn, one array→CSV hook, one auth fn — shared
-        assertEquals(
-            doc.usage.consolidate.$fn.key,
-            first.usage.consolidate.$fn.key,
-        );
+        // one array→CSV hook, one auth fn — shared provider-wide
         assertEquals(
             doc.input.toRequest?.$fn.key,
             first.input.toRequest?.$fn.key,
@@ -50,8 +58,9 @@ Deno.test("akta#news happy (recorded): credits are the native unit; arrays go co
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // native unit = credits; vendor cost derived ($1 = 20 credits)
-    assertEquals(result.usage.counts, { "CREDIT": 0.12 });
+    // COMPOSITE vector (D25): articles delivered + the engine-appended flat
+    // request 1; the vendor's own meter rides as cost basis + evidence
+    assertEquals(result.usage.counts, { "article": 2, "request": 1 });
     assertEquals(result.usage.cost, {
         currency: "USD",
         value: 6_000, // 0.12 / 20 dollars = $0.006 = 6k micro-dollars
@@ -69,14 +78,17 @@ Deno.test("akta#news empty (recorded): unknown company is 200 with zero credits"
     const fixture = await loadFixture(`${fixturesDir}empty.json`);
     const result = await runEndpoint({
         unit,
-        input: { queryParams: { company: "nope" } },
+        // limit is caller-stated (required at the binding, D25); 10 matches
+        // the recorded wire URL
+        input: { queryParams: { company: "nope", limit: 10 } },
         mode: "replay",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // money follows evidence: no credits consumed, $0
-    assertEquals(result.usage.counts, { "CREDIT": 0 });
+    // money follows evidence: zero articles delivered; the flat request
+    // still bills (engine-appended)
+    assertEquals(result.usage.counts, { "article": 0, "request": 1 });
     assertEquals((result.output as Record<string, unknown>).count, 0);
 });
 
@@ -100,6 +112,7 @@ Deno.test("akta#news: impossible calendar dates rejected by the compiled schema"
                         queryParams: {
                             company: "https://canva.com",
                             start_date,
+                            limit: 10,
                         },
                     },
                     mode: "replay",
@@ -118,6 +131,7 @@ Deno.test("akta#news: impossible calendar dates rejected by the compiled schema"
                 queryParams: {
                     company: "https://canva.com",
                     start_date: "2024-02-29",
+                    limit: 10,
                 },
             },
             mode: "replay",
@@ -132,7 +146,7 @@ Deno.test("akta#news provider error (recorded 401): zero usage", async () => {
     const fixture = await loadFixture(`${fixturesDir}provider-error.json`);
     const result = await runEndpoint({
         unit,
-        input: { queryParams: { company: "https://canva.com" } },
+        input: { queryParams: { company: "https://canva.com", limit: 10 } },
         mode: "replay",
         fixture,
     });
@@ -156,6 +170,9 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(Object.keys(result.usage.counts), ["CREDIT"]);
+        assertEquals(
+            Object.keys(result.usage.counts).sort(),
+            ["article", "request"],
+        );
     },
 });

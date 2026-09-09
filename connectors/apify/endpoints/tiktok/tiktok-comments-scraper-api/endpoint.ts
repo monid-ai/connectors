@@ -49,5 +49,8 @@ export default defineEndpoint({
                 },
             },
         },
+        // all-flat composite: nothing metered to promise — the engine
+        // appends both flat 1s (billing triple, D25)
+        estimate: () => ({ counts: {} }),
     },
 });

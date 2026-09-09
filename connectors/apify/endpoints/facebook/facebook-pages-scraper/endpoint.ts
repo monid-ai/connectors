@@ -27,22 +27,12 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~facebook-pages-scraper/runs",
     },
-    input: {
-        schema: {
-            // the actor requires `startUrls` but its server default is []
-            // (a no-op run) — WE require it non-empty: it is the
-            // estimate's multiplier, which must be deducible to price
-            // the hold (D24)
-            body: zFacebookPagesScraperBody.extend({
-                "startUrls": zFacebookPagesScraperBody.shape.startUrls
-                    .min(1),
-            }),
-        },
-    },
+    input: { schema: { body: zFacebookPagesScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** one page record per startUrl (v1 ONE_PER_QUERY) — non-empty at
-         *  the binding, so the estimate is pure arithmetic (D24). */
+        /** one page record per startUrl (v1 ONE_PER_QUERY) — startUrls is
+         *  actor-required; an empty batch is a no-op run and estimates 0,
+         *  which is correct (D25). */
         estimate: ({ data }) => ({
             counts: {
                 "RESULT": data.input.body.startUrls.length,

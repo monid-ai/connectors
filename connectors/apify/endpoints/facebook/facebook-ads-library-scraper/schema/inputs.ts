@@ -9,16 +9,16 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zFacebookAdsLibraryScraperBody = z.object({
-    "urls": z.array(z.any()).describe(
+    urls: z.array(z.any()).describe(
         "List of facebook ads search URLs or Page URLs to scrape ads from",
     ),
-    "scrapeAdDetails": z.boolean().describe(
+    scrapeAdDetails: z.boolean().describe(
         "Enable this option to scrape ads details such as EU Reach info",
     ).optional(),
-    "limitPerSource": z.number().int().describe(
+    limitPerSource: z.number().int().describe(
         "Limit number of ads scraped per input URL. Leave it blank to scrape all available ads ℹ️ Actual number might exceed the given limit by upto 30",
     ).optional(),
-    "count": z.number().int().describe(
+    count: z.number().int().describe(
         "Leave this field empty if you want to limit number of ads scraped",
     ).optional(),
     "scrapePageAds.period": z.enum([
@@ -36,10 +36,10 @@ export const zFacebookAdsLibraryScraperBody = z.object({
     "scrapePageAds.countryCode": z.string().describe(
         "2-letter ISO country code (ISO 3166-1 alpha-2). This should be the official uppercase country code, such as `IN` for India, `US` for United States, etc. Use `ALL` for targeting all countries",
     ).optional(),
-    "runTag": z.string().describe(
+    runTag: z.string().describe(
         "Add this value to 'runTag' column in the output",
     ).optional(),
-    "proxy": z.record(z.string(), z.any()).describe(
+    proxy: z.record(z.string(), z.any()).describe(
         "You can use this option to customise the proxy country",
     ).optional(),
 });

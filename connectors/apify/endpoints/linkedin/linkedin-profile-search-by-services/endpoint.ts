@@ -37,7 +37,7 @@ export default defineEndpoint({
             // prefill 20 is editor-only, NOT a server default) — WE require
             // it ≥1: the estimate must be deducible to price the hold (D24)
             body: zLinkedinProfileSearchByServicesBody.extend({
-                "maxItems": zLinkedinProfileSearchByServicesBody.shape.maxItems
+                maxItems: zLinkedinProfileSearchByServicesBody.shape.maxItems
                     .unwrap().min(1),
             }),
         },

@@ -34,27 +34,23 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // maxItems applies PER JOB, and every search query, subreddit or
-            // URL is its own job (actor docs: "2 search queries × maxItems
-            // 25 = up to 50 posts") — the actor accepts a run with neither
-            // input; WE require at least one job so the multiplier is
-            // non-zero: the estimate must be deducible to price the hold
-            // (D24). startUrls and searches are ALTERNATIVES, so neither is
-            // individually required.
-            body: zApifyRedditApiBody.refine(
-                (b) =>
-                    (b.startUrls?.length ?? 0) + (b.searches?.length ?? 0) > 0,
-                "at least one of startUrls or searches must be non-empty",
-            ),
+            // maxItems is the PRIMARY limiting knob (applies PER JOB; actor
+            // docs: "2 search queries × maxItems 25 = up to 50 posts") —
+            // required at the binding (even though the actor publishes a
+            // default): the estimate must be deducible to price the hold
+            // (D24/D25). startUrls and searches are ALTERNATIVE multiplier
+            // arrays and stay the plain optional mirror — no jobs means a
+            // genuine zero-item promise, not an error.
+            body: zApifyRedditApiBody.required({ maxItems: true }),
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** maxItems (actor server default 25, verified live) × jobs, where
-         *  jobs = startUrls + searches entries (each is billed up to
-         *  maxItems — old estimate missed `searches`). The binding
-         *  guarantees ≥ 1 job, so an absent array is a genuine zero-job
-         *  term, not a masked default (D24). */
+        /** maxItems (required at the binding) × jobs, where jobs =
+         *  startUrls + searches entries (each is billed up to maxItems —
+         *  old estimate missed `searches`). An absent array is a genuine
+         *  zero-job term (honest optionality, estimate 0), not a masked
+         *  default (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const jobs = (body.startUrls?.length ?? 0) +

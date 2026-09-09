@@ -23,7 +23,28 @@ export default defineEndpoint({
         categories: ["web-scraping"],
     },
     request: { method: "POST", path: "/extract" },
-    input: { schema: { body: zOctenExtractBody } },
+    input: {
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // max_age_seconds 86400, format "markdown", timeout 30,
+            // include_images/videos/audio false.
+            body: zOctenExtractBody.extend({
+                max_age_seconds: zOctenExtractBody.shape.max_age_seconds
+                    .unwrap().default(86400),
+                format: zOctenExtractBody.shape.format.unwrap()
+                    .default("markdown"),
+                timeout: zOctenExtractBody.shape.timeout.unwrap()
+                    .default(30),
+                include_images: zOctenExtractBody.shape.include_images
+                    .unwrap().default(false),
+                include_videos: zOctenExtractBody.shape.include_videos
+                    .unwrap().default(false),
+                include_audio: zOctenExtractBody.shape.include_audio
+                    .unwrap().default(false),
+            }),
+        },
+    },
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },

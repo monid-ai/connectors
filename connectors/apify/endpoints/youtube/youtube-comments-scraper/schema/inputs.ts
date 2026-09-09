@@ -9,16 +9,16 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zYoutubeCommentsScraperBody = z.object({
-    "startUrls": z.array(z.any()).describe(
+    startUrls: z.array(z.any()).describe(
         "Enter a link to a specific Youtube video YouTube video. You can also import a CSV file or Google Sheet with a list of URLs.",
     ),
-    "maxComments": z.number().int().min(1).describe(
+    maxComments: z.number().int().min(1).describe(
         "Limit the number of comments you want to scrape per video.",
-    ).default(1), // actor server default, verified live (prefill is 10)
-    "sortCommentsBy": z.enum(["TOP_COMMENTS", "NEWEST_FIRST"]).describe(
+    ).optional(),
+    sortCommentsBy: z.enum(["TOP_COMMENTS", "NEWEST_FIRST"]).describe(
         "Select Youtube sorting parameter for comments",
     ).optional(),
-    "oldestCommentDate": z.string().describe(
+    oldestCommentDate: z.string().describe(
         "Only comments published after or on this date will be scraped. Alternatively, specify how old the scraped comments should be. Putting 1 day will get you only today's comments, 2 days - yesterday's and today's, and so on. Note, that if you select this, sorting parameter will be auto-reset to newes...",
     ).optional(),
 });

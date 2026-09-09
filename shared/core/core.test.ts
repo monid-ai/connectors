@@ -545,3 +545,79 @@ Deno.test("typed defineProvider: the provider's OWN lifecycle.state types its fn
             },
         }));
 });
+
+Deno.test("typed FREE model + typed queryParams: the D25 layer narrows as designed", () => {
+    const meta = {
+        displayName: "Typed free",
+        summary: "Free types.",
+        categories: ["demo-cat"],
+    };
+    const request = { method: "GET", path: "/lookup" } as const;
+    const queryParams = z.object({
+        q: z.string(),
+        limit: z.number().int().min(1).optional(),
+    });
+
+    // POSITIVE control — a FREE doc states the free shape from both fns,
+    // and the estimate reads TYPED queryParams (pre-toRequest input):
+    const good = defineEndpoint({
+        meta,
+        request,
+        input: {
+            schema: { queryParams: queryParams.required({ limit: true }) },
+        },
+        usage: {
+            model: { kind: UsageModelKind.FREE },
+            estimate: ({ data }) => ({
+                counts: {},
+                free: data.input.queryParams.limit > 0 ? true : true,
+            }),
+            consolidate: () => ({ usage: { counts: {}, free: true } }),
+        },
+    });
+    void good;
+
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { queryParams } },
+            usage: {
+                model: { kind: UsageModelKind.FREE },
+                // @ts-expect-error — a FREE doc's estimate must state
+                // free: true (the billing triple agrees — D25)
+                estimate: () => ({ counts: {} }),
+                consolidate: () => ({ usage: { counts: {}, free: true } }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { queryParams } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                // @ts-expect-error — a free PROMISE on a billed model holds
+                // nothing against a run that can bill (freeMismatch's twin)
+                estimate: () => ({ counts: {}, free: true }),
+                consolidate: () => ({ usage: { counts: {} } }),
+            },
+        }));
+    void (() =>
+        defineEndpoint({
+            meta,
+            request,
+            input: { schema: { queryParams } },
+            usage: {
+                model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
+                estimate: ({ data }) => ({
+                    counts: {
+                        // @ts-expect-error — no such field on the doc's own
+                        // queryParams schema (typed input, D25)
+                        "RESULT": data.input.queryParams.nope ?? 1,
+                    },
+                }),
+                consolidate: () => ({ usage: { counts: {} } }),
+            },
+        }));
+});

@@ -26,7 +26,14 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/trudax~reddit-scraper-lite/runs",
     },
-    input: { schema: { body: zRedditScraperLiteBody } },
+    input: {
+        schema: {
+            // maxItems is the PRIMARY limiting knob — required at the
+            // binding (even though the actor publishes a default): the
+            // estimate must be deducible to price the hold (D24/D25)
+            body: zRedditScraperLiteBody.required({ maxItems: true }),
+        },
+    },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -46,10 +53,9 @@ export default defineEndpoint({
                 },
             },
         },
-        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT); the schema
-         *  pins the actor's OWN server default (10, verified live),
-         *  materialized into the body before any hook runs — pure
-         *  arithmetic, no fallbacks (D24). */
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required
+         *  at the binding, so the estimate is pure arithmetic, no
+         *  fallbacks (D24). */
         estimate: ({ data }) => ({
             counts: { "result": data.input.body.maxItems },
         }),

@@ -30,21 +30,12 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/axesso_data~amazon-reviews-scraper/runs",
     },
-    input: {
-        schema: {
-            // the actor requires `input` but accepts an empty batch (a
-            // no-op run) — WE require it non-empty: it is the estimate's
-            // multiplier, which must be deducible to price the hold (D24)
-            body: zAmazonReviewsScraperBody.extend({
-                "input": zAmazonReviewsScraperBody.shape.input.min(1),
-            }),
-        },
-    },
+    input: { schema: { body: zAmazonReviewsScraperBody } },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one result per input entry (one asin each, v1 ONE_PER_QUERY) —
-         *  non-empty at the binding, so the estimate is pure arithmetic
-         *  (D24). */
+         *  `input` is actor-required; an empty batch is a no-op run and
+         *  estimates 0, which is correct (D25). */
         estimate: ({ data }) => ({
             counts: {
                 "RESULT": data.input.body.input.length,

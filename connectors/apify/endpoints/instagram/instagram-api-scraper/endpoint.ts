@@ -37,17 +37,14 @@ export default defineEndpoint({
             // runs (one `search` query yields up to searchLimit items).
             // The actor publishes NO server default for either limit
             // (prefills 200/1 are editor hints) and accepts absent limits
-            // (unbounded) — WE require BOTH limits and at least one active
-            // mode: the estimate must be deducible to price the hold (D24)
+            // (unbounded) — WE require BOTH limits, the dual-mode PRIMARY
+            // knobs: the estimate must be deducible to price the hold
+            // (D24/D25). directUrls/search stay the plain optional mirror
+            // — no active mode is a genuine zero-item promise.
             body: zInstagramApiScraperBody.required({
-                "resultsLimit": true,
-                "searchLimit": true,
-            }).refine(
-                (b) =>
-                    (b.directUrls?.length ?? 0) > 0 ||
-                    (b.search !== undefined && b.search.trim() !== ""),
-                "provide a non-empty directUrls and/or a search query",
-            ),
+                resultsLimit: true,
+                searchLimit: true,
+            }),
         },
     },
     usage: {
@@ -72,17 +69,15 @@ export default defineEndpoint({
         },
         /** Dual-mode sum: resultsLimit × directUrls entries, plus
          *  searchLimit × one query when `search` is set. Both limits are
-         *  required at the binding (which also guarantees ≥ 1 active
-         *  mode); an absent directUrls / search is a genuine zero-term
-         *  mode, not a masked default — pure arithmetic (D24). */
+         *  required at the binding; an absent directUrls / search is a
+         *  genuine zero-term mode (mode-presence branch = selection
+         *  logic), not a masked default — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const urlItems = body.resultsLimit *
                 (body.directUrls?.length ?? 0);
             const searchItems = body.searchLimit *
-                (body.search !== undefined && body.search.trim() !== ""
-                    ? 1
-                    : 0);
+                (body.search !== undefined ? 1 : 0);
             return { counts: { "result": urlItems + searchItems } };
         },
     },

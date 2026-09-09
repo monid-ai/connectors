@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zAmazonSearchScraperBody = z.object({
-    "input": z.array(z.any()).describe(
+    input: z.array(z.any()).describe(
         "List of inputs, each entry refers to one keyword to be pulled. Full list of valid parameter can be found in the README tab.",
     ),
 });

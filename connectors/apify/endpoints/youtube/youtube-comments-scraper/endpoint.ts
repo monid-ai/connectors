@@ -31,22 +31,20 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor requires `startUrls` but accepts an empty batch
-            // (a no-op run) — WE require it non-empty: it is the
-            // estimate's multiplier, which must be deducible to price
-            // the hold (D24)
-            body: zYoutubeCommentsScraperBody.extend({
-                "startUrls": zYoutubeCommentsScraperBody.shape.startUrls
-                    .min(1),
+            // `maxComments` is the primary limiting knob (per-video cap)
+            // — WE require it at the binding (inner int/min(1) kept by
+            // .required, zod 4): the estimate must be deducible to price
+            // the hold (D25)
+            body: zYoutubeCommentsScraperBody.required({
+                maxComments: true,
             }),
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** maxComments per video url (v1 PER_QUERY_LIMIT) — maxComments
-         *  carries the actor's server default (1) and startUrls is
-         *  non-empty at the binding, so the estimate is pure arithmetic
-         *  (D24). */
+         *  is required at the binding; startUrls is actor-required, and
+         *  an empty batch estimates 0, which is correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

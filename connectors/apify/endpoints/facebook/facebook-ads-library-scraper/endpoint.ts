@@ -40,7 +40,7 @@ export default defineEndpoint({
             // (D24). limitPerSource stays optional (it can only lower the
             // total below count).
             body: zFacebookAdsLibraryScraperBody.extend({
-                "count": zFacebookAdsLibraryScraperBody.shape.count
+                count: zFacebookAdsLibraryScraperBody.shape.count
                     .unwrap().min(1),
             }),
         },

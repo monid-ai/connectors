@@ -32,13 +32,11 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor requires `products` but accepts an empty batch (a
-            // no-op run) — WE require it non-empty: it is the estimate's
-            // multiplier, which must be deducible to price the hold (D24)
-            body: zAmazonReviewsExtractorBody.extend({
-                "products": zAmazonReviewsExtractorBody.shape.products
-                    .min(1),
-            }),
+            // `limit` is the primary limiting knob (page cap) — WE require
+            // it at the binding (inner int/min(1)/max(50) kept by
+            // .required, zod 4): the estimate must be deducible to price
+            // the hold (D25)
+            body: zAmazonReviewsExtractorBody.required({ limit: true }),
         },
     },
     usage: {
@@ -61,9 +59,9 @@ export default defineEndpoint({
             },
         },
         /** limit review-PAGES (~10 reviews each, v1 LIMIT_IS_PAGES) ×
-         *  products — limit carries the actor's server default (20) and
-         *  products is non-empty at the binding, so the estimate is pure
-         *  arithmetic (D24). */
+         *  products — limit is required at the binding; products is
+         *  actor-required, and an empty batch estimates 0, which is
+         *  correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

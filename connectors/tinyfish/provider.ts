@@ -22,9 +22,13 @@ export default defineProvider({
     },
     auth: { inject: presets.auth.header("X-API-Key") },
     usage: {
-        // label (design D24): the flat CALL line reads as the base fee on
-        // billing surfaces (a $0 one on every tinyfish plan today).
-        model: { kind: UsageModelKind.PER_CALL, label: "base fee" },
-        consolidate: presets.usage.perCall(),
+        // FREE (design D25): tinyfish bills nothing on every plan today —
+        // v1 evidence: "$0 wins verbatim … both endpoints are free". The
+        // triple states it three times over: model FREE, estimate free,
+        // settle free — nothing silently defaults, and a future price
+        // change is a MODEL change, not a rate-card surprise.
+        model: { kind: UsageModelKind.FREE },
+        estimate: () => ({ counts: {}, free: true }),
+        consolidate: () => ({ usage: { counts: {}, free: true } }),
     },
 });

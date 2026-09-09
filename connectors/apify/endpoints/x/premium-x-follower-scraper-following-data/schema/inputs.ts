@@ -9,18 +9,18 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zPremiumXFollowerScraperFollowingDataBody = z.object({
-    "user_names": z.array(z.any()).describe(
+    user_names: z.array(z.any()).describe(
         "Enter the user name you want to scrape.don't include @! eg:['elonmusk']",
     ).optional(),
-    "user_ids": z.array(z.any()).describe(
+    user_ids: z.array(z.any()).describe(
         "Enter the user ids you want to scrape. Case1: 1846987139428634858,1858743654778892784. Note: When this field has a value, all other filter conditions will be ignored.",
     ).optional(),
-    "maxFollowers": z.number().int().min(200).max(10000000).describe(
+    maxFollowers: z.number().int().min(200).max(10000000).describe(
         "Maximum number of followers that you want as output.",
     ),
-    "maxFollowings": z.number().int().min(200).max(10000000).describe(
+    maxFollowings: z.number().int().min(200).max(10000000).describe(
         "Maximum number of followings that you want as output.",
     ),
-    "getFollowers": z.boolean().describe("Whether to get followers."),
-    "getFollowing": z.boolean().describe("Whether to get followings."),
+    getFollowers: z.boolean().describe("Whether to get followers."),
+    getFollowing: z.boolean().describe("Whether to get followings."),
 });

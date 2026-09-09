@@ -21,10 +21,10 @@ export const zExaSearchBody = z.object({
         "deep-lite",
         "deep",
         "deep-reasoning",
-    ]).default("auto"),
-    numResults: z.number().int().min(1).max(100).default(10).describe(
+    ]).optional(),
+    numResults: z.number().int().min(1).max(100).describe(
         "Number of results (1-100).",
-    ),
+    ).optional(),
     category: z.enum([
         "company",
         "research paper",
@@ -46,7 +46,7 @@ export const zExaSearchBody = z.object({
     startPublishedDate: z.iso.datetime().optional(),
     endPublishedDate: z.iso.datetime().optional(),
     userLocation: z.string().optional(),
-    moderation: z.boolean().default(false),
+    moderation: z.boolean().optional(),
     systemPrompt: z.string().optional(),
     outputSchema: z.record(z.string(), z.any()).optional().describe(
         "JSON Schema for synthesized output. Adds roughly 2 s of synthesis latency.",

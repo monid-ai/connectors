@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { extractZodDiscriminatorKeys } from "../../zod-util.ts";
+import { FREE_MODEL_KIND, zFreeModel } from "./free.ts";
 import { PER_CALL_MODEL_KIND, zPerCallModel } from "./per-call.ts";
 import { PER_UNIT_MODEL_KIND, zPerUnitModel } from "./per-unit.ts";
 import { COMPOSITE_MODEL_KIND, zCompositeModel } from "./composite.ts";
@@ -11,11 +12,13 @@ import { COMPOSITE_MODEL_KIND, zCompositeModel } from "./composite.ts";
  * apify event prices are tiered by subscription plan). Two operators
  * (designs D18 + D19):
  *
- *   - LEAF:      PER_CALL (flat — the run is the product, billed 1 iff
- *                success, no count) and PER_UNIT (metered — billed per
- *                N of `unit`).
+ *   - LEAF:      FREE (never bills — design D25), PER_CALL (flat — the
+ *                run is the product, billed 1 iff success) and PER_UNIT
+ *                (metered — billed per N of `unit`).
  *   - AND:       COMPOSITE — the sum of scalar components, KEYED BY
  *                COMPONENT ID (flat start fee AND per-item metering).
+ *                FREE is never a component (a free component is an
+ *                omitted component).
  *
  * Grammar, closed and total: "a simple charge, or a keyed sum of simple
  * charges". Deliberately absent — every v1 price type maps in WITHOUT a
@@ -31,6 +34,7 @@ import { COMPOSITE_MODEL_KIND, zCompositeModel } from "./composite.ts";
  *     counting rule (counts["additional_result"] = max(0, n − 10)).
  */
 export const zUsageModel = z.discriminatedUnion("kind", [
+    zFreeModel,
     zPerCallModel,
     zPerUnitModel,
     zCompositeModel,
@@ -51,6 +55,7 @@ export const zUsageModelKind = z.enum(
  *  the same per-file KIND constants the union is; the load-time assert
  *  below keeps it provably in sync with the DERIVED enum. */
 export const UsageModelKind = {
+    FREE: FREE_MODEL_KIND,
     PER_CALL: PER_CALL_MODEL_KIND,
     PER_UNIT: PER_UNIT_MODEL_KIND,
     COMPOSITE: COMPOSITE_MODEL_KIND,
@@ -70,6 +75,7 @@ if (
     );
 }
 
+export * from "./free.ts";
 export * from "./per-call.ts";
 export * from "./per-unit.ts";
 export * from "./scalar.ts";

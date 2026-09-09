@@ -30,10 +30,7 @@ export const zNewsQueryParams = z.object({
     end_date: zDate.optional().describe(
         "End of the date range (YYYY-MM-DD). Defaults to today.",
     ),
-    // `.default(10)` mirrors akta's DOCUMENTED server default ("Default
-    // 10") — verified, so the CREDIT estimate may read `limit`
-    // unconditionally (design D24).
-    limit: z.number().int().min(1).max(1000).default(10).describe(
+    limit: z.number().int().min(1).max(1000).optional().describe(
         "Maximum number of articles to return. Default 10, max 1000.",
     ),
     offset: z.number().int().min(0).optional().describe(

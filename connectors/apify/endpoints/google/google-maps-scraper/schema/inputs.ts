@@ -9,14 +9,14 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zGoogleMapsScraperBody = z.object({
-    "query": z.string().describe("Define search query"),
-    "location": z.string().describe("Define location"),
-    "place_id": z.string().describe("Google Maps Place ID for the location")
+    query: z.string().describe("Define search query"),
+    location: z.string().describe("Define location"),
+    place_id: z.string().describe("Google Maps Place ID for the location")
         .optional(),
-    "cid": z.string().describe(
+    cid: z.string().describe(
         "Search by Google Maps CID (Customer Identification)",
     ).optional(),
-    "language": z.enum([
+    language: z.enum([
         "af",
         "ak",
         "sq",
@@ -168,7 +168,7 @@ export const zGoogleMapsScraperBody = z.object({
         "yo",
         "zu",
     ]).describe("The language to search in.").optional(),
-    "max_results": z.number().int().describe(
+    max_results: z.number().int().describe(
         "The maximum number of results to scrape.",
-    ).default(100), // actor server default, verified live
+    ).optional(),
 });

@@ -10,16 +10,16 @@ export const zOctenExtractBody = z.object({
         "Intent-focused keywords. When provided, returns query-relevant " +
             "highlights per URL; otherwise the complete content.",
     ),
-    max_age_seconds: z.number().int().positive().default(86400).describe(
+    max_age_seconds: z.number().int().positive().describe(
         "Maximum age (seconds) of cached content before a re-fetch.",
-    ),
-    format: z.enum(["markdown", "text"]).default("markdown").describe(
+    ).optional(),
+    format: z.enum(["markdown", "text"]).describe(
         "Format of the returned content.",
-    ),
-    timeout: z.number().int().positive().default(30).describe(
+    ).optional(),
+    timeout: z.number().int().positive().describe(
         "Per-URL extraction timeout in seconds.",
-    ),
-    include_images: z.boolean().default(false),
-    include_videos: z.boolean().default(false),
-    include_audio: z.boolean().default(false),
+    ).optional(),
+    include_images: z.boolean().optional(),
+    include_videos: z.boolean().optional(),
+    include_audio: z.boolean().optional(),
 }).strict();

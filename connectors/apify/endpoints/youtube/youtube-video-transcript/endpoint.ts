@@ -29,13 +29,24 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/starvibe~youtube-video-transcript/runs",
     },
-    input: { schema: { body: zYoutubeVideoTranscriptBody } },
+    input: {
+        schema: {
+            // max_videos is a secondary knob (channel-mode only) the
+            // estimate reads — WE default it at the binding to the
+            // actor's VERIFIED published server default (10); unwrap
+            // keeps the inner int/min(1)/max(200) checks (D25)
+            body: zYoutubeVideoTranscriptBody.extend({
+                max_videos: zYoutubeVideoTranscriptBody.shape.max_videos
+                    .unwrap().default(10),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** MODE-aware (PR #2 finding): youtube_url mode returns exactly 1;
-         *  channel mode caps at max_videos, whose schema default (10) is
-         *  the actor's OWN server default — materialized into the body
-         *  before any hook runs, so the estimate is exact. */
+         *  channel mode caps at max_videos, defaulted at the binding to
+         *  the actor's OWN server default (10) — materialized into the
+         *  body before any hook runs, so the estimate is exact. */
         estimate: ({ data }) => {
             const body = data.input.body;
             const amount =

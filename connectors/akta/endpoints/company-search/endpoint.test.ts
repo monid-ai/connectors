@@ -19,12 +19,10 @@ Deno.test("akta#company-search happy (recorded): free lookup — 0 credits, $0",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.counts, { "CREDIT": 0 });
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 0,
-        unit: "MICRO_DOLLAR",
-    });
+    // FREE (D25): the billing shape says it — no counts, no cost, free flag
+    assertEquals(result.usage.counts, {});
+    assertEquals(result.usage.free, true);
+    assertEquals(result.usage.cost, undefined);
     const output = result.output as Record<string, unknown>;
     assertEquals("credits_consumed" in output, false);
     assertEquals(
@@ -48,6 +46,7 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(Object.keys(result.usage.counts), ["CREDIT"]);
+        assertEquals(result.usage.counts, {});
+        assertEquals(result.usage.free, true);
     },
 });

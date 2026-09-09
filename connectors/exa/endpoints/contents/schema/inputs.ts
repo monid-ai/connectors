@@ -9,5 +9,5 @@ export const zExaContentsBody = z.object({
     urls: z.array(z.string()).min(1).describe("URLs to fetch contents for."),
     ids: z.array(z.string()).optional(),
     ...zContentsOptions.shape,
-    livecrawlTimeout: z.number().int().positive().default(10000),
+    livecrawlTimeout: z.number().int().positive().optional(),
 });

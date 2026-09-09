@@ -20,16 +20,19 @@ export default defineEndpoint({
     },
     request: { method: "GET", path: "/v1/company/search/" },
     input: { schema: { queryParams: zCompanySearchQueryParams } },
-    // auth, toRequest (array→CSV), and usage model/consolidate (credits)
-    // inherit from the provider
+    // auth + toRequest (array→CSV) inherit from the provider
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** FREE lookup — a DEDUCED flat 0 credits per call (v1 evidence:
-         *  company-search.ts priced `makePerCallPrice(0)`). Settle trues
-         *  up on `credits_consumed`. */
-        estimate: () => ({ counts: { "CREDIT": 0 } }),
+        /** FREE (design D25) — the lookup bills nothing: v1 evidence
+         *  company-search.ts priced `makePerCallPrice(0)`. The triple
+         *  states it three times over (model + estimate + settle);
+         *  free-ness is a billing SHAPE, not "0 credits". */
+        model: { kind: UsageModelKind.FREE },
+        estimate: () => ({ counts: {}, free: true }),
+        consolidate: ({ data, utils }) => ({
+            usage: { counts: {}, free: true },
+            // still absorb the vendor's billing field (always 0 here) —
+            // billing facts never ride the payload
+            output: utils.json.omit(data.output, ["credits_consumed"]),
+        }),
     },
 });

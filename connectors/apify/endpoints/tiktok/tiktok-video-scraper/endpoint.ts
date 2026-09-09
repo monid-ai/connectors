@@ -32,11 +32,16 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // postURLs is the per-url multiplier — the actor requires the
-            // field but accepts an empty list; WE require it non-empty:
-            // the estimate must be deducible to price the hold (D24)
+            // postURLs (the per-url multiplier) stays the plain
+            // actor-required mirror — an empty list is a genuine zero-item
+            // promise. The secondary knobs the estimate reads get the
+            // actor's OWN verified server defaults at the binding
+            // (D24/D25), materialized into the body before any hook runs.
             body: zTiktokVideoScraperBody.extend({
-                "postURLs": zTiktokVideoScraperBody.shape.postURLs.min(1),
+                scrapeRelatedVideos: zTiktokVideoScraperBody.shape
+                    .scrapeRelatedVideos.unwrap().default(false),
+                resultsPerPage: zTiktokVideoScraperBody.shape
+                    .resultsPerPage.unwrap().default(1),
             }),
         },
     },
@@ -44,10 +49,10 @@ export default defineEndpoint({
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** one video per post URL, PLUS resultsPerPage related videos per
          *  URL when scrapeRelatedVideos is on (PR #2 finding — every
-         *  related record bills as an item). The schema pins the actor's
+         *  related record bills as an item). The binding pins the actor's
          *  OWN server defaults (scrapeRelatedVideos false, resultsPerPage
-         *  1), materialized into the body before any hook runs; postURLs
-         *  is required non-empty at the binding — pure arithmetic (D24). */
+         *  1, verified live), materialized into the body before any hook
+         *  runs; postURLs is actor-required — pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const related = body.scrapeRelatedVideos ? body.resultsPerPage : 0;

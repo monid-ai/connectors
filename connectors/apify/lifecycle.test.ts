@@ -199,6 +199,7 @@ async function estimateFor(id: string, body: RunInput["body"]) {
  *  its unit; a composite keys by its metered component ids (design D19). */
 function billedKeys(model: UsageModel): string[] {
     switch (model.kind) {
+        case "FREE":
         case "PER_CALL":
             return [];
         case "PER_UNIT":

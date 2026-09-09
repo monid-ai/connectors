@@ -24,7 +24,29 @@ export default defineEndpoint({
         categories: ["web-search", "news-search"],
     },
     request: { method: "POST", path: "/search" },
-    input: { schema: { body: zOctenSearchBody } },
+    input: {
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // topic "general", count 5, time_basis "auto", format "text",
+            // safesearch "strict", include_images false. (The nested
+            // highlight/full_content option defaults dropped to plain
+            // optionality — absent means the vendor's own defaults.)
+            body: zOctenSearchBody.extend({
+                topic: zOctenSearchBody.shape.topic.unwrap()
+                    .default("general"),
+                count: zOctenSearchBody.shape.count.unwrap().default(5),
+                time_basis: zOctenSearchBody.shape.time_basis.unwrap()
+                    .default("auto"),
+                format: zOctenSearchBody.shape.format.unwrap()
+                    .default("text"),
+                safesearch: zOctenSearchBody.shape.safesearch.unwrap()
+                    .default("strict"),
+                include_images: zOctenSearchBody.shape.include_images
+                    .unwrap().default(false),
+            }),
+        },
+    },
     usage: {
         /** Flat call fee AND gated full-content tokens (AND = COMPOSITE).
          *  Component ids spelled like octen's response fields (design D19)

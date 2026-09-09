@@ -33,27 +33,22 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor accepts an absent searchLimit (live schema has
-            // prefill 1 only — an editor hint, NOT a server default) — WE
-            // require it, and require `search` to carry at least one
-            // non-empty comma-separated term (the term count is the
-            // multiplier): the estimate must be deducible to price the
-            // hold (D24)
-            body: zInstagramSearchScraperBody.required({ "searchLimit": true })
-                .extend({
-                    "search": zInstagramSearchScraperBody.shape.search.refine(
-                        (s) => s.split(",").some((t) => t.trim() !== ""),
-                        "search must contain at least one non-empty term",
-                    ),
-                }),
+            // searchLimit is the PRIMARY limiting knob (the actor accepts
+            // an absent searchLimit; live schema has prefill 1 only — an
+            // editor hint, NOT a server default) — WE require it: the
+            // estimate must be deducible to price the hold (D24/D25).
+            // search stays the plain actor-required mirror — a string with
+            // zero non-empty comma-separated terms is a genuine zero-item
+            // promise, not an error.
+            body: zInstagramSearchScraperBody.required({ searchLimit: true }),
         },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** searchLimit × comma-separated `search` TERMS (the actor treats
-         *  "a,b,c" as three searches — PR #2 finding). Both deterministic
-         *  after validation: searchLimit required and the binding
-         *  guarantees ≥ 1 term — pure arithmetic (D24). */
+        /** searchLimit (required at the binding) × comma-separated
+         *  `search` TERMS (the actor treats "a,b,c" as three searches —
+         *  PR #2 finding). Zero non-empty terms ⇒ estimate 0 — pure
+         *  arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const terms = body.search

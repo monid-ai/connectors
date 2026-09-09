@@ -53,6 +53,9 @@ function makeProvider(overrides: Partial<ProviderDefSeed> = {}) {
             request: { baseUrl: "https://api.demo.test" },
             usage: {
                 model: { kind: "PER_CALL" },
+                // billing triple (D25): a provider-level estimate resolves
+                // the compile rule for every test doc
+                estimate: () => ({ counts: {} }),
                 consolidate: presets.usage.perCall(),
             },
             ...overrides,

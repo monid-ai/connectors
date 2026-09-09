@@ -7,6 +7,7 @@ import type {
     MeteredKeyOf,
     TypedEnvelopeCtx,
     TypedEstimateCtx,
+    TypedFreeUsage,
     TypedLifecycleSlots,
     TypedOutputSlots,
     TypedUsage,
@@ -19,16 +20,20 @@ type SeedLifecycle = NonNullable<EndpointDefSeed["lifecycle"]>;
 
 /**
  * The def IS the parsed seed: defaults applied recursively, strictness
- * enforced. The signature is GENERIC (designs D19a + D23 — the type
- * layer; runtime is untouched, zod stays the truth):
+ * enforced. The signature is GENERIC (designs D19a + D23 + D25 — the
+ * type layer; runtime is untouched, zod stays the truth):
  *   - `M` (const, inferred from `usage.model`): `usage.counts` keys in
  *     the doc's own consolidate/estimate narrow to the model's literal
- *     metered keys; a flat doc's estimate slot is `never` (a counting
- *     fn there is a doc-site type error).
- *   - `BodySchema` (inferred from `input.schema.body`): the fns'
- *     `data.input.body` is `z.output` of the doc's OWN schema — direct,
- *     typed property access (sound: validateInput runs the same schema,
- *     defaults materialized, before any hook).
+ *     metered keys. A FREE model's fns must return the free shape
+ *     (`{counts: {}, free: true}`); a flat model's estimate can promise
+ *     only `{}` (the engine appends the flat 1s); a billed model's
+ *     ESTIMATE cannot promise `free` (settle-side dynamic free only —
+ *     freeMismatch is the runtime twin).
+ *   - `BodySchema` / `QuerySchema` (inferred from `input.schema`): the
+ *     fns' `data.input.body` / `data.input.queryParams` are `z.output`
+ *     of the doc's OWN schemas — direct, typed property access (sound:
+ *     validateInput runs the same schemas, defaults materialized into
+ *     clones, before any hook).
  *   - `StateSchema` (inferred from `lifecycle.state`): the fn-owned
  *     `state.data` bag is typed at `data.lifecycle.state.data` (read)
  *     AND in lifecycle outcomes (write) — sound: the engine validates it
@@ -43,14 +48,23 @@ export function defineEndpoint<
     const M extends UsageModel | undefined = undefined,
     BodySchema extends z.ZodType = z.ZodType<Json | undefined>,
     StateSchema extends z.ZodType = z.ZodType<Json | undefined>,
+    QuerySchema extends z.ZodType = z.ZodType<
+        Record<string, Json> | undefined
+    >,
 >(
     seed:
         & Omit<EndpointDefSeed, "usage" | "input" | "output" | "lifecycle">
         & {
             input?: Omit<SeedInput, "schema"> & {
-                schema?: Omit<NonNullable<SeedInput["schema"]>, "body"> & {
-                    body?: BodySchema;
-                };
+                schema?:
+                    & Omit<
+                        NonNullable<SeedInput["schema"]>,
+                        "body" | "queryParams"
+                    >
+                    & {
+                        body?: BodySchema;
+                        queryParams?: QuerySchema;
+                    };
             };
             output?: TypedOutputSlots<
                 z.output<BodySchema>,
@@ -64,16 +78,24 @@ export function defineEndpoint<
                     consolidate?: (
                         ctx: TypedEnvelopeCtx<
                             z.output<BodySchema>,
-                            z.output<StateSchema>
+                            z.output<StateSchema>,
+                            z.output<QuerySchema>
                         >,
                     ) => {
-                        usage: TypedUsage<MeteredKeyOf<M>>;
+                        usage: M extends { kind: "FREE" } ? TypedFreeUsage
+                            : TypedUsage<MeteredKeyOf<M>> & { free?: true };
                         output?: Json;
                     };
-                    estimate?: [MeteredKeyOf<M>] extends [never] ? never
-                        : (
-                            ctx: TypedEstimateCtx<z.output<BodySchema>>,
-                        ) => TypedUsage<MeteredKeyOf<M>>;
+                    estimate?: (
+                        ctx: TypedEstimateCtx<
+                            z.output<BodySchema>,
+                            z.output<QuerySchema>
+                        >,
+                    ) => M extends { kind: "FREE" } ? TypedFreeUsage
+                        // free?: never — structural (conditional returns
+                        // defeat excess-property checks): a free PROMISE on
+                        // a billed model is a type error (freeMismatch twin)
+                        : TypedUsage<MeteredKeyOf<M>> & { free?: never };
                 };
             lifecycle?: TypedLifecycleSlots<
                 z.output<BodySchema>,

@@ -22,7 +22,16 @@ export default defineEndpoint({
         categories: ["embeddings"],
     },
     request: { method: "POST", path: "/embedding" },
-    input: { schema: { body: zOctenEmbeddingBody } },
+    input: {
+        schema: {
+            // vendor-documented API default "octen-embedding-4b" (moved
+            // from the mirror — D25: mirrors carry optionality only).
+            body: zOctenEmbeddingBody.extend({
+                model: zOctenEmbeddingBody.shape.model.unwrap()
+                    .default("octen-embedding-4b"),
+            }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.TOKEN },
         /** Tokens deduced from TEXT LENGTH as the UTF-8 byte count of the

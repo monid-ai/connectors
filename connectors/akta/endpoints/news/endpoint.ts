@@ -27,25 +27,56 @@ export default defineEndpoint({
         categories: ["company-news", "news-search", "funding-data"],
     },
     request: { method: "GET", path: "/v1/news/" },
-    input: { schema: { queryParams: zNewsQueryParams } },
+    // `limit` REQUIRED at the binding (design D25 — the mirror stays the
+    // faithful vendor contract, optional there): it is the estimate's
+    // whole basis, so the caller states it.
+    input: {
+        schema: {
+            queryParams: zNewsQueryParams.required({ limit: true }),
+        },
+    },
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
-        model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** Akta news bills 0.01 CREDITS PER ARTICLE + a 0.1-credit flat
-         *  part — v1 evidence: news.ts priced
-         *  `makePerResultPrice(0.0005, 0.005)` ($0.0005/article + $0.005
-         *  flat) at the fixed $0.05/credit rate (v1 common.ts
-         *  DOLLARS_PER_CREDIT). `limit` carries the verified vendor
-         *  default 10 (materialized at validation), so the STRICT num
-         *  read cannot miss. Settle trues up on `credits_consumed`. */
-        estimate: ({ data, utils }) => ({
-            counts: {
-                "CREDIT": 0.1 +
-                    utils.json.num(data.input.queryParams ?? {}, "$.limit") *
-                        0.01,
+        /** COMPOSITE (design D25): akta news bills a FLAT part + PER
+         *  ARTICLE — v1 evidence: news.ts `makePerResultPrice(0.0005,
+         *  0.005)` = $0.005 flat + $0.0005/article, i.e. 0.1 + 0.01
+         *  credits at the fixed $0.05/credit rate. The model states the
+         *  QUANTITY shape; both credit rates live in the services card
+         *  keyed by these component ids. */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                "request": { kind: UsageModelKind.PER_CALL, label: "base fee" },
+                "article": {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "articles",
+                },
             },
+        },
+        /** The caller-stated `limit` IS the article promise (typed read —
+         *  the estimate sees the PRE-toRequest validated input, design
+         *  D25); the engine appends the flat `request: 1`. */
+        estimate: ({ data }) => ({
+            counts: { "article": data.input.queryParams.limit },
         }),
+        /** Doc-level settle: articles DELIVERED off the raw envelope;
+         *  the vendor's own meter (`credits_consumed`) rides as
+         *  cost-basis + evidence exactly like the provider fn does. */
+        consolidate: ({ data, utils }) => {
+            const credits =
+                utils.json.optionalNum(data.output, "$.credits_consumed") ?? 0;
+            const articles = utils.json.optionalLen(data.output, "$.data") ??
+                0;
+            return {
+                usage: {
+                    counts: { "article": articles },
+                    cost: utils.money.fromDollars(credits / 20),
+                    evidence: utils.json.pick(data.output, [
+                        "$.credits_consumed",
+                    ]),
+                },
+                output: utils.json.omit(data.output, ["credits_consumed"]),
+            };
+        },
     },
 });

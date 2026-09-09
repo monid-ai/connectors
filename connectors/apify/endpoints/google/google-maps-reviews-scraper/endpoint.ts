@@ -31,19 +31,13 @@ export default defineEndpoint({
         schema: {
             // the actor's published maxReviews "default" is 10000000 — an
             // "all reviews" sentinel, not a usable server default — WE
-            // require it (inner min(1) kept by .required, zod 4): the
-            // estimate must be deducible to price the hold (D24). The two
-            // target lists (startUrls, placeIds) are either/or on the
-            // actor with absent ≡ empty — WE materialize [] so the
-            // multiplier is deterministic after validation (D24).
-            body: zGoogleMapsReviewsScraperBody
-                .required({ "maxReviews": true })
-                .extend({
-                    "startUrls": zGoogleMapsReviewsScraperBody.shape
-                        .startUrls.unwrap().default([]),
-                    "placeIds": zGoogleMapsReviewsScraperBody.shape
-                        .placeIds.unwrap().default([]),
-                }),
+            // require it at the binding (the published min(1) floor is
+            // kept by .required, zod 4): the estimate must be deducible
+            // to price the hold (D25). The two target lists (startUrls,
+            // placeIds) stay optional, as on the actor.
+            body: zGoogleMapsReviewsScraperBody.required({
+                maxReviews: true,
+            }),
         },
     },
     usage: {
@@ -67,14 +61,16 @@ export default defineEndpoint({
         },
         /** maxReviews per place (v1 PER_QUERY_LIMIT) × BOTH target lists
          *  (startUrls AND placeIds — the old startUrls-only multiplier
-         *  undercounted placeIds runs) — required/materialized at the
-         *  binding, so the estimate is pure arithmetic (D24). */
+         *  undercounted placeIds runs) — maxReviews required at the
+         *  binding; the lists are optional and absent ≡ empty, so an
+         *  all-empty target set estimates 0, which is correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
                     "review-scraped": body.maxReviews *
-                        (body.startUrls.length + body.placeIds.length),
+                        ((body.startUrls?.length ?? 0) +
+                            (body.placeIds?.length ?? 0)),
                 },
             };
         },

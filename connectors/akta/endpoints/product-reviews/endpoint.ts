@@ -34,15 +34,14 @@ export default defineEndpoint({
          *  vendor's mode switch, not a fallback constant (optionalLen
          *  still throws on a present non-array). Settle trues up on
          *  `credits_consumed`. */
-        estimate: ({ data, utils }) => {
-            const products = utils.json.optionalLen(
-                data.input.queryParams ?? {},
-                "$.products",
-            );
+        estimate: ({ data }) => {
+            // typed read (PRE-toRequest validated input — design D25); the
+            // presence check IS the vendor's mode switch, both rates deduced
+            const products = data.input.queryParams.products;
             return {
                 counts: {
-                    "CREDIT": products !== undefined && products > 0
-                        ? products * 1.5
+                    "CREDIT": products !== undefined && products.length > 0
+                        ? products.length * 1.5
                         : 0.5,
                 },
             };

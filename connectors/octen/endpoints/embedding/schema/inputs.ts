@@ -11,7 +11,7 @@ export const zOctenEmbeddingBody = z.object({
     input: z.array(z.string()).min(1).describe(
         "Texts to embed (max 32768 tokens per element).",
     ),
-    model: z.enum(EMBEDDING_MODEL_NAMES).default("octen-embedding-4b"),
+    model: z.enum(EMBEDDING_MODEL_NAMES).optional(),
     dimension: z.number().int().positive().optional().describe(
         "Output vector dimensionality (defaults to the model's max).",
     ),

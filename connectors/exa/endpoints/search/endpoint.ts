@@ -34,7 +34,18 @@ export default defineEndpoint({
     },
     request: { method: "POST", path: "/search" },
     input: {
-        schema: { body: zExaSearchBody },
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // type "auto", numResults 10, moderation false.
+            body: zExaSearchBody.extend({
+                type: zExaSearchBody.shape.type.unwrap().default("auto"),
+                numResults: zExaSearchBody.shape.numResults.unwrap()
+                    .default(10),
+                moderation: zExaSearchBody.shape.moderation.unwrap()
+                    .default(false),
+            }),
+        },
         // exa rejects `stream`; the schema doesn't expose it, but it is
         // non-strict (newer exa params pass through) — strip as defense-in-depth.
         toRequest: ({ data, utils }) => ({

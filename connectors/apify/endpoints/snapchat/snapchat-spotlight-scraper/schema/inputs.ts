@@ -9,7 +9,7 @@ import { z } from "zod";
  * accepts supersets — unknown fields pass through.
  */
 export const zSnapchatSpotlightScraperBody = z.object({
-    "spotlightUrls": z.array(z.any()).describe(
+    spotlightUrls: z.array(z.any()).describe(
         "Add one or more URLs of Snapchat Spotlights you want to scrape. (e.g. `https://www.snapchat.com/spotlight/W7_EDlXWTBiXAEEniNoMPwAAYdW94bXd5dmF5AYv9OiSkAYv9OiP4AAAAAQ`)",
     ).optional(),
 });

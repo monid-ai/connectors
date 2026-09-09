@@ -24,7 +24,16 @@ export default defineEndpoint({
         categories: ["web-search"],
     },
     request: { method: "POST", path: "/broad-search" },
-    input: { schema: { body: zOctenBroadSearchBody } },
+    input: {
+        schema: {
+            // vendor-documented API default 5 (moved from the mirror —
+            // D25: mirrors carry optionality only).
+            body: zOctenBroadSearchBody.extend({
+                max_queries: zOctenBroadSearchBody.shape.max_queries
+                    .unwrap().default(5),
+            }),
+        },
+    },
     usage: {
         /** Receipt queries AND gated full-content tokens (AND = COMPOSITE).
          *  Component ids spelled like octen's response fields (design D19).
@@ -49,7 +58,7 @@ export default defineEndpoint({
                 },
             },
         },
-        /** Queries = the requested max_queries (schema default 5 — the v1
+        /** Queries = the requested max_queries (binding default 5 — the v1
          *  fallback rule, applied at parse time). Full-content tokens
          *  depend on PAGE CONTENT — not deducible from the input, so that
          *  key is promised at the deducible floor 0 (design D24); settle

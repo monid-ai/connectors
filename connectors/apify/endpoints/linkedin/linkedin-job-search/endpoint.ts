@@ -34,14 +34,14 @@ export default defineEndpoint({
     input: {
         schema: {
             // the actor accepts an absent maxItems (prefill 10 is
-            // editor-only, NOT a server default) and an absent locations —
-            // WE require maxItems ≥ 1 and a non-empty locations (the
-            // per-query multiplier, v1 PER_QUERY_LIMIT): the estimate must
-            // be deducible to price the hold (D24)
+            // editor-only, NOT a server default) and reads a non-positive
+            // limit as "no limit" — WE require maxItems ≥ 1 (the PRIMARY
+            // limiting knob): the estimate must be deducible to price the
+            // hold (D24). locations stays the plain mirror optionality
+            // (multiplier array — an absent array is honestly 0 in the
+            // estimate, D25).
             body: zLinkedinJobSearchBody.extend({
-                "maxItems": zLinkedinJobSearchBody.shape.maxItems
-                    .unwrap().min(1),
-                "locations": zLinkedinJobSearchBody.shape.locations
+                maxItems: zLinkedinJobSearchBody.shape.maxItems
                     .unwrap().min(1),
             }),
         },
@@ -65,13 +65,13 @@ export default defineEndpoint({
                 },
             },
         },
-        /** maxItems per location — both required at the binding, so the
-         *  estimate is pure arithmetic (D24). */
+        /** maxItems (required ≥1 at the binding) per location — locations
+         *  is honestly optional, so an absent array promises 0 (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {
                 counts: {
-                    "job": body.maxItems * body.locations.length,
+                    "job": body.maxItems * (body.locations?.length ?? 0),
                 },
             };
         },

@@ -18,27 +18,30 @@ export default defineEndpoint({
         categories: ["company-reviews"],
     },
     request: { method: "GET", path: "/v1/company/employee-reviews/" },
-    input: { schema: { queryParams: zEmployeeReviewsQueryParams } },
+    // `limit` REQUIRED at the binding (design D25 — the mirror stays the
+    // faithful vendor contract, optional there): it is the estimate's
+    // whole basis, so the caller states it.
+    input: {
+        schema: {
+            queryParams: zEmployeeReviewsQueryParams.required({ limit: true }),
+        },
+    },
     usage: {
-        /** The provider's model, restated so the estimate's counts key
-         *  narrows to the doc's own literal metered key (design D23/D24 —
-         *  consolidate stays provider-level). */
+        /** CREDIT stays the unit here (unlike news): akta bills whole
+         *  1.5-credit increments per 50 REQUESTED records and the
+         *  response exposes no block quantity to settle against — credits
+         *  ARE the vendor's native meter for this endpoint (design D25).
+         *  Consolidate stays provider-level (counts credits_consumed). */
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.CREDIT },
-        /** Akta bills employee reviews at 1.5 CREDITS PER WHOLE 50-RECORD
-         *  INCREMENT — v1 evidence: employee-reviews.ts priced
-         *  `makePerUnitPrice(0.075, 50, "result")` ("1.5 credits per 50
-         *  records × $0.05/credit … a limit=3 call still consumed the
-         *  full 1.5 credits, verified in prod") and its estimate rounded
-         *  the requested `limit` UP to the increment. `limit` carries the
-         *  verified vendor default 10 (materialized at validation), so
-         *  the STRICT num read cannot miss. Settle trues up on
-         *  `credits_consumed`. */
-        estimate: ({ data, utils }) => ({
+        /** 1.5 credits per whole 50-record increment of the caller-stated
+         *  limit — v1 evidence: employee-reviews.ts
+         *  `makePerUnitPrice(0.075, 50, "result")` ("a limit=3 call still
+         *  consumed the full 1.5 credits, verified in prod"). Typed read
+         *  (pre-toRequest validated input — design D25). Settle trues up
+         *  on `credits_consumed`. */
+        estimate: ({ data }) => ({
             counts: {
-                "CREDIT": Math.ceil(
-                    utils.json.num(data.input.queryParams ?? {}, "$.limit") /
-                        50,
-                ) * 1.5,
+                "CREDIT": Math.ceil(data.input.queryParams.limit / 50) * 1.5,
             },
         }),
     },

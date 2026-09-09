@@ -31,15 +31,12 @@ export default defineEndpoint({
         schema: {
             // the actor accepts an absent resultsLimit (scrapes as many
             // reviews as possible; prefill 10 is editor-only, NOT a
-            // server default) — WE require it (inner min(1) kept by
-            // .required, zod 4) and require a non-empty startUrls batch:
-            // the estimate must be deducible to price the hold (D24)
-            body: zFacebookReviewsScraperBody
-                .required({ "resultsLimit": true })
-                .extend({
-                    "startUrls": zFacebookReviewsScraperBody.shape
-                        .startUrls.min(1),
-                }),
+            // server default) — WE require it at the binding (inner
+            // min(1) kept by .required, zod 4): the estimate must be
+            // deducible to price the hold (D25)
+            body: zFacebookReviewsScraperBody.required({
+                resultsLimit: true,
+            }),
         },
     },
     usage: {
@@ -61,9 +58,10 @@ export default defineEndpoint({
                 },
             },
         },
-        /** resultsLimit reviews per page url (v1 PER_QUERY_LIMIT) — both
-         *  required at the binding, so the estimate is pure arithmetic
-         *  (D24). */
+        /** resultsLimit reviews per page url (v1 PER_QUERY_LIMIT) —
+         *  resultsLimit is required at the binding; startUrls is
+         *  actor-required, and an empty batch estimates 0, which is
+         *  correct (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

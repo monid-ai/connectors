@@ -29,20 +29,27 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/damilo~google-shopping-apify/runs",
     },
-    input: { schema: { body: zGoogleShoppingApifyBody } },
+    input: {
+        schema: {
+            // `max_pages` is the primary limiting knob (page cap) — WE
+            // require it at the binding: the estimate must be deducible
+            // to price the hold (D25)
+            body: zGoogleShoppingApifyBody.required({ max_pages: true }),
+        },
+    },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
         /** max_pages × num results/page × queries (the actor's `num` is a
          *  REQUIRED STRING enum "10"…"100", so Number() always yields a
          *  finite page size; v1 LIMIT_IS_PAGES missed the multi-query
-         *  multiplier). max_pages (1) and queries ([]) carry the actor's
-         *  server defaults, so the estimate is pure arithmetic (D24). */
+         *  multiplier). max_pages is required at the binding, so the
+         *  estimate is pure arithmetic (D25). */
         estimate: ({ data }) => {
             const body = data.input.body;
-            // empty `queries` ⇒ the actor runs the single `query` field
-            // (itself server-defaulted) — exactly one search (deduced
-            // mode, not a fallback)
-            const queries = body.queries.length > 0 ? body.queries.length : 1;
+            // absent/empty `queries` ⇒ the actor runs the single `query`
+            // field — exactly one search (deduced mode, not a fallback)
+            const nQueries = body.queries?.length ?? 0;
+            const queries = nQueries > 0 ? nQueries : 1;
             return {
                 counts: {
                     "RESULT": body.max_pages * Number(body.num) * queries,

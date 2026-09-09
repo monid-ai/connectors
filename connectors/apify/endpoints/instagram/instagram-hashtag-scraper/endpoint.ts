@@ -31,24 +31,25 @@ export default defineEndpoint({
     },
     input: {
         schema: {
-            // the actor accepts an absent resultsLimit (scrapes unbounded;
-            // live schema has prefill 20 only — an editor hint, NOT a
-            // server default) — WE require it, and require the per-hashtag
-            // multiplier array non-empty: the estimate must be deducible
-            // to price the hold (D24)
-            body: zInstagramHashtagScraperBody.extend({
-                "hashtags": zInstagramHashtagScraperBody.shape.hashtags
-                    .min(1),
-            }).required({ "resultsLimit": true }),
+            // resultsLimit is the PRIMARY limiting knob (the actor accepts
+            // an absent resultsLimit = unbounded; live schema has prefill
+            // 20 only — an editor hint, NOT a server default) — WE require
+            // it: the estimate must be deducible to price the hold
+            // (D24/D25). hashtags (the per-hashtag multiplier) stays the
+            // plain actor-required mirror — an empty list is a genuine
+            // zero-item promise.
+            body: zInstagramHashtagScraperBody.required({
+                resultsLimit: true,
+            }),
         },
     },
     usage: {
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
-        /** resultsLimit caps EACH hashtag (actor docs: 7 hashtags ×
-         *  limit 5 = 35 posts) — both required at the binding, so the
-         *  estimate is pure arithmetic (D24). */
+        /** resultsLimit (required at the binding) caps EACH hashtag
+         *  (actor docs: 7 hashtags × limit 5 = 35 posts) — × the
+         *  actor-required hashtags list: pure arithmetic (D24). */
         estimate: ({ data }) => {
             const body = data.input.body;
             return {

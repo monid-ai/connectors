@@ -24,7 +24,19 @@ export default defineEndpoint({
     },
     request: { method: "POST", path: "/contents" },
     input: {
-        schema: { body: zExaContentsBody },
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // subpages 0, livecrawlTimeout 10000. (The nested extras
+            // links/imageLinks defaults of 0 dropped to plain optionality —
+            // absent means the vendor's own 0.)
+            body: zExaContentsBody.extend({
+                subpages: zExaContentsBody.shape.subpages.unwrap()
+                    .default(0),
+                livecrawlTimeout: zExaContentsBody.shape.livecrawlTimeout
+                    .unwrap().default(10000),
+            }),
+        },
     },
     usage: {
         model: { kind: UsageModelKind.PER_UNIT, unit: Unit.RESULT },
