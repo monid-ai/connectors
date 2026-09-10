@@ -42,7 +42,7 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
                     description: "run start fee",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.00005 },
                 },
                 request: {

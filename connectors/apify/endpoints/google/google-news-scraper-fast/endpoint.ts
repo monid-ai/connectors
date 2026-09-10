@@ -47,7 +47,7 @@ export default defineEndpoint({
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "apify-default-dataset-item"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.001 },
         },
         /** maxArticles × (keywords + topics + topicUrls) — the cap applies

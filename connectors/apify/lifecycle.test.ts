@@ -48,6 +48,48 @@ const endpointIds = async (): Promise<string[]> => {
         .sort();
 };
 
+/**
+ * Hand-computed fn counts the run-succeeded chain settles per
+ * MULTI-METERED doc (design D29): the shared chain delivers 2 plain
+ * items (`{id, title}` — no type/duration/receipt fields) and the
+ * curated test input (test-inputs.json) gates each add-on line, so the
+ * expected counts are folded BY HAND from each doc's own model + that
+ * input. Docs not listed stay on the generic rule (single billed key →
+ * {key: 2}; flat-only → {}); flat 1s are engine-appended by
+ * assembleUsage either way.
+ */
+const CHAIN_COUNTS: Record<string, Record<string, number>> = {
+    // input has no onlyCommentsNewerThan → the per-POST date add-on
+    // stays off; 2 items = 2 comments
+    "apify/facebook-comments-scraper": { comment: 2 },
+    // no onlyPostsNewerThan → no filter_applied; 2 items = 2 posts
+    "apify/facebook-groups-scraper": { post: 2 },
+    // directUrls active, no `search`, no date filter → url-mode line
+    "apify/instagram-api-scraper": { result: 2 },
+    // dataDetailLevel is absent in the input and the actor's own
+    // default is detailedData → post_details bills BY DEFAULT (D29)
+    "apify/instagram-post-scraper": { post: 2, post_details: 2 },
+    // includeAboutSection defaults false → no about_account line
+    "apify/instagram-profile-scraper": { profile: 2 },
+    // liveSearch absent → the standard-search line
+    "apify/instagram-search-scraper": { result: 2 },
+    // downloads/transcription off (binding defaults) → base line only
+    "clockworks/tiktok-video-scraper": { result: 2 },
+    // scrape_fresh_emails defaults false → no force-fresh surcharge
+    "dataovercoffee/youtube-channel-business-email-scraper": {
+        default_dataset_item: 2,
+    },
+    // input mode "Short ($4 per 1k)" selects the short-profile line
+    "harvestapi/linkedin-company-employees": { short_profile: 2 },
+    // chain items carry no `type` → all 2 count as base posts;
+    // reactions/comments off, profile modes default "short" (free)
+    "harvestapi/linkedin-post-search": { post: 2 },
+    "harvestapi/linkedin-profile-posts": { post: 2 },
+    // no oldestPostDate, no AI toggles, no transcription mode; chain
+    // items carry no duration → base videos only
+    "streamers/youtube-scraper": { result: 2 },
+};
+
 const inputFor = (id: string): RunInput => {
     const body = INPUTS[id.split("#")[1]];
     assert(body !== undefined, `${id}: no test input in test-inputs.json`);
@@ -68,20 +110,22 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ven
         });
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
-        // the COMPLETE evidence vector (design D24/D26): the metered key
-        // settles the dataset item count AND every flat component bills 1
+        // the COMPLETE evidence vector (design D24/D26): the metered keys
+        // settle the dataset item count AND every flat component bills 1
         // (engine-appended). But usage.credits is now the VENDOR's claim
         // (design D27): the chain's terminal run record reports
         // usageTotalUsd $0.01, the poll threads it through state, and the
         // provider consolidate's non-empty claim WINS on every doc. Each
         // doc's own pinned fold (assembleUsage) becomes the cross-check —
         // it rides out as mismatch.derived exactly where it disagrees
-        // with the flat $0.01 beyond 1e-9.
+        // with the flat $0.01 beyond 1e-9. Multi-metered D29 docs carry
+        // hand-computed counts (CHAIN_COUNTS); the rest stay generic.
         const model = bundle.endpoints[id].usage.model!;
         const keys = billedKeys(model);
         const derived = assembleUsage(
             model,
-            keys.length === 1 ? { [keys[0]]: 2 } : {},
+            CHAIN_COUNTS[id.split("#")[1]] ??
+                (keys.length === 1 ? { [keys[0]]: 2 } : {}),
         );
         const claim = { default: 0.01 };
         assertEquals(
@@ -173,7 +217,7 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-name: mode-selected settl
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    // 2 delivered profiles in "Short" mode ⇒ ceil(2/25) = 1 page +
+    // 2 delivered profiles in "Short" mode ⇒ ceil(2/10) = 1 page +
     // 2 main-profile results. The chain's usageTotalUsd $0.01 claim wins
     // (D27); the pinned fold 1 × $0.003 + 2 × $0.0015 = $0.006 disagrees
     // and rides as mismatch.derived (written as the same left-to-right
@@ -215,13 +259,15 @@ Deno.test("apify: PAY_PER_EVENT chain — usageTotalUsd claim wins over the pinn
         mode: "replay",
         fixture,
     });
-    // provider-default billing: dataset items are the evidence; the
-    // chain's usageTotalUsd $0.04 is the vendor's claim and IS
-    // usage.credits (D27). The doc's pinned $0.0016/result fold says
-    // $0.0032 — the disagreement rides out as mismatch.derived.
+    // D29 remodel: the doc's own evidence keys the 2 dataset items by
+    // the card's `profile` line (includeAboutSection defaults false, so
+    // the about_account add-on stays absent); the chain's usageTotalUsd
+    // $0.04 is the vendor's claim and IS usage.credits (D27). The doc's
+    // pinned $0.0016/profile fold says $0.0032 — the disagreement rides
+    // out as mismatch.derived.
     assertEquals(result.usage, {
         credits: { default: 0.04 },
-        evidence: { RESULT: 2 },
+        evidence: { profile: 2 },
         mismatch: { derived: { default: 0.0032 } },
     });
 });
@@ -355,12 +401,38 @@ Deno.test("apify settles: the card invariant + estimate accuracy (shared chain)"
             mode: "replay",
             fixture,
         });
-        // every billed metered KEY is settled as evidence (flat lines are
-        // engine-appended 1s — billing reads the MODEL + success)
-        for (const key of billedKeys(model)) {
+        // the card invariant, key-shaped at settle (design D19/D29):
+        // every flat line settles as the engine-appended 1; every
+        // settled metered key must be a billed one; a single-metered
+        // doc must settle its one key, while a multi-metered composite
+        // may legitimately settle a subset (D29 gated add-ons only
+        // bill when their input switched them on) — but never nothing.
+        const keys = billedKeys(model);
+        const flat = flatLines(model);
+        for (const [flatKey, one] of Object.entries(flat)) {
+            assertEquals(
+                settled.usage.evidence[flatKey],
+                one,
+                `${id}: settle misses flat key ${flatKey}`,
+            );
+        }
+        const meteredSettled = Object.keys(settled.usage.evidence)
+            .filter((key) => !(key in flat));
+        for (const key of meteredSettled) {
             assert(
-                settled.usage.evidence[key] !== undefined,
-                `${id}: settle misses billed key ${key}`,
+                keys.includes(key),
+                `${id}: settled key ${key} is not billed by the model`,
+            );
+        }
+        if (keys.length === 1) {
+            assert(
+                settled.usage.evidence[keys[0]] !== undefined,
+                `${id}: settle misses billed key ${keys[0]}`,
+            );
+        } else if (keys.length > 1) {
+            assert(
+                meteredSettled.length > 0,
+                `${id}: settle evidences nothing for a metered model`,
             );
         }
         // v1 estimateAccuracy posture: visible, not asserted (the shared
@@ -383,20 +455,23 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         }),
         { credits: { default: 0.0028 }, evidence: { RESULT: 7 } },
     );
-    // ONE_PER_QUERY: one per multiplier entry; 3 × $0.0016
+    // ONE_PER_QUERY: one per multiplier entry; 3 × $0.0016 — the D29
+    // remodel keys the base line by the card's `profile` component
+    // (includeAboutSection defaults false: no about_account line)
     assertEquals(
         await estimateFor("apify#apify/instagram-profile-scraper", {
             usernames: ["a", "b", "c"],
         }),
-        { credits: { default: 3 * 0.0016 }, evidence: { RESULT: 3 } },
+        { credits: { default: 3 * 0.0016 }, evidence: { profile: 3 } },
     );
-    // PER_QUERY_LIMIT: limit × queries; 8 × $0.0024
+    // PER_QUERY_LIMIT: limit × queries; 8 × $0.0024 — keyed by the D29
+    // card's `result` component (no gating input on: base line only)
     assertEquals(
         await estimateFor("apify#streamers/youtube-scraper", {
             searchQueries: ["x", "y"],
             maxResults: 4,
         }),
-        { credits: { default: 0.0192 }, evidence: { RESULT: 8 } },
+        { credits: { default: 0.0192 }, evidence: { result: 8 } },
     );
     // NO fallback constants (design D24): a body without the limiting knob
     // is REJECTED at validation — the estimate is deduced or the run never
@@ -465,6 +540,95 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         {
             credits: { default: 0.066 },
             evidence: { search_page: 1, full_profile_with_email: 2 },
+        },
+    );
+});
+
+Deno.test("apify estimates: D29 gating spot checks (input-switched add-on lines)", async () => {
+    // youtube-scraper: the base line is deduced (10 × 1 query) while the
+    // two switched-on per-MINUTE lines appear at the D24 floor 0 (video
+    // durations are unknowable pre-run — the line still shows, so holds
+    // acknowledge the add-on). Credits fold: 10 × $0.0024 (the 0-minute
+    // lines draw nothing); written as the same arithmetic creditsOf
+    // performs — a 0.024 literal is float dust off.
+    assertEquals(
+        await estimateFor("apify#streamers/youtube-scraper", {
+            searchQueries: ["x"],
+            maxResults: 10,
+            transcriptionAndSubtitle: "ALWAYS_TRANSCRIBE",
+            aiVideoSummary: true,
+        }),
+        {
+            credits: { default: 10 * 0.0024 },
+            evidence: {
+                result: 10,
+                transcribe_minute: 0,
+                ai_video_summary: 0,
+            },
+        },
+    );
+    // instagram-api-scraper: the two run modes bill at DIFFERENT rates
+    // (the D29 fix — search items are NOT `result` items). Search mode:
+    // 5 × $0.0035 under search_result + the $0.001 actor_start flat.
+    assertEquals(
+        await estimateFor("apify#apify/instagram-api-scraper", {
+            search: "coffee",
+            searchLimit: 5,
+            resultsLimit: 1,
+        }),
+        {
+            credits: { default: 0.001 + 5 * 0.0035 },
+            evidence: { search_result: 5, actor_start: 1 },
+        },
+    );
+    // …url mode: the SAME 5 items bill 5 × $0.0014 under `result`.
+    assertEquals(
+        await estimateFor("apify#apify/instagram-api-scraper", {
+            directUrls: ["https://www.instagram.com/instagram/"],
+            resultsLimit: 5,
+            searchLimit: 1,
+        }),
+        {
+            credits: { default: 0.001 + 5 * 0.0014 },
+            evidence: { result: 5, actor_start: 1 },
+        },
+    );
+    // linkedin-company-employees: the profileScraperMode enum (the
+    // vendor's literal price-bearing strings) SELECTS the profile line.
+    // Absent → the binding pins the actor's own default
+    // "Full ($8 per 1k)" → full_profile ($0.015 start + 2 × $0.004).
+    assertEquals(
+        await estimateFor("apify#harvestapi/linkedin-company-employees", {
+            companies: ["https://www.linkedin.com/company/microsoft"],
+            maxItems: 2,
+        }),
+        {
+            credits: { default: 0.015 + 2 * 0.004 },
+            evidence: { full_profile: 2, actor_start: 1 },
+        },
+    );
+    // "Short ($4 per 1k)" → short_profile at the $0.0015 Business rate
+    assertEquals(
+        await estimateFor("apify#harvestapi/linkedin-company-employees", {
+            companies: ["https://www.linkedin.com/company/microsoft"],
+            profileScraperMode: "Short ($4 per 1k)",
+            maxItems: 2,
+        }),
+        {
+            credits: { default: 0.015 + 2 * 0.0015 },
+            evidence: { short_profile: 2, actor_start: 1 },
+        },
+    );
+    // "Full + email search ($12 per 1k)" → full_profile_with_email
+    assertEquals(
+        await estimateFor("apify#harvestapi/linkedin-company-employees", {
+            companies: ["https://www.linkedin.com/company/microsoft"],
+            profileScraperMode: "Full + email search ($12 per 1k)",
+            maxItems: 2,
+        }),
+        {
+            credits: { default: 0.015 + 2 * 0.008 },
+            evidence: { full_profile_with_email: 2, actor_start: 1 },
         },
     );
 });

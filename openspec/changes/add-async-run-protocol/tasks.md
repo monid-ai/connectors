@@ -483,3 +483,30 @@
       styles; 164 green; live drift 46/46 with the derived join
 - [x] 20.f Docs: design D28; spec deltas (apify survey requirement →
       unified suite; vendor-join language); AGENT.md drift note
+
+## 21. D29: honest apify pricing — effective rates + complete cards
+
+- [x] 21.a Drift suite: effective pricingInfo selection (latest
+      startedAt <= now, never infos[last]); scheduled-pin
+      reconciliation (pin == upcoming passes + UPCOMING notice + repin
+      effectiveAt; leaf coverage accepts scheduled prices); COVERAGE
+      check (published event modeled or EXCLUDED — documented map);
+      report-only output-schema comparison; Business-tier wording
+- [x] 21.b eu-amazon pin kept at scheduled 0.0079 (comment tells the
+      story; effective 0.0069 until 9/17 — page-confirmed $6.90/1k)
+- [x] 21.c 13 remodels (complete published cards, input-gated
+      estimates, mode splits, per-minute settles from item durations,
+      by-name ceil/10); enum-with-embedded-prices quirk mirrored
+      (company-employees); binding defaults for gating knobs
+- [x] 21.d Output schemas: scaffold emits schema/output.ts
+      (--output-only flag; required stripped; item.or(record) —
+      validation unfailable) + 19 docs wired with output.schema
+- [x] 21.e Tests: lifecycle expectations recomputed per new models;
+      D29 gating spot checks (youtube transcript floor, instagram-api
+      mode split, company-employees trio); drift unit tests
+      (selectPricing/reconciliation/coverage on the eu-amazon shape) —
+      172 green; live drift 46/46 + coverage
+- [x] 21.f Triple-check: exa contents.get (via treg) over 17 pricing
+      pages — every pasted Business price confirmed incl. by-name's
+      10-per-page and eu-amazon's effective 6.90
+- [x] 21.g Docs: design D29, spec deltas, AGENT.md

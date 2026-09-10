@@ -234,7 +234,7 @@ export default defineEndpoint({
                     unit: Unit.PAGE,
                     label: "search pages",
                     description: "search pages scraped (charged in every mode)",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.05 },
                 },
                 full_profile: {

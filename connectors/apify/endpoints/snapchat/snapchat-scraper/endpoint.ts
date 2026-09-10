@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zSnapchatScraperBody } from "./schema/inputs.ts";
+import { zSnapchatScraperOutput } from "./schema/output.ts";
 
 /**
  * automation-lab/snapchat-scraper — Get Snapchat Profile. Pure data; the async machinery
@@ -48,6 +49,11 @@ export default defineEndpoint({
             }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zSnapchatScraperOutput },
     usage: {
         model: {
             // verified actor-start charge event + per-item metering (survey)
@@ -60,7 +66,7 @@ export default defineEndpoint({
                 start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.005 },
                 },
                 profile_scraped: {

@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeVideoTranscriptBody } from "./schema/inputs.ts";
+import { zYoutubeVideoTranscriptOutput } from "./schema/output.ts";
 
 /**
  * starvibe/youtube-video-transcript — Get YouTube Transcript. Pure data;
@@ -41,12 +42,17 @@ export default defineEndpoint({
             }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zYoutubeVideoTranscriptOutput },
     usage: {
         model: {
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "apify-default-dataset-item"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.005 },
         },
         /** MODE-aware (PR #2 finding): youtube_url mode returns exactly 1;

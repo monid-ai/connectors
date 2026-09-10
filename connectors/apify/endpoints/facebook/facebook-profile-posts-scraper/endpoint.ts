@@ -54,7 +54,7 @@ export default defineEndpoint({
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "apify-default-dataset-item"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.006 },
         },
         /** CUSTOM estimate (v1: "no single estimationLabel is true here"):

@@ -36,7 +36,7 @@ export default defineEndpoint({
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "apify-default-dataset-item"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.0015 },
         },
         /** one result per Params entry (ASIN/URL, v1 ONE_PER_QUERY) — an

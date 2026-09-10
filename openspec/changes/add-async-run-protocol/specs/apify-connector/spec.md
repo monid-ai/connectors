@@ -64,6 +64,33 @@ override) the one generic evidence entry.
 - **WHEN** the bundle is compiled
 - **THEN** every apify doc references the same lifecycle.start/poll/stop and consolidate fn ids (and the same evidence id unless the endpoint overrides its counting)
 
+
+### Requirement: Complete cards + published output schemas (D29)
+Every apify doc's model SHALL declare the actor's WHOLE published rate
+card: base lines plus every input-gated add-on, mode-selected split,
+and response-dependent line (enforced by the suite's coverage check).
+Estimates SHALL promise a gated line exactly when its gating input
+switches it on — deducible quantities at the input caps,
+response-dependent quantities (per-minute lines, no-result penalties)
+at the D24 floor 0 (the LINE still appears, so holds acknowledge the
+add-on); evidence SHALL settle per-minute lines from delivered item
+durations and split items by type/mode fields, leaving a line ABSENT
+where the output genuinely cannot attribute it (the D27 claim is the
+credits truth). Where the actor PUBLISHES
+`storages.dataset.fields`, the doc SHALL carry a scaffolded
+`output.schema` — passthrough documentation: non-strict, every field
+optional (`required` stripped), the array accepting
+`item.or(record)` so output validation is UNFAILABLE by construction
+(vendor drift can never fail a paid run).
+
+#### Scenario: A gated line rides the estimate only when switched on
+- **WHEN** youtube-scraper estimates {maxResults: 10, searchQueries: ["x"], transcriptionAndSubtitle: "ALWAYS_TRANSCRIBE"}
+- **THEN** the promise carries result 10 AND transcribe_minute 0 (the floor — durations are unknowable pre-run); without the transcription input the line is absent
+
+#### Scenario: Mode split prices the mode's own rate
+- **WHEN** instagram-api-scraper estimates a search-mode run (search set, no directUrls)
+- **THEN** the items are promised under search_result at ITS rate (0.0035), not the url-mode result rate — the pre-D29 lumping was a real under-hold
+
 ### Requirement: Survey-verified per-endpoint models + pinned-field estimates
 Every endpoint SHALL declare `usage.model` matching its LIVE published
 pricing (verified per actor via the Apify API, not v1 folklore): 27
@@ -132,29 +159,35 @@ collapsed single PER_CALL under-declared the vendor's card).
 - **WHEN** facebook-comments-scraper settles a run
 - **THEN** the counts key is our id `comment` — `normalizeEventName` maps the pricing API's event name onto it, joining the model, the settled evidence, and the broker card without a stored alias
 
-### Requirement: The apify drift suite (live) — pricing + input schemas (D28)
+### Requirement: The apify drift suite (live) — pricing + coverage + schemas (D28/D29)
 `deno task drift` (APIFY_API_KEY; scripts/drift/apify.ts — the merged
 successor of the apify:pricing survey and the schema-drift live test)
-SHALL poll every actor once and FAIL on: a regime change (pricingModel
-≠ PAY_PER_EVENT); a SHAPE mismatch between the published charge events
-(flat = /start/-named or `request`; metered = the rest) and the
-declared model; a COMPOSITE line onto which NO live event name
-normalizes (`normalizeEventName(event) == id` — a vendor rename/removal
-fails NAMING the line); a composite line's pinned `consumes.amount`
-differing from its event's live GOLD-tier price
-(`eventTieredPricingUsd.GOLD.tieredEventPriceUsd ?? eventPriceUsd`); a
-LEAF line's pinned amount appearing among NO live price
-(amount-existence — the D28 leaf join; a same-price collision can mask
-a single leaf repricing, accepted eyes-open); or a live-REQUIRED input
-property missing from / optional in the checked-in schema
-(`live.required ⊆ compiled.required` — the caller-breaking direction
-only). The reverse directions stay loose: unbilled add-on events and
-extra optional properties do not fail. `--fix` SHALL re-run the
-scaffold codegen for schema-drifted actors (generated artifact; git
-diff reviews) and write rate drift to `.output/drift-repin.json` —
-NEVER rewriting a pinned amount (the D28 fix policy: fix generated
-artifacts, alarm hand-pinned assertions). Scheduled weekly via
-.github/workflows/drift.yml.
+SHALL poll every actor once, check against the EFFECTIVE pricingInfo
+(the latest `startedAt <= now` — pricingInfos is a HISTORY whose last
+entry can be a FUTURE scheduled pricing, D29), and FAIL on: a regime
+change (pricingModel ≠ PAY_PER_EVENT); a SHAPE mismatch between the
+published charge events (flat = /start/-named or `request`; metered =
+the rest) and the declared model; a COMPOSITE line onto which NO live
+event name normalizes (`normalizeEventName(event) == id`); a line's
+pinned `consumes.amount` matching NEITHER its event's live
+Business-tier price (API tier code GOLD:
+`eventTieredPricingUsd.GOLD.tieredEventPriceUsd ?? eventPriceUsd`) NOR
+a SCHEDULED upcoming price (reconciliation, D29 — a pin ahead of
+schedule passes with an UPCOMING notice + a repin entry carrying
+`effectiveAt`, so a known change never breaks CI); a LEAF line's
+pinned amount appearing among NO live-or-scheduled price
+(amount-existence — the D28 leaf join); a published billable event
+that is neither MODELED nor in the suite's documented EXCLUDED map
+(COVERAGE, D29 — the completeness rule: an input-gated line the model
+omits makes estimates silently wrong the moment that input is used;
+"we don't bill that" must be a reviewed exclusion, never an accident);
+or a live-REQUIRED input property missing from / optional in the
+checked-in schema (`live.required ⊆ compiled.required`). Output-schema
+field additions/removals are REPORTED informationally (never a
+failure). `--fix` SHALL re-run the scaffold codegen for schema-drifted
+actors (generated artifact; git diff reviews) and write rate drift +
+scheduled changes to `.output/drift-repin.json` — NEVER rewriting a
+pinned amount. Scheduled weekly via .github/workflows/drift.yml.
 
 #### Scenario: Missed actor-start event
 - **WHEN** an actor publishes an actor-start event but the model declares plain PER_UNIT
@@ -167,6 +200,14 @@ artifacts, alarm hand-pinned assertions). Scheduled weekly via
 #### Scenario: Repriced charge event
 - **WHEN** an actor's GOLD-tier `comment` price moves off the pinned consumes.amount
 - **THEN** the suite exits nonzero naming the line and both amounts — the repricing fails the scheduled workflow before it can surface on an invoice
+
+#### Scenario: Scheduled pricing is reconciled, not drifted
+- **WHEN** an actor schedules a price change and the pin already carries the upcoming amount (eu-amazon, effective 2026-09-17)
+- **THEN** the suite passes with an UPCOMING notice and a repin entry carrying effectiveAt — no CI break, no flip-flop commit
+
+#### Scenario: An unmodeled published event fails coverage
+- **WHEN** an actor publishes an input-gated add-on event (e.g. a date filter) that the model neither declares nor the EXCLUDED map documents
+- **THEN** the suite exits nonzero naming the event — the check that would have caught all 13 D29 remodels
 
 #### Scenario: Optional→required schema flip
 - **WHEN** an actor flips an input property to required upstream

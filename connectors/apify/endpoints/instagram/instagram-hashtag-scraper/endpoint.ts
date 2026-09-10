@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramHashtagScraperBody } from "./schema/inputs.ts";
+import { zInstagramHashtagScraperOutput } from "./schema/output.ts";
 
 /**
  * apify/instagram-hashtag-scraper — Track Instagram Hashtag. Pure data; the async machinery
@@ -44,6 +45,11 @@ export default defineEndpoint({
             }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zInstagramHashtagScraperOutput },
     usage: {
         // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
         // published charge event is per item — metered, not flat.
@@ -51,7 +57,7 @@ export default defineEndpoint({
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "result"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.0019 },
         },
         /** resultsLimit (required at the binding) caps EACH hashtag

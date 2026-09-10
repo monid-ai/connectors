@@ -1134,3 +1134,67 @@ a same-price collision can mask a single leaf repricing
 (facebook-pages publishes two events at 0.0054). Docs keep a
 `// vendor charge event: "…"` COMMENT on leaf lines where the reader
 would otherwise have no trail from RESULT to the vendor's row.
+
+## D29 — Honest apify pricing: effective rates, input-gated completeness,
+output schemas
+
+**1. Effective pricing + scheduled-pin reconciliation.** `pricingInfos`
+is a HISTORY whose last entry can be a FUTURE scheduled pricing — the
+suite validated eu-amazon's pin against a change effective 2026-09-17
+while a different price billed today (caught by review). The suite now
+checks against the pricingInfo that bills TODAY (latest
+`startedAt <= now`) and RECONCILES scheduled changes: a pin matching an
+upcoming price passes with an UPCOMING notice + a repin-report entry
+carrying `effectiveAt` — a known future change never breaks CI or
+forces a flip-flop commit (the eu-amazon pin deliberately stays at the
+scheduled 0.0079; estimates over-hold by 0.001/result until the flip —
+conservative, and the D27 claim settles the true bill). "GOLD" is just
+apify's API code for our BUSINESS plan's discount tier — comments now
+say Business-tier.
+
+**2. The completeness rule, enforced mechanically.** An input-gated
+line the model omits makes estimates silently wrong the moment that
+input is used — review found 13 actors declaring 1-of-N published
+lines. The rule: every published billable event is MODELED or in the
+suite's documented EXCLUDED map ("we don't bill that" is a reviewed
+claim, never an accident) — a `coverage` finding otherwise. The 13
+remodels: youtube-scraper (date_filter + two AI per-minute lines +
+transcribe_minute), tiktok-video-scraper (video_download +
+transcription_minute), youtube-channel-email (force-fresh surcharge),
+linkedin-company-employees (mode trio — the vendor's enum values embed
+its FREE-tier prices verbatim, mirrored faithfully),
+linkedin-profile-posts + linkedin-post-search (reactions/comments/
+no_result + post-search enrichment; post-search's full-profile event
+has NO live input that selects it — modeled for coverage, never
+promised), instagram-api-scraper (search_result at its own HIGHER rate
+— the flagged under-hold — + filter_applied), instagram-profile
+(about_account), instagram-post (post_details — bills by DEFAULT:
+dataDetailLevel defaults "detailedData"), instagram-search
+(live_search_result), facebook-groups + facebook-comments
+(filter_applied), plus by-name's page size fixed to ceil(maxItems/10)
+(the actor's own event description: "up to 10 short profiles" — the
+sibling's 25 was wrongly copied; independently confirmed by the
+pricing-page README via the exa triple-check). Estimate discipline:
+gated lines are PROMISED when their input switches them on — deducible
+quantities at the input caps, response-dependent quantities (minutes,
+no_result) at the D24 floor 0 (the LINE still appears, so holds
+acknowledge the add-on); evidence settles per-minute lines from item
+durations ("HH:MM:SS") and splits items by type/mode fields, absent
+where genuinely unattributable (the D27 claim is the credits truth).
+
+**3. Output schemas (19 actors).** Where an actor PUBLISHES
+`storages.dataset.fields`, the scaffold now emits `schema/output.ts`
+and the doc declares `output.schema` — passthrough DOCUMENTATION:
+non-strict, every field optional (`required` stripped), and the array
+accepts `item.or(record)` so validation is UNFAILABLE by construction
+(a paid run can never die on vendor field drift; the typed branch is
+the documentation). The drift suite reports live field
+additions/removals informationally. `apify:scaffold --output-only`
+refreshes without touching curated inputs.
+
+**4. Verification.** Live drift 46/46 with coverage active (one
+UPCOMING notice — eu-amazon, by design); exa-scraped pricing pages
+(via treg, $0.017) independently confirm every pasted actor's Business
+headline price including eu-amazon's effective $6.90/1k; drift-suite
+unit tests pin selectPricing/reconciliation/coverage on the real
+eu-amazon shape.

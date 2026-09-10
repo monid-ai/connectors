@@ -42,7 +42,7 @@ export default defineEndpoint({
             // charge event (design D24)
             label: "request fee",
             // vendor charge event: "request"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.002 },
         },
     },

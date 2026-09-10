@@ -38,16 +38,35 @@ export default defineEndpoint({
             // require maxPosts ≥ 1 (the PRIMARY limiting knob): the estimate
             // must be deducible to price the hold (D24). targetUrls stays
             // the plain mirror optionality (multiplier array — an absent
-            // array is honestly 0 in the estimate, D25).
+            // array is honestly 0 in the estimate, D25). The gated add-on
+            // knobs the estimate reads get the actor's OWN verified
+            // published defaults at the binding (D25): scrapeReactions /
+            // scrapeComments default false (published input schema), and
+            // maxReactions / maxComments default 5 (the actor's own input
+            // descriptions: "Default is 5").
             body: zLinkedinProfilePostsBody.extend({
                 maxPosts: zLinkedinProfilePostsBody.shape.maxPosts
                     .unwrap().min(1),
+                scrapeReactions: zLinkedinProfilePostsBody.shape
+                    .scrapeReactions.unwrap().default(false),
+                maxReactions: zLinkedinProfilePostsBody.shape.maxReactions
+                    .unwrap().default(5),
+                scrapeComments: zLinkedinProfilePostsBody.shape
+                    .scrapeComments.unwrap().default(false),
+                maxComments: zLinkedinProfilePostsBody.shape.maxComments
+                    .unwrap().default(5),
             }),
         },
     },
     usage: {
+        /** The WHOLE published card (design D29 — an input-gated line
+         *  the model omits makes estimates silently wrong the moment
+         *  that input is used): base fee + posts, plus the reaction and
+         *  comment lines the scrapeReactions/scrapeComments inputs
+         *  switch on, and the response-dependent no-result line. Ids
+         *  normalize from the actor's event names (D28); Business-tier
+         *  rates, survey-pinned. */
         model: {
-            // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
             // component ids are OUR snake_case keys — the actor's
             // charge-event names normalize onto them (strip apify-
@@ -57,7 +76,7 @@ export default defineEndpoint({
                 actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.00005 },
                 },
                 post: {
@@ -66,16 +85,82 @@ export default defineEndpoint({
                     label: "posts",
                     consumes: { credit: "default", amount: 0.0015 },
                 },
+                reaction: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "reactions",
+                    description: "post reaction result, when " +
+                        "scrapeReactions is on",
+                    // survey-pinned Business-tier event price
+                    consumes: { credit: "default", amount: 0.0015 },
+                },
+                comment: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "comments",
+                    description: "post comment result, when " +
+                        "scrapeComments is on",
+                    // survey-pinned Business-tier event price
+                    consumes: { credit: "default", amount: 0.0015 },
+                },
+                no_result: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "no-result pages",
+                    description: "post pages scraped that turn out to " +
+                        "contain no posts",
+                    // survey-pinned Business-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
+                },
             },
         },
         /** maxPosts (required ≥1 at the binding) per target url —
          *  targetUrls is honestly optional, so an absent array promises 0
-         *  (D25). */
+         *  (D25). Gated lines are PROMISED when their input switches
+         *  them on: reactions/comments at their per-post caps
+         *  (maxReactions/maxComments carry the actor's published default
+         *  5 at the binding). no_result is response-dependent (which
+         *  pages turn out empty is unknowable pre-run) — promised at the
+         *  D24 floor 0, so holds acknowledge the line. */
         estimate: ({ data }) => {
             const body = data.input.body;
+            const posts = body.maxPosts * (body.targetUrls?.length ?? 0);
             return {
                 counts: {
-                    "post": body.maxPosts * (body.targetUrls?.length ?? 0),
+                    post: posts,
+                    no_result: 0,
+                    ...(body.scrapeReactions
+                        ? { reaction: body.maxReactions * posts }
+                        : {}),
+                    ...(body.scrapeComments
+                        ? { comment: body.maxComments * posts }
+                        : {}),
+                },
+            };
+        },
+        /** OVERRIDES the provider evidence (≥2 metered lines): reaction
+         *  and comment results land as SEPARATE dataset items tagged by
+         *  their `type` field (the actor's published sample output —
+         *  posts carry type "post"); everything unattributed counts as
+         *  the base post line. no_result pages leave no dataset item to
+         *  attribute, so that line stays ABSENT here — the D27 vendor
+         *  claim is the credits truth regardless. */
+        evidence: ({ data, utils }) => {
+            const items = Array.isArray(data.output) ? data.output : [];
+            let posts = 0;
+            let reactions = 0;
+            let comments = 0;
+            for (const item of items) {
+                const type = utils.json.optionalGet(item, "$.type");
+                if (type === "reaction") reactions += 1;
+                else if (type === "comment") comments += 1;
+                else posts += 1;
+            }
+            return {
+                counts: {
+                    post: posts,
+                    ...(reactions > 0 ? { reaction: reactions } : {}),
+                    ...(comments > 0 ? { comment: comments } : {}),
                 },
             };
         },

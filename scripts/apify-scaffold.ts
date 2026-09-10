@@ -118,10 +118,27 @@ async function apiGet(path: string, token: string): Promise<unknown> {
     return body.data;
 }
 
+/** Deep-strip `required` (design D29): output schemas are passthrough
+ *  DOCUMENTATION — every field optional, so a vendor dropping one can
+ *  never fail a paid run at output validation. */
+function stripRequired(node: JsonSchemaNode): JsonSchemaNode {
+    const out = { ...node };
+    delete (out as Record<string, unknown>).required;
+    if (out.properties) {
+        out.properties = Object.fromEntries(
+            Object.entries(out.properties)
+                .map(([key, child]) => [key, stripRequired(child)]),
+        );
+    }
+    if (out.items) out.items = stripRequired(out.items);
+    return out;
+}
+
 await new Command()
     .name("apify-scaffold")
     .description(
-        "Generate an apify endpoint's static input schema from the live actor schema.",
+        "Generate an apify endpoint's static input schema (and, where " +
+            "published, output item schema) from the live actor schema.",
     )
     .arguments("<actorId:string>")
     .option(
@@ -133,7 +150,11 @@ await new Command()
         "platform group directory for a NEW endpoint (amazon, facebook, x, …); " +
             "existing endpoints are refreshed in place",
     )
-    .action(async ({ name, group }, actorId) => {
+    .option(
+        "--output-only",
+        "write only schema/output.ts (leave the curated inputs untouched)",
+    )
+    .action(async ({ name, group, outputOnly }, actorId) => {
         const token = Deno.env.get("APIFY_API_KEY");
         if (!token) throw new Error("APIFY_API_KEY is required");
         const pathId = actorId.replace("/", "~");
@@ -147,7 +168,10 @@ await new Command()
             token,
         ) as {
             status?: string;
-            actorDefinition?: { input?: JsonSchemaNode };
+            actorDefinition?: {
+                input?: JsonSchemaNode;
+                storages?: { dataset?: { fields?: JsonSchemaNode } };
+            };
         };
         if (build.status !== "SUCCEEDED") {
             throw new Error(`default build status is ${build.status}`);
@@ -176,12 +200,13 @@ await new Command()
             "schema",
         );
         await ensureDir(dir);
-        const file = join(dir, "inputs.ts");
         const today = new Date().toISOString().slice(0, 10);
-        const body = toZod(inputSchema, 0);
-        await Deno.writeTextFile(
-            file,
-            `import { z } from "zod";
+        if (!outputOnly) {
+            const file = join(dir, "inputs.ts");
+            const body = toZod(inputSchema, 0);
+            await Deno.writeTextFile(
+                file,
+                `import { z } from "zod";
 
 /**
  * ${actorId} — actor input schema, scaffolded from the actor's PUBLISHED
@@ -193,7 +218,40 @@ await new Command()
  */
 export const ${schemaName} = ${body};
 `,
-        );
-        console.log(`wrote ${file} (${schemaName})`);
+            );
+            console.log(`wrote ${file} (${schemaName})`);
+        }
+        // ---- output item schema (design D29): only where PUBLISHED ----
+        const fields = build.actorDefinition?.storages?.dataset?.fields;
+        if (fields) {
+            const itemName = `z${pascalCase(endpointName)}OutputItem`;
+            const outName = `z${pascalCase(endpointName)}Output`;
+            const outFile = join(dir, "output.ts");
+            const itemBody = toZod(stripRequired(fields), 0);
+            await Deno.writeTextFile(
+                outFile,
+                `import { z } from "zod";
+
+/**
+ * ${actorId} — dataset ITEM schema, scaffolded from the actor's
+ * PUBLISHED storages.dataset.fields on ${today} via
+ * scripts/apify-scaffold.ts. Passthrough DOCUMENTATION (design D29):
+ * non-strict, every field optional ("required" stripped) — output
+ * validation can never fail a paid run over vendor drift; the drift
+ * suite reports field additions/removals informationally.
+ */
+export const ${itemName} = ${itemBody};
+/** Tolerant by construction: an item that drifts off the documented
+ *  shape still passes as a plain object — validation can NEVER fail a
+ *  paid run; the typed branch is the documentation. */
+export const ${outName} = z.array(
+    ${itemName}.or(z.record(z.string(), z.unknown())),
+);
+`,
+            );
+            console.log(`wrote ${outFile} (${outName})`);
+        } else if (outputOnly) {
+            console.log(`${actorId}: no published dataset fields — skipped`);
+        }
     })
     .parse(Deno.args);

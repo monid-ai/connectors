@@ -39,41 +39,88 @@ export default defineEndpoint({
             // default) — WE require it, and require it POSITIVE (this
             // vendor reads a non-positive limit as "no limit"): the
             // estimate must be deducible to price the hold (D24)
+            // profileScraperMode is a behavior knob the estimate reads —
+            // binding default = the actor's VERIFIED published default
+            // (D25; this actor's enum values embed its FREE-tier prices
+            // verbatim — vendor quirk, mirrored faithfully)
             body: zLinkedinCompanyEmployeesBody.extend({
                 maxItems: zLinkedinCompanyEmployeesBody.shape.maxItems
                     .unwrap().min(1),
+                profileScraperMode: zLinkedinCompanyEmployeesBody.shape
+                    .profileScraperMode.unwrap()
+                    .default("Full ($8 per 1k)"),
             }),
         },
     },
     usage: {
+        /** The WHOLE published card (design D29): flat start fee plus a
+         *  MODE-SELECTED per-profile line — the pre-D29 model declared
+         *  only full_profile, billing "Short" and "Full + email search"
+         *  runs at the WRONG rate. The sibling by-services pattern. Ids
+         *  normalize from the actor's event names (D28); Business-tier
+         *  rates, survey-pinned. */
         model: {
-            // verified actor-start charge event + per-item metering (survey)
             kind: UsageModelKind.COMPOSITE,
-            // component ids are OUR snake_case keys — the actor's
-            // charge-event names normalize onto them (strip apify-
-            // prefix, kebab/camel → snake), which is the drift
-            // guard's derived join (design D28)
             components: {
                 actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.015 },
+                },
+                short_profile: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "basic profiles",
+                    description: "profiles returned in 'Short' mode",
+                    consumes: { credit: "default", amount: 0.0015 },
                 },
                 full_profile: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
                     label: "full profiles",
+                    description: "profiles enriched in 'Full' mode",
                     consumes: { credit: "default", amount: 0.004 },
+                },
+                full_profile_with_email: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "profiles with email",
+                    description:
+                        "profiles enriched in 'Full + email search' mode",
+                    consumes: { credit: "default", amount: 0.008 },
                 },
             },
         },
-        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required ≥1
-         *  at the binding, so the estimate is pure arithmetic (D24). */
-        estimate: ({ data }) => ({
-            counts: {
-                "full_profile": data.input.body.maxItems,
-            },
-        }),
+        /** maxItems caps the run exactly (v1 LIMIT_IS_EXACT) — required
+         *  ≥1 at the binding, so the estimate is pure arithmetic (D24),
+         *  keyed by the mode the pinned input selects. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const mode = body.profileScraperMode;
+            const profileKey = mode === "Full ($8 per 1k)"
+                ? "full_profile"
+                : mode === "Full + email search ($12 per 1k)"
+                ? "full_profile_with_email"
+                : "short_profile";
+            return { counts: { [profileKey]: body.maxItems } };
+        },
+        /** OVERRIDES the provider evidence (≥2 metered lines): dataset
+         *  items ARE the profiles, keyed by mode. */
+        evidence: ({ data, utils }) => {
+            const profiles = Array.isArray(data.output)
+                ? data.output.length
+                : 0;
+            const mode = utils.json.optionalGet(
+                data.input.body ?? {},
+                "$.profileScraperMode",
+            );
+            const profileKey = mode === "Full ($8 per 1k)"
+                ? "full_profile"
+                : mode === "Full + email search ($12 per 1k)"
+                ? "full_profile_with_email"
+                : "short_profile";
+            return { counts: { [profileKey]: profiles } };
+        },
     },
 });

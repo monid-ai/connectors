@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zInstagramPostScraperBody } from "./schema/inputs.ts";
+import { zInstagramPostScraperOutput } from "./schema/output.ts";
 
 /**
  * apify/instagram-post-scraper — Get Instagram Post. Pure data; the async machinery
@@ -38,29 +39,84 @@ export default defineEndpoint({
             // it: the estimate must be deducible to price the hold
             // (D24/D25). username (the per-profile multiplier) stays the
             // plain actor-required mirror — an empty list is a genuine
-            // zero-item promise.
-            body: zInstagramPostScraperBody.required({ resultsLimit: true }),
+            // zero-item promise. dataDetailLevel is the gating knob for
+            // the post-details add-on the estimate reads — binding
+            // default = the actor's VERIFIED published default
+            // ("detailedData", D25; prefill "basicData" is editor-only).
+            body: zInstagramPostScraperBody.required({ resultsLimit: true })
+                .extend({
+                    dataDetailLevel: zInstagramPostScraperBody.shape
+                        .dataDetailLevel.unwrap().default("detailedData"),
+                }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zInstagramPostScraperOutput },
     usage: {
-        // SURVEY-corrected: v1 priced this PER_CALL, but the actor's
-        // published charge event is per item — metered, not flat.
+        /** The WHOLE published card (design D29 — an input-gated line
+         *  the model omits makes estimates silently wrong the moment
+         *  that input is used): base posts plus the post-details ADD-ON
+         *  ("Detailed data are paid extra" — every post ALSO bills
+         *  post-details when dataDetailLevel selects detailedData; the
+         *  add-on rate below the base rate marks it a surcharge, not a
+         *  mode split). Ids normalize from the actor's event names
+         *  (D28); Business-tier rates, survey-pinned. */
         model: {
-            kind: UsageModelKind.PER_UNIT,
-            unit: Unit.RESULT,
-            // vendor charge event: "post"
-            // survey-pinned GOLD-tier event price
-            consumes: { credit: "default", amount: 0.001 },
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                post: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "posts",
+                    // survey-pinned Business-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
+                },
+                post_details: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "detailed posts",
+                    description: "surcharge per post written with detailed " +
+                        "information when dataDetailLevel is detailedData",
+                    consumes: { credit: "default", amount: 0.0006 },
+                },
+            },
         },
         /** resultsLimit (required at the binding) caps EACH profile entry
          *  (post-URL entries yield one item each, so this bounds them
          *  too) — × the actor-required username list: pure arithmetic
-         *  (D24). */
+         *  (D24). The post-details surcharge applies per POST when
+         *  dataDetailLevel (pinned "detailedData" at the binding, the
+         *  actor's default) selects the detailed package — promised at
+         *  the same post cap. */
         estimate: ({ data }) => {
             const body = data.input.body;
+            const posts = body.resultsLimit * body.username.length;
             return {
                 counts: {
-                    "RESULT": body.resultsLimit * body.username.length,
+                    post: posts,
+                    ...(body.dataDetailLevel === "detailedData"
+                        ? { post_details: posts }
+                        : {}),
+                },
+            };
+        },
+        /** OVERRIDES the provider evidence (≥2 metered lines): dataset
+         *  items ARE the posts; post_details counts them too unless the
+         *  run explicitly selected basicData (the actor's own default is
+         *  detailedData, so an absent knob still bills the add-on). */
+        evidence: ({ data, utils }) => {
+            const posts = Array.isArray(data.output) ? data.output.length : 0;
+            const detail = utils.json.optionalGet(
+                data.input.body ?? {},
+                "$.dataDetailLevel",
+            );
+            return {
+                counts: {
+                    post: posts,
+                    ...(detail !== "basicData" ? { post_details: posts } : {}),
                 },
             };
         },

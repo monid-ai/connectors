@@ -59,7 +59,7 @@ export default defineEndpoint({
                     unit: Unit.PAGE,
                     label: "search pages",
                     description: "search pages scraped (charged in every mode)",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.003 },
                 },
                 main_profile: {
@@ -87,9 +87,11 @@ export default defineEndpoint({
             },
         },
         /** maxItems is required ≥1 at the binding (D24), so both quanta
-         *  are pure arithmetic: pages = ceil(maxItems/25) (the harvestapi
-         *  family's documented 25 profiles per page) and profiles =
-         *  maxItems under the MODE-selected key. */
+         *  are pure arithmetic: pages = ceil(maxItems/10) — THIS actor's
+         *  own search-page event description: "Scrape search page
+         *  results, up to 10 short profiles" (D29 fix; the sibling's 25
+         *  was wrongly copied here) — and profiles = maxItems under the
+         *  MODE-selected key. */
         estimate: ({ data }) => {
             const body = data.input.body;
             const profileKey = body.profileScraperMode === "Full"
@@ -99,16 +101,17 @@ export default defineEndpoint({
                 : "main_profile";
             return {
                 counts: {
-                    "search_page": Math.ceil(body.maxItems / 25),
+                    "search_page": Math.ceil(body.maxItems / 10),
                     [profileKey]: body.maxItems,
                 },
             };
         },
         /** OVERRIDES the provider evidence (≥2 metered components):
          *  dataset items ARE the profiles, keyed by the mode the pinned
-         *  input selects. The actor does not report a page receipt in its
-         *  output, so pages settle on the same documented-25-per-page
-         *  arithmetic the estimate uses, over DELIVERED profiles. */
+         *  input selects. The actor does not report a page receipt in
+         *  its output, so pages settle on the same documented
+         *  10-per-page arithmetic the estimate uses (the actor's own
+         *  event description — D29), over DELIVERED profiles. */
         evidence: ({ data, utils }) => {
             const profiles = Array.isArray(data.output)
                 ? data.output.length
@@ -124,7 +127,7 @@ export default defineEndpoint({
                 : "main_profile";
             return {
                 counts: {
-                    "search_page": Math.ceil(profiles / 25),
+                    "search_page": Math.ceil(profiles / 10),
                     ...(profiles > 0 ? { [profileKey]: profiles } : {}),
                 },
             };

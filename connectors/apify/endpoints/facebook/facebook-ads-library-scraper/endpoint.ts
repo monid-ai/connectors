@@ -58,7 +58,7 @@ export default defineEndpoint({
                 actor_start: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.00005 },
                 },
                 default_dataset_item: {

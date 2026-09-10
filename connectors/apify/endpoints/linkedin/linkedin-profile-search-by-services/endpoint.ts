@@ -57,7 +57,7 @@ export default defineEndpoint({
                     unit: Unit.RESULT,
                     label: "short profiles",
                     description: "profiles returned in 'Short' mode",
-                    // survey-pinned GOLD-tier event price
+                    // survey-pinned Business-tier event price
                     consumes: { credit: "default", amount: 0.001 },
                 },
                 full_profile: {

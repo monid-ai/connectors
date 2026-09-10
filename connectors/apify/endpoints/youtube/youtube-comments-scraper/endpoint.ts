@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeCommentsScraperBody } from "./schema/inputs.ts";
+import { zYoutubeCommentsScraperOutput } from "./schema/output.ts";
 
 /**
  * streamers/youtube-comments-scraper — List YouTube Comments. Pure data; the async machinery
@@ -41,12 +42,17 @@ export default defineEndpoint({
             }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zYoutubeCommentsScraperOutput },
     usage: {
         model: {
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             // vendor charge event: "result"
-            // survey-pinned GOLD-tier event price
+            // survey-pinned Business-tier event price
             consumes: { credit: "default", amount: 0.0009 },
         },
         /** maxComments per video url (v1 PER_QUERY_LIMIT) — maxComments

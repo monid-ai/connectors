@@ -1,5 +1,6 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zYoutubeScraperBody } from "./schema/inputs.ts";
+import { zYoutubeScraperOutput } from "./schema/output.ts";
 
 /**
  * streamers/youtube-scraper — Pull YouTube Videos. Pure data; the async machinery
@@ -56,29 +57,140 @@ export default defineEndpoint({
                 }),
         },
     },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zYoutubeScraperOutput },
     usage: {
+        /** The WHOLE published card (design D29 — an input-gated line
+         *  the model omits makes estimates silently wrong the moment
+         *  that input is used): base videos plus four ADD-ON lines the
+         *  caller's inputs switch on. Ids normalize from the actor's
+         *  event names (D28); Business-tier rates, survey-pinned. */
         model: {
-            kind: UsageModelKind.PER_UNIT,
-            unit: Unit.RESULT,
-            // vendor charge event: "result"
-            // survey-pinned GOLD-tier event price
-            consumes: { credit: "default", amount: 0.0024 },
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                result: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "videos",
+                    consumes: { credit: "default", amount: 0.0024 },
+                },
+                date_filter: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "date-filtered videos",
+                    description: "surcharge per video when channel date " +
+                        "filtering (oldestPostDate) is used",
+                    consumes: { credit: "default", amount: 0.0006 },
+                },
+                ai_video_description: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.MINUTE,
+                    label: "AI description minutes",
+                    description: "timestamped AI description, billed per " +
+                        "video minute when aiVideoDescription is on",
+                    consumes: { credit: "default", amount: 0.007 },
+                },
+                ai_video_summary: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.MINUTE,
+                    label: "AI summary minutes",
+                    description: "AI summary, billed per video minute " +
+                        "when aiVideoSummary is on",
+                    consumes: { credit: "default", amount: 0.007 },
+                },
+                transcribe_minute: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.MINUTE,
+                    // vendor charge event: "transcribeMinute"
+                    label: "transcription minutes",
+                    description: "speech-to-text, billed per STARTED " +
+                        "minute per video when transcriptionAndSubtitle " +
+                        "requests AI transcription",
+                    consumes: { credit: "default", amount: 0.027 },
+                },
+            },
         },
-        /** (maxResults + maxResultsShorts + maxResultStreams) ×
-         *  (searchQueries + startUrls) — maxResults is required at the
-         *  binding and the shorts/streams caps carry the actor's
-         *  published default (0); the caps are summed (the old estimate
-         *  missed the shorts/streams caps; v1 PER_QUERY_LIMIT read
-         *  maxResults only). The source lists are optional and absent ≡
-         *  empty, so an all-empty source set estimates 0, which is
-         *  correct (D25). */
+        /** Base videos: (maxResults + maxResultsShorts +
+         *  maxResultStreams) × (searchQueries + startUrls) — maxResults
+         *  required at the binding, shorts/streams carry the actor's
+         *  published default 0; empty source set ⇒ 0 (D25). Gated lines
+         *  are PROMISED when their input switches them on: date_filter
+         *  at the same video cap; the per-MINUTE lines at the D24 floor
+         *  0 (video durations are unknowable pre-run — the line still
+         *  appears, so holds acknowledge the add-on). */
         estimate: ({ data }) => {
             const body = data.input.body;
             const cap = body.maxResults + body.maxResultsShorts +
                 body.maxResultStreams;
             const n = (body.searchQueries?.length ?? 0) +
                 (body.startUrls?.length ?? 0);
-            return { counts: { "RESULT": cap * n } };
+            const videos = cap * n;
+            const transcribing =
+                body.transcriptionAndSubtitle === "TRANSCRIPTION_AS_FALLBACK" ||
+                body.transcriptionAndSubtitle === "ALWAYS_TRANSCRIBE";
+            return {
+                counts: {
+                    result: videos,
+                    ...(body.oldestPostDate !== undefined
+                        ? { date_filter: videos }
+                        : {}),
+                    ...(body.aiVideoDescription
+                        ? { ai_video_description: 0 }
+                        : {}),
+                    ...(body.aiVideoSummary ? { ai_video_summary: 0 } : {}),
+                    ...(transcribing ? { transcribe_minute: 0 } : {}),
+                },
+            };
+        },
+        /** OVERRIDES the provider evidence (≥2 metered lines): videos =
+         *  delivered items; date_filter counts them too when the channel
+         *  date input was set; per-MINUTE lines sum ceil(minutes) from
+         *  each item's `duration` ("HH:MM:SS" — the actor's published
+         *  dataset schema) when their toggle was on. The D27 claim
+         *  (usageTotalUsd) stays the credits truth; these quantities are
+         *  the per-line story. */
+        evidence: ({ data, utils }) => {
+            const items = Array.isArray(data.output) ? data.output : [];
+            const body = data.input.body ?? {};
+            let minutes = 0;
+            for (const item of items) {
+                const duration = utils.json.optionalGet(item, "$.duration");
+                if (typeof duration !== "string") continue;
+                const parts = duration.split(":").map(Number);
+                const seconds = parts.reduce(
+                    (total, part) =>
+                        Number.isFinite(part) ? total * 60 + part : total,
+                    0,
+                );
+                minutes += Math.ceil(seconds / 60);
+            }
+            const mode = utils.json.optionalGet(
+                body,
+                "$.transcriptionAndSubtitle",
+            );
+            const transcribing = mode === "TRANSCRIPTION_AS_FALLBACK" ||
+                mode === "ALWAYS_TRANSCRIBE";
+            return {
+                counts: {
+                    result: items.length,
+                    ...(utils.json.optionalGet(body, "$.oldestPostDate") !==
+                            undefined
+                        ? { date_filter: items.length }
+                        : {}),
+                    ...(utils.json.optionalGet(body, "$.aiVideoDescription") ===
+                            true
+                        ? { ai_video_description: minutes }
+                        : {}),
+                    ...(utils.json.optionalGet(body, "$.aiVideoSummary") ===
+                            true
+                        ? { ai_video_summary: minutes }
+                        : {}),
+                    ...(transcribing ? { transcribe_minute: minutes } : {}),
+                },
+            };
         },
     },
 });
