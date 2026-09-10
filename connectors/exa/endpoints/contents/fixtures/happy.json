@@ -1,12 +1,15 @@
 {
     "name": "happy",
+    "description": "recorded chain for exa#contents, scenario 'happy' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {
                 "method": "POST",
                 "url": "https://api.exa.ai/contents",
                 "body": {
-                    "urls": ["https://example.com/solid-state-2026"],
+                    "urls": [
+                        "https://example.com/solid-state-2026"
+                    ],
                     "text": true
                 }
             },
@@ -24,7 +27,9 @@
                     ],
                     "costDollars": {
                         "total": 0.001,
-                        "contents": { "text": 0.001 }
+                        "contents": {
+                            "text": 0.001
+                        }
                     }
                 }
             }

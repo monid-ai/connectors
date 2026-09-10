@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("tinyfish#fetch happy (synthetic): free — one call unit for the batch", async () => {
+Deno.test("tinyfish#fetch happy (synthetic): free — zero usage for the batch", async () => {
     const unit = await testSealedUnit("tinyfish#fetch");
     const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
     const result = await runEndpoint({
@@ -21,7 +21,9 @@ Deno.test("tinyfish#fetch happy (synthetic): free — one call unit for the batc
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
+    // FREE model (D25/D26): the DOC's model says "free" — nothing folds,
+    // nothing is evidenced
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     const output = result.output as Record<string, unknown>;
     assertEquals((output.errors as unknown[]).length, 0);
 });

@@ -2,4 +2,7 @@ export * from "./ctx.ts";
 export * from "./to-request.ts";
 export * from "./from-response.ts";
 export * from "./usage-consolidate.ts";
+export * from "./usage-evidence.ts";
+export * from "./estimate.ts";
 export * from "./auth-inject.ts";
+export * from "./lifecycle.ts";

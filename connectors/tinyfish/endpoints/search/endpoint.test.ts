@@ -21,14 +21,24 @@ Deno.test("tinyfish: per-endpoint baseUrl overrides land in the compiled urls", 
         bundle.endpoints["tinyfish#fetch"].request.url,
         "https://api.fetch.tinyfish.ai/",
     );
-    // free provider: both endpoints share the provider-level perCall settle fn
+    // FREE provider (D27): no vendor meter — no consolidate fn compiles
+    // at all, and BOTH quantities slots on BOTH docs are the one
+    // compiler-synthesized `() => ({counts: {}})` entry (same $fn.key)
+    const search = bundle.endpoints["tinyfish#search"];
+    const fetchDoc = bundle.endpoints["tinyfish#fetch"];
+    assertEquals(search.usage.consolidate, undefined);
+    assertEquals(fetchDoc.usage.consolidate, undefined);
+    const synthesizedKey = search.usage.evidence.$fn.key;
+    assertEquals(search.usage.estimate.$fn.key, synthesizedKey);
+    assertEquals(fetchDoc.usage.evidence.$fn.key, synthesizedKey);
+    assertEquals(fetchDoc.usage.estimate.$fn.key, synthesizedKey);
     assertEquals(
-        bundle.endpoints["tinyfish#search"].usage.consolidate.$fn.key,
-        bundle.endpoints["tinyfish#fetch"].usage.consolidate.$fn.key,
+        bundle.fnTable[synthesizedKey].provenance,
+        "core#usage.synthesizedEmpty",
     );
 });
 
-Deno.test("tinyfish#search happy (synthetic): free — one call unit, no cost", async () => {
+Deno.test("tinyfish#search happy (synthetic): free — zero usage", async () => {
     const unit = await testSealedUnit("tinyfish#search");
     const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
     const result = await runEndpoint({
@@ -43,8 +53,9 @@ Deno.test("tinyfish#search happy (synthetic): free — one call unit, no cost", 
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
-    assertEquals(result.usage.cost, undefined);
+    // FREE model (D25/D26): the DOC's model says "free" — nothing folds,
+    // nothing is evidenced
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     const output = result.output as Record<string, unknown>;
     assertEquals((output.results as unknown[]).length, 2);
 });
@@ -61,7 +72,7 @@ Deno.test("tinyfish#search provider error (synthetic): 429 is data, zero usage",
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
 Deno.test({
@@ -79,7 +90,7 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units, [{ amount: 1, unit: "call" }]);
+        assertEquals(result.usage, { credits: {}, evidence: {} });
         assert(
             Array.isArray((result.output as Record<string, unknown>).results),
             "results array present",

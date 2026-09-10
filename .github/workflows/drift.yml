@@ -1,0 +1,20 @@
+# Vendor-drift guard (design D28): polls the vendors' live published
+# surfaces (apify pricing + input schemas) against our pinned defs on a
+# schedule — proactive, so a repricing fails HERE before any customer
+# run settles a mismatch. Requires the APIFY_API_KEY repo secret.
+name: drift
+on:
+    schedule:
+        - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+    workflow_dispatch:
+jobs:
+    drift:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: denoland/setup-deno@v2
+              with:
+                  deno-version: v2.x
+            - run: deno task drift
+              env:
+                  APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}

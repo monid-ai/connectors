@@ -1,12 +1,15 @@
 {
     "name": "provider-error",
+    "description": "recorded chain for exa#contents, scenario 'provider-error' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {
                 "method": "POST",
                 "url": "https://api.exa.ai/contents",
                 "body": {
-                    "urls": ["https://example.com/x"]
+                    "urls": [
+                        "https://example.com/x"
+                    ]
                 }
             },
             "res": {

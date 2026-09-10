@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { zHttpRequestParts } from "../common/http.ts";
-import { fnCarrier, zFnUtils } from "./ctx.ts";
+import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
 
 /**
  * HOOK auth.inject — request parts + RESOLVED credential params → authed
@@ -16,7 +16,11 @@ export const zAuthData = z.strictObject({
 export type AuthData = z.infer<typeof zAuthData>;
 
 export const AuthInjectContract = z.function({
-    input: [z.object({ data: zAuthData, utils: zFnUtils })],
+    input: [z.object({
+        data: zAuthData,
+        utils: zFnUtils,
+        logger: zHookLogger,
+    })],
     output: zHttpRequestParts,
 });
 export type AuthInjectFn = z.infer<typeof AuthInjectContract>;

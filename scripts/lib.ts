@@ -135,3 +135,42 @@ export async function compileToOutput(
     await Deno.writeTextFile(keyPath, key);
     return { bundle, outputPath, cacheHit: false };
 }
+
+/**
+ * Locate an endpoint's SOURCE directory under
+ * `connectors/<provider>/endpoints/**` — endpoints may sit inside GROUP
+ * directories (the platform grouping, e.g. apify/endpoints/amazon/…), and
+ * since design D22 the endpoint IDENTITY is the def's native path, not
+ * the folder name. `endpoint` is the id tail ("apidojo/tweet-scraper",
+ * "v1/company/search", "search"); matched in order:
+ *   1. a pinned `endpoint: "/<identity>"` field in the def source,
+ *   2. a `request.path` whose trailing-slash-stripped form is the
+ *      identity (the default-identity rule),
+ *   3. the LEAF directory name (pre-D22 convention — scaffold refreshes
+ *      still address dirs directly).
+ */
+export async function findEndpointDir(
+    provider: string,
+    endpoint: string,
+): Promise<string | undefined> {
+    const endpointsDir = join(REPO_ROOT, "connectors", provider, "endpoints");
+    let leafMatch: string | undefined;
+    for await (
+        const entry of walk(endpointsDir, {
+            includeFiles: true,
+            match: [/endpoint\.ts$/],
+        })
+    ) {
+        const dir = entry.path.slice(0, -"/endpoint.ts".length);
+        const source = await Deno.readTextFile(entry.path);
+        if (source.includes(`endpoint: "/${endpoint}"`)) return dir;
+        if (
+            source.includes(`path: "/${endpoint}"`) ||
+            source.includes(`path: "/${endpoint}/"`)
+        ) {
+            return dir;
+        }
+        if (dir.endsWith(`/${endpoint}`)) leafMatch = dir;
+    }
+    return leafMatch;
+}

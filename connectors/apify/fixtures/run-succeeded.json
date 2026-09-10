@@ -1,0 +1,72 @@
+{
+    "name": "run-succeeded",
+    "description": "The canonical happy actor run (PRICE_PER_DATASET_ITEM): start parks RUNNING, one still-running poll tick, a terminal poll (exitCode 0, SUCCEEDED, pricing signals), then the default dataset's items (2). Settles 200: units = 2 result, cost = 2 x pricePerUnitUsd ($0.01). Minimal shared chain (fixture strategy v2) — {{request.url}}/{{request.origin}} bind per endpoint.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "actId": "ACT1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1",
+                        "startedAt": "2026-01-01T00:00:00.000Z"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "DS1",
+                        "usageTotalUsd": 0.01,
+                        "pricingInfo": {
+                            "pricingModel": "PRICE_PER_DATASET_ITEM",
+                            "pricePerUnitUsd": 0.005
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/datasets/DS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    { "id": "item-1", "title": "First result" },
+                    { "id": "item-2", "title": "Second result" }
+                ]
+            }
+        }
+    ]
+}

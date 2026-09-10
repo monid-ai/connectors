@@ -1,5 +1,6 @@
 {
     "name": "provider-error",
+    "description": "recorded chain for octen#search, scenario 'provider-error' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {

@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidated away", async () => {
+Deno.test("exa#search happy: costDollars claim wins (fold rides as mismatch), receipt consolidated away", async () => {
     const unit = await testSealedUnit("exa#search");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -26,26 +26,22 @@ Deno.test("exa#search happy: usage from the RAW envelope; costDollars consolidat
 
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // usage: measures carry number + unit; vendor-reported usd cost (READ, not computed)
-    assertEquals(result.usage.units, [{ amount: 3, unit: "result" }]);
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 5_000,
-        unit: "MICRO_DOLLAR",
-    });
-    // capture: audit receipts, read from the RAW envelope
-    assertEquals(
-        result.usage.evidence?.requestId,
-        "b5947044c4b78efa9552430b7ca5cf94",
-    );
-    assertEquals(result.usage.evidence?.costDollars, {
-        total: 0.005,
-        search: { neural: 0.005 },
+    // D27 claim-wins: the fixture's costDollars.total ($0.005) is the
+    // vendor's own meter — usage.credits IS that claim. Our pinned fold
+    // says $0.007 (3 results inside the included 10 ⇒ base fee only,
+    // flat call 1 engine-appended), which disagrees beyond 1e-9 — the
+    // fold rides out as mismatch.derived, said, never failing the run.
+    assertEquals(result.usage, {
+        credits: { default: 0.005 },
+        evidence: { call: 1 },
+        mismatch: { derived: { default: 0.007 } },
     });
     // usage.consolidate ran (engine-executed, same for every operator):
-    // billing info now lives ONLY in the structured usage above
+    // the vendor billing field is absorbed out of the payload, the rest
+    // of the envelope rides through untouched
     const output = result.output as Record<string, unknown>;
     assertEquals("costDollars" in output, false);
+    assertEquals(output.requestId, "b5947044c4b78efa9552430b7ca5cf94");
     assertEquals((output.results as unknown[]).length, 3);
 });
 
@@ -61,8 +57,7 @@ Deno.test("exa#search provider error: 401 is data, zero usage", async () => {
 
     assertEquals(result.httpStatus, 401);
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
-    assertEquals(result.usage.cost, undefined);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
     // raw body passes through untouched on provider error
     assertEquals(result.output, {
         error: "x-api-key header is invalid",
@@ -119,10 +114,13 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "result");
-        assert(result.usage.units[0]!.amount >= 1);
-        assertEquals(result.usage.cost?.unit, "MICRO_DOLLAR");
-        // consolidated — billing lives in usage, not the payload
+        // 2 results ⇒ nothing above the included 10 (evidence is the
+        // engine-appended flat call 1). credits can't be pinned live:
+        // exa's own costDollars claim WINS (D27) and its live total
+        // varies by search type — assert the pool settled instead.
+        assertEquals(result.usage.evidence, { call: 1 });
+        assertEquals(typeof result.usage.credits.default, "number");
+        // consolidated — the vendor billing field left the payload
         assert(!("costDollars" in (result.output as Record<string, unknown>)));
     },
 });

@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenExtractBody } from "./schema/inputs.ts";
 
 /**
@@ -23,21 +23,52 @@ export default defineEndpoint({
         categories: ["web-scraping"],
     },
     request: { method: "POST", path: "/extract" },
-    input: { schema: { body: zOctenExtractBody } },
+    input: {
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // max_age_seconds 86400, format "markdown", timeout 30,
+            // include_images/videos/audio false.
+            body: zOctenExtractBody.extend({
+                max_age_seconds: zOctenExtractBody.shape.max_age_seconds
+                    .unwrap().default(86400),
+                format: zOctenExtractBody.shape.format.unwrap()
+                    .default("markdown"),
+                timeout: zOctenExtractBody.shape.timeout.unwrap()
+                    .default(30),
+                include_images: zOctenExtractBody.shape.include_images
+                    .unwrap().default(false),
+                include_videos: zOctenExtractBody.shape.include_videos
+                    .unwrap().default(false),
+                include_audio: zOctenExtractBody.shape.include_audio
+                    .unwrap().default(false),
+            }),
+        },
+    },
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
-        consolidate: ({ data, utils }) => ({
-            usage: {
-                units: [{
-                    amount: utils.json.optionalNum(
-                        data.output,
-                        "$.meta.usage.successful_urls",
-                    ) ?? 0,
-                    unit: "result",
-                }],
-                evidence: utils.json.pick(data.output, ["$.meta.usage"]),
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "URLs",
+            // 1 credit per extracted URL — v1 makeOctenCredit(1) ($1/1k URLs)
+            consumes: { credit: "default", amount: 1 },
+        },
+        /** One credit per SUBMITTED URL — `urls` is required (min 1, max
+         *  20), so its length is the deducible per-call quantity (v1
+         *  evidence: extract.ts `octenExtractEstimate` held `urls.length`
+         *  credits; the docs price "$1 / 1k URLs"). Settle trues DOWN to
+         *  `meta.usage.successful_urls` — failed URLs are not billed. */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.urls.length },
+        }),
+        evidence: ({ data, utils }) => ({
+            counts: {
+                "RESULT": utils.json.optionalNum(
+                    data.output,
+                    "$.meta.usage.successful_urls",
+                ) ?? 0,
             },
-            output: utils.json.omit(data.output, ["usage"]),
         }),
     },
 });

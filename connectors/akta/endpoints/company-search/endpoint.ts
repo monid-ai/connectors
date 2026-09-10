@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zCompanySearchQueryParams } from "./schema/inputs.ts";
 
 /** GET /v1/company/search — free lookup step for the other Akta endpoints. */
@@ -20,5 +20,13 @@ export default defineEndpoint({
     },
     request: { method: "GET", path: "/v1/company/search/" },
     input: { schema: { queryParams: zCompanySearchQueryParams } },
-    // auth, toRequest (array→CSV), and usage (credits) inherit from the provider
+    // auth + toRequest (array→CSV) inherit from the provider
+    usage: {
+        /** FREE (designs D25/D27) — the lookup bills nothing, and the
+         *  MODEL alone says so: the quantities fns are compiler-
+         *  synthesized (`{counts: {}}` is the only lawful return) and
+         *  the provider consolidate handles the vendor meter (always 0
+         *  here — prunes to an empty claim). */
+        model: { kind: UsageModelKind.FREE },
+    },
 });

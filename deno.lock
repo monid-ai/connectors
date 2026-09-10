@@ -21,6 +21,7 @@
     "npm:canonicalize@^2.1.0": "2.1.0",
     "npm:pino@^10.3.1": "10.3.1",
     "npm:typescript@^5.9.2": "5.9.3",
+    "npm:zod@4": "4.3.6",
     "npm:zod@4.3.6": "4.3.6"
   },
   "jsr": {

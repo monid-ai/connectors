@@ -10,7 +10,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
+Deno.test("exa#contents happy: vendor claim agrees with the per-result fold — no mismatch", async () => {
     const unit = await testSealedUnit("exa#contents");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -26,13 +26,16 @@ Deno.test("exa#contents happy: per-result usage + usd cost", async () => {
     });
 
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 1, unit: "result" }]);
-    assertEquals(result.usage.cost, {
-        currency: "USD",
-        value: 1_000,
-        unit: "MICRO_DOLLAR",
+    // D27 claim-wins: the fixture's costDollars.total ($0.001) is the
+    // vendor's claim and IS usage.credits; the pinned fold (1 delivered
+    // result × $0.001/page = 0.001) agrees within 1e-9, so no mismatch
+    // key settles (zUsage is strict — deep equality proves its absence)
+    assertEquals(result.usage, {
+        credits: { default: 0.001 },
+        evidence: { RESULT: 1 },
     });
-    // usage.consolidate absorbed the vendor billing field into usage
+    // usage.consolidate absorbed the vendor billing field out of the
+    // payload (it stays in the RAW run record)
     assert(!("costDollars" in (result.output as Record<string, unknown>)));
 });
 
@@ -46,19 +49,25 @@ Deno.test("exa#contents provider error: zero usage", async () => {
         fixture,
     });
     assertEquals(result.isProviderError, true);
-    assertEquals(result.usage.units, [{ amount: 0, unit: "call" }]);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
-Deno.test("interning: search and contents share the settle fn + auth entries", async () => {
+Deno.test("interning: auth + consolidate provider-shared; evidence fns diverged", async () => {
     const bundle = await testBundle();
     const search = bundle.endpoints["exa#search"];
     const contents = bundle.endpoints["exa#contents"];
-    // byte-identical ad-hoc settle fns → ONE fnTable entry
-    assertEquals(
-        search.usage.consolidate.$fn.key,
-        contents.usage.consolidate.$fn.key,
+    // each doc owns its QUANTITIES fn (offset counting vs per-result) —
+    // two content-addressed entries (design D19/D27)
+    assert(
+        search.usage.evidence.$fn.key !== contents.usage.evidence.$fn.key,
     );
-    // and both share the provider auth fn
+    // the VENDOR-METER fn is provider-level (where costDollars lives is
+    // a provider-wide fact) — ONE consolidate entry shared by both
+    assertEquals(
+        search.usage.consolidate?.$fn.key,
+        contents.usage.consolidate?.$fn.key,
+    );
+    // both still share the provider auth fn (content addressing at work)
     assertEquals(search.auth.inject.$fn.key, contents.auth.inject.$fn.key);
 });
 
@@ -77,6 +86,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "result");
+        assertEquals(Object.keys(result.usage.evidence), ["RESULT"]);
     },
 });

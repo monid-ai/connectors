@@ -27,4 +27,19 @@ export default defineProvider({
     },
     auth: { inject: presets.auth.header("x-api-key") },
     request: { baseUrl: "https://api.octen.ai" },
+    usage: {
+        /** THE credit system (design D26): octen prices every endpoint in
+         *  its own credits ($0.001 list — v1 OCTEN_CREDIT_DOLLARS; the
+         *  $/credit conversion is the broker card's one octen row). */
+        credits: { default: { label: "Octen credits" } },
+        /** Octen reports NO credit total — its `meta.usage` receipt is
+         *  raw QUANTITIES the evidence fns already read, so the claim is
+         *  always empty (the derived fold settles) and this fn's whole
+         *  job is the strip: billing facts never ride the payload
+         *  (design D27). */
+        consolidate: ({ data, utils }) => ({
+            credits: {},
+            output: utils.json.omit(data.output, ["usage"]),
+        }),
+    },
 });

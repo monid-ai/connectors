@@ -8,17 +8,20 @@ import {
     docHash,
     type EndpointDoc,
     type FnRef,
+    hasMeteredLines,
     type Json,
     type LeafCategory,
     parseSchema,
     type ProviderDoc,
     pruneUndefined,
     stableStringify,
+    ValidationError,
     zBundle,
     zDefaultCredentials,
     zEndpointDef,
     zEndpointDoc,
     zEndpointName,
+    zEndpointPath,
     zProviderDef,
     zProviderDoc,
 } from "@shared/core";
@@ -28,6 +31,61 @@ import { FnInterner } from "./fns.ts";
 /** Contract constants — config.yml `schema:`/`compiler:` sections (override-free). */
 const SC = contractConfig.schema;
 const CC = contractConfig.compiler;
+
+/**
+ * CompileError — every compiler rejection, coded so build tooling (and
+ * tests) can branch on WHY without string-matching. `retriable = false` by
+ * construction: a compile failure is deterministic — the same repo bytes
+ * fail the same way.
+ */
+export const CompileErrorCode = {
+    /** A zod schema is not JSON-Schema representable. */
+    SCHEMA_INVALID: "SCHEMA_INVALID",
+    /** A required hook resolved nowhere (endpoint ?? provider). */
+    HOOK_UNRESOLVED: "HOOK_UNRESOLVED",
+    /** lifecycle.state failed JSON Schema conversion / is dead config. */
+    STATE_SCHEMA_INVALID: "STATE_SCHEMA_INVALID",
+    /** Structural def problems: bad baseUrl, dead config, size, vocabulary. */
+    DOC_MALFORMED: "DOC_MALFORMED",
+} as const;
+export type CompileErrorCode = keyof typeof CompileErrorCode;
+
+export class CompileError extends Error {
+    readonly retriable = false;
+    constructor(
+        readonly code: CompileErrorCode,
+        message: string,
+        options?: { cause?: unknown },
+    ) {
+        super(`[${code}] ${message}`, options);
+        this.name = "CompileError";
+    }
+}
+
+/** parseSchema at the COMPILER boundary: every compiler rejection must be
+ *  a coded CompileError (build tooling branches on WHY without
+ *  string-matching), so def-shape failures — e.g. a malformed baseUrl —
+ *  rethrow as DOC_MALFORMED with the ValidationError preserved as cause.
+ *  Author-time `defineEndpoint` keeps throwing ValidationError: that IS
+ *  the authoring surface, correctly uncoded (PR #2 finding). */
+function parseDoc<T extends z.ZodType>(
+    schema: T,
+    input: unknown,
+    context: string,
+): z.output<T> {
+    try {
+        return parseSchema(schema, input, context);
+    } catch (error) {
+        if (error instanceof ValidationError) {
+            throw new CompileError(
+                CompileErrorCode.DOC_MALFORMED,
+                error.message,
+                { cause: error },
+            );
+        }
+        throw error;
+    }
+}
 
 export interface CompileOptions {
     /** Toolchain provenance — never gates (engine gates on minEngineVersion + specVersion). */
@@ -49,7 +107,11 @@ function semverMax(versions: string[]): string {
     return format(max);
 }
 
-function toJsonSchema(schema: z.ZodType, label: string): Record<string, Json> {
+function toJsonSchema(
+    schema: z.ZodType,
+    label: string,
+    code: CompileErrorCode = CompileErrorCode.SCHEMA_INVALID,
+): Record<string, Json> {
     try {
         const jsonSchema = z.toJSONSchema(schema, {
             target: `draft-${SC.jsonSchemaDialect}` as "draft-2020-12",
@@ -57,8 +119,10 @@ function toJsonSchema(schema: z.ZodType, label: string): Record<string, Json> {
         });
         return pruneUndefined(jsonSchema) as Record<string, Json>;
     } catch (error) {
-        throw new Error(
+        throw new CompileError(
+            code,
             `${label}: zod schema is not JSON-Schema representable: ${error}`,
+            { cause: error },
         );
     }
 }
@@ -88,6 +152,13 @@ function resolve<T>(
     return undefined;
 }
 
+/** The ONE lawful quantities fn for a model with no metered lines
+ *  (design D27) — the compiler materializes it into the doc (a real
+ *  interned fnTable entry: the compiled doc stays comprehensive) when
+ *  neither endpoint nor provider declares estimate/evidence. Module-
+ *  scope so its SOURCE is stable and interns to a single shared entry. */
+const SYNTHESIZED_EMPTY_USAGE = () => ({ counts: {} });
+
 /**
  * compileBundle — the compiler's SOLE job: the pure mapping
  * (defs, options) → bundle. Folder identity is a LOADER concern
@@ -97,7 +168,7 @@ function resolve<T>(
  *
  * ONE composition rule (design D20): everything resolves LEAF-WISE, closest
  * wins — endpoint ?? provider ?? config default. That includes hooks
- * (endpoint toRequest/fromResponse/consolidate REPLACES the provider's) and
+ * (endpoint toRequest/fromResponse/evidence REPLACES the provider's) and
  * meta leaves (docsUrl/categories). Headers merge key-wise (each key is a
  * leaf).
  */
@@ -119,7 +190,7 @@ export async function compileBundle(
 
     // intake validation — zod-first end to end even for hand-built sources
     const intake = connectors.map((connector) =>
-        parseSchema(zProviderDef, connector.provider, "provider def")
+        parseDoc(zProviderDef, connector.provider, "provider def")
     );
     // DETERMINISM: input order (filesystem enumeration) is platform-dependent,
     // and iteration order decides fnTable insertion (first occurrence wins
@@ -138,7 +209,7 @@ export async function compileBundle(
         const sortedEndpoints = [...connector.endpoints]
             .sort((a, b) => a.name.localeCompare(b.name)); // determinism (see above)
         for (const { name: endpointName, def: rawDef } of sortedEndpoints) {
-            parseSchema(
+            parseDoc(
                 zEndpointName,
                 endpointName,
                 `connectors/${providerName}/endpoints/${endpointName} (folder name)`,
@@ -146,8 +217,25 @@ export async function compileBundle(
             const where =
                 `connectors/${providerName}/endpoints/${endpointName}`;
             const endpointFile = `${where}/endpoint.ts`;
-            const def = parseSchema(zEndpointDef, rawDef, endpointFile);
-            const id = `${providerName}#${endpointName}`;
+            const def = parseDoc(zEndpointDef, rawDef, endpointFile);
+
+            // ---- PUBLIC identity (design D22): the def's `endpoint` path
+            // ?? request.path (trailing slashes stripped) — folder names
+            // are ORGANIZATIONAL only, never identity. id = provider# +
+            // the path minus its leading slash ("apify#apidojo/tweet-scraper").
+            const endpointPath = parseDoc(
+                zEndpointPath,
+                def.endpoint ?? def.request.path.replace(/\/+$/, ""),
+                `${endpointFile}#endpoint (?? request.path)`,
+            );
+            const id = `${providerName}#${endpointPath.slice(1)}`;
+            if (endpoints[id] !== undefined) {
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
+                    `${where}: duplicate endpoint identity ${id} — two defs ` +
+                        `resolve to the same endpoint path`,
+                );
+            }
 
             // ---- meta: leaf-wise fallback (docsUrl/categories) ------------
             const categories = def.meta.categories ?? provider.meta.categories;
@@ -161,7 +249,8 @@ export async function compileBundle(
             // ---- request: baseUrl fallback, key-wise header merge ---------
             const baseUrl = def.request.baseUrl ?? provider.request?.baseUrl;
             if (baseUrl === undefined) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: no baseUrl — set request.baseUrl on the endpoint ` +
                         `or request.baseUrl on the provider`,
                 );
@@ -175,7 +264,8 @@ export async function compileBundle(
             // fixed query param belongs in the endpoint def, not the baseUrl.
             const parsedBase = new URL(baseUrl);
             if (parsedBase.search !== "" || parsedBase.hash !== "") {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: baseUrl must not contain a query string or ` +
                         `fragment (got ${baseUrl})`,
                 );
@@ -189,12 +279,103 @@ export async function compileBundle(
                 ...provider.request?.headers,
                 ...def.request.headers,
             };
+
+            // ---- lifecycle: leaf-wise phase fallback + completeness -------
+            const lifecycleStart = resolve(
+                def.lifecycle?.start,
+                `${endpointFile}#lifecycle.start`,
+                provider.lifecycle?.start,
+                `${providerFile}#lifecycle.start`,
+            );
+            const lifecyclePoll = resolve(
+                def.lifecycle?.poll,
+                `${endpointFile}#lifecycle.poll`,
+                provider.lifecycle?.poll,
+                `${providerFile}#lifecycle.poll`,
+            );
+            const lifecycleStop = resolve(
+                def.lifecycle?.stop,
+                `${endpointFile}#lifecycle.stop`,
+                provider.lifecycle?.stop,
+                `${providerFile}#lifecycle.stop`,
+            );
+            if ((lifecyclePoll || lifecycleStop) && !lifecycleStart) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: lifecycle.poll/stop without lifecycle.start — ` +
+                        `start must resolve (endpoint ?? provider) whenever any ` +
+                        `lifecycle phase does`,
+                );
+            }
+            // Lifecycle fns are the ASYNC hook family — stamped with
+            // schema.async_since, which floors minEngineVersion for the doc.
+            const lifecycleStartRef = lifecycleStart
+                ? await interner.intern(
+                    lifecycleStart.value,
+                    lifecycleStart.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+            const lifecyclePollRef = lifecyclePoll
+                ? await interner.intern(
+                    lifecyclePoll.value,
+                    lifecyclePoll.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+            const lifecycleStopRef = lifecycleStop
+                ? await interner.intern(
+                    lifecycleStop.value,
+                    lifecycleStop.label,
+                    SC.asyncSince,
+                )
+                : undefined;
+
+            // TYPED STATE (lifecycle.state → doc.lifecycle.stateSchema):
+            // resolved leaf-wise like the phase fns; a declared state
+            // schema without a resolved start is dead config.
+            const lifecycleState = resolve(
+                def.lifecycle?.state,
+                `${endpointFile}#lifecycle.state`,
+                provider.lifecycle?.state,
+                `${providerFile}#lifecycle.state`,
+            );
+            if (lifecycleState && !lifecycleStart) {
+                throw new CompileError(
+                    CompileErrorCode.STATE_SCHEMA_INVALID,
+                    `${where}: lifecycle.state is dead config — no resolved ` +
+                        `lifecycle.start`,
+                );
+            }
+            const stateSchema = lifecycleState
+                ? toJsonSchema(
+                    lifecycleState.value,
+                    `${where}: lifecycle.state`,
+                    CompileErrorCode.STATE_SCHEMA_INVALID,
+                )
+                : undefined;
+
+            // pollMs is meaningful only for pollable docs: an ENDPOINT-level
+            // pollMs on a doc without a resolved poll is dead config (a
+            // provider-level pollMs is a legitimate default over a mixed
+            // sync/async endpoint set and is simply not emitted).
+            if (def.timeouts?.pollMs !== undefined && !lifecyclePoll) {
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
+                    `${where}: timeouts.pollMs is dead config — the endpoint ` +
+                        `has no resolved lifecycle.poll`,
+                );
+            }
             const timeouts = {
                 requestMs: def.timeouts?.requestMs ??
                     provider.timeouts?.requestMs ??
                     CC.defaultTimeouts.requestMs,
                 runMs: def.timeouts?.runMs ?? provider.timeouts?.runMs ??
                     CC.defaultTimeouts.runMs,
+                pollMs: lifecyclePoll
+                    ? def.timeouts?.pollMs ?? provider.timeouts?.pollMs ??
+                        CC.defaultTimeouts.pollMs
+                    : undefined,
             };
 
             // ---- auth: inject REQUIRED; credentials ?? default ------------
@@ -205,7 +386,8 @@ export async function compileBundle(
                 `${providerFile}#auth.inject`,
             );
             if (!inject) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
                     `${where}: auth.inject must resolve — declare it on the endpoint ` +
                         `or the provider (e.g. presets.auth.header("x-api-key"))`,
                 );
@@ -248,26 +430,200 @@ export async function compileBundle(
                     SC.fnAbiSince,
                 )
                 : undefined;
+            const fromError = resolve(
+                def.output?.fromError,
+                `${endpointFile}#output.fromError`,
+                provider.output?.fromError,
+                `${providerFile}#output.fromError`,
+            );
+            const fromErrorRef = fromError
+                ? await interner.intern(
+                    fromError.value,
+                    fromError.label,
+                    SC.fnAbiSince,
+                )
+                : undefined;
 
-            // ---- usage.consolidate: THE settle fn, REQUIRED ---------------
+            // ---- usage.model (inline DATA, REQUIRED) ----------------------
+            const usageModel = def.usage?.model ?? provider.usage?.model;
+            if (usageModel === undefined) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.model must resolve — declare it on the ` +
+                        `endpoint or the provider; every doc states what is ` +
+                        `chargeable (design D19).`,
+                );
+            }
+            const meteredCount = usageModel.kind === "COMPOSITE"
+                ? Object.values(usageModel.components)
+                    .filter((component) => component.kind === "PER_UNIT")
+                    .length
+                : usageModel.kind === "PER_UNIT"
+                ? 1
+                : 0;
+            // ≥2 METERED components ⇒ only DOC-owned fns can know which
+            // line a count belongs to — a GENERIC provider evidence fn
+            // keys by "the sole PER_UNIT line" and would have no basis to
+            // choose between two (design D19). Reject at build time, not
+            // at the first live run. (Checked FIRST — the more specific
+            // diagnosis wins over the general must-resolve rule.)
+            if (usageModel.kind === "COMPOSITE" && meteredCount >= 2) {
+                if (def.usage?.evidence === undefined) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: ${meteredCount} metered components — ` +
+                            `a doc-level usage.evidence must key its ` +
+                            `own counts (the generic provider fn cannot ` +
+                            `choose between them)`,
+                    );
+                }
+                if (def.usage?.estimate === undefined) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: ≥2 metered components require a ` +
+                            `doc-level usage.estimate too (same keying)`,
+                    );
+                }
+            }
+            // ---- usage.estimate + usage.evidence: the QUANTITIES pair ----
+            // (design D27 subclassing): endpoint ?? provider, and when
+            // NEITHER declares one AND the model has no metered lines, the
+            // compiler synthesizes the one lawful fn — `{counts: {}}` is
+            // the only return a FREE/flat model admits, so writing it by
+            // hand adds no information. A METERED model's quantities
+            // depend on input/response — must resolve (the deduced-
+            // estimate guarantee, designs D24/D25).
+            const metered = hasMeteredLines(usageModel);
+            const estimateFn = resolve(
+                def.usage?.estimate,
+                `${endpointFile}#usage.estimate`,
+                provider.usage?.estimate,
+                `${providerFile}#usage.estimate`,
+            );
+            const evidenceFn = resolve(
+                def.usage?.evidence,
+                `${endpointFile}#usage.evidence`,
+                provider.usage?.evidence,
+                `${providerFile}#usage.evidence`,
+            );
+            if (metered && !estimateFn) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.estimate must resolve — the model has ` +
+                        `metered lines, so the promise depends on the ` +
+                        `input (deduced estimates, design D24/D27)`,
+                );
+            }
+            if (metered && !evidenceFn) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.evidence must resolve — the model has ` +
+                        `metered lines, so the settled quantities depend ` +
+                        `on the response (design D27)`,
+                );
+            }
+            const estimateRef = estimateFn
+                ? await interner.intern(
+                    estimateFn.value,
+                    estimateFn.label,
+                    SC.fnAbiSince,
+                )
+                : await interner.intern(
+                    SYNTHESIZED_EMPTY_USAGE,
+                    "core#usage.synthesizedEmpty",
+                    SC.fnAbiSince,
+                );
+            const evidenceRef = evidenceFn
+                ? await interner.intern(
+                    evidenceFn.value,
+                    evidenceFn.label,
+                    SC.fnAbiSince,
+                )
+                : await interner.intern(
+                    SYNTHESIZED_EMPTY_USAGE,
+                    "core#usage.synthesizedEmpty",
+                    SC.fnAbiSince,
+                );
+
+            // ---- usage.consolidate: the VENDOR-METER fn, OPTIONAL --------
+            // (design D27 — not every vendor reports one; typically
+            // provider-level: where the meter lives is a provider-wide
+            // fact, so the claim + strip is written once).
             const consolidate = resolve(
                 def.usage?.consolidate,
                 `${endpointFile}#usage.consolidate`,
                 provider.usage?.consolidate,
                 `${providerFile}#usage.consolidate`,
             );
-            if (!consolidate) {
-                throw new Error(
-                    `${where}: usage.consolidate must resolve — declare it on the endpoint ` +
-                        `or the provider; every endpoint must be able to settle. ` +
-                        `Use presets.usage.perCall() for flat billing.`,
+            const consolidateRef = consolidate
+                ? await interner.intern(
+                    consolidate.value,
+                    consolidate.label,
+                    SC.fnAbiSince,
+                )
+                : undefined;
+
+            // ---- credits (design D26): the credit systems the model's
+            // lines drain — declared beside the model, resolved provider
+            // ?? endpoint (OPPOSITE of hooks: the pool is a provider-wide
+            // fact; an endpoint declares one only when the provider has
+            // none), referenced by every consumes.credit. The def IS the
+            // rate card; the broker prices ONLY these ids.
+            if (usageModel.kind === "FREE" && def.usage?.credits) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.credits on a FREE doc — free drains ` +
+                        `nothing (design D26: compiled FREE credits = {})`,
                 );
             }
-            const consolidateRef = await interner.intern(
-                consolidate.value,
-                consolidate.label,
-                SC.fnAbiSince,
+            const credits = usageModel.kind === "FREE"
+                ? {}
+                : provider.usage?.credits ?? def.usage?.credits;
+            if (credits === undefined) {
+                throw new CompileError(
+                    CompileErrorCode.HOOK_UNRESOLVED,
+                    `${where}: usage.credits must resolve — a billable ` +
+                        `model's lines drain declared credit systems ` +
+                        `(design D26; single-pool providers declare ` +
+                        `{default: {...}} once at provider level)`,
+                );
+            }
+            const consumesLines: [string, { credit: string }][] =
+                usageModel.kind === "COMPOSITE"
+                    ? Object.entries(usageModel.components).map((
+                        [id, component],
+                    ) => [id, component.consumes])
+                    : usageModel.kind === "FREE"
+                    ? []
+                    : [[
+                        usageModel.kind === "PER_UNIT"
+                            ? usageModel.unit
+                            : "CALL",
+                        usageModel.consumes,
+                    ]];
+            const declaredIds = new Set(Object.keys(credits));
+            for (const [lineId, consumes] of consumesLines) {
+                if (!declaredIds.has(consumes.credit)) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: line "${lineId}" consumes undeclared ` +
+                            `credit "${consumes.credit}" (declared: ` +
+                            `${[...declaredIds].join(", ") || "none"})`,
+                    );
+                }
+            }
+            const usedIds = new Set(
+                consumesLines.map(([, consumes]) => consumes.credit),
             );
+            for (const id of declaredIds) {
+                if (!usedIds.has(id)) {
+                    throw new CompileError(
+                        CompileErrorCode.HOOK_UNRESOLVED,
+                        `${where}: declared credit "${id}" is drained by ` +
+                            `no line — remove it or reference it`,
+                    );
+                }
+            }
 
             // ---- input/output schemas: leaf-wise fallback -----------------
             const schemaLeaf = (
@@ -284,7 +640,12 @@ export async function compileBundle(
                 injectRef,
                 toRequestRef,
                 fromResponseRef,
+                fromErrorRef,
                 consolidateRef,
+                estimateRef,
+                lifecycleStartRef,
+                lifecyclePollRef,
+                lifecycleStopRef,
             ]
                 .filter((ref): ref is FnRef => ref !== undefined);
             const minEngineVersion = semverMax(
@@ -295,6 +656,7 @@ export async function compileBundle(
             const docWithoutHash = pruneUndefined({
                 specVersion: SC.specVersion,
                 id,
+                endpoint: endpointPath,
                 provider: providerName,
                 minEngineVersion,
                 meta,
@@ -331,6 +693,7 @@ export async function compileBundle(
                 },
                 output: {
                     fromResponse: fromResponseRef as unknown as Json,
+                    fromError: fromErrorRef as unknown as Json,
                     schema: schemaLeaf(
                         def.output?.schema,
                         provider.output?.schema,
@@ -338,13 +701,25 @@ export async function compileBundle(
                     ),
                 },
                 usage: {
+                    model: usageModel as unknown as Json,
+                    credits: credits as unknown as Json,
+                    estimate: estimateRef as unknown as Json,
+                    evidence: evidenceRef as unknown as Json,
                     consolidate: consolidateRef as unknown as Json,
                 },
+                lifecycle: lifecycleStartRef
+                    ? {
+                        start: lifecycleStartRef as unknown as Json,
+                        poll: lifecyclePollRef as unknown as Json,
+                        stop: lifecycleStopRef as unknown as Json,
+                        stateSchema: stateSchema as unknown as Json,
+                    }
+                    : undefined,
                 timeouts,
             }) as Record<string, Json>;
 
             const hash = await docHash(docWithoutHash);
-            const doc = parseSchema(
+            const doc = parseDoc(
                 zEndpointDoc,
                 { ...docWithoutHash, hash },
                 where,
@@ -352,7 +727,8 @@ export async function compileBundle(
 
             const size = stableStringify(docWithoutHash).length;
             if (size > CC.docSizeFailBytes) {
-                throw new Error(
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
                     `${where}: doc size ${size} > ${CC.docSizeFailBytes}`,
                 );
             }
@@ -375,7 +751,7 @@ export async function compileBundle(
             ),
             meta: provider.meta as unknown as Json,
         }) as Record<string, Json>;
-        providers[providerName] = parseSchema(zProviderDoc, {
+        providers[providerName] = parseDoc(zProviderDoc, {
             ...providerWithoutHash,
             hash: await docHash(providerWithoutHash),
         }, providerFile);
@@ -390,7 +766,7 @@ export async function compileBundle(
     }
 
     // ---- bundle assembly — cross-doc invariants live in zBundle.superRefine
-    const bundle = parseSchema(zBundle, {
+    const bundle = parseDoc(zBundle, {
         catalogVersion: opts.catalogVersion,
         generatedAt: opts.generatedAt,
         minEngineVersion: semverMax(allDocs.map((doc) => doc.minEngineVersion)),
@@ -421,7 +797,8 @@ function parseCategories(
 ): void {
     const result = zCategories.safeParse(categories);
     if (!result.success) {
-        throw new Error(
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
             `${where}: unknown category — add it to connectors/categories.ts (closed ` +
                 `vocabulary): ${result.error.issues[0]?.message}`,
         );

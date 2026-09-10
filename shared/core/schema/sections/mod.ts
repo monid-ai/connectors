@@ -4,3 +4,4 @@ export * from "./usage.ts";
 export * from "./auth.ts";
 export * from "./request.ts";
 export * from "./timeouts.ts";
+export * from "./lifecycle.ts";

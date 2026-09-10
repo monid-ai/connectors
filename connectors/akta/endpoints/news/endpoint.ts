@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zNewsQueryParams } from "./schema/inputs.ts";
 
 /** GET /v1/news — enriched, entity-resolved news signals. */
@@ -27,5 +27,49 @@ export default defineEndpoint({
         categories: ["company-news", "news-search", "funding-data"],
     },
     request: { method: "GET", path: "/v1/news/" },
-    input: { schema: { queryParams: zNewsQueryParams } },
+    // `limit` REQUIRED at the binding (design D25 — the mirror stays the
+    // faithful vendor contract, optional there): it is the estimate's
+    // whole basis, so the caller states it.
+    input: {
+        schema: {
+            queryParams: zNewsQueryParams.required({ limit: true }),
+        },
+    },
+    usage: {
+        /** COMPOSITE (design D25): akta news bills a FLAT part + PER
+         *  ARTICLE — v1 evidence: news.ts `makePerResultPrice(0.0005,
+         *  0.005)` = $0.005 flat + $0.0005/article, i.e. 0.1 + 0.01
+         *  credits at the fixed $0.05/credit rate. The model states the
+         *  QUANTITY shape; both credit rates live in the services card
+         *  keyed by these component ids. */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                request: {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                    // 0.1 credits flat — v1 makePerResultPrice(0.0005, 0.005)
+                    // at $0.05/credit
+                    consumes: { credit: "default", amount: 0.1 },
+                },
+                article: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "articles",
+                    // 0.01 credits per article (same v1 evidence)
+                    consumes: { credit: "default", amount: 0.01 },
+                },
+            },
+        },
+        /** The caller-stated `limit` IS the article promise (typed read —
+         *  the estimate sees the PRE-toRequest validated input, design
+         *  D25); the engine appends the flat `request: 1`. */
+        estimate: ({ data }) => ({
+            counts: { "article": data.input.queryParams.limit },
+        }),
+        // Settle is INHERITED (design D27): the provider's generic
+        // evidence counts articles DELIVERED (len($.data) under the sole
+        // metered line) and the provider consolidate lifts the vendor's
+        // credits_consumed claim out of the payload.
+    },
 });

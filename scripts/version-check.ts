@@ -14,7 +14,10 @@ const CONTRACT_PATHS = [
     "shared/core/schema/hooks/from-response.ts",
     "shared/core/schema/hooks/auth-inject.ts",
     "shared/core/schema/hooks/usage-consolidate.ts",
+    "shared/core/schema/hooks/lifecycle.ts", // the async hook family (utils.http/log, outcomes)
     "shared/core/schema/hooks/ctx.ts", // ctx shapes + carriers (the ABI)
+    "shared/core/schema/sections/lifecycle.ts", // lifecycle def section
+    "shared/core/schema/sections/timeouts.ts", // timeouts shape (pollMs)
     "shared/core/schema/endpoint/doc.ts", // structural doc format
     "shared/core/schema/provider/doc.ts", // provider doc format
     "shared/core/schema/bundle/sealed-unit.ts", // sealed unit shape
@@ -23,7 +26,16 @@ const CONTRACT_PATHS = [
     "shared/core/schema/usage/monetary.ts", // MonetaryValue + MoneyUtil (the ABI)
     "shared/core/schema/run/input.ts", // RunInput (caller-facing shape)
     "shared/core/schema/run/result.ts", // RunResult/RunCompleted (result contract)
-    "shared/core/schema/json/util.ts", // JsonUtil interface (the ABI)
+    "shared/core/schema/run/state.ts", // RunKind + zRunState/zStatePatch/timing
+    "shared/core/schema/hooks/estimate.ts", // usage.estimate hook contract
+    "shared/core/schema/zod-util.ts", // extractZodDiscriminatorKeys (derived enums)
+    "shared/core/schema/usage/model/per-call.ts", // the rate-free model algebra —
+    "shared/core/schema/usage/model/per-unit.ts", //   one kind per file (D18/D19)
+    "shared/core/schema/usage/model/scalar.ts",
+    "shared/core/schema/usage/model/composite.ts",
+    "shared/core/schema/usage/model/mod.ts",
+    "shared/core/schema/sections/usage.ts", // usage def section (model/estimate)
+    "shared/core/schema/json/util.ts", // JsonUtil interface (the ABI) + JsonPathError
     "config.yml", // contract constants
 ];
 
@@ -73,19 +85,19 @@ if (baseVersion === null) {
     Deno.exit(0);
 }
 
-const [curMajor, curMinor] = currentVersion.split(".").map(Number);
-const [baseMajor, baseMinor] = baseVersion.split(".").map(Number);
-const bumped = curMajor > baseMajor ||
-    (curMajor === baseMajor && curMinor > baseMinor);
-
-if (!bumped) {
+// Pre-1.0 posture: the guard requires the version to DIFFER from base when
+// contract paths changed (catches the forgot-to-bump case) — not to INCREASE.
+// Rationale: the unreleased contract was reset 0.3.0 → 0.0.1 (versions stay
+// at the pre-release floor until a first real release), and a strict
+// greater-than would forbid exactly that kind of correction.
+if (currentVersion === baseVersion) {
     console.error(
-        `[version:check] FAIL — contract surface changed without a minor engine bump:\n` +
+        `[version:check] FAIL — contract surface changed without an engine version change:\n` +
             contractChanged.map((file) => `  - ${file}`).join("\n") +
-            `\n  engine version: ${baseVersion} → ${currentVersion} (need at least a MINOR bump)`,
+            `\n  engine version: ${baseVersion} (unchanged — it must differ from base)`,
     );
     Deno.exit(1);
 }
 console.log(
-    `[version:check] contract changed, engine bumped ${baseVersion} → ${currentVersion} — ok`,
+    `[version:check] contract changed, engine version ${baseVersion} → ${currentVersion} — ok`,
 );

@@ -1,0 +1,36 @@
+{
+    "name": "run-failed",
+    "description": "Actor failure (in-body vendor failure): start parks RUNNING, the terminal poll reports exitCode 91 / FAILED. The poll fn synthesizes a 500 envelope (providerHttpStatus 200 - the poll exchange itself succeeded, design D12); the engine zero-bills it and output.fromError digests the message.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "FAILED",
+                        "exitCode": 91,
+                        "statusMessage": "Actor exited with error"
+                    }
+                }
+            }
+        }
+    ]
+}

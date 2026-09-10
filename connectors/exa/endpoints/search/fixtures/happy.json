@@ -1,5 +1,6 @@
 {
     "name": "happy",
+    "description": "recorded chain for exa#search, scenario 'happy' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {
@@ -41,7 +42,9 @@
                     "searchTime": 312.4,
                     "costDollars": {
                         "total": 0.005,
-                        "search": { "neural": 0.005 }
+                        "search": {
+                            "neural": 0.005
+                        }
                     }
                 }
             }

@@ -8,22 +8,22 @@ import { z } from "zod";
 
 /** Highlight extraction controls (search family). */
 export const zHighlightOptions = z.object({
-    enable: z.boolean().default(true).describe(
+    enable: z.boolean().describe(
         "If true, returns query-relevant highlight in each result.",
-    ),
-    max_tokens: z.number().int().min(100).max(20000).default(512).describe(
+    ).optional(),
+    max_tokens: z.number().int().min(100).max(20000).describe(
         "Max tokens returned per highlight.",
-    ),
+    ).optional(),
 }).strict();
 
 /** Full raw page content controls (search family). */
 export const zFullContentOptions = z.object({
-    enable: z.boolean().default(false).describe(
+    enable: z.boolean().describe(
         "If true, returns full_content for each result.",
-    ),
-    max_tokens: z.number().int().min(100).max(100000).default(2048).describe(
+    ).optional(),
+    max_tokens: z.number().int().min(100).max(100000).describe(
         "Maximum tokens of full content included per result.",
-    ),
+    ).optional(),
 }).strict();
 
 /** Relative time window, counted back from now. */
@@ -39,13 +39,13 @@ export const zTimeRange = z.enum([
 ]);
 
 export const webSearchOptionFields = {
-    topic: z.enum(["general", "news"]).default("general").describe(
+    topic: z.enum(["general", "news"]).describe(
         "Use 'general' for general web search, or 'news' for news-focused " +
             "results.",
-    ),
-    count: z.number().int().min(1).max(100).default(5).describe(
+    ).optional(),
+    count: z.number().int().min(1).max(100).describe(
         "Number of results to return (1-100).",
-    ),
+    ).optional(),
     include_domains: z.array(z.string().max(60)).max(1200).optional()
         .describe("Domains to specifically include in the search results."),
     exclude_domains: z.array(z.string().max(60)).max(1200).optional()
@@ -56,8 +56,8 @@ export const webSearchOptionFields = {
     exclude_text: z.array(z.string().max(30)).max(5).optional().describe(
         "Strings that must not appear in the result page text.",
     ),
-    time_basis: z.enum(["auto", "published", "crawled"]).default("auto")
-        .describe("Which time field is used for time filtering."),
+    time_basis: z.enum(["auto", "published", "crawled"])
+        .describe("Which time field is used for time filtering.").optional(),
     time_range: zTimeRange.optional().describe(
         "Relative time window counting back from now. Mutually exclusive " +
             "with start_time/end_time (which take precedence).",
@@ -75,16 +75,16 @@ export const webSearchOptionFields = {
             "infers it from the query.",
     ),
     highlight: zHighlightOptions.optional(),
-    format: z.enum(["markdown", "text"]).default("text").describe(
+    format: z.enum(["markdown", "text"]).describe(
         "Formatting of highlight outputs.",
-    ),
-    safesearch: z.enum(["off", "strict"]).default("strict").describe(
+    ).optional(),
+    safesearch: z.enum(["off", "strict"]).describe(
         "Explicit/adult content filtering.",
-    ),
+    ).optional(),
     full_content: zFullContentOptions.optional(),
-    include_images: z.boolean().default(false).describe(
+    include_images: z.boolean().describe(
         "Whether to include images in each result.",
-    ),
+    ).optional(),
 };
 
 export const zWebSearchOptions = z.object(webSearchOptionFields).strict();

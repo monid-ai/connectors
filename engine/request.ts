@@ -8,7 +8,7 @@ import {
 } from "@shared/core";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import type { PreparedRequest } from "./interfaces/mod.ts";
-import { validateAgainst } from "./validate.ts";
+import { validateAgainst, validateInputAgainst } from "./validate.ts";
 
 /**
  * Validate the caller's input: first the RunInput shape itself (the engine
@@ -25,30 +25,57 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     }
     const runInput = shape.data;
     const schemas = doc.input.schema;
-    const checks: [string, JsonSchemaDoc | undefined, unknown][] = [
-        ["body", schemas.body, runInput.body],
-        ["queryParams", schemas.queryParams, runInput.queryParams ?? {}],
-        ["pathParams", schemas.pathParams, runInput.pathParams ?? {}],
+    // BODY: validated on a clone the engine owns, with schema DEFAULTS
+    // materialized into it (design D19 addendum — schema defaults mirror
+    // the vendor's own server defaults, so hooks read the same effective
+    // knobs the vendor applies). The caller's object is never mutated.
+    if (schemas.body) {
+        const body = runInput.body !== undefined
+            ? structuredClone(runInput.body)
+            : null;
+        const result = validateInputAgainst(schemas.body, body);
+        if (!result.ok) {
+            throw new EngineError(
+                EngineErrorCode.INVALID_INPUT,
+                `${doc.id}: input.body ${result.message}`,
+            );
+        }
+        runInput.body = body;
+    }
+    // QUERY/PATH PARAMS: same defaults-materializing validation as the
+    // body (design D24 — a queryParams-shaped endpoint's estimate must
+    // read the SAME effective knobs the vendor applies, e.g. akta's
+    // limit default). Cloned — the caller's object is never mutated.
+    const checks: [
+        "queryParams" | "pathParams",
+        JsonSchemaDoc | undefined,
+    ][] = [
+        ["queryParams", schemas.queryParams],
+        ["pathParams", schemas.pathParams],
     ];
-    for (const [label, schema, value] of checks) {
+    for (const [label, schema] of checks) {
         if (!schema) continue;
-        const result = validateAgainst(schema, value ?? null);
+        const value = structuredClone(runInput[label] ?? {});
+        const result = validateInputAgainst(schema, value);
         if (!result.ok) {
             throw new EngineError(
                 EngineErrorCode.INVALID_INPUT,
                 `${doc.id}: input.${label} ${result.message}`,
             );
         }
+        if (label === "queryParams") {
+            runInput.queryParams = value as RunInput["queryParams"];
+        } else {
+            runInput.pathParams = value as RunInput["pathParams"];
+        }
     }
     return runInput;
 }
 
-/** Build the PreparedRequest: {pathParam} substitution, query mapping, JSON body. */
-export function buildRequest(
-    doc: EndpointDoc,
-    input: RunInput,
-    injectEntry: FnEntry,
-): PreparedRequest {
+/** Substitute {pathParam} placeholders into the doc's compiled url — shared
+ *  by the declarative pipeline (buildRequest) and the lifecycle ctx's
+ *  data.request (fns receive the SUBSTITUTED url). */
+export function substituteUrl(doc: EndpointDoc, input: RunInput): string {
     let url = doc.request.url;
     for (const placeholder of url.match(/\{[A-Za-z_][A-Za-z0-9_]*\}/g) ?? []) {
         const name = placeholder.slice(1, -1);
@@ -61,18 +88,37 @@ export function buildRequest(
         }
         url = url.replaceAll(placeholder, encodeURIComponent(value));
     }
+    return url;
+}
 
+/** Map queryParams to wire strings — scalars only (shared by the
+ *  declarative pipeline and utils.request). */
+export function toScalarQuery(
+    docId: string,
+    queryParams: Record<string, unknown>,
+): Record<string, string> {
     const query: Record<string, string> = {};
-    for (const [key, value] of Object.entries(input.queryParams ?? {})) {
+    for (const [key, value] of Object.entries(queryParams)) {
         if (value === null || value === undefined) continue;
         if (Array.isArray(value) || typeof value === "object") {
             throw new EngineError(
                 EngineErrorCode.INVALID_INPUT,
-                `${doc.id}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
+                `${docId}: queryParams.${key} must be a scalar (array/object encodings arrive at a later engine version)`,
             );
         }
         query[key] = String(value);
     }
+    return query;
+}
+
+/** Build the PreparedRequest: {pathParam} substitution, query mapping, JSON body. */
+export function buildRequest(
+    doc: EndpointDoc,
+    input: RunInput,
+    injectEntry: FnEntry,
+): PreparedRequest {
+    const url = substituteUrl(doc, input);
+    const query = toScalarQuery(doc.id, input.queryParams ?? {});
 
     return {
         method: doc.request.method,

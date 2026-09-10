@@ -2,6 +2,32 @@ import { z } from "zod";
 import type { Json } from "./type.ts";
 
 /**
+ * JsonPathError — what `utils.json` lookups throw, coded so catch sites
+ * (and logs) can tell WHY without string-matching. `retriable = false` by
+ * construction: a path/type failure is a deterministic fn bug — retrying
+ * cannot succeed — so the engine classifies an escaped JsonPathError as
+ * FN_CONTRACT even out of a lifecycle fn (where unknown throws are
+ * EXECUTION_FAILED/retriable).
+ */
+export const JsonPathErrorCode = {
+    /** Malformed path expression (fails PATH_PATTERN). */
+    PATH_SYNTAX: "PATH_SYNTAX",
+    /** Strict read on an absent path (use the optional* variant). */
+    PATH_NOT_FOUND: "PATH_NOT_FOUND",
+    /** Present value of the wrong type (e.g. num on a string leaf). */
+    TYPE_MISMATCH: "TYPE_MISMATCH",
+} as const;
+export type JsonPathErrorCode = keyof typeof JsonPathErrorCode;
+
+export class JsonPathError extends Error {
+    readonly retriable = false;
+    constructor(readonly code: JsonPathErrorCode, message: string) {
+        super(`[${code}] ${message}`);
+        this.name = "JsonPathError";
+    }
+}
+
+/**
  * JsonUtil — value-level JSON utilities, implemented by the ENGINE
  * (engine/json-util.ts) and handed to fns as `ctx.utils.json`.
  *
@@ -46,6 +72,13 @@ export interface JsonUtil {
     pick(value: Json, paths: string[]): Record<string, Json>;
     /** Deep-merge fields into an object value; non-objects are replaced. */
     merge(value: Json, fields: Record<string, Json>): Json;
+    /** ONE-MOTION extract (design D27): split a value into the node at
+     *  the path and everything else — `{value, rest}`. Absent path ⇒
+     *  `value` undefined, `rest` = the input unchanged (shape-tolerant
+     *  like the other transformers; bad path SYNTAX still throws).
+     *  Removal is exact (that one path), not the deep key-walk `omit`
+     *  does. */
+    pluck(value: Json, path: string): { value?: Json; rest: Json };
 }
 
 export const zJsonUtil = z.custom<JsonUtil>(

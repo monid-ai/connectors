@@ -1,4 +1,4 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zOctenBroadSearchBody } from "./schema/inputs.ts";
 
 /**
@@ -24,9 +24,57 @@ export default defineEndpoint({
         categories: ["web-search"],
     },
     request: { method: "POST", path: "/broad-search" },
-    input: { schema: { body: zOctenBroadSearchBody } },
+    input: {
+        schema: {
+            // vendor-documented API default 5 (moved from the mirror —
+            // D25: mirrors carry optionality only).
+            body: zOctenBroadSearchBody.extend({
+                max_queries: zOctenBroadSearchBody.shape.max_queries
+                    .unwrap().default(5),
+            }),
+        },
+    },
     usage: {
-        consolidate: ({ data, utils }) => {
+        /** Receipt queries AND gated full-content tokens (AND = COMPOSITE).
+         *  Component ids spelled like octen's response fields (design D19).
+         *  TWO metered components ⇒ the compiler requires this doc to own
+         *  both fns (the generic keying can't choose between them). */
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                receipt_queries: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "queries",
+                    description: "executed sub-query searches",
+                    // 1 credit per executed sub-query — v1 makeOctenCredit(1)
+                    consumes: { credit: "default", amount: 1 },
+                },
+                full_content_tokens: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.TOKEN,
+                    label: "content tokens",
+                    // 1 credit per 1k tokens — v1 makePerUnitPrice(1cr, 1000)
+                    every: 1000,
+                    consumes: { credit: "default", amount: 1 },
+                    description:
+                        "full-content extraction tokens (only charged " +
+                        "when search_options.full_content.enable is set)",
+                },
+            },
+        },
+        /** Queries = the requested max_queries (binding default 5 — the v1
+         *  fallback rule, applied at parse time). Full-content tokens
+         *  depend on PAGE CONTENT — not deducible from the input, so that
+         *  key is promised at the deducible floor 0 (design D24); settle
+         *  trues it up from `meta.usage.full_content_tokens`. */
+        estimate: ({ data }) => ({
+            counts: {
+                "receipt_queries": data.input.body.max_queries,
+                "full_content_tokens": 0,
+            },
+        }),
+        evidence: ({ data, utils }) => {
             const queries = utils.json.optionalNum(
                 data.output,
                 "$.meta.usage.num_search_queries",
@@ -40,16 +88,12 @@ export default defineEndpoint({
                 "$.meta.usage.full_content_tokens",
             );
             return {
-                usage: {
-                    units: [
-                        { amount: queries, unit: "result" as const },
-                        ...(tokens !== undefined
-                            ? [{ amount: tokens, unit: "token" as const }]
-                            : []),
-                    ],
-                    evidence: utils.json.pick(data.output, ["$.meta.usage"]),
+                counts: {
+                    "receipt_queries": queries,
+                    ...(tokens !== undefined
+                        ? { "full_content_tokens": tokens }
+                        : {}),
                 },
-                output: utils.json.omit(data.output, ["usage"]),
             };
         },
     },

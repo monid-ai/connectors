@@ -1,10 +1,11 @@
 {
     "name": "empty",
+    "description": "recorded chain for akta#news, scenario 'empty' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {
                 "method": "GET",
-                "url": "https://api.akta.pro/api/v1/news/?company=nope"
+                "url": "https://api.akta.pro/api/v1/news/?company=nope&limit=10"
             },
             "res": {
                 "status": 200,

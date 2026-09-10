@@ -32,6 +32,10 @@ export default defineEndpoint({
         docsUrl: "https://docs.tinyfish.ai/search-api/reference",
         categories: ["web-search", "news-search"],
     },
+    /** PUBLIC identity (design D22): the per-endpoint baseUrl carries
+     *  the real target and request.path is "/" — pinned explicitly
+     *  (v1 parity). */
+    endpoint: "/search",
     request: {
         method: "GET",
         path: "/",

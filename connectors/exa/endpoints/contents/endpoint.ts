@@ -1,11 +1,12 @@
-import { defineEndpoint } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zExaContentsBody } from "./schema/inputs.ts";
 
 /**
  * Exa /contents — clean page content for known URLs.
  *
- * usage.consolidate is byte-identical to search's — the compiler interns
- * both to the SAME fnTable entry (content addressing).
+ * Plain per-result metering (no base fee — unlike /search's
+ * base-plus-overage): a leaf PER_UNIT doc, counts keyed by the model's
+ * unit (design D19).
  */
 export default defineEndpoint({
     meta: {
@@ -23,30 +24,42 @@ export default defineEndpoint({
     },
     request: { method: "POST", path: "/contents" },
     input: {
-        schema: { body: zExaContentsBody },
+        schema: {
+            // vendor-documented API defaults, applied at the binding (moved
+            // from the mirror — D25: mirrors carry optionality only):
+            // subpages 0, livecrawlTimeout 10000. (The nested extras
+            // links/imageLinks defaults of 0 dropped to plain optionality —
+            // absent means the vendor's own 0.)
+            body: zExaContentsBody.extend({
+                subpages: zExaContentsBody.shape.subpages.unwrap()
+                    .default(0),
+                livecrawlTimeout: zExaContentsBody.shape.livecrawlTimeout
+                    .unwrap().default(10000),
+            }),
+        },
     },
     usage: {
-        consolidate: ({ data, utils }) => {
-            const total = utils.json.optionalNum(
-                data.output,
-                "$.costDollars.total",
-            );
-            return {
-                usage: {
-                    units: [{
-                        amount: utils.json.len(data.output, "$.results"),
-                        unit: "result",
-                    }],
-                    ...(total !== undefined
-                        ? { cost: utils.money.fromDollars(total) }
-                        : {}),
-                    evidence: utils.json.pick(data.output, [
-                        "$.costDollars",
-                        "$.requestId",
-                    ]),
-                },
-                output: utils.json.omit(data.output, ["costDollars"]),
-            };
+        model: {
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
+            label: "pages",
+            // $0.001 per crawled page — v1 vendor unit price
+            consumes: { credit: "default", amount: 0.001 },
         },
+        /** One result per requested URL — `urls` is required (min 1), so
+         *  its length is the deducible per-call quantity (v1 evidence:
+         *  exa's contents cost "varies by number of URLs"; the settle
+         *  counts `$.results`). `ids` (deprecated alias) and subpage
+         *  crawls can add results beyond this floor — settle trues the
+         *  count up from the response. */
+        estimate: ({ data }) => ({
+            counts: { "RESULT": data.input.body.urls.length },
+        }),
+        // the costDollars receipt is the provider consolidate's job (D27)
+        evidence: ({ data, utils }) => ({
+            counts: {
+                "RESULT": utils.json.len(data.output, "$.results"),
+            },
+        }),
     },
 });

@@ -1,5 +1,6 @@
 {
     "name": "synthetic-happy",
+    "description": "recorded chain for tinyfish#search, scenario 'synthetic-happy' (per-endpoint recording; predates the shared-chain strategy)",
     "calls": [
         {
             "req": {

@@ -1,4 +1,4 @@
-import { defineProvider, presets } from "@shared/core";
+import { defineProvider, presets, UsageModelKind } from "@shared/core";
 
 /**
  * TinyFish (tinyfish.ai) — both integrated endpoints are FREE (0 credits on
@@ -21,5 +21,14 @@ export default defineProvider({
         categories: ["web-search"],
     },
     auth: { inject: presets.auth.header("X-API-Key") },
-    usage: { consolidate: presets.usage.perCall() },
+    usage: {
+        // FREE (designs D25/D27): tinyfish bills nothing on every plan
+        // today — v1 evidence: "$0 wins verbatim … both endpoints are
+        // free". Free-ness is a MODEL fact, and the model ALONE suffices:
+        // the quantities fns are compiler-synthesized ({counts: {}} is
+        // the only lawful return) and there is no vendor meter to
+        // consolidate. A future price change is a MODEL change, not a
+        // rate-card surprise.
+        model: { kind: UsageModelKind.FREE },
+    },
 });

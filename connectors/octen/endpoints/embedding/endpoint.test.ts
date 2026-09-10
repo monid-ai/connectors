@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("octen#embedding happy (recorded): input tokens are the native unit", async () => {
+Deno.test("octen#embedding happy (recorded): tokens land under the MODE-selected line", async () => {
     const unit = await testSealedUnit("octen#embedding");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -21,8 +21,14 @@ Deno.test("octen#embedding happy (recorded): input tokens are the native unit", 
         fixture,
     });
     assertEquals(result.httpStatus, 200);
-    assertEquals(result.usage.units, [{ amount: 3, unit: "token" }]);
-    assertEquals(result.usage.evidence?.usage, { input_tokens: 3 });
+    // mode-selected composite (D19/D26): the receipt's input tokens are
+    // keyed by the SELECTED model's line; the 0.6b line bills 10 credits
+    // per 1M tokens, so 3 tokens fold to one whole increment = 10. The
+    // vendor's meta.usage receipt stays in the RAW run record.
+    assertEquals(result.usage, {
+        credits: { default: 10 },
+        evidence: { embedding_0_6b: 3 },
+    });
     const output = result.output as Record<string, Record<string, unknown>>;
     assertEquals("usage" in output.meta, false);
 });
@@ -49,6 +55,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.units[0]?.unit, "token");
+        assertEquals(Object.keys(result.usage.evidence), ["embedding_0_6b"]);
     },
 });

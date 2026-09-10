@@ -55,4 +55,75 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         displayName: "Embeddings",
         description: "Convert text and media into vector representations.",
     },
+    {
+        id: "people-enrichment",
+        displayName: "People Enrichment",
+        description:
+            "Person data: profiles, contact discovery, and enrichment.",
+    },
+    {
+        id: "linkedin",
+        displayName: "LinkedIn",
+        description: "LinkedIn data: profiles, jobs, posts, and companies.",
+    },
+    {
+        id: "instagram",
+        displayName: "Instagram",
+        description: "Instagram data: profiles, posts, and hashtags.",
+    },
+    {
+        id: "twitter",
+        displayName: "X (Twitter)",
+        description: "X (Twitter) data: tweets, profiles, and searches.",
+    },
+    {
+        id: "youtube",
+        displayName: "YouTube",
+        description:
+            "YouTube data: videos, transcripts, comments, and channels.",
+    },
+    {
+        id: "maps",
+        displayName: "Maps & Local",
+        description:
+            "Maps and local-places data: businesses, reviews, and points of interest.",
+    },
+    {
+        id: "amazon",
+        displayName: "Amazon",
+        description:
+            "Amazon data: products, reviews, search results, and sellers.",
+    },
+    {
+        id: "facebook",
+        displayName: "Facebook",
+        description:
+            "Facebook data: pages, groups, events, ads, posts, and reviews.",
+    },
+    {
+        id: "google-shopping",
+        displayName: "Google Shopping",
+        description: "Google Shopping data: products, prices, and sellers.",
+    },
+    {
+        id: "jobs",
+        displayName: "Jobs",
+        description: "Job listings and hiring data.",
+    },
+    {
+        id: "reddit",
+        displayName: "Reddit",
+        description: "Reddit data: posts, comments, and communities.",
+    },
+    {
+        id: "snapchat",
+        displayName: "Snapchat",
+        description: "Snapchat data: profiles, stories, and spotlight videos.",
+    },
+    {
+        id: "tiktok",
+        displayName: "TikTok",
+        description:
+            "TikTok data: videos, profiles, comments, and search results.",
+    },
 ]);

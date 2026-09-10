@@ -35,8 +35,8 @@ export const zSubpageTarget = z.union([z.string(), z.array(z.string())]);
 
 /** Extra per-page data. */
 export const zExtras = z.object({
-    links: z.number().int().min(0).default(0),
-    imageLinks: z.number().int().min(0).default(0),
+    links: z.number().int().min(0).optional(),
+    imageLinks: z.number().int().min(0).optional(),
 });
 
 /** Inline contents-extraction options shared by /search.contents and /contents. */
@@ -44,7 +44,7 @@ export const zContentsOptions = z.object({
     text: zText.optional(),
     highlights: zHighlights.optional(),
     summary: zSummary.optional(),
-    subpages: z.number().int().min(0).default(0),
+    subpages: z.number().int().min(0).optional(),
     subpageTarget: zSubpageTarget.optional(),
     extras: zExtras.optional(),
     maxAgeHours: z.number().int().optional(),

@@ -4,6 +4,7 @@ import { zProviderMeta } from "../meta/provider.ts";
 import {
     zAuthSection,
     zInputSection,
+    zLifecycleSection,
     zOutputSection,
     zRequestDefaults,
     zTimeoutsSection,
@@ -33,6 +34,9 @@ export const zProviderDef = z.strictObject({
     usage: zUsageSection.optional(),
     auth: zAuthSection.optional(),
     timeouts: zTimeoutsSection.optional(),
+    /** Provider-defaulted lifecycle (the actorRunLifecycle-attached-to-
+     *  every-def equivalent) — endpoints inherit each phase leaf-wise. */
+    lifecycle: zLifecycleSection.optional(),
 });
 
 export type ProviderDefSeed = z.input<typeof zProviderDef>;

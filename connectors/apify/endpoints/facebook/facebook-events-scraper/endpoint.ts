@@ -1,0 +1,80 @@
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
+import { zFacebookEventsScraperBody } from "./schema/inputs.ts";
+import { zFacebookEventsScraperOutput } from "./schema/output.ts";
+
+/**
+ * apify/facebook-events-scraper — Search Facebook Events. Pure data; the async machinery
+ * (lifecycle + fromError + usage.evidence + usage.consolidate) is
+ * inherited leaf-wise from
+ * the apify provider.
+ */
+export default defineEndpoint({
+    meta: {
+        displayName: "Search Facebook Events",
+        summary: "Extract Facebook event listings by search query, page, " +
+            "or event URL.",
+        description: "Extracts event listings and metadata from Facebook " +
+            "pages, event URLs, or search queries with filters. " +
+            "Returns event names, schedules (start date and time), " +
+            "descriptions, locations, organizer information, " +
+            "interested/attending counts, and ticket details for " +
+            "event intelligence and local activity tracking.",
+        docsUrl: "https://apify.com/apify/facebook-events-scraper",
+        categories: ["facebook"],
+    },
+    /** PUBLIC identity: the actor's own slug path (design D22) —
+     *  mechanically derived from request.path, pinned for readability. */
+    endpoint: "/apify/facebook-events-scraper",
+    request: {
+        method: "POST",
+        path: "/v2/acts/apify~facebook-events-scraper/runs",
+    },
+    input: {
+        schema: {
+            // the actor accepts an absent maxEvents (extracts unbounded;
+            // prefill 30 is editor-only, NOT a server default) — WE
+            // require it (inner min(1) kept by .required, zod 4): the
+            // estimate must be deducible to price the hold (D25)
+            body: zFacebookEventsScraperBody.required({ maxEvents: true }),
+        },
+    },
+    // Published dataset-item schema (design D29): passthrough
+    // DOCUMENTATION — non-strict, all-optional ("required" stripped), so
+    // catalogs and agents see the output shape while vendor drift can
+    // never fail a paid run; the drift suite reports field changes.
+    output: { schema: zFacebookEventsScraperOutput },
+    usage: {
+        model: {
+            // verified actor-start charge event + per-item metering (survey)
+            kind: UsageModelKind.COMPOSITE,
+            // component ids are OUR snake_case keys — the actor's
+            // charge-event names normalize onto them (strip apify-
+            // prefix, kebab/camel → snake), which is the drift
+            // guard's derived join (design D28)
+            components: {
+                actor_start: {
+                    kind: UsageModelKind.PER_CALL,
+                    label: "base fee",
+                    // survey-pinned Business-tier event price
+                    consumes: { credit: "default", amount: 0.001 },
+                },
+                event: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.RESULT,
+                    label: "events",
+                    consumes: { credit: "default", amount: 0.007 },
+                },
+            },
+        },
+        /** maxEvents × (searchQueries + startUrls) — maxEvents required at
+         *  the binding (v1 PER_QUERY_LIMIT); both query arrays are
+         *  optional and absent ≡ empty, so an all-empty query set
+         *  estimates 0, which is correct (D25). */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const n = (body.searchQueries?.length ?? 0) +
+                (body.startUrls?.length ?? 0);
+            return { counts: { "event": body.maxEvents * n } };
+        },
+    },
+});

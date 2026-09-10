@@ -37,6 +37,10 @@ export default defineEndpoint({
         docsUrl: "https://docs.tinyfish.ai/fetch-api/reference",
         categories: ["web-scraping"],
     },
+    /** PUBLIC identity (design D22): the per-endpoint baseUrl carries
+     *  the real target and request.path is "/" — pinned explicitly
+     *  (v1 parity). */
+    endpoint: "/fetch",
     request: {
         method: "POST",
         path: "/",
