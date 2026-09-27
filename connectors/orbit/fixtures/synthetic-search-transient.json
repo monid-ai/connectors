@@ -1,0 +1,100 @@
+{
+    "name": "synthetic-search-transient",
+    "description": "A status LOOKUP that fails while the search keeps running — a 502 was observed mid-build on the live drill. The 599 here is deliberate: Orbit's error guide puts every temporary server failure in one retry class, so a status outside the common four is held exactly like a 503. Retry-After (seconds) sets the next tick. The following read carries the settled receipt (1). Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "search_id": "SEARCH5",
+                    "request_id": "req-search5",
+                    "status": "running",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": false,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH5"
+                    },
+                    "billing": {
+                        "id": "op-search-5",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 2,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH5"
+            },
+            "res": {
+                "status": 599,
+                "body": {
+                    "status": "failed",
+                    "error": {
+                        "code": "upstream_unavailable",
+                        "message": "Service unavailable"
+                    }
+                },
+                "headers": {
+                    "retry-after": "7"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH5",
+                    "request_id": "req-search5",
+                    "status": "completed",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH5"
+                    },
+                    "billing": {
+                        "id": "op-search-5",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 1,
+                        "releasedCredits": 1,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

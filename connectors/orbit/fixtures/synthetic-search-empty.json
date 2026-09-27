@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-search-empty",
+    "description": "A search that finds nobody: completed, zero results, receipt settled at 0. A ZERO receipt is a real answer, and the run settles zero. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH8",
+                    "request_id": "req-search8",
+                    "status": "completed",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH8"
+                    },
+                    "billing": {
+                        "id": "op-search-8",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 0,
+                        "releasedCredits": 2,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

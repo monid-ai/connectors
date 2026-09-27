@@ -1,0 +1,62 @@
+{
+    "name": "recorded-chatgpt",
+    "description": "raw recording (cloro#monitor/chatgpt, scenario recorded-chatgpt) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.cloro.dev/v1/monitor/chatgpt",
+                "body": {
+                    "prompt": "What is the best project management software for small teams?",
+                    "country": "US"
+                }
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-credits-charged": "7"
+                },
+                "body": {
+                    "success": true,
+                    "result": {
+                        "model": null,
+                        "text": "There isn’t one universally best choice—the right fit depends on how your team works. For a small team (roughly 3–15 people), I’d narrow it to these:\n\nSoftware\nBest fit\nTypical entry price*\nMain trade-off\nAsana\nStructured projects & cross-functional work\n~$10.99/user/mo\nMore expensive; more structure to learn\nClickUp\nLots of features in one place\n~$7/user/mo\nCan feel overwhelming\nTrello\nSimple task/kanban management\n~$5/user/mo\nLess powerful for complex projects\nmonday.com\nVisual workflows & ope",
+                        "sources": [
+                            {
+                                "position": 1,
+                                "label": "Best Project Management Software for Small Teams in 2026 | ToolCriterion",
+                                "url": "https://toolcriterion.com/best-project-management-software-small-teams/?utm_source=chatgpt.com",
+                                "footnote": true
+                            },
+                            {
+                                "position": 2,
+                                "label": "The 6 Best Project Management Tools for Small Teams in 2026 · guides.reviews",
+                                "url": "https://guides.reviews/productivity-work/best-project-management-tools-small-teams-2026?utm_source=chatgpt.com",
+                                "footnote": true
+                            }
+                        ],
+                        "entities": [],
+                        "map": [],
+                        "citationPills": [
+                            {
+                                "url": "https://toolcriterion.com/best-project-management-software-small-teams/?utm_source=chatgpt.com",
+                                "domain": "toolcriterion.com",
+                                "label": "Best Project Management Software for Small Teams in 2026 | ToolCriterion",
+                                "type": "groupedWebpage",
+                                "citationPillId": 0,
+                                "position": 1
+                            },
+                            {
+                                "url": "https://pickrtech.com/best-project-management-software-for-small-teams/?utm_source=chatgpt.com",
+                                "domain": "pickrtech.com",
+                                "label": "Best Project Management Software for Small Teams",
+                                "type": "groupedWebpage",
+                                "citationPillId": 0
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

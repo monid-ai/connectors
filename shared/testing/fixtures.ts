@@ -35,8 +35,10 @@ import { type Json, zJson } from "@shared/core";
  */
 export const RECORDED_RES_HEADERS = [
     "location",
+    "retry-after",
     "x-api-units-cost-total-actual",
     "x-api-cache",
+    "x-credits-charged",
 ] as const;
 
 export const zRecordedCall = z.object({

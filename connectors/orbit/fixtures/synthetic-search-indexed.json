@@ -1,0 +1,136 @@
+{
+    "name": "synthetic-search-indexed",
+    "description": "A search Orbit answers whole on the submit: 200, status completed, twelve cached people, receipt already settled at 2 (two blocks of ten). No poll happens. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH2",
+                    "request_id": "req-search2",
+                    "status": "completed",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [
+                        {
+                            "profile_id": "PROF_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_2",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_3",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_4",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_5",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_6",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_7",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_8",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_9",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_10",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_11",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_12",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH2"
+                    },
+                    "billing": {
+                        "id": "op-search-2",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 12,
+                        "consumedCredits": 2,
+                        "releasedCredits": 10,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

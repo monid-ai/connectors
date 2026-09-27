@@ -1,0 +1,193 @@
+{
+    "name": "synthetic-enrich-batch",
+    "description": "The batch fan-out with the shapes the live drill showed. Child ids are `{parent}:{profile_id}`, so every request path is URL-encoded. One child runs (5 reserved) and one completes on the submit with a NULL receipt and no links.status — its request route still answers. The poll reads the open child, then every child once more; the batch settles the SUM of the receipts: 5. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "request_id": "BATCH1",
+                    "status": "running",
+                    "results": [
+                        {
+                            "request_id": "BATCH1:PROF_A",
+                            "profile_id": "PROF_A",
+                            "status": "running",
+                            "operation": "partial",
+                            "include_profile": true,
+                            "generation_level": 1,
+                            "links": {
+                                "profile": "/v3/enrich/PROF_A",
+                                "status": "/v3/enrich/requests/BATCH1:PROF_A"
+                            },
+                            "billing": {
+                                "id": "op-batch-a",
+                                "pricingVersion": "2026-09-17",
+                                "reservedCredits": 5,
+                                "consumedCredits": 0,
+                                "releasedCredits": 0,
+                                "heldCredits": 5,
+                                "status": "open"
+                            }
+                        },
+                        {
+                            "request_id": "BATCH1:PROF_B",
+                            "profile_id": "PROF_B",
+                            "status": "completed",
+                            "operation": "partial",
+                            "include_profile": true,
+                            "generation_level": 2,
+                            "profile": {
+                                "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                                "name": "Ada Fielding",
+                                "headline": "Founder at Northwind Instruments",
+                                "location": "Brooklyn, New York",
+                                "sections": [
+                                    {
+                                        "kind": "background",
+                                        "text": "Ada builds measurement hardware for field ecologists.",
+                                        "sources": [
+                                            "https://northwind-instruments.example/about"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "links": {
+                                "profile": "/v3/enrich/PROF_B"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/BATCH1%3APROF_A"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "BATCH1:PROF_A",
+                    "profile_id": "PROF_A",
+                    "status": "completed",
+                    "operation": "partial",
+                    "include_profile": true,
+                    "generation_level": 2,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/PROF_A",
+                        "status": "/v3/enrich/requests/BATCH1:PROF_A"
+                    },
+                    "billing": {
+                        "id": "op-batch-a",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 5,
+                        "consumedCredits": 5,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/BATCH1%3APROF_A"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "BATCH1:PROF_A",
+                    "profile_id": "PROF_A",
+                    "status": "completed",
+                    "operation": "partial",
+                    "include_profile": true,
+                    "generation_level": 2,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/PROF_A",
+                        "status": "/v3/enrich/requests/BATCH1:PROF_A"
+                    },
+                    "billing": {
+                        "id": "op-batch-a",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 5,
+                        "consumedCredits": 5,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/BATCH1%3APROF_B"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "BATCH1:PROF_B",
+                    "profile_id": "PROF_B",
+                    "status": "completed",
+                    "operation": "partial",
+                    "include_profile": true,
+                    "generation_level": 2,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/PROF_B"
+                    }
+                }
+            }
+        }
+    ]
+}
