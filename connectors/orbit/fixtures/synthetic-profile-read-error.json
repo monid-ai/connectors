@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-profile-read-error",
+    "description": "A profile read refused for want of credits: 402 with the credits envelope. Non-2xx is DATA — the engine forces zero usage. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5"
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "status": "failed",
+                    "error": {
+                        "code": "developer_api_credits_insufficient",
+                        "message": "Not enough credits to read this profile",
+                        "requiredCredits": 1,
+                        "remainingCredits": 0
+                    }
+                }
+            }
+        }
+    ]
+}

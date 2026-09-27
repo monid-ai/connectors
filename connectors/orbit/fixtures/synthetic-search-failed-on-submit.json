@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-search-failed-on-submit",
+    "description": "A search that fails inside the submit window: 200 with a terminal `failed` status and the reason at candidate_discovery_failure, where the provider's fromError does not look. The start phase lifts it into Orbit's own error envelope, exactly as the poll does. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH7",
+                    "request_id": "req-search7",
+                    "status": "failed",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH7"
+                    },
+                    "billing": {
+                        "id": "op-search-7",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 11,
+                        "consumedCredits": 0,
+                        "releasedCredits": 11,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    },
+                    "candidate_discovery_completed": true,
+                    "candidate_discovery_failure": {
+                        "code": "signals_unresolvable",
+                        "message": "The address could not be resolved to a person",
+                        "retryable": false,
+                        "reason": "no_provider_match"
+                    }
+                }
+            }
+        }
+    ]
+}

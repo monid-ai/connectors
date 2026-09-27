@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-profile-read",
+    "description": "A straight profile read with its receipt: consumed 1 at the profile-read rate of card 2026-09-17. The url is literal because the engine substitutes {profile_id} before the call. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "generation_level": 3,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "billing": {
+                        "id": "op-read-1",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 1,
+                        "consumedCredits": 1,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

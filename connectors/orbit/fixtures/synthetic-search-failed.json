@@ -1,0 +1,80 @@
+{
+    "name": "synthetic-search-failed",
+    "description": "The search fails while the status route answers 200 — ours/theirs (design D12). The poll synthesizes httpStatus 500 with providerHttpStatus 200 and shapes the body like Orbit's own {status, error} envelope so the provider's fromError reads it. The engine zero-bills it. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "search_id": "SEARCH4",
+                    "request_id": "req-search4",
+                    "status": "running",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": false,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH4"
+                    },
+                    "billing": {
+                        "id": "op-search-4",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 11,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 11,
+                        "status": "open"
+                    },
+                    "candidate_discovery_completed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH4"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH4",
+                    "request_id": "req-search4",
+                    "status": "failed",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH4"
+                    },
+                    "billing": {
+                        "id": "op-search-4",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 11,
+                        "consumedCredits": 0,
+                        "releasedCredits": 11,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    },
+                    "candidate_discovery_completed": true,
+                    "candidate_discovery_failure": {
+                        "code": "discovery_unavailable",
+                        "message": "Candidate Discovery could not resolve the signals",
+                        "retryable": true,
+                        "reason": "provider_timeout"
+                    }
+                }
+            }
+        }
+    ]
+}

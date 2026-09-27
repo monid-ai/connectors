@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "Orbit refuses the request outright: 402 with the credits envelope every endpoint can answer with. Vendor non-2xx is DATA — the engine classifies it as a provider error and forces zero usage. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "status": "failed",
+                    "error": {
+                        "code": "developer_api_credits_insufficient",
+                        "message": "Not enough credits to start this request",
+                        "requiredCredits": 10,
+                        "remainingCredits": 3
+                    }
+                }
+            }
+        }
+    ]
+}
