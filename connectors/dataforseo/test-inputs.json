@@ -5,6 +5,54 @@
             "model_name": "gpt-4o-mini"
         }
     },
+    "backlinks/anchors": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/backlinks": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/bulk-backlinks": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
+    "backlinks/bulk-new-lost-backlinks": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
+    "backlinks/bulk-new-lost-referring-domains": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
+    "backlinks/bulk-pages-summary": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
     "backlinks/bulk-ranks": {
         "body": {
             "targets": [
@@ -14,9 +62,326 @@
             ]
         }
     },
+    "backlinks/bulk-referring-domains": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
+    "backlinks/bulk-spam-score": {
+        "body": {
+            "targets": [
+                "dataforseo.com",
+                "ahrefs.com",
+                "semrush.com"
+            ]
+        }
+    },
+    "backlinks/competitors": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/domain-intersection": {
+        "body": {
+            "targets": {
+                "1": "dataforseo.com",
+                "2": "ahrefs.com"
+            },
+            "limit": 3
+        }
+    },
+    "backlinks/domain-pages-summary": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/domain-pages": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/filters": {},
+    "backlinks/history": {
+        "body": {
+            "target": "dataforseo.com"
+        }
+    },
+    "backlinks/index": {},
+    "backlinks/page-intersection": {
+        "body": {
+            "targets": {
+                "1": "dataforseo.com",
+                "2": "ahrefs.com"
+            },
+            "limit": 3
+        }
+    },
+    "backlinks/referring-domains": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
+    "backlinks/referring-networks": {
+        "body": {
+            "target": "dataforseo.com",
+            "limit": 3
+        }
+    },
     "backlinks/summary": {
         "body": {
             "target": "dataforseo.com"
+        }
+    },
+    "backlinks/timeseries-new-lost": {
+        "body": {
+            "target": "dataforseo.com"
+        }
+    },
+    "backlinks/timeseries-summary": {
+        "body": {
+            "target": "dataforseo.com"
+        }
+    },
+    "keywords/bing-audience-estimation": {
+        "body": {
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/bing-industries": {
+        "queryParams": {
+            "limit": 3,
+            "search": "computer"
+        }
+    },
+    "keywords/bing-job-functions": {
+        "queryParams": {
+            "limit": 3,
+            "search": "and"
+        }
+    },
+    "keywords/bing-keyword-performance-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        }
+    },
+    "keywords/bing-keyword-performance": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/bing-keywords-for-keywords": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/bing-keywords-for-site": {
+        "body": {
+            "target": "dataforseo.com",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/bing-search-volume-history-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        }
+    },
+    "keywords/bing-search-volume-history": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/bing-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/clickstream-bulk-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker",
+                "keyword research"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/clickstream-global-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ]
+        }
+    },
+    "keywords/clickstream-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        }
+    },
+    "keywords/clickstream-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-ads-ad-traffic": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "bid": 999,
+            "match": "exact",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-ads-keywords-for-keywords": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-ads-keywords-for-site": {
+        "body": {
+            "target": "dataforseo.com",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-ads-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "keywords/google-ads-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-trends-categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "apparel"
+        }
+    },
+    "keywords/google-trends-explore": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/google-trends-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "keywords/trends-demography": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/trends-explore": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/trends-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "keywords/trends-merged": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "keywords/trends-subregions": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
         }
     },
     "labs/amazon-bulk-search-volume": {

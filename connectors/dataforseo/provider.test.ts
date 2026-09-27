@@ -143,8 +143,56 @@ const propsOf = (part: unknown): Record<string, Prop> => {
  */
 const RATE: Record<string, string> = {
     "dataforseo#ai/chatgpt-response": "flat 0.0006",
+    "dataforseo#backlinks/anchors": "rows 0.024+0.000036",
+    "dataforseo#backlinks/backlinks": "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-backlinks": "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-new-lost-backlinks": "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-new-lost-referring-domains":
+        "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-pages-summary": "rows 0.024+0.000036",
     "dataforseo#backlinks/bulk-ranks": "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-referring-domains": "rows 0.024+0.000036",
+    "dataforseo#backlinks/bulk-spam-score": "rows 0.024+0.000036",
+    "dataforseo#backlinks/competitors": "rows 0.024+0.000036",
+    "dataforseo#backlinks/domain-intersection": "rows 0.024+0.000036",
+    "dataforseo#backlinks/domain-pages": "rows 0.024+0.000036",
+    "dataforseo#backlinks/domain-pages-summary": "rows 0.024+0.000036",
+    "dataforseo#backlinks/filters": "free",
+    "dataforseo#backlinks/history": "rows 0.024+0.000036",
+    "dataforseo#backlinks/index": "free",
+    "dataforseo#backlinks/page-intersection": "rows 0.024+0.000036",
+    "dataforseo#backlinks/referring-domains": "rows 0.024+0.000036",
+    "dataforseo#backlinks/referring-networks": "rows 0.024+0.000036",
     "dataforseo#backlinks/summary": "rows 0.024+0.000036",
+    "dataforseo#backlinks/timeseries-new-lost": "rows 0.024+0.000036",
+    "dataforseo#backlinks/timeseries-summary": "rows 0.024+0.000036",
+    "dataforseo#keywords/bing-audience-estimation": "flat 0.09",
+    "dataforseo#keywords/bing-industries": "free",
+    "dataforseo#keywords/bing-job-functions": "free",
+    "dataforseo#keywords/bing-keyword-performance": "flat 0.09",
+    "dataforseo#keywords/bing-keyword-performance-locations": "free",
+    "dataforseo#keywords/bing-keywords-for-keywords": "flat 0.09",
+    "dataforseo#keywords/bing-keywords-for-site": "flat 0.09",
+    "dataforseo#keywords/bing-search-volume": "flat 0.09",
+    "dataforseo#keywords/bing-search-volume-history": "flat 0.09",
+    "dataforseo#keywords/bing-search-volume-history-locations": "free",
+    "dataforseo#keywords/clickstream-bulk-search-volume": "rows 0.012+0.00012",
+    "dataforseo#keywords/clickstream-global-search-volume": "flat 0.18",
+    "dataforseo#keywords/clickstream-locations": "free",
+    "dataforseo#keywords/clickstream-search-volume": "flat 0.18",
+    "dataforseo#keywords/google-ads-ad-traffic": "flat 0.09",
+    "dataforseo#keywords/google-ads-keywords-for-keywords": "flat 0.09",
+    "dataforseo#keywords/google-ads-keywords-for-site": "flat 0.09",
+    "dataforseo#keywords/google-ads-locations": "free",
+    "dataforseo#keywords/google-ads-search-volume": "flat 0.09",
+    "dataforseo#keywords/google-trends-categories": "free",
+    "dataforseo#keywords/google-trends-explore": "flat 0.011",
+    "dataforseo#keywords/google-trends-locations": "free",
+    "dataforseo#keywords/trends-demography": "flat 0.0024",
+    "dataforseo#keywords/trends-explore": "flat 0.0012",
+    "dataforseo#keywords/trends-locations": "free",
+    "dataforseo#keywords/trends-merged": "flat 0.006",
+    "dataforseo#keywords/trends-subregions": "flat 0.0024",
     "dataforseo#labs/amazon-bulk-search-volume": "rows 0.012+0.00012",
     "dataforseo#labs/amazon-product-competitors": "rows 0.012+0.00012",
     "dataforseo#labs/amazon-product-keyword-intersections":
@@ -297,7 +345,7 @@ const LLM_RESPONSES = [
 
 Deno.test("dataforseo docs: every endpoint is in the rate table", async () => {
     const ids = await dataforseoIds();
-    assertEquals(ids.length, 85);
+    assertEquals(ids.length, 132);
     assertEquals(Object.keys(RATE).sort(), ids);
 });
 
@@ -495,13 +543,13 @@ Deno.test("dataforseo docs: one Basic inject, one relay, one digest, one meter, 
     );
     assertEquals(
         byProvenance.filter(([mine]) => mine).map(([, n]) => n),
-        [65],
+        [101],
     );
     assertEquals(
         byProvenance.filter(([mine]) => !mine).map(([, n]) => n).sort((a, b) =>
             a - b
         ),
-        [4, 7, 9],
+        [6, 7, 18],
     );
     // two poll texts: task_get/advanced/{id} and task_get/{id}
     assertEquals(polls.size, 1);
@@ -573,7 +621,7 @@ Deno.test("dataforseo schemas: strict mirrors, the vendor's default on limit / d
             }
         }
     }
-    assertEquals(defaults.filter((n) => n === "limit").length, 26);
+    assertEquals(defaults.filter((n) => n === "limit").length, 35);
     assertEquals(defaults.filter((n) => n === "depth").length, 14);
     assertEquals(defaults.filter((n) => n === "block_depth").length, 1);
     // the dictionary query is ours: search and limit optional, country in
