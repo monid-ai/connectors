@@ -1,0 +1,78 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. HTTP 200, tasks[0].status_code 20000, 48 result row(s); `cost` is the receipt (one page of 48 results at $0.0033 (rows trimmed to 2)) and the derived fold agrees.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.dataforseo.com/v3/merchant/amazon/products/live/advanced",
+                "body": [
+                    {
+                        "keyword": "seo api",
+                        "depth": 100,
+                        "location_code": 2840,
+                        "language_code": "en"
+                    }
+                ]
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0.0033,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20000,
+                            "status_message": "Ok.",
+                            "time": "0.5 sec.",
+                            "cost": 0.0033,
+                            "result_count": 1,
+                            "path": [
+                                "v3",
+                                "merchant",
+                                "amazon",
+                                "products",
+                                "live",
+                                "advanced"
+                            ],
+                            "data": {
+                                "api": "merchant",
+                                "function": "advanced"
+                            },
+                            "result": [
+                                {
+                                    "total_count": 2,
+                                    "items_count": 2,
+                                    "items": [
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 1,
+                                            "rank_absolute": 1,
+                                            "domain": "example.com",
+                                            "title": "Result 1",
+                                            "url": "https://example.com/1"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 2,
+                                            "rank_absolute": 2,
+                                            "domain": "example.com",
+                                            "title": "Result 2",
+                                            "url": "https://example.com/2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

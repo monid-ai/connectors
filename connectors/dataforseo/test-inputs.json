@@ -1,8 +1,338 @@
 {
+    "ai/chatgpt-models": {
+        "queryParams": {
+            "limit": 3,
+            "search": "gpt-4"
+        }
+    },
     "ai/chatgpt-response": {
         "body": {
             "user_prompt": "What is DataForSEO?",
             "model_name": "gpt-4o-mini"
+        }
+    },
+    "ai/chatgpt-search-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "ai/chatgpt-search": {
+        "body": {
+            "keyword": "seo api",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/claude-models": {
+        "queryParams": {
+            "limit": 3,
+            "search": "sonnet"
+        }
+    },
+    "ai/claude-response": {
+        "body": {
+            "user_prompt": "What is DataForSEO?",
+            "model_name": "claude-sonnet-4-5"
+        }
+    },
+    "ai/gemini-models": {
+        "queryParams": {
+            "limit": 3,
+            "search": "flash"
+        }
+    },
+    "ai/gemini-response": {
+        "body": {
+            "user_prompt": "What is DataForSEO?",
+            "model_name": "gemini-2.5-flash"
+        }
+    },
+    "ai/gemini-search": {
+        "body": {
+            "keyword": "seo api",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/keyword-filters": {},
+    "ai/keyword-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        }
+    },
+    "ai/keyword-search-volume": {
+        "body": {
+            "keywords": [
+                "seo api",
+                "rank tracker",
+                "keyword research"
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-filters": {},
+    "ai/mentions-historical": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        }
+    },
+    "ai/mentions-multi-target-metrics": {
+        "body": {
+            "targets": [
+                {
+                    "key": "dataforseo",
+                    "target": [
+                        {
+                            "domain": "dataforseo.com"
+                        }
+                    ]
+                },
+                {
+                    "key": "ahrefs",
+                    "target": [
+                        {
+                            "domain": "ahrefs.com"
+                        }
+                    ]
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-search": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-target-metrics": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-timeseries-delta": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "date_from": "2026-01-01",
+            "date_to": "2026-02-01",
+            "group_range": "month",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-timeseries-new-lost": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "date_from": "2026-01-01",
+            "date_to": "2026-02-01",
+            "group_range": "month",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-top-brand-categories": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-top-brands": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-top-domains": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/mentions-top-pages": {
+        "body": {
+            "target": [
+                {
+                    "domain": "dataforseo.com"
+                }
+            ],
+            "limit": 3,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "ai/perplexity-models": {
+        "queryParams": {
+            "limit": 3,
+            "search": "sonar-"
+        }
+    },
+    "ai/perplexity-response": {
+        "body": {
+            "user_prompt": "What is DataForSEO?",
+            "model_name": "sonar"
+        }
+    },
+    "app-store/app-info": {
+        "body": {
+            "app_id": "324684580",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "app-store/app-list": {
+        "body": {
+            "app_collection": "top_free_ios",
+            "depth": 100,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "app-store/app-reviews": {
+        "body": {
+            "app_id": "324684580",
+            "depth": 25,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "app-store/categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "games"
+        }
+    },
+    "app-store/listing-categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "games"
+        }
+    },
+    "app-store/listings": {
+        "body": {
+            "limit": 3
+        }
+    },
+    "app-store/search": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 100,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-play/app-info": {
+        "body": {
+            "app_id": "com.spotify.music",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-play/app-list": {
+        "body": {
+            "app_collection": "topselling_free",
+            "depth": 100,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-play/app-reviews": {
+        "body": {
+            "app_id": "com.spotify.music",
+            "depth": 150,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-play/categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "game"
+        }
+    },
+    "google-play/listing-categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "game"
+        }
+    },
+    "google-play/listings": {
+        "body": {
+            "limit": 3
+        }
+    },
+    "google-play/locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "google-play/search": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 100,
+            "location_code": 2840,
+            "language_code": "en"
         }
     },
     "backlinks/anchors": {
@@ -148,6 +478,208 @@
     "backlinks/timeseries-summary": {
         "body": {
             "target": "dataforseo.com"
+        }
+    },
+    "business/categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "restaurant"
+        }
+    },
+    "google-business/extended-reviews": {
+        "body": {
+            "depth": 20,
+            "location_code": 2840,
+            "language_code": "en",
+            "keyword": "Pike Place Market, Seattle"
+        }
+    },
+    "google-business/info": {
+        "body": {
+            "keyword": "seo api",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-business/locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "google-business/questions": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 20,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-business/reviews": {
+        "body": {
+            "depth": 10,
+            "location_code": 2840,
+            "language_code": "en",
+            "keyword": "Pike Place Market, Seattle"
+        }
+    },
+    "google-business/updates": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 10,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-hotels/info": {
+        "body": {
+            "hotel_identifier": "ChIJ_test_hotel",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-hotels/search": {
+        "body": {
+            "depth": 18,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "business/listing-categories": {
+        "body": {
+            "limit": 3
+        }
+    },
+    "business/listing-filters": {},
+    "business/listings": {
+        "body": {
+            "limit": 3
+        }
+    },
+    "tripadvisor/locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "tripadvisor/reviews": {
+        "body": {
+            "depth": 10,
+            "location_code": 2840,
+            "language_code": "en",
+            "keyword": "Pike Place Market"
+        }
+    },
+    "tripadvisor/search": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 30,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "trustpilot/reviews": {
+        "body": {
+            "domain": "dataforseo.com",
+            "depth": 20
+        }
+    },
+    "trustpilot/search": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 10
+        }
+    },
+    "content/categories": {
+        "queryParams": {
+            "limit": 3,
+            "search": "apparel"
+        }
+    },
+    "content/category-trends": {
+        "body": {
+            "category_code": 10001,
+            "date_from": "2026-01-01"
+        }
+    },
+    "content/filters": {},
+    "content/phrase-trends": {
+        "body": {
+            "keyword": "seo api",
+            "date_from": "2026-01-01"
+        }
+    },
+    "content/rating-distribution": {
+        "body": {
+            "keyword": "seo api"
+        }
+    },
+    "content/search": {
+        "body": {
+            "keyword": "seo api",
+            "limit": 3
+        }
+    },
+    "content/sentiment": {
+        "body": {
+            "keyword": "seo api"
+        }
+    },
+    "content/summary": {
+        "body": {
+            "keyword": "seo api"
+        }
+    },
+    "domain/domain-technologies": {
+        "body": {
+            "target": "dataforseo.com"
+        }
+    },
+    "domain/domains-by-html-terms": {
+        "body": {
+            "search_terms": [
+                "data-attrid"
+            ],
+            "limit": 3
+        }
+    },
+    "domain/domains-by-technology": {
+        "body": {
+            "limit": 3,
+            "technologies": [
+                "WordPress"
+            ]
+        }
+    },
+    "domain/technologies-aggregation": {
+        "body": {
+            "limit": 3
+        }
+    },
+    "domain/technologies-summary": {
+        "body": {
+            "technologies": [
+                "WordPress"
+            ]
+        }
+    },
+    "domain/technology-catalog": {},
+    "domain/technology-filters": {},
+    "domain/technology-stats": {
+        "body": {
+            "technology": "Salesforce"
+        }
+    },
+    "domain/whois-filters": {},
+    "domain/whois": {
+        "body": {
+            "limit": 3
         }
     },
     "keywords/bing-audience-estimation": {
@@ -768,6 +1300,74 @@
             "limit": 3,
             "location_code": 2840,
             "language_code": "en"
+        }
+    },
+    "amazon/asin": {
+        "body": {
+            "asin": "B08G4KG9GD",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "amazon/locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "amazon/products": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 100,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "amazon/sellers": {
+        "body": {
+            "asin": "B08G4KG9GD",
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-shopping/locations": {
+        "queryParams": {
+            "limit": 3,
+            "search": "city"
+        },
+        "pathParams": {
+            "country": "us"
+        }
+    },
+    "google-shopping/product-info": {
+        "body": {
+            "location_code": 2840,
+            "language_code": "en",
+            "product_id": "4485466949985702538"
+        }
+    },
+    "google-shopping/products": {
+        "body": {
+            "keyword": "seo api",
+            "depth": 40,
+            "location_code": 2840,
+            "language_code": "en"
+        }
+    },
+    "google-shopping/seller-ad-url": {
+        "pathParams": {
+            "shop_ad_aclk": "DChcSEwjs"
+        }
+    },
+    "google-shopping/sellers": {
+        "body": {
+            "depth": 10,
+            "location_code": 2840,
+            "language_code": "en",
+            "product_id": "4485466949985702538"
         }
     },
     "onpage/content-parsing": {

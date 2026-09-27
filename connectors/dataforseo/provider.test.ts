@@ -142,7 +142,43 @@ const propsOf = (part: unknown): Record<string, Prop> => {
  * A new endpoint must state its row here.
  */
 const RATE: Record<string, string> = {
+    "dataforseo#ai/chatgpt-models": "free",
     "dataforseo#ai/chatgpt-response": "flat 0.0006",
+    "dataforseo#ai/chatgpt-search": "flat 0.004",
+    "dataforseo#ai/chatgpt-search-locations": "free",
+    "dataforseo#ai/claude-models": "free",
+    "dataforseo#ai/claude-response": "flat 0.0006",
+    "dataforseo#ai/gemini-models": "free",
+    "dataforseo#ai/gemini-response": "flat 0.0006",
+    "dataforseo#ai/gemini-search": "flat 0.004",
+    "dataforseo#ai/keyword-filters": "free",
+    "dataforseo#ai/keyword-locations": "free",
+    "dataforseo#ai/keyword-search-volume": "rows 0.01+0.0001",
+    "dataforseo#ai/mentions-filters": "free",
+    "dataforseo#ai/mentions-historical": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-locations": "free",
+    "dataforseo#ai/mentions-multi-target-metrics": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-search": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-target-metrics": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-timeseries-delta": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-timeseries-new-lost": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-top-brand-categories": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-top-brands": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-top-domains": "rows 0.1+0.001",
+    "dataforseo#ai/mentions-top-pages": "rows 0.1+0.001",
+    "dataforseo#ai/perplexity-models": "free",
+    "dataforseo#ai/perplexity-response": "flat 0.0006",
+    "dataforseo#amazon/asin": "flat 0.005",
+    "dataforseo#amazon/locations": "free",
+    "dataforseo#amazon/products": "page 0.0033/100",
+    "dataforseo#amazon/sellers": "flat 0.0033",
+    "dataforseo#app-store/app-info": "flat 0.0012",
+    "dataforseo#app-store/app-list": "page 0.0024/100",
+    "dataforseo#app-store/app-reviews": "page 0.0015/25",
+    "dataforseo#app-store/categories": "free",
+    "dataforseo#app-store/listing-categories": "free",
+    "dataforseo#app-store/listings": "rows 0.1+0.001",
+    "dataforseo#app-store/search": "page 0.0024/100",
     "dataforseo#backlinks/anchors": "rows 0.024+0.000036",
     "dataforseo#backlinks/backlinks": "rows 0.024+0.000036",
     "dataforseo#backlinks/bulk-backlinks": "rows 0.024+0.000036",
@@ -166,6 +202,49 @@ const RATE: Record<string, string> = {
     "dataforseo#backlinks/summary": "rows 0.024+0.000036",
     "dataforseo#backlinks/timeseries-new-lost": "rows 0.024+0.000036",
     "dataforseo#backlinks/timeseries-summary": "rows 0.024+0.000036",
+    "dataforseo#business/categories": "free",
+    "dataforseo#business/listing-categories": "rows 0.012+0.00036",
+    "dataforseo#business/listing-filters": "free",
+    "dataforseo#business/listings": "rows 0.012+0.00036",
+    "dataforseo#content/categories": "free",
+    "dataforseo#content/category-trends": "rows 0.024+0.000036",
+    "dataforseo#content/filters": "free",
+    "dataforseo#content/phrase-trends": "rows 0.024+0.000036",
+    "dataforseo#content/rating-distribution": "flat 0.024",
+    "dataforseo#content/search": "rows 0.024+0.000036",
+    "dataforseo#content/sentiment": "rows 0.024+0.000036",
+    "dataforseo#content/summary": "rows 0.024+0.000036",
+    "dataforseo#domain/domain-technologies": "flat 0.012",
+    "dataforseo#domain/domains-by-html-terms": "rows 0.012+0.0012",
+    "dataforseo#domain/domains-by-technology": "rows 0.012+0.0012",
+    "dataforseo#domain/technologies-aggregation": "rows 0.012+0.0012",
+    "dataforseo#domain/technologies-summary": "rows 0.012+0.0012",
+    "dataforseo#domain/technology-catalog": "free",
+    "dataforseo#domain/technology-filters": "free",
+    "dataforseo#domain/technology-stats": "rows 0.012+0.0012",
+    "dataforseo#domain/whois": "rows 0.12+0.0012",
+    "dataforseo#domain/whois-filters": "free",
+    "dataforseo#google-business/extended-reviews": "page 0.0015/20",
+    "dataforseo#google-business/info": "flat 0.0054",
+    "dataforseo#google-business/locations": "free",
+    "dataforseo#google-business/questions": "page 0.0054/20",
+    "dataforseo#google-business/reviews": "page 0.0015/10",
+    "dataforseo#google-business/updates": "page 0.0045/10",
+    "dataforseo#google-hotels/info": "flat 0.004",
+    "dataforseo#google-hotels/search": "page 0.004/18",
+    "dataforseo#google-play/app-info": "flat 0.0012",
+    "dataforseo#google-play/app-list": "page 0.0024/100",
+    "dataforseo#google-play/app-reviews": "page 0.0015/150",
+    "dataforseo#google-play/categories": "free",
+    "dataforseo#google-play/listing-categories": "free",
+    "dataforseo#google-play/listings": "rows 0.1+0.001",
+    "dataforseo#google-play/locations": "free",
+    "dataforseo#google-play/search": "page 0.0024/100",
+    "dataforseo#google-shopping/locations": "free",
+    "dataforseo#google-shopping/product-info": "flat 0.002",
+    "dataforseo#google-shopping/products": "page 0.002/40",
+    "dataforseo#google-shopping/seller-ad-url": "flat 0.000001",
+    "dataforseo#google-shopping/sellers": "page 0.002/10",
     "dataforseo#keywords/bing-audience-estimation": "flat 0.09",
     "dataforseo#keywords/bing-industries": "free",
     "dataforseo#keywords/bing-job-functions": "free",
@@ -277,6 +356,11 @@ const RATE: Record<string, string> = {
     "dataforseo#serp/youtube-organic": "page 0.002/20",
     "dataforseo#serp/youtube-subtitles": "flat 0.002",
     "dataforseo#serp/youtube-video-info": "flat 0.002",
+    "dataforseo#tripadvisor/locations": "free",
+    "dataforseo#tripadvisor/reviews": "page 0.0015/10",
+    "dataforseo#tripadvisor/search": "page 0.0015/30",
+    "dataforseo#trustpilot/reviews": "page 0.0015/20",
+    "dataforseo#trustpilot/search": "page 0.0015/10",
 };
 
 type Card =
@@ -345,7 +429,7 @@ const LLM_RESPONSES = [
 
 Deno.test("dataforseo docs: every endpoint is in the rate table", async () => {
     const ids = await dataforseoIds();
-    assertEquals(ids.length, 132);
+    assertEquals(ids.length, 216);
     assertEquals(Object.keys(RATE).sort(), ids);
 });
 
@@ -534,7 +618,7 @@ Deno.test("dataforseo docs: one Basic inject, one relay, one digest, one meter, 
     // five start texts: the provider's live relay (POST products), the
     // queued task_post, the filtering dictionary, the app category lookup
     // (names inside one row), the plain GET relay
-    assertEquals(starts.size, 4);
+    assertEquals(starts.size, 5);
     const byProvenance = [...starts.entries()].map(([key, docs]) =>
         [
             provenanceOf(key).startsWith("connectors/dataforseo/provider.ts"),
@@ -543,20 +627,20 @@ Deno.test("dataforseo docs: one Basic inject, one relay, one digest, one meter, 
     );
     assertEquals(
         byProvenance.filter(([mine]) => mine).map(([, n]) => n),
-        [101],
+        [141],
     );
     assertEquals(
         byProvenance.filter(([mine]) => !mine).map(([, n]) => n).sort((a, b) =>
             a - b
         ),
-        [6, 7, 18],
+        [2, 14, 25, 34],
     );
     // two poll texts: task_get/advanced/{id} and task_get/{id}
-    assertEquals(polls.size, 1);
+    assertEquals(polls.size, 2);
     // the estimate texts: depth, YouTube's block_depth, depth Ã— crawl pages
     // (per page size), crawl pages only, limit, one per array field, and the
     // fixed one row
-    assertEquals(estimates.size, 20);
+    assertEquals(estimates.size, 21);
 });
 
 Deno.test("dataforseo meta: the provider's envelope and blocked-field notes reach every doc; v1's pricing notes ride the docs that had them", async () => {
@@ -621,8 +705,8 @@ Deno.test("dataforseo schemas: strict mirrors, the vendor's default on limit / d
             }
         }
     }
-    assertEquals(defaults.filter((n) => n === "limit").length, 35);
-    assertEquals(defaults.filter((n) => n === "depth").length, 14);
+    assertEquals(defaults.filter((n) => n === "limit").length, 50);
+    assertEquals(defaults.filter((n) => n === "depth").length, 32);
     assertEquals(defaults.filter((n) => n === "block_depth").length, 1);
     // the dictionary query is ours: search and limit optional, country in
     // the path for the per-country lists
@@ -1053,7 +1137,7 @@ Deno.test("dataforseo floors: max_crawl_pages and block_depth take at least 1 â€
         await rejects(id, withPages(-1));
         await validates(id, withPages(1));
     }
-    assertEquals(seen, 10);
+    assertEquals(seen, 12);
     // YouTube: the vendor's knob is block_depth (1-200, default 20); a
     // `depth` is not a YouTube field and is rejected like any unknown key
     const youtube = "dataforseo#serp/youtube-organic";
