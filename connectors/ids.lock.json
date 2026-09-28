@@ -449,6 +449,13 @@
         "suzanne#v1/generations/text-to-3d",
         "suzanne#v1/models/download",
         "suzanne#v1/uploads",
+        "theagentbar#api/menu",
+        "theagentbar#api/partners/monid/v1/drinks/context-window-collins",
+        "theagentbar#api/partners/monid/v1/drinks/hallucination-highball",
+        "theagentbar#api/partners/monid/v1/drinks/null-pointer-nightcap",
+        "theagentbar#api/partners/monid/v1/drinks/recursive-negroni",
+        "theagentbar#api/partners/monid/v1/orders/{nonce}",
+        "theagentbar#api/receipts/{code}",
         "tinyfish#fetch",
         "tinyfish#search"
     ],

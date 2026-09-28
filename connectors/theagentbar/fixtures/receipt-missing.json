@@ -1,0 +1,19 @@
+{
+    "name": "receipt-missing",
+    "description": "Recorded from production on 2026-09-22 with deno task record using a deliberately nonexistent public code.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/receipts/tab_monid_missing_receipt"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "verified": false,
+                    "error": "Receipt not found"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "name": "menu-ok",
+    "description": "Recorded from production on 2026-09-22 with deno task record; menu minimized to one drink. A listed price is not a usage charge.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "establishment": "The Agent Bar",
+                    "entertainment_only": true,
+                    "human_checkout": false,
+                    "mcp_endpoint": "https://theagent.bar/mcp",
+                    "menu": [
+                        {
+                            "slug": "context-window-collins",
+                            "code": "CTX-050",
+                            "name": "Context Window Collins",
+                            "price": "0.50",
+                            "currency": "USD",
+                            "tier": "entry",
+                            "description": "A short reset at the edge of the active context."
+                        }
+                    ],
+                    "note": "Connect through MCP for the complete agent-facing service."
+                }
+            }
+        }
+    ]
+}

@@ -13,6 +13,12 @@ import { defineLeafCategories } from "@shared/core";
  */
 export const LEAF_CATEGORIES = defineLeafCategories([
     {
+        id: "agent-entertainment",
+        displayName: "Agent Entertainment",
+        description:
+            "Fictional digital entertainment for AI agents: menus and public receipts.",
+    },
+    {
         id: "web-search",
         displayName: "Web Search",
         description:

@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-order-conflict",
+    "description": "Synthetic local partner API contract; no real purchase, credential, wallet charge, or payout. Shared request URL binds to each priced drink operation.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "error": "run_conflict",
+                    "message": "Use the free get-order operation with the original nonce."
+                }
+            }
+        }
+    ]
+}

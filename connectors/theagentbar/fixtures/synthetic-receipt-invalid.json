@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-receipt-invalid",
+    "description": "Synthetic invalid-signature error based on the vendor handler; no invalid production receipt was created.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/receipts/tab_fixture_receipt"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "verified": false,
+                    "error": "Receipt signature is invalid"
+                }
+            }
+        }
+    ]
+}

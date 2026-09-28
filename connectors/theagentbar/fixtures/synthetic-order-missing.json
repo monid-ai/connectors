@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-order-missing",
+    "description": "Synthetic authenticated lookup of an unknown UUID; no charge or order creation.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/partners/monid/v1/orders/684895e3-f280-4b76-a646-9e24b59c572b"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "order_not_found",
+                    "message": "No order exists for this nonce."
+                }
+            }
+        }
+    ]
+}

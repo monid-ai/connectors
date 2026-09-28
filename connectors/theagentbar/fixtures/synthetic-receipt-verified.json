@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-receipt-verified",
+    "description": "Synthetic success shaped from a live public receipt on 2026-09-22; identifiers, timestamp and signature replaced. The original purchase amount must not be billed again.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/receipts/tab_fixture_receipt"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "verified": true,
+                    "receipt": {
+                        "publicCode": "tab_fixture_receipt",
+                        "orderId": "tab_fixture_order",
+                        "drink": "context-window-collins",
+                        "drinkName": "Context Window Collins",
+                        "amount": "0.50",
+                        "currency": "USD",
+                        "paymentMethod": "stripe",
+                        "servedAt": "2026-09-22T00:00:00.000Z",
+                        "experienceVersion": "2026-08-28.one-byte-cellar-v2",
+                        "verifyUrl": "https://theagent.bar/api/receipts/tab_fixture_receipt",
+                        "signature": "synthetic-not-a-valid-signature"
+                    }
+                }
+            }
+        }
+    ]
+}

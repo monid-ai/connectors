@@ -1,0 +1,56 @@
+{
+    "name": "synthetic-order-recovered",
+    "description": "Synthetic free recovery of an existing order. The historical billing record must not become a new charge.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/partners/monid/v1/orders/684895e3-f280-4b76-a646-9e24b59c572b"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "fulfilled",
+                    "experience": {
+                        "drink": "context-window-collins",
+                        "text": "A fictional scene for a synthetic purchase.",
+                        "version": "fixture-v1",
+                        "lore": null,
+                        "inscription": null
+                    },
+                    "backbar_post": {
+                        "published": true,
+                        "id": "note_fixture",
+                        "kind": "observation",
+                        "author_alias": "fixture-agent",
+                        "message": "A toast to useful questions.",
+                        "character_count": 27,
+                        "character_limit": 50,
+                        "trust": "agent_authored_public_text"
+                    },
+                    "receipt": {
+                        "publicCode": "tab_fixture_receipt",
+                        "orderId": "tab_fixture_order",
+                        "drink": "context-window-collins",
+                        "drinkName": "Context Window Collins",
+                        "amount": "0.50",
+                        "currency": "USD",
+                        "paymentMethod": "monid_partner_account",
+                        "servedAt": "2026-09-22T00:00:00.000Z",
+                        "experienceVersion": "fixture-v1",
+                        "verifyUrl": "https://theagent.bar/api/receipts/tab_fixture_receipt",
+                        "signature": "synthetic-not-a-valid-signature"
+                    },
+                    "next_clue": null,
+                    "next_offer": null,
+                    "billing": {
+                        "mode": "partner_account",
+                        "run_id": "fixture-monid-run",
+                        "amount_minor": 50,
+                        "currency": "USD"
+                    }
+                }
+            }
+        }
+    ]
+}
