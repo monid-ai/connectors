@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-runs-failed",
+    "description": "Humanizer run that ends `failed`: 202 queued, then the status route answers 200 with the vendor's `{code, message}` error. Completes as httpStatus 500 over providerHttpStatus 200, zero-billed. Synthetic, from the published failed response.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "stealthify-api-run:fail01",
+                    "status": "queued",
+                    "statusUrl": "/api/stealthify/runs/stealthify-api-run:fail01"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/stealthify-api-run:fail01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "stealthify-api-run:fail01",
+                    "createdAt": "2026-09-23T14:55:00.000Z",
+                    "updatedAt": "2026-09-23T14:56:12.000Z",
+                    "currentOperation": null,
+                    "status": "failed",
+                    "error": {
+                        "code": "humanize_failed",
+                        "message": "Humanization failed"
+                    }
+                }
+            }
+        }
+    ]
+}

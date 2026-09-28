@@ -254,6 +254,19 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Work with voice, including text-to-speech, transcription, dialogue, and more.",
     },
     {
+        id: "text-generation",
+        displayName: "Text Generation",
+        description:
+            "Generate and rewrite text, including long-form writing, " +
+            "paraphrasing, and humanizing AI-written drafts.",
+    },
+    {
+        id: "ai-detection",
+        displayName: "AI Detection",
+        description:
+            "Score text for how likely it is to be flagged as AI-generated.",
+    },
+    {
         // The first RESOURCE-backed leaves (add-resource-lifecycle-saperly):
         // real phone numbers owned by the workspace, with AI personas
         // answering and placing calls.

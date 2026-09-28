@@ -1,0 +1,58 @@
+{
+    "name": "synthetic-runs-transient",
+    "description": "Status lookup fails while the run continues: 202 queued, then 503 with `Retry-After: 7`, then completed with 500 words charged. The 503 holds the run open and sets the next tick. Synthetic.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "stealthify-api-run:slow01",
+                    "status": "queued",
+                    "statusUrl": "/api/stealthify/runs/stealthify-api-run:slow01"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/stealthify-api-run:slow01"
+            },
+            "res": {
+                "status": 503,
+                "headers": {
+                    "retry-after": "7"
+                },
+                "body": {
+                    "message": "Service temporarily unavailable"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/stealthify-api-run:slow01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "stealthify-api-run:slow01",
+                    "createdAt": "2026-09-23T14:55:00.000Z",
+                    "updatedAt": "2026-09-23T14:56:12.000Z",
+                    "currentOperation": null,
+                    "status": "completed",
+                    "result": "The rewrite arrived after the lookup recovered.",
+                    "howLikelyToBeDetected": 90,
+                    "wordsSpent": 500,
+                    "creditsSpent": 500,
+                    "remainingCredits": 984100,
+                    "billingMode": "prepaid",
+                    "meteredChargedCredits": 0
+                }
+            }
+        }
+    ]
+}

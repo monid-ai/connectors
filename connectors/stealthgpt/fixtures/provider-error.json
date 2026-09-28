@@ -1,0 +1,18 @@
+{
+    "name": "provider-error",
+    "description": "401 `{message}` envelope, zero-billed; serves every POST endpoint. Recorded 2026-09-23 with an invalid token.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "message": "Unauthorized"
+                }
+            }
+        }
+    ]
+}

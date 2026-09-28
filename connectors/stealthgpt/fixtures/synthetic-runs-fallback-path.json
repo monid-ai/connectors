@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-runs-fallback-path",
+    "description": "202 without a statusUrl: the poll falls back to the submit URL plus the URL-encoded run id, then completes with 1,000 words charged pay-as-you-go. Synthetic; the published contract marks statusUrl required.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "stealthify-api-run:def456",
+                    "status": "queued"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/stealthify-api-run%3Adef456"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "stealthify-api-run:def456",
+                    "createdAt": "2026-09-23T15:00:00.000Z",
+                    "updatedAt": "2026-09-23T15:01:40.000Z",
+                    "currentOperation": null,
+                    "status": "completed",
+                    "result": "A longer rewrite, returned as plain text.",
+                    "howLikelyToBeDetected": 85,
+                    "wordsSpent": 1000,
+                    "creditsSpent": 1000,
+                    "remainingCredits": 0,
+                    "billingMode": "payg",
+                    "meteredChargedCredits": 1000
+                }
+            }
+        }
+    ]
+}

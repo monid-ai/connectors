@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-runs-cancelled",
+    "description": "Humanizer run that ends `cancelled`: 202 queued, then `status: cancelled`. Completes as httpStatus 499 over providerHttpStatus 200, zero-billed. Synthetic, from the published error codes.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "stealthify-api-run:cancel1",
+                    "status": "queued",
+                    "statusUrl": "/api/stealthify/runs/stealthify-api-run:cancel1"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/stealthify-api-run:cancel1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "stealthify-api-run:cancel1",
+                    "createdAt": "2026-09-23T14:55:00.000Z",
+                    "updatedAt": "2026-09-23T14:55:40.000Z",
+                    "currentOperation": null,
+                    "status": "cancelled",
+                    "error": {
+                        "code": "cancelled",
+                        "message": "Humanization was cancelled"
+                    }
+                }
+            }
+        }
+    ]
+}

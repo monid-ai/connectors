@@ -1,0 +1,26 @@
+{
+    "name": "stealthify-generate",
+    "description": "Generate (`rephrase: false`, `writingMode: default`, markdown) on `standard`: 200 with the content, the score and 85 words charged. Recorded 2026-09-23; `remainingCredits` replaced by a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "result": "Small towns will see a reduction in utility bills and have more reliable access to electricity. By using solar panels instead of relying on imported fossil fuels, the town will save money on fuel costs.\n\nGreen energy also creates jobs within the community. Workers can be employed to install and maintain solar panels, creating an economic boost for the local area.\n\nSolar panels won’t emit pollutants that can harm the environment.",
+                    "howLikelyToBeDetected": 82,
+                    "wordsSpent": 85,
+                    "remainingCredits": 985000,
+                    "billingMode": "prepaid",
+                    "meteredChargedCredits": 0,
+                    "systemTokensSpent": 0,
+                    "tokensSpent": 0,
+                    "totalTokensSpent": 0
+                }
+            }
+        }
+    ]
+}

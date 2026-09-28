@@ -1,0 +1,81 @@
+{
+    "name": "agent-runs-completed",
+    "description": "Stealth Agent run on `social`/`linkedin`: 202 queued, two running ticks, then completed with 139 output words and 1,390 words charged. Recorded 2026-09-23; ids and `remainingCredits` replaced by placeholders, result trimmed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "run_abc123",
+                    "status": "queued",
+                    "statusUrl": "/api/stealthify/agent/runs/run_abc123"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/run_abc123"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "run_abc123",
+                    "preset": "social",
+                    "createdAt": "2026-09-23T18:01:36.089Z",
+                    "updatedAt": "2026-09-23T18:01:37.018Z",
+                    "currentStepId": "web_research",
+                    "currentOperation": "Researching sources",
+                    "status": "running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/run_abc123"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "run_abc123",
+                    "preset": "social",
+                    "createdAt": "2026-09-23T18:01:36.089Z",
+                    "updatedAt": "2026-09-23T18:01:50.397Z",
+                    "currentStepId": "social_research",
+                    "currentOperation": null,
+                    "status": "running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/run_abc123"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "run_abc123",
+                    "preset": "social",
+                    "createdAt": "2026-09-23T18:01:36.089Z",
+                    "updatedAt": "2026-09-23T18:02:02.755Z",
+                    "currentStepId": null,
+                    "currentOperation": null,
+                    "status": "completed",
+                    "documentId": "doc_123",
+                    "result": "If your engineering team is doing daily standups, you should be doing async standups.\n\nIn a synchronous standup, every engineer has to stop what they’re working on at a specific time of day to share their progress with the rest of the team. This wastes the team’s time and breaks their flow state.\n\nWith an async standup, each engineer shares their progress asynchronously at a specific time of day. The team maintains their focus and reduces the amount of time spent in meetings, while still keeping",
+                    "outputWords": 139,
+                    "creditsSpent": 1390,
+                    "remainingCredits": 985000,
+                    "billingMode": "prepaid",
+                    "meteredChargedCredits": 0
+                }
+            }
+        }
+    ]
+}

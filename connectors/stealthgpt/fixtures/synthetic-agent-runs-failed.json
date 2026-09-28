@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-agent-runs-failed",
+    "description": "Stealth Agent run that ends `failed` at `generate_text`: 202 queued, then the vendor's `{code, message}` error. Completes as httpStatus 500 over providerHttpStatus 200, zero-billed. Synthetic, from the published failed response.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "runId": "run_fail01",
+                    "status": "queued",
+                    "statusUrl": "/api/stealthify/agent/runs/run_fail01"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/run_fail01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "runId": "run_fail01",
+                    "preset": "seo",
+                    "createdAt": "2026-09-23T14:55:00.000Z",
+                    "updatedAt": "2026-09-23T14:58:30.000Z",
+                    "currentStepId": "generate_text",
+                    "currentOperation": "Generating draft",
+                    "status": "failed",
+                    "error": {
+                        "code": "generation_failed",
+                        "message": "Stealth Agent generation failed"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "name": "stealthify-humanize",
+    "description": "Humanize (`rephrase: true`) on `super`: 200 with the rewrite, the score and 60 words charged. Recorded 2026-09-23; `remainingCredits` replaced by a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "result": "Renewable energy has several key benefits that make it useful in the modern world.",
+                    "howLikelyToBeDetected": 93,
+                    "wordsSpent": 60,
+                    "remainingCredits": 985000,
+                    "billingMode": "prepaid",
+                    "meteredChargedCredits": 0,
+                    "systemTokensSpent": 0,
+                    "tokensSpent": 0,
+                    "totalTokensSpent": 0
+                }
+            }
+        }
+    ]
+}
