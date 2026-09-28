@@ -1,0 +1,53 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#markets; recorder-trimmed public market-list response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/markets?limit=1&sortBy=total_supplied_usd&sortOrder=desc"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "id": "aave-v3-1-ethereum",
+                            "protocol_id": "aave",
+                            "protocol_version": "v3",
+                            "chain_id": 1,
+                            "market_key": "ethereum",
+                            "name": "Aave V3 Ethereum",
+                            "address": "0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2",
+                            "hub_address": null,
+                            "source": "protocol_api",
+                            "last_synced_at": "2026-09-23T13:37:20.193Z",
+                            "reserve_count": 33,
+                            "borrow_observed_count": 30,
+                            "total_supplied_usd": 24720849421.61601,
+                            "total_borrowed_usd": 10298497528.621286,
+                            "utilization": 0.42213365305333733,
+                            "totals_source": "members",
+                            "loan_asset_symbol": null,
+                            "loan_asset_address": null,
+                            "collateral_asset_symbol": null,
+                            "collateral_asset_address": null,
+                            "lltv": null,
+                            "is_protocol_listed": null,
+                            "protocol_name": "Aave",
+                            "protocol_logo": "/protocols/aave.svg",
+                            "chain_name": "Ethereum",
+                            "chain_logo": "/chains/ethereum.svg"
+                        }
+                    ],
+                    "meta": {
+                        "page": 1,
+                        "limit": 1,
+                        "total": 585,
+                        "totalPages": 585
+                    }
+                }
+            }
+        }
+    ]
+}

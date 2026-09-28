@@ -1,0 +1,98 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#security-events; recorder-trimmed public loss-board response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/security-events?limit=1&hasLoss=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "id": "rekt:defillama:astroport-1790035200",
+                            "source": "defillama",
+                            "sourceId": "astroport-1790035200",
+                            "chainId": 0,
+                            "chainSlug": "unmapped",
+                            "onchainId": "rekt:defillama:astroport-1790035200",
+                            "title": "Astroport",
+                            "description": "Governance / Malicious Proposal",
+                            "poster": null,
+                            "attackers": [],
+                            "victims": [],
+                            "netScore": 0,
+                            "confirmations": 0,
+                            "disconfirmations": 0,
+                            "lossAmountUsd": 4900000,
+                            "severity": "medium",
+                            "txHash": null,
+                            "nativeUrl": "https://defillama.com/protocol/astroport",
+                            "links": [
+                                {
+                                    "url": "https://defillama.com/protocol/astroport",
+                                    "kind": "defillama_protocol",
+                                    "label": "DeFiLlama protocol record"
+                                }
+                            ],
+                            "affectsTrackedUniverse": false,
+                            "attackedAt": "2026-09-22T00:00:00.000Z",
+                            "promotedEventId": null,
+                            "classification": "Governance",
+                            "technique": "Malicious Proposal",
+                            "mechanism": "governance",
+                            "targetType": "DeFi Protocol",
+                            "chains": [
+                                "Neutron"
+                            ],
+                            "bridgeHack": false,
+                            "language": "Rust",
+                            "returnedFundsUsd": null,
+                            "protocolSlug": "astroport",
+                            "protocolLogo": "https://icons.llamao.fi/icons/protocols/astroport",
+                            "protocolCategory": "Dexs",
+                            "incidentDossier": {
+                                "rootCause": null,
+                                "transactions": [],
+                                "addresses": [],
+                                "sources": [],
+                                "relatedNews": [],
+                                "coverage": {
+                                    "transactionStatus": "not_available_in_sources",
+                                    "transactionCount": 0,
+                                    "addressCount": 0,
+                                    "sourceCount": 0,
+                                    "newsCount": 0
+                                },
+                                "provenance": {
+                                    "provider": "Casebook evidence",
+                                    "providerUrl": null,
+                                    "matchedTitle": null,
+                                    "matchMethod": null,
+                                    "matchConfidence": null,
+                                    "extractedAt": null
+                                }
+                            }
+                        }
+                    ],
+                    "meta": {
+                        "page": 1,
+                        "limit": 1,
+                        "hasMore": true,
+                        "total": 1233,
+                        "totalLossUsd": 20663224596.17,
+                        "coverageSource": "DeFiLlama",
+                        "coverageTotal": 1233,
+                        "coverageTotalLossUsd": 20663224596.17,
+                        "coverageRefreshedAt": "2026-09-23T12:27:04.679Z",
+                        "evidenceCoveredIncidents": 285,
+                        "transactionCoveredIncidents": 258,
+                        "evidenceRefreshedAt": "2026-09-23T12:28:09.588Z"
+                    }
+                }
+            }
+        }
+    ]
+}

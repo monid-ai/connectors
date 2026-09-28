@@ -1,0 +1,413 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#vault/{network}/{address}; recorder-trimmed entitled vault detail response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/vault/ethereum/0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8?points=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "vault": {
+                            "score_run_id": "d36b33f9-36c1-4810-b53a-0db2a670bfc7",
+                            "score_computed_at": "2026-09-23T13:35:17.006Z",
+                            "score_updated_at": "2026-09-23T12:34:54.235Z",
+                            "id": "aave-1-0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",
+                            "address": "0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",
+                            "protocol_id": "aave",
+                            "protocol_version": "v3",
+                            "chain_id": 1,
+                            "curator_id": null,
+                            "name": "Aave Ethereum WETH",
+                            "symbol": "aEthWETH",
+                            "external_id": "AaveV3Ethereum",
+                            "asset_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                            "asset_symbol": "WETH",
+                            "tvl_usd": 5717377898.873551,
+                            "apr_net": 0.014270724959999113,
+                            "base_apr": 0.014270724959999113,
+                            "apr_forward": null,
+                            "reward_apr": 0,
+                            "has_rewards": false,
+                            "rewards": [],
+                            "reward_reconciliation_status": null,
+                            "reward_reconciliation_delta": null,
+                            "deposit_capacity_usd": 1619806616.4064484,
+                            "is_depositable": true,
+                            "utilization": 0.84565322063495,
+                            "borrow_apr": 0.0204279947114511,
+                            "borrow_rate_basis": "apy",
+                            "borrow_reward_apr": 0,
+                            "borrow_apr_net": 0.0204279947114511,
+                            "borrow_incentive_status": "none",
+                            "has_borrow_rewards": false,
+                            "fee_rate": 0.15,
+                            "fee_type": "reserve_factor",
+                            "utilization_status": "observed",
+                            "borrow_apr_status": "observed",
+                            "fee_status": "observed",
+                            "active_loans_usd": 4834919033.769502,
+                            "real_yield_share": 1,
+                            "gross_interest_apy": 0.01727499951885235,
+                            "borrow_status": "open",
+                            "yield_quality": {
+                                "flags": [],
+                                "grade": "A",
+                                "score_effects": [],
+                                "utilization_14d": 0.8564972171592499,
+                                "real_yield_share_14d": 1
+                            },
+                            "yield_quality_grade": "A",
+                            "risk_score": 8.88,
+                            "total_score": 8.88,
+                            "risk_tier": "Prime",
+                            "risk_vectors": {
+                                "asset": {
+                                    "score": 8.165061007227733,
+                                    "weight": 0.3,
+                                    "exposures": [
+                                        {
+                                            "score": 8.25,
+                                            "symbol": "WETH",
+                                            "weight": 0.6230935548019443,
+                                            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                                            "chainId": 1,
+                                            "category": "native",
+                                            "overlays": [],
+                                            "capsApplied": [],
+                                            "suitability": "institutional",
+                                            "reviewStatus": "reviewed",
+                                            "hardFailFlags": [],
+                                            "weightedScore": 8.25,
+                                            "activeOverrides": [],
+                                            "dimensionScores": [
+                                                {
+                                                    "value": 10,
+                                                    "source": "auto:refresh",
+                                                    "isStale": false,
+                                                    "dimension": "liquidity",
+                                                    "isExpired": false,
+                                                    "confidence": "high",
+                                                    "freshUntil": "2026-09-24T03:35:16.761Z",
+                                                    "observedAt": "2026-09-17T03:35:16.761Z",
+                                                    "sourceDisplay": "auto:refresh",
+                                                    "effectiveValue": 10
+                                                },
+                                                {
+                                                    "value": 6.5,
+                                                    "source": "auto:refresh",
+                                                    "isStale": false,
+                                                    "dimension": "volatility",
+                                                    "isExpired": false,
+                                                    "confidence": "high",
+                                                    "freshUntil": "2026-09-24T03:35:16.763Z",
+                                                    "observedAt": "2026-09-17T03:35:16.763Z",
+                                                    "sourceDisplay": "auto:refresh",
+                                                    "effectiveValue": 6.5
+                                                }
+                                            ],
+                                            "upgradeConditions": []
+                                        },
+                                        {
+                                            "score": 9.25,
+                                            "symbol": "USDC",
+                                            "weight": 0.050936105375635116,
+                                            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                                            "chainId": 1,
+                                            "category": "fiat_backed_stablecoin",
+                                            "overlays": [],
+                                            "capsApplied": [],
+                                            "suitability": "institutional",
+                                            "reviewStatus": "reviewed",
+                                            "hardFailFlags": [],
+                                            "weightedScore": 9.25,
+                                            "activeOverrides": [],
+                                            "dimensionScores": [
+                                                {
+                                                    "value": 8,
+                                                    "source": "manual:seed",
+                                                    "isStale": false,
+                                                    "dimension": "governance_controls",
+                                                    "isExpired": false,
+                                                    "confidence": "high",
+                                                    "freshUntil": "2026-09-23T16:25:03.750Z",
+                                                    "observedAt": "2026-06-25T16:25:03.750Z",
+                                                    "sourceDisplay": "Philidor Research",
+                                                    "effectiveValue": 8
+                                                },
+                                                {
+                                                    "value": 9.5,
+                                                    "source": "manual:seed",
+                                                    "isStale": false,
+                                                    "dimension": "issuer_custody",
+                                                    "isExpired": false,
+                                                    "confidence": "high",
+                                                    "freshUntil": "2026-12-22T16:25:03.702Z",
+                                                    "observedAt": "2026-06-25T16:25:03.703Z",
+                                                    "sourceDisplay": "Philidor Research",
+                                                    "effectiveValue": 9.5
+                                                }
+                                            ],
+                                            "upgradeConditions": []
+                                        }
+                                    ],
+                                    "dragApplied": false,
+                                    "failSafeMode": "normal",
+                                    "assetQualityAnchor": 8.1651,
+                                    "portfolioAdjustments": {
+                                        "wrongWayPenalty": 0,
+                                        "correlationPenalty": -0.3,
+                                        "concentrationPenalty": 0
+                                    },
+                                    "legacyOverrideApplied": false,
+                                    "activeIncidentCeilingApplied": false,
+                                    "unreviewedCollateralCapApplied": false,
+                                    "unauditedProtocolVersionCapApplied": false
+                                },
+                                "control": {
+                                    "score": 8,
+                                    "weight": 0.2,
+                                    "details": {
+                                        "timelock": 172800
+                                    }
+                                },
+                                "history": {
+                                    "score": 10,
+                                    "counts": {
+                                        "warning_30d": 0,
+                                        "warning_90d": 0,
+                                        "critical_30d": 0,
+                                        "critical_90d": 0,
+                                        "warning_180d": 0,
+                                        "warning_365d": 0,
+                                        "critical_180d": 0,
+                                        "critical_365d": 0,
+                                        "critical_lifetime": 0
+                                    },
+                                    "weight": 0.2,
+                                    "breakdown": {
+                                        "warningPenalty": 0,
+                                        "criticalPenalty": 0,
+                                        "cleanStreakBonus": 0.5,
+                                        "lifetimeCriticalPenalty": 0
+                                    },
+                                    "tierCeiling": 10,
+                                    "ceilingApplied": false
+                                },
+                                "platform": {
+                                    "score": 9.41842975069238,
+                                    "weight": 0.3,
+                                    "details": {
+                                        "auditScore": 10,
+                                        "finalScore": 9.41842975069238,
+                                        "lindyScore": 9.74240973902857,
+                                        "dependencies": [
+                                            {
+                                                "score": 10,
+                                                "protocolId": "chainlink",
+                                                "safetyFactor": 0.95
+                                            }
+                                        ],
+                                        "strategyType": "lending",
+                                        "strategyScore": 10,
+                                        "dependencyCount": 1,
+                                        "incidentResolved": false,
+                                        "incidentSeverity": null,
+                                        "incidentPenaltyApplied": false
+                                    }
+                                },
+                                "provenance": {
+                                    "asOf": "2026-09-23T12:33:16.557Z",
+                                    "computedAt": "2026-09-23T12:34:43.763Z",
+                                    "scoreRunId": "c232a3d0-c95c-407d-a4c8-dbdf64e3741a",
+                                    "failSafeMode": "normal",
+                                    "methodologyVersion": 1,
+                                    "vaultMethodologyHash": "701827014bba92b0555958ae1f5277f5776e6d8a416b95d5fd27314e8707ef18",
+                                    "yieldHistoryInputHash": "679c4b5fd9a7cdf18badd46b32bd1a082924157758289d1d9c2343f5a85c17af",
+                                    "vaultMethodologyVersion": 6,
+                                    "historyIncidentAggregation": "raw_rows"
+                                }
+                            },
+                            "is_active": true,
+                            "is_shutdown": false,
+                            "needs_risk_review": false,
+                            "last_synced_at": "2026-09-23T13:37:13.525Z",
+                            "created_at": "2026-01-27T23:48:42.243Z",
+                            "deployment_timestamp": "2023-01-27T07:55:11.000Z",
+                            "is_source_verified": true,
+                            "is_stablecoin": false,
+                            "is_lsd": false,
+                            "is_single_exposure": true,
+                            "has_impermanent_loss": false,
+                            "is_audited": true,
+                            "is_high_confidence": false,
+                            "protocol_name": "Aave",
+                            "protocol_logo": "/protocols/aave.svg",
+                            "protocol_website": "https://app.aave.com",
+                            "protocol_created_at": "2026-01-27T23:47:52.654Z",
+                            "curator_name": null,
+                            "curator_logo": null,
+                            "curator_one_liner": null,
+                            "chain_name": "Ethereum",
+                            "chain_logo": "/chains/ethereum.svg",
+                            "audit_status": null,
+                            "auditors": null,
+                            "audit_date": null,
+                            "audit_report_url": null,
+                            "is_immutable": null,
+                            "timelock_seconds": null,
+                            "strategy_type": "lending",
+                            "declared_strategy": null,
+                            "declared_strategy_source_url": null,
+                            "declared_strategy_declared_at": null,
+                            "protocol_launch_date": "2020-01-08T00:00:00.000Z",
+                            "protocol_auditors": [
+                                "OpenZeppelin",
+                                "Trail of Bits"
+                            ],
+                            "protocol_security_page_url": "https://aave.com/security",
+                            "protocol_bug_bounty_url": "https://immunefi.com/bug-bounty/aave/",
+                            "version_display_name": "Aave V3",
+                            "version_launch_date": "2023-01-27T00:00:00.000Z",
+                            "version_auditors": [
+                                "OpenZeppelin",
+                                "Trail of Bits"
+                            ],
+                            "version_audit_report_url": "https://github.com/aave/aave-v3-core/tree/master/audits",
+                            "version_security_page_url": "https://aave.com/security",
+                            "version_audit_history": [
+                                {
+                                    "url": "https://github.com/aave-dao/aave-v3-origin/blob/main/audits/2021-11-01_OpenZeppelin_AaveV3.pdf",
+                                    "date": "2021-11-01",
+                                    "type": "standard",
+                                    "auditor": "OpenZeppelin"
+                                },
+                                {
+                                    "url": "https://github.com/aave-dao/aave-v3-origin/blob/main/audits/2022-01-07_TrailOfBits_AaveV3.pdf",
+                                    "date": "2022-01-07",
+                                    "type": "standard",
+                                    "scope": [
+                                        "Aave V3: borrow/supply logic, bitmap libraries, stable+variable debt tokens, isolation mode, supply/bridge/generic logic libraries, Pool, PoolConfigurator, liquidation/reserve/eMode libraries, DefaultReserveInterestRateStrategy, flash loan + validation libraries, upgradeability base, configuration contracts"
+                                    ],
+                                    "auditor": "Trail of Bits",
+                                    "findings": {
+                                        "low": 2,
+                                        "high": 5,
+                                        "medium": 1,
+                                        "critical": 0
+                                    },
+                                    "auditedRef": "commit 14f6148",
+                                    "remediated": true
+                                }
+                            ],
+                            "borrow_rewards": [],
+                            "tvl_status": "observed",
+                            "available_liquidity_usd": 882458865.1040494,
+                            "liquidity_deficit_usd": 0,
+                            "liquidity_status": "available",
+                            "deposit_status": "open",
+                            "withdraw_status": "open",
+                            "freshness_seconds": 70
+                        },
+                        "snapshots": [
+                            {
+                                "recorded_at": "2026-06-25T13:47:31.363Z",
+                                "tvl_usd": 3141190610.360618,
+                                "apr_net": 0.014821735929832068,
+                                "base_apr": 0.014821735929832068,
+                                "price_per_share": 0,
+                                "utilization": null,
+                                "borrow_apr": null,
+                                "borrow_rate_basis": null,
+                                "borrow_reward_apr": 0,
+                                "borrow_apr_net": null,
+                                "borrow_incentive_status": null
+                            }
+                        ],
+                        "events": [
+                            {
+                                "id": 3315290,
+                                "links": [],
+                                "scope": "protocol",
+                                "title": "rsETH/Kelp Bridge Exploit — Aave V3 Ethereum Bad Debt",
+                                "source": null,
+                                "status": "published",
+                                "payload": null,
+                                "tx_hash": null,
+                                "victims": null,
+                                "chain_id": 1,
+                                "severity": "Critical",
+                                "vault_id": null,
+                                "attackers": null,
+                                "log_index": null,
+                                "net_score": null,
+                                "source_id": null,
+                                "created_at": "2026-04-20T22:20:13.016Z",
+                                "created_by": null,
+                                "curator_id": null,
+                                "entity_key": null,
+                                "event_type": "Incident",
+                                "description": "On 2026-04-18 an attacker exploited Kelp DAO's LayerZero-based bridge, minting approximately 116,500 unbacked rsETH (~$292M, ~18% of circulating supply). The attacker deposited the unbacked rsETH as collateral on Aave V3 Ethereum and borrowed WETH, leaving approximately $196M of protocol-level bad debt (press estimate; Aave governance post refers only to 'hundreds of millions' without publishing a specific figure as of 2026-04-20), concentrated in the rsETH↔WETH pair. Aave Guardian froze rsETH m",
+                                "detected_at": "2026-04-20T22:20:13.016Z",
+                                "occurred_at": "2026-04-18T00:00:00.000Z",
+                                "promoted_at": null,
+                                "protocol_id": "aave",
+                                "provisional": false,
+                                "block_number": null,
+                                "fault_domain": "underlying_asset",
+                                "incident_key": "ev:31cadf231f465cadd470865e4e029af3",
+                                "published_at": null,
+                                "retracted_at": null,
+                                "affected_asset": null,
+                                "incident_scope": "protocol",
+                                "loss_amount_usd": 196000000,
+                                "post_mortem_url": "https://governance.aave.com/t/rseth-incident-report-april-20-2026/24580",
+                                "protocol_version": "v3",
+                                "retracted_reason": null,
+                                "incident_severity": "major",
+                                "user_compensation": "full",
+                                "first_published_at": "2026-04-20T22:20:13.016605+00:00",
+                                "remediation_status": "resolved",
+                                "confirmations_required": null,
+                                "affects_tracked_universe": false
+                            }
+                        ],
+                        "rewards": [],
+                        "wraps": null,
+                        "strategyTransparency": {
+                            "declaration": null,
+                            "wrapper": {
+                                "status": "not_applicable",
+                                "kind": null,
+                                "target": null,
+                                "basis": "Current evidence describes shared-pool collateral exposure, not segregated capital allocation; allocation pass-through classification does not apply.",
+                                "allocationObservedAt": "2026-09-23T13:36:57.308Z",
+                                "limitations": [
+                                    "No wrapper finding means no indexed wrapper was detected; it does not prove independent management.",
+                                    "Allocation pass-through requires complete current evidence, a source-proven destination-vault address, and an indexed target."
+                                ]
+                            },
+                            "conformance": {
+                                "methodologyVersion": "strategy-conformance-v1.0.0",
+                                "nonScoring": true,
+                                "availability": "no_structured_mandate",
+                                "status": null,
+                                "decisionEligible": false,
+                                "evidenceContinuity": "not_established",
+                                "asOf": null,
+                                "pauseReason": "A sourced free-text declaration may exist, but no machine-readable allocation bounds are recorded.",
+                                "mandate": null,
+                                "currentAssessment": null,
+                                "currentDivergence": null,
+                                "latestReconvergence": null
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

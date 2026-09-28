@@ -1,0 +1,161 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#rwa; recorder-trimmed public RWA-list response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/rwa?limit=1&review_status=reviewed"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "asset_id": "3881",
+                            "asset_version_id": "29450",
+                            "address": "0x48ab4e39ac59f4e88974804b04a991b3a402717f",
+                            "chain_id": 1,
+                            "symbol": "FDIT",
+                            "name": "Fidelity Treasury Digital Fund",
+                            "category": "tokenized_treasury",
+                            "review_status": "reviewed",
+                            "credit_class": "public_credit",
+                            "credit_class_basis": null,
+                            "instrument_type": "tokenized_treasury",
+                            "risk_score": 8.03,
+                            "risk_tier": "Prime",
+                            "score_status": "scored",
+                            "dimensions_only": false,
+                            "issuer": {
+                                "id": "fidelity",
+                                "name": "Fidelity Investments",
+                                "jurisdiction": "US (SEC; 1940 Act Investment Company)",
+                                "type": "asset_manager",
+                                "website_url": "https://www.fidelity.com/"
+                            },
+                            "in_basket_a": true,
+                            "dimensions": {
+                                "issuer_custody": 8.5,
+                                "reserve_transparency": 8.5,
+                                "redeemability": 8,
+                                "protocol_security": null,
+                                "liquidity": 5.5,
+                                "credit_quality": null,
+                                "default_rate": null,
+                                "recovery_rate": null,
+                                "subadvisor_concentration": null,
+                                "redemption_terms": null
+                            },
+                            "institutional": {
+                                "regulatory_wrapper": "40_act",
+                                "regulatory_jurisdiction": "US",
+                                "kyc_gate": "institutional_only",
+                                "custodian_name": "Bank of New York Mellon",
+                                "auditor_name": "PricewaterhouseCoopers",
+                                "attestation_cadence": "daily",
+                                "redemption_window": "T+0",
+                                "aum_usd": 125428489.29,
+                                "aum_usd_note": "Disputed. This review-time snapshot exceeds the last observed fund AUM, but that observation is too old or not comparable to override it. Treat both as uncertain.",
+                                "yield_pct": 4.05,
+                                "duration_days": 30,
+                                "currency": "USD",
+                                "aum_native": null,
+                                "fx_rate_used": null,
+                                "fx_rate_at": null,
+                                "aum_usd_source": "native",
+                                "yield_basis": "sec_7_day"
+                            },
+                            "data_provenance": [
+                                {
+                                    "notes": "Fidelity Digital Assets developer page. Tokenized share class of FYOXX (Fidelity Treasury Digital Fund), ≥99.5% cash + US Treasuries. Cites issuer_custody, reserve_transparency, redeemability.",
+                                    "source_url": "https://institutional.fidelity.com/app/funds-and-products/9053/fidelity-treasury-digital-fund-onchain-class-fyoxx.html",
+                                    "source_type": "issuer_disclosure",
+                                    "retrieved_at": "2026-05-04",
+                                    "document_hash": null
+                                },
+                                {
+                                    "notes": "Launch coverage with Ondo as initial holder. Cites peg_stability, governance_controls.",
+                                    "source_url": "https://www.coindesk.com/business/2025/09/09/fidelity-s-tokenized-money-market-fund-rolled-out-on-ethereum-with-ondo-holding-usd202m",
+                                    "source_type": "issuer_disclosure",
+                                    "retrieved_at": "2026-05-04",
+                                    "document_hash": null
+                                }
+                            ],
+                            "reviewed_by": "philidor-rwa-specialist",
+                            "reviewer": {
+                                "slug": "philidor-rwa-specialist",
+                                "name": "Philidor RWA Specialist",
+                                "role": "asset_specialist",
+                                "attested_at": "2026-09-11T09:47:27.197066Z"
+                            },
+                            "recorded_at": "2026-06-28T14:58:27.995113Z",
+                            "freshness": {
+                                "last_refresh_at": "2026-09-22T21:42:07.831063Z",
+                                "age_hours": 15.9,
+                                "status": "fresh",
+                                "last_status": "no_change"
+                            },
+                            "dependency_chain": [],
+                            "methodology_version": "v1.3",
+                            "chain_overlay": {
+                                "multiplier": 1,
+                                "bridge_centralization": 10,
+                                "sequencer_centralization": 10,
+                                "validator_set_size_score": 10,
+                                "chain_age_score": 10,
+                                "rationale": "L1 calibration anchor: PoS with ~1M+ validators, no sequencer concept, no canonical bridge dependency, 9+ years of uptime. Multiplier = 1.0 by construction."
+                            },
+                            "product_id": null,
+                            "identity_status": "unmapped",
+                            "canonical_product_id": "FDIT",
+                            "aum_scope": "product",
+                            "canonical_aum": null,
+                            "metrics": {
+                                "fund_aum_usd": {
+                                    "value": 0,
+                                    "scope": "fund",
+                                    "basis": "total_asset_value",
+                                    "unit": "USD",
+                                    "source_url": "https://app.rwa.xyz/assets/FDIT",
+                                    "source_field": "aggregates[Total Asset Value].value",
+                                    "retrieved_at": "2026-09-22T21:40:58.049000Z",
+                                    "raw_payload_sha256": "ece231a77e9bd5fc53f2c71b04ac61c4bb4053d06df4b15ff2c4519fcfae9d8b"
+                                },
+                                "global_issued_value_usd": {
+                                    "value": 32038606.08000005,
+                                    "scope": "global_issued",
+                                    "basis": "global_issued_value",
+                                    "unit": "USD",
+                                    "source_url": "https://app.rwa.xyz/assets/FDIT",
+                                    "source_field": "asset.total_asset_value_dollar.val",
+                                    "retrieved_at": "2026-09-16T21:34:17.776000Z",
+                                    "raw_payload_sha256": "51f4a82a0df70bd7f0e616add49726f1a3e1ccf2d7b5a680a5125cac926902f1"
+                                },
+                                "deployment_circulating_value_usd": {
+                                    "value": 32038606.08000005,
+                                    "scope": "chain_deployment",
+                                    "basis": "circulating_value",
+                                    "unit": "USD",
+                                    "source_url": "https://app.rwa.xyz/assets/FDIT",
+                                    "source_field": "asset.tokens[].circulating_asset_value_dollar.val",
+                                    "retrieved_at": "2026-09-16T21:34:17.776000Z",
+                                    "raw_payload_sha256": "51f4a82a0df70bd7f0e616add49726f1a3e1ccf2d7b5a680a5125cac926902f1"
+                                },
+                                "apy_7d_pct": null,
+                                "apy_30d_pct": null,
+                                "duration_days": null
+                            }
+                        }
+                    ],
+                    "meta": {
+                        "page": 1,
+                        "limit": 1,
+                        "total": 50,
+                        "totalPages": 50
+                    }
+                }
+            }
+        }
+    ]
+}

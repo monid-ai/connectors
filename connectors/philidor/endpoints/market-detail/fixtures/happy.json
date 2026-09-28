@@ -1,0 +1,87 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#markets/{id}; recorder-trimmed public market-detail response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/markets/aave-v3-1-ethereum"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "market": {
+                            "id": "aave-v3-1-ethereum",
+                            "protocol_id": "aave",
+                            "protocol_version": "v3",
+                            "chain_id": 1,
+                            "market_key": "ethereum",
+                            "name": "Aave V3 Ethereum",
+                            "address": "0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2",
+                            "hub_address": null,
+                            "source": "protocol_api",
+                            "last_synced_at": "2026-09-23T13:37:20.193Z",
+                            "reserve_count": 33,
+                            "borrow_observed_count": 30,
+                            "total_supplied_usd": 24720849421.61601,
+                            "total_borrowed_usd": 10298497528.621286,
+                            "utilization": 0.42213365305333733,
+                            "totals_source": "members",
+                            "loan_asset_symbol": null,
+                            "loan_asset_address": null,
+                            "collateral_asset_symbol": null,
+                            "collateral_asset_address": null,
+                            "lltv": null,
+                            "is_protocol_listed": null,
+                            "protocol_name": "Aave",
+                            "protocol_logo": "/protocols/aave.svg",
+                            "chain_name": "Ethereum",
+                            "chain_logo": "/chains/ethereum.svg"
+                        },
+                        "reserves": [
+                            {
+                                "vault_id": "aave-1-0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",
+                                "asset_symbol": "WETH",
+                                "asset_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                                "chain_id": 1,
+                                "supplied_usd": 5717377898.873551,
+                                "supply_apr": 0.014270724959999113,
+                                "borrowed_usd": 4834919033.769502,
+                                "borrow_apr": 0.0204279947114511,
+                                "borrow_apr_net": 0.0204279947114511,
+                                "utilization": 0.84565322063495,
+                                "fee_rate": 0.15,
+                                "borrow_status": "open",
+                                "is_depositable": true,
+                                "deposit_capacity_usd": 1619806616.4064484,
+                                "risk_tier": "Prime",
+                                "total_score": 8.88,
+                                "is_shutdown": false
+                            },
+                            {
+                                "vault_id": "aave-1-0xbdfa7b7893081b35fb54027489e2bc7a38275129",
+                                "asset_symbol": "weETH",
+                                "asset_address": "0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee",
+                                "chain_id": 1,
+                                "supplied_usd": 4008179054.1379304,
+                                "supply_apr": 2.0969623493421016e-7,
+                                "borrowed_usd": 152682.78399748995,
+                                "borrow_apr": 0.010059144754170805,
+                                "borrow_apr_net": 0.010059144754170805,
+                                "utilization": 0.000038092805220331805,
+                                "fee_rate": 0.45,
+                                "borrow_status": "disabled",
+                                "is_depositable": true,
+                                "deposit_capacity_usd": 492592055.96207,
+                                "risk_tier": "Core",
+                                "total_score": 7.9,
+                                "is_shutdown": false
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

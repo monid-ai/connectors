@@ -1,0 +1,97 @@
+{
+    "name": "happy",
+    "description": "recorded 2026-09-23 from philidor#vaults; recorder-trimmed public vault-list response",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/vaults?limit=1&sortBy=tvl_usd&sortOrder=desc"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "id": "aave-1-0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",
+                            "address": "0x4d5f47fa6a74757f35c14fd3a6ef8e3c9bc514e8",
+                            "protocol_id": "aave",
+                            "protocol_version": "v3",
+                            "chain_id": 1,
+                            "curator_id": null,
+                            "name": "Aave Ethereum WETH",
+                            "symbol": "aEthWETH",
+                            "external_id": "AaveV3Ethereum",
+                            "asset_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+                            "asset_symbol": "WETH",
+                            "tvl_usd": 5729646282.271946,
+                            "apr_net": 0.014284690882313954,
+                            "base_apr": 0.014284690882313954,
+                            "apr_forward": null,
+                            "reward_apr": 0,
+                            "has_rewards": false,
+                            "rewards": [],
+                            "reward_reconciliation_status": null,
+                            "reward_reconciliation_delta": null,
+                            "deposit_capacity_usd": 1626800717.728054,
+                            "is_depositable": true,
+                            "utilization": 0.8460692287443334,
+                            "borrow_apr": 0.020438145870047306,
+                            "borrow_rate_basis": "apy",
+                            "borrow_reward_apr": 0,
+                            "borrow_apr_net": 0.020438145870047306,
+                            "borrow_incentive_status": "none",
+                            "has_borrow_rewards": false,
+                            "fee_rate": 0.15,
+                            "fee_type": "reserve_factor",
+                            "utilization_status": "observed",
+                            "borrow_apr_status": "observed",
+                            "fee_status": "observed",
+                            "active_loans_usd": 4847677411.019663,
+                            "real_yield_share": 1,
+                            "gross_interest_apy": 0.017292086313235106,
+                            "borrow_status": "open",
+                            "yield_quality_grade": "A",
+                            "total_score": 8.88,
+                            "risk_tier": "Prime",
+                            "is_active": true,
+                            "is_shutdown": false,
+                            "needs_risk_review": false,
+                            "last_synced_at": "2026-09-23T12:37:25.182Z",
+                            "created_at": "2026-01-27T23:48:42.243Z",
+                            "score_run_id": "d36b33f9-36c1-4810-b53a-0db2a670bfc7",
+                            "score_computed_at": "2026-09-23T13:35:17.006Z",
+                            "score_updated_at": "2026-09-23T12:34:54.235Z",
+                            "is_stablecoin": false,
+                            "is_lsd": false,
+                            "is_single_exposure": true,
+                            "has_impermanent_loss": false,
+                            "is_audited": true,
+                            "is_high_confidence": false,
+                            "strategy_type": null,
+                            "protocol_name": "Aave",
+                            "protocol_logo": "/protocols/aave.svg",
+                            "curator_name": null,
+                            "curator_logo": null,
+                            "chain_name": "Ethereum",
+                            "chain_logo": "/chains/ethereum.svg",
+                            "risk_vectors": null,
+                            "tvl_status": "observed",
+                            "available_liquidity_usd": 881968871.2522832,
+                            "liquidity_deficit_usd": 0,
+                            "liquidity_status": "available",
+                            "deposit_status": "open",
+                            "withdraw_status": "open",
+                            "freshness_seconds": 3537
+                        }
+                    ],
+                    "meta": {
+                        "page": 1,
+                        "limit": 1,
+                        "total": 1125,
+                        "totalPages": 1125
+                    }
+                }
+            }
+        }
+    ]
+}

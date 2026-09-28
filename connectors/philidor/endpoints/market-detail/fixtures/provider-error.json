@@ -1,0 +1,21 @@
+{
+    "name": "provider-error",
+    "description": "recorded 2026-09-23 from philidor#markets/{id}; unknown-market 404 error envelope",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.philidor.io/v1/markets/not-a-market"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": {
+                        "code": "NOT_FOUND",
+                        "message": "Market not found"
+                    }
+                }
+            }
+        }
+    ]
+}
