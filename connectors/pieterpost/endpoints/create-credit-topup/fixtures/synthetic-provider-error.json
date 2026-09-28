@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — iDEAL is not available for a USD live-wallet top-up.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/credits/topups",
+                "body": {
+                    "amountCents": 2500,
+                    "currency": "usd",
+                    "paymentMethod": "ideal"
+                }
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "code": "invalid_request",
+                    "error": "iDEAL top-ups are only available for EUR wallets."
+                }
+            }
+        }
+    ]
+}

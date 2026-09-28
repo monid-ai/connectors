@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — invalid API credentials cannot read the wallet.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://pieterpost.com/v1/wallet?currency=eur"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "code": "invalid_api_key",
+                    "error": "The API key is invalid."
+                }
+            }
+        }
+    ]
+}

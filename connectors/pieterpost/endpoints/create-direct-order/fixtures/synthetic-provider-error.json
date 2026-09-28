@@ -1,0 +1,36 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — a direct order blocked because the wallet cannot cover the order.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/orders",
+                "body": {
+                    "requestType": "letter",
+                    "letters": [
+                        {
+                            "message": "A direct letter from Monid.",
+                            "recipient": {
+                                "name": "Pieter Example",
+                                "streetAddress": "Damrak 1",
+                                "postalCode": "1012 LG",
+                                "city": "Amsterdam",
+                                "country": "NL"
+                            }
+                        }
+                    ],
+                    "locale": "en",
+                    "senderEmail": "sender@example.com"
+                }
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "code": "insufficient_credits",
+                    "error": "The wallet balance is too low for this order."
+                }
+            }
+        }
+    ]
+}

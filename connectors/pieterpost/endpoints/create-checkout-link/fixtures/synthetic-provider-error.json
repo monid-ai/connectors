@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — PieterPost's documented US-address warning shape. The caller must review before a new idempotent operation accepts the warning.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/checkout-links"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "addressWarnings": [
+                        {
+                            "code": "missing_unit",
+                            "message": "The address may require a unit number."
+                        }
+                    ],
+                    "error": "Review the US address warnings before creating the checkout link.",
+                    "code": "us_address_warnings_required"
+                }
+            }
+        }
+    ]
+}

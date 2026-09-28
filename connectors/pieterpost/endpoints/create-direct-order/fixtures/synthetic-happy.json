@@ -1,0 +1,59 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — shaped from PieterPost's public API docs on 2026-09-22. A test-key direct letter order; ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/orders",
+                "body": {
+                    "requestType": "letter",
+                    "letters": [
+                        {
+                            "message": "A direct letter from Monid.",
+                            "recipient": {
+                                "name": "Pieter Example",
+                                "streetAddress": "Damrak 1",
+                                "postalCode": "1012 LG",
+                                "city": "Amsterdam",
+                                "country": "NL"
+                            }
+                        }
+                    ],
+                    "locale": "en",
+                    "senderEmail": "sender@example.com"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "amountCents": 300,
+                    "billingMode": "credits",
+                    "checkoutUrl": null,
+                    "createdAt": "2026-09-22T12:00:00.000Z",
+                    "currency": "eur",
+                    "error": null,
+                    "expiresAt": null,
+                    "externalId": null,
+                    "fulfilledAt": "2026-09-22T12:00:05.000Z",
+                    "metadata": {},
+                    "orderId": "ord_synthetic_direct_123",
+                    "orderRef": "00000000-0000-4000-8000-000000000124",
+                    "paidAt": "2026-09-22T12:00:02.000Z",
+                    "paymentReference": "wallet:ledger_synthetic_123",
+                    "recipientCount": 1,
+                    "requestType": "letter",
+                    "senderEmail": "sender@example.com",
+                    "status": "fulfilled",
+                    "testMode": true,
+                    "updatedAt": "2026-09-22T12:00:05.000Z",
+                    "wallet": {
+                        "balanceCents": 2200,
+                        "currency": "eur",
+                        "mode": "test"
+                    }
+                }
+            }
+        }
+    ]
+}

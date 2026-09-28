@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — shaped from PieterPost's public API docs on 2026-09-22. A test-mode top-up that immediately credits the wallet.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/credits/topups",
+                "body": {
+                    "amountCents": 2500,
+                    "currency": "eur",
+                    "metadata": {
+                        "source": "monid"
+                    },
+                    "returnUrl": "https://example.com/topups/return"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "amountCents": 2500,
+                    "checkoutUrl": null,
+                    "createdAt": "2026-09-22T12:00:00.000Z",
+                    "currency": "eur",
+                    "paidAt": "2026-09-22T12:00:01.000Z",
+                    "status": "paid",
+                    "testMode": true,
+                    "topupId": "topup_synthetic_123",
+                    "updatedAt": "2026-09-22T12:00:01.000Z",
+                    "wallet": {
+                        "balanceCents": 2500,
+                        "currency": "eur",
+                        "mode": "test"
+                    }
+                }
+            }
+        }
+    ]
+}

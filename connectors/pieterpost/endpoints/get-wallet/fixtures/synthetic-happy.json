@@ -1,0 +1,29 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — shaped from PieterPost's public API docs on 2026-09-22. A test EUR wallet.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://pieterpost.com/v1/wallet?currency=eur"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "accountId": "acct_synthetic_123",
+                    "approvalStatus": "approved",
+                    "approvedForDirectSend": true,
+                    "creditsEnabled": true,
+                    "hostedApiEnabled": true,
+                    "liveEnabled": true,
+                    "wallet": {
+                        "balanceCents": 2500,
+                        "currency": "eur",
+                        "mode": "test",
+                        "updatedAt": "2026-09-22T12:00:00.000Z"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — PieterPost's documented invalid-request error shape for an invalid recipient.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://pieterpost.com/v1/compose-links"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "Compose links require a valid recipient.",
+                    "code": "invalid_request"
+                }
+            }
+        }
+    ]
+}

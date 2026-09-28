@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — an order id that does not belong to the authenticated API account.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://pieterpost.com/v1/orders/ord_synthetic_123"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "code": "order_not_found",
+                    "error": "Order not found."
+                }
+            }
+        }
+    ]
+}

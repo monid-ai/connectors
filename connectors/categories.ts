@@ -270,6 +270,12 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         description: "Send and receive SMS from owned phone numbers.",
     },
     {
+        id: "postal-mail",
+        displayName: "Postal Mail",
+        description:
+            "Create, review, pay for, and send physical letters and postcards.",
+    },
+    {
         id: "token-prices",
         displayName: "Token Prices",
         description:
