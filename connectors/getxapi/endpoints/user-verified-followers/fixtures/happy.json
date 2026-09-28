@@ -1,0 +1,61 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/verified_followers?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "user_count": 20,
+                    "has_more": true,
+                    "next_cursor": "1877114209477716316|2102697303180574698",
+                    "verified_followers": [
+                        {
+                            "type": "user",
+                            "id": "1158742169555021830",
+                            "userName": "_kachimera_",
+                            "name": "J_SODATV",
+                            "url": "https://x.com/_kachimera_",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/1923311108078579712/PHKpCau1_normal.jpg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/1158742169555021830/1756147213",
+                            "description": "Gunner Forever 🅰️",
+                            "location": "Lusaka, Zambia",
+                            "followers": 169,
+                            "following": 558,
+                            "tweets": 1876,
+                            "listed": 0,
+                            "createdAt": "Tue Aug 06 14:10:36 +0000 2019",
+                            "canDm": false
+                        },
+                        {
+                            "type": "user",
+                            "id": "1930562424102440960",
+                            "userName": "ELindvall37",
+                            "name": "Erik Lindvall",
+                            "url": "https://x.com/ELindvall37",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/1930562601164890112/Py1ww010_normal.jpg",
+                            "coverPicture": null,
+                            "description": "",
+                            "location": "",
+                            "followers": 0,
+                            "following": 644,
+                            "tweets": 37,
+                            "listed": 0,
+                            "createdAt": "Thu Jun 05 09:49:07 +0000 2025",
+                            "canDm": true
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

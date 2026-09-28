@@ -1,0 +1,101 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/tweet/replies?id=2102502016610091359"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "tweetId": "2102502016610091359",
+                    "reply_count": 36,
+                    "has_more": true,
+                    "next_cursor": "DAAKCgABHS5HygE__pULAAIAAAGoRW1QQzZ3QUFBZlEvZ0dKTjB2R3AvQUFBQUNVZExoeUhjWmRCekIwdGxuSFBsa0ZmSFM0SmtMVFdzS01kTGI0OUl4b1JLaDB0bDZURTI4R0lIUzJYZjQ2YkFHY2RMWmMwbTVwQTdCMHRwOWMwV2tHRkhTM0JVb2thZ2JRZExrVC9TbHVoS1IwdG0zR0NGaURGSFMyZHU0aFhnVzBkTGZNdUZwdXg4eDB1RjZndUdpREpIUzJoY1pHWFFSVWRMYTlyUFJZeGt4MHRsMmtKR3ZFOUhTMmdiVkxhUUprZExaYzlaOXNScngwdDFyWnptMEZUSFMyVzVZaFc4RWdkTGhwSktoYVFoQjB0bm5kUjI0QnJIUzJkRXJaYUVYb2RMYTd1TXBZQlloMHRscTB0RjhHcUhTMmRkalRiZ1dNZExqbktHTnR3aWgwdGxvRHhWb0R3SFMydkl2ZWJvZGtkTGNVOVdO",
+                    "replies": [
+                        {
+                            "type": "tweet",
+                            "id": "2102529165769810393",
+                            "url": "https://x.com/DinoLeadingNews/status/2102529165769810393",
+                            "twitterUrl": "https://twitter.com/DinoLeadingNews/status/2102529165769810393",
+                            "text": "@NASA @NASAKennedy Momentum's building. Catalysts stacking up with a hard date attached - that's when positioning matters. Locking in the itinerary early while everyone else is still watching from the sidelines. 🚀",
+                            "source": "Twitter Web App",
+                            "retweetCount": 0,
+                            "replyCount": 0,
+                            "likeCount": 0,
+                            "quoteCount": 0,
+                            "viewCount": 303,
+                            "createdAt": "Tue Sep 22 22:43:10 +0000 2026",
+                            "lang": "en",
+                            "bookmarkCount": 0,
+                            "isReply": true,
+                            "inReplyToId": "2102502016610091359",
+                            "conversationId": "2102502016610091359",
+                            "media": [],
+                            "inReplyToUserId": "11348282",
+                            "author": {
+                                "type": "user",
+                                "userName": "DinoLeadingNews",
+                                "url": "https://x.com/DinoLeadingNews",
+                                "id": "1708940481088929792",
+                                "name": "Dino Vibes Daily",
+                                "isVerified": false,
+                                "isBlueVerified": true,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/2068161173162512384/7GLkVvw7_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/1708940481088929792/1773980418",
+                                "description": "Real-life moments • Funny videos • Movie & Music reviews. \nBringing you daily entertainment and good vibes 🦖",
+                                "location": "⬇️⬇️Link below⬇️⬇️",
+                                "followers": 81172,
+                                "following": 260,
+                                "createdAt": "Mon Oct 02 20:22:22 +0000 2023",
+                                "canDm": true
+                            },
+                            "retweeted_tweet": null
+                        },
+                        {
+                            "type": "tweet",
+                            "id": "2102502513630965832",
+                            "url": "https://x.com/QuantXoG/status/2102502513630965832",
+                            "twitterUrl": "https://twitter.com/QuantXoG/status/2102502513630965832",
+                            "text": "@NASA @NASAKennedy Are aliens allowed ??",
+                            "source": "Twitter for Android",
+                            "retweetCount": 3,
+                            "replyCount": 3,
+                            "likeCount": 10,
+                            "quoteCount": 0,
+                            "viewCount": 455,
+                            "createdAt": "Tue Sep 22 20:57:16 +0000 2026",
+                            "lang": "en",
+                            "bookmarkCount": 1,
+                            "isReply": true,
+                            "inReplyToId": "2102502016610091359",
+                            "conversationId": "2102502016610091359",
+                            "media": [],
+                            "inReplyToUserId": "11348282",
+                            "author": {
+                                "type": "user",
+                                "userName": "QuantXoG",
+                                "url": "https://x.com/QuantXoG",
+                                "id": "1846292459719913472",
+                                "name": "QuantX🇺🇸🇫🇷👽🛸",
+                                "isVerified": false,
+                                "isBlueVerified": true,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/2099138178066362368/FlIqn7Cn_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/1846292459719913472/1788442100",
+                                "description": "Web3 & Blockchain Enthusiast\n TSLA • SPCX • Ʞaspa\nFaith • Freedom • Progress\nThink Free. Dream Beyond Earth 🌏\nBorn on Earth. Bound for Mars.🪐\nCertified Alien👽",
+                                "location": "Mars",
+                                "followers": 2087,
+                                "following": 4569,
+                                "createdAt": "Tue Oct 15 20:50:31 +0000 2024",
+                                "canDm": false
+                            },
+                            "retweeted_tweet": null
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

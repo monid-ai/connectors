@@ -1,0 +1,103 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/mentions?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "tweet_count": 20,
+                    "has_more": true,
+                    "next_cursor": "DAADDAABCgABHS5H_zdWMdoKAAIdLkAJdhZAbQAIAAIAAAACCAADAAAAAAgABAAAAAAKAAUdLkg8_QAnEAoABh0uSDz8_9jwCwAHAAAA8EVtUEM2d0FBQWZRL2dHSk4wdkdwL0FBQUFCUWRMa2JzaDFkaGh4MHVRRGJJbW1GcEhTNUcxQnJXTVQwZExrR25tOVlRVEIwdVJxeUFGa0FqSFM1RWhqcFdVUDBkTGtaWHkxclI4QjB1UUZ6R1Z6Qy9IUzVGWUE0WDBIZ2RMa01TWk5hUmJCMHVSM1A0RjZIWEhTNUN4dk5XQWZVZExrR09xNVl4RXgwdVFBbDJGa0J0SFM1RUl2K1h3YzRkTGtLYVlwWmdheDB1UVl3bUcwSFVIUzVFZXl4YlFTRWRMa0RrSzVhQkx4MHVSLzgzVmpIYQAA",
+                    "tweets": [
+                        {
+                            "type": "tweet",
+                            "id": "2102697237499228634",
+                            "url": "https://x.com/NexusZoe/status/2102697237499228634",
+                            "twitterUrl": "https://twitter.com/NexusZoe/status/2102697237499228634",
+                            "text": "@SpaceX @NASA @Space_Station Oxidizer leak pushed Crew-13 to Oct 1. Reminder that the hard part isn't the countdown graphics.",
+                            "source": "Twitter Web App",
+                            "retweetCount": 0,
+                            "replyCount": 0,
+                            "likeCount": 0,
+                            "quoteCount": 0,
+                            "viewCount": 2,
+                            "createdAt": "Wed Sep 23 09:51:02 +0000 2026",
+                            "lang": "en",
+                            "bookmarkCount": 0,
+                            "isReply": true,
+                            "inReplyToId": "2102524630019768625",
+                            "conversationId": "2102524630019768625",
+                            "media": [],
+                            "inReplyToUserId": "34743251",
+                            "author": {
+                                "type": "user",
+                                "userName": "NexusZoe",
+                                "url": "https://x.com/NexusZoe",
+                                "id": "1848339737372684288",
+                                "name": "Zoe Nexus",
+                                "isVerified": false,
+                                "isBlueVerified": true,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/2100761495713759232/4IV_rkGW_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/1848339737372684288/1729518044",
+                                "description": "🚀 The future doesn’t just happen - we create it. Technology that breaks boundaries. #TechRevolution #AI #Innovation",
+                                "location": "",
+                                "followers": 26,
+                                "following": 117,
+                                "createdAt": "Mon Oct 21 12:25:25 +0000 2024",
+                                "canDm": false
+                            },
+                            "quoted_tweet": null,
+                            "retweeted_tweet": null
+                        },
+                        {
+                            "type": "tweet",
+                            "id": "2102696639437709783",
+                            "url": "https://x.com/MayaThiene55128/status/2102696639437709783",
+                            "twitterUrl": "https://twitter.com/MayaThiene55128/status/2102696639437709783",
+                            "text": "@NASA Kamn keine Pole uber Beamtin Sprechen in Polen weil sie sie nie sah mir kennt das bedeutete was Pole verbreiten das sind seine Leute stahl Pferde",
+                            "source": "Twitter for Android",
+                            "retweetCount": 0,
+                            "replyCount": 0,
+                            "likeCount": 0,
+                            "quoteCount": 0,
+                            "viewCount": 2,
+                            "createdAt": "Wed Sep 23 09:48:39 +0000 2026",
+                            "lang": "de",
+                            "bookmarkCount": 0,
+                            "isReply": true,
+                            "inReplyToId": "2102099292072612070",
+                            "conversationId": "2102099292072612070",
+                            "media": [],
+                            "inReplyToUserId": "11348282",
+                            "author": {
+                                "type": "user",
+                                "userName": "MayaThiene55128",
+                                "url": "https://x.com/MayaThiene55128",
+                                "id": "1791490126226280448",
+                                "name": "Maya Thienel Beamtin Geheimdienst Millitar",
+                                "isVerified": false,
+                                "isBlueVerified": false,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/1791490412252737536/fvMImzWc_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/1791490126226280448/1782922625",
+                                "description": "user@example.com.. Organisation ab heute schliesse ihre produktion bei Lander welche Beamtin Beileidigt haben ,kapital jede land bekommt von wirtschat teil zuruck",
+                                "location": "",
+                                "followers": 39,
+                                "following": 169,
+                                "createdAt": "Fri May 17 15:26:12 +0000 2024",
+                                "canDm": false
+                            },
+                            "quoted_tweet": null,
+                            "retweeted_tweet": null
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

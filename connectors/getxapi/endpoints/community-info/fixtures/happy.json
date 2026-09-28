@@ -1,0 +1,58 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/community/info?communityId=1493446837214187523"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "success",
+                    "msg": "success",
+                    "data": {
+                        "id": "1493446837214187523",
+                        "name": "Build in Public",
+                        "description": "Share what you're working on. Get feedback. Help each other move forward. - Sponsored by bolt.new ⚡",
+                        "createdAt": "2022-02-15T04:47:27.551Z",
+                        "memberCount": 267510,
+                        "moderatorCount": 6,
+                        "bannerUrl": "https://pbs.twimg.com/community_banner_img/1915033378811772928/KdaKUaRP?format=png&name=orig",
+                        "joinPolicy": "Open",
+                        "invitesPolicy": "MemberInvitesAllowed",
+                        "isNsfw": false,
+                        "role": "NonMember",
+                        "primaryTopic": "Entrepreneurship",
+                        "rules": [
+                            {
+                                "name": "Share what you're working on",
+                                "description": "Don't be scared to share unfinished work"
+                            },
+                            {
+                                "name": "Screenshots, screencasts, drafts, etc",
+                                "description": "Visual tweets tend to grab people's attention"
+                            }
+                        ],
+                        "searchTags": [
+                            "buildinpublic",
+                            "buildinginpublic"
+                        ],
+                        "question": "What are you working on?",
+                        "admin": {
+                            "id": "641633",
+                            "name": "Marc Köhlbrugge",
+                            "userName": "marckohlbrugge"
+                        },
+                        "creator": {
+                            "id": "641633",
+                            "name": "Marc Köhlbrugge",
+                            "userName": "marckohlbrugge"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

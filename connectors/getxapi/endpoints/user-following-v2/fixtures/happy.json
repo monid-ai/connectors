@@ -1,0 +1,61 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/following_v2?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "user_count": 67,
+                    "has_more": true,
+                    "next_cursor": "1597662469098825850|2102697274080493499",
+                    "following": [
+                        {
+                            "type": "user",
+                            "id": "14091091",
+                            "userName": "NASAHubble",
+                            "name": "Hubble",
+                            "url": "https://x.com/NASAHubble",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/3468011581/efb985f24af0a814a722457a768f3cc5_normal.jpeg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/14091091/1669391293",
+                            "description": "The official X account for the NASA Hubble Space Telescope, managed and operated by NASA's Goddard Space Flight Center.",
+                            "location": "Goddard Space Flight Center",
+                            "followers": 8902516,
+                            "following": 44,
+                            "tweets": 8453,
+                            "listed": 15232,
+                            "createdAt": "Thu Mar 06 20:15:02 +0000 2008",
+                            "canDm": false
+                        },
+                        {
+                            "type": "user",
+                            "id": "29472803",
+                            "userName": "NASAWebb",
+                            "name": "NASA Webb Telescope",
+                            "url": "https://x.com/NASAWebb",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/1767989888916299776/hFYvpxZM_normal.jpg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/29472803/1657642323",
+                            "description": "The Official *NASA* Webb X account. \n\nThe world's most powerful space telescope. Launched: Dec. 25, 2021. First images revealed: July 12, 2022.",
+                            "location": "Lagrange Point 2",
+                            "followers": 3517288,
+                            "following": 63,
+                            "tweets": 11568,
+                            "listed": 11759,
+                            "createdAt": "Tue Apr 07 15:40:56 +0000 2009",
+                            "canDm": false
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,61 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/followers_v2?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "user_count": 70,
+                    "has_more": true,
+                    "next_cursor": "1877115159018863807|2102697243751481272",
+                    "followers": [
+                        {
+                            "type": "user",
+                            "id": "34743251",
+                            "userName": "SpaceX",
+                            "name": "SpaceX",
+                            "url": "https://x.com/SpaceX",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/1697749409851985920/HbrI04tM_normal.jpg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/34743251/1681251194",
+                            "description": "SpaceX designs, manufactures and launches the world’s most advanced rockets and spacecraft",
+                            "location": "Earth",
+                            "followers": 41905284,
+                            "following": 127,
+                            "tweets": 11736,
+                            "listed": 45726,
+                            "createdAt": "Thu Apr 23 21:53:30 +0000 2009",
+                            "canDm": false
+                        },
+                        {
+                            "type": "user",
+                            "id": "17471979",
+                            "userName": "NatGeo",
+                            "name": "National Geographic",
+                            "url": "https://x.com/NatGeo",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/2050149546685022208/72MxNUv-_normal.jpg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/17471979/1789591798",
+                            "description": "Step into wonder and find your inner explorer with National Geographic 🌎",
+                            "location": "Global",
+                            "followers": 28085737,
+                            "following": 179,
+                            "tweets": 73609,
+                            "listed": 59070,
+                            "createdAt": "Tue Nov 18 21:28:10 +0000 2008",
+                            "canDm": true
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

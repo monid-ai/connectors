@@ -1,0 +1,25 @@
+{
+    "name": "not-found",
+    "description": "Recorded live 2026-09-23: user/status answers a missing account with HTTP 200 and `status: not_found`, so unlike the profile lookups it is a billed answer.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/status?userName=thisuserdoesnotexist_zz9q"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "success",
+                    "msg": "success",
+                    "data": {
+                        "userName": "thisuserdoesnotexist_zz9q",
+                        "status": "not_found",
+                        "id": null,
+                        "reason": null
+                    }
+                }
+            }
+        }
+    ]
+}

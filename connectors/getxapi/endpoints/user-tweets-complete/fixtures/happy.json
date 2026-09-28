@@ -1,0 +1,200 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/tweets/complete?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "userId": "11348282",
+                    "tweets": [
+                        {
+                            "type": "tweet",
+                            "id": "2102520163224760541",
+                            "url": "https://x.com/NASA/status/2102520163224760541",
+                            "twitterUrl": "https://twitter.com/NASA/status/2102520163224760541",
+                            "text": "RT @NASAKennedy: NASA and @SpaceX are targeting 11:10 a.m. EDT, Thursday, Oct. 1, as the earliest launch opportunity for the Crew-13 missio…",
+                            "source": "Twitter for iPhone",
+                            "retweetCount": 138,
+                            "replyCount": 0,
+                            "likeCount": 0,
+                            "quoteCount": 0,
+                            "viewCount": 44584,
+                            "createdAt": "Tue Sep 22 22:07:24 +0000 2026",
+                            "lang": "en",
+                            "bookmarkCount": 0,
+                            "isReply": false,
+                            "inReplyToId": null,
+                            "conversationId": "2102520163224760541",
+                            "media": [],
+                            "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [],
+                                "user_mentions": [
+                                    {
+                                        "id_str": "16580226",
+                                        "indices": [
+                                            3,
+                                            15
+                                        ],
+                                        "name": "NASA's Kennedy Space Center",
+                                        "screen_name": "NASAKennedy"
+                                    },
+                                    {
+                                        "id_str": "34743251",
+                                        "indices": [
+                                            26,
+                                            33
+                                        ],
+                                        "name": "SpaceX",
+                                        "screen_name": "SpaceX"
+                                    }
+                                ]
+                            },
+                            "author": {
+                                "type": "user",
+                                "userName": "NASA",
+                                "url": "https://x.com/NASA",
+                                "id": "11348282",
+                                "name": "NASA",
+                                "isVerified": false,
+                                "isBlueVerified": true,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+                                "description": "Making the seemingly impossible, possible. ✨",
+                                "location": "Pale Blue Dot",
+                                "followers": 92376981,
+                                "following": 117,
+                                "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+                                "canDm": false
+                            },
+                            "quoted_tweet": null,
+                            "retweeted_tweet": {
+                                "id": "2102520070521983133",
+                                "url": "https://x.com/NASAKennedy/status/2102520070521983133",
+                                "text": "NASA and @SpaceX are targeting 11:10 a.m. EDT, Thursday, Oct. 1, as the earliest launch opportunity for the Crew-13 mission to the @Space_Station. \n\nOver the next several days, teams will complete a series of prelaunch activities and intensive reviews to confirm the crew, the space station, and SpaceX’s Dragon spacecraft, and Falcon 9 rocket are ready for liftoff from Space Launch Complex 40 at Cape Canaveral Space Force Station in Florida. https://go.nasa.gov/3T3uTs6",
+                                "createdAt": "Tue Sep 22 22:07:02 +0000 2026",
+                                "retweetCount": 138,
+                                "replyCount": 36,
+                                "likeCount": 1009,
+                                "quoteCount": 16,
+                                "viewCount": 169661,
+                                "lang": "en",
+                                "media": [
+                                    {
+                                        "type": "photo",
+                                        "url": "https://pbs.twimg.com/media/HS2kWgwW0AA2fUH.jpg",
+                                        "expanded_url": "https://x.com/NASAKennedy/status/2102520070521983133/photo/1",
+                                        "video_url": null
+                                    }
+                                ],
+                                "author": {
+                                    "type": "user",
+                                    "id": "16580226",
+                                    "userName": "NASAKennedy",
+                                    "url": "https://x.com/NASAKennedy",
+                                    "name": "NASA's Kennedy Space Center",
+                                    "isVerified": false,
+                                    "isBlueVerified": true,
+                                    "profilePicture": "https://pbs.twimg.com/profile_images/1113501416558141440/csp6nhvI_normal.png",
+                                    "coverPicture": "https://pbs.twimg.com/profile_banners/16580226/1707257223",
+                                    "description": "🚀We are the world’s preeminent launch complex for government and commercial space access. We usually post in ET.",
+                                    "location": "Florida, USA",
+                                    "followers": 2983967,
+                                    "following": 192,
+                                    "createdAt": "Fri Oct 03 16:53:02 +0000 2008",
+                                    "canDm": false
+                                }
+                            }
+                        },
+                        {
+                            "type": "tweet",
+                            "id": "2102502016610091359",
+                            "url": "https://x.com/NASA/status/2102502016610091359",
+                            "twitterUrl": "https://twitter.com/NASA/status/2102502016610091359",
+                            "text": "Get in, we're going up! 🚀\n\nJoin us for MAX POWER, a new aerospace festival happening Nov. 7-8 at @NASAKennedy. With air shows, space exhibits, and NASA astronauts, it's a family adventure your entire crew can enjoy!\n\nPlan your visit: https://nasa.gov/maxpower https://t.co/dWi6tbmR18",
+                            "source": "Sprinklr",
+                            "retweetCount": 168,
+                            "replyCount": 75,
+                            "likeCount": 910,
+                            "quoteCount": 10,
+                            "viewCount": 444346,
+                            "createdAt": "Tue Sep 22 20:55:18 +0000 2026",
+                            "lang": "en",
+                            "bookmarkCount": 93,
+                            "isReply": false,
+                            "inReplyToId": null,
+                            "conversationId": "2102502016610091359",
+                            "media": [
+                                {
+                                    "type": "video",
+                                    "url": "https://pbs.twimg.com/media/HS2WcM7WkAAcGqn.jpg",
+                                    "expanded_url": "https://x.com/NASA/status/2102502016610091359/video/1",
+                                    "video_url": "https://video.twimg.com/amplify_video/2102501945021763584/vid/avc1/1920x1080/iQnT6FFYFX7Ia77o.mp4?tag=16"
+                                }
+                            ],
+                            "entities": {
+                                "hashtags": [],
+                                "symbols": [],
+                                "timestamps": [],
+                                "urls": [
+                                    {
+                                        "display_url": "nasa.gov/maxpower",
+                                        "expanded_url": "https://nasa.gov/maxpower",
+                                        "indices": [
+                                            234,
+                                            257
+                                        ],
+                                        "url": "https://t.co/6F6T7VJuwz"
+                                    }
+                                ],
+                                "user_mentions": [
+                                    {
+                                        "id_str": "16580226",
+                                        "indices": [
+                                            97,
+                                            109
+                                        ],
+                                        "name": "NASA's Kennedy Space Center",
+                                        "screen_name": "NASAKennedy"
+                                    }
+                                ]
+                            },
+                            "author": {
+                                "type": "user",
+                                "userName": "NASA",
+                                "url": "https://x.com/NASA",
+                                "id": "11348282",
+                                "name": "NASA",
+                                "isVerified": false,
+                                "isBlueVerified": true,
+                                "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+                                "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+                                "description": "Making the seemingly impossible, possible. ✨",
+                                "location": "Pale Blue Dot",
+                                "followers": 92376981,
+                                "following": 117,
+                                "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+                                "canDm": false
+                            },
+                            "quoted_tweet": null,
+                            "retweeted_tweet": null
+                        }
+                    ],
+                    "tweet_count": 22,
+                    "next_cursor": "s57.DAAHCgABHS5ILEd__-4LAAIAAAATMjEwMDMwODkwNjcyMzQzMDg2MwgAAwAAAAIAAA",
+                    "has_more": true,
+                    "expanded_threads": 1,
+                    "complete": true
+                }
+            }
+        }
+    ]
+}

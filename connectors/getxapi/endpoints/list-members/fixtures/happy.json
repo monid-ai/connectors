@@ -1,0 +1,55 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/list/members?listId=2094916677628481686"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "listId": "2094916677628481686",
+                    "user_count": 2,
+                    "has_more": true,
+                    "next_cursor": "0|2102697983089836028",
+                    "members": [
+                        {
+                            "type": "user",
+                            "id": "2023938672736014336",
+                            "userName": "febieafeb",
+                            "name": "Alice",
+                            "url": "https://x.com/febieafeb",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/2091192353075642369/jPRsW3TZ_400x400.jpg",
+                            "coverPicture": null,
+                            "description": "𖹭  🐰  giselle     loml   ྀི   #aespa  ⊱  ۫  ㅤ♡    。",
+                            "location": "⋆˚ ꩜｡ aespa",
+                            "followers": 313,
+                            "following": 254,
+                            "createdAt": "Wed Feb 18 01:53:03 +0000 2026"
+                        },
+                        {
+                            "type": "user",
+                            "id": "2023499964362747907",
+                            "userName": "aliaosyy",
+                            "name": "alia",
+                            "url": "https://x.com/aliaosyy",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/2090934220428328960/qoBNcvRo_400x400.jpg",
+                            "coverPicture": null,
+                            "description": "18f college student ! bf leaved me so im here looking for a new bf💕 sometimes trading with followers☺️\n\nmy wild side acc @aliaprivattee",
+                            "location": "i only reply on 0F →",
+                            "followers": 782,
+                            "following": 24,
+                            "createdAt": "Mon Feb 16 20:49:30 +0000 2026"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

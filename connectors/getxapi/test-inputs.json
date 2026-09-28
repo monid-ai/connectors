@@ -1,0 +1,127 @@
+{
+    "tweet/advanced_search": {
+        "queryParams": {
+            "q": "from:NASA -filter:replies",
+            "product": "Latest"
+        }
+    },
+    "tweet/detail": {
+        "queryParams": {
+            "id": "2102502016610091359"
+        }
+    },
+    "tweet/thread": {
+        "queryParams": {
+            "id": "2102502016610091359"
+        }
+    },
+    "tweet/replies": {
+        "queryParams": {
+            "id": "2102502016610091359"
+        }
+    },
+    "tweet/retweeters": {
+        "queryParams": {
+            "id": "2102502016610091359"
+        }
+    },
+    "user/search": {
+        "queryParams": {
+            "q": "space agency"
+        }
+    },
+    "user/info": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/info_by_id": {
+        "queryParams": {
+            "userId": "11348282"
+        }
+    },
+    "user/status": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/user_about": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/followers": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/followers_v2": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/following_v2": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/verified_followers": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/media": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/tweets": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/tweets_and_replies": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/tweets/complete": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/mentions": {
+        "queryParams": {
+            "userName": "NASA"
+        }
+    },
+    "user/affiliates": {
+        "queryParams": {
+            "userName": "X"
+        }
+    },
+    "list/members": {
+        "queryParams": {
+            "listId": "2094916677628481686"
+        }
+    },
+    "community/info": {
+        "queryParams": {
+            "communityId": "1493446837214187523"
+        }
+    },
+    "spaces/info": {
+        "queryParams": {
+            "space_url": "https://x.com/i/spaces/1mrGmBvwaBqJy"
+        }
+    },
+    "trends": {
+        "queryParams": {
+            "country": "US",
+            "count": 10
+        }
+    },
+    "trends/locations": {
+        "queryParams": {}
+    }
+}

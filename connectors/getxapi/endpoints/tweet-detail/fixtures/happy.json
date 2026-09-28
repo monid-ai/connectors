@@ -1,0 +1,66 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/tweet/detail?id=2102502016610091359"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "success",
+                    "msg": "success",
+                    "data": {
+                        "type": "tweet",
+                        "id": "2102502016610091359",
+                        "url": "https://x.com/NASA/status/2102502016610091359",
+                        "twitterUrl": "https://twitter.com/NASA/status/2102502016610091359",
+                        "text": "Get in, we're going up! 🚀\n\nJoin us for MAX POWER, a new aerospace festival happening Nov. 7-8 at @NASAKennedy. With air shows, space exhibits, and NASA astronauts, it's a family adventure your entire crew can enjoy!\n\nPlan your visit: https://nasa.gov/maxpower https://t.co/dWi6tbmR18",
+                        "source": "Sprinklr",
+                        "retweetCount": 166,
+                        "replyCount": 75,
+                        "likeCount": 909,
+                        "quoteCount": 10,
+                        "viewCount": 443784,
+                        "createdAt": "Tue Sep 22 20:55:18 +0000 2026",
+                        "lang": "en",
+                        "bookmarkCount": 92,
+                        "isReply": false,
+                        "inReplyToId": null,
+                        "conversationId": "2102502016610091359",
+                        "media": [
+                            {
+                                "type": "video",
+                                "url": "https://pbs.twimg.com/media/HS2WcM7WkAAcGqn.jpg",
+                                "expanded_url": "https://x.com/NASA/status/2102502016610091359/video/1",
+                                "video_url": "https://video.twimg.com/amplify_video/2102501945021763584/vid/avc1/1920x1080/iQnT6FFYFX7Ia77o.mp4?tag=16"
+                            }
+                        ],
+                        "inReplyToUserId": null,
+                        "author": {
+                            "type": "user",
+                            "userName": "NASA",
+                            "url": "https://x.com/NASA",
+                            "id": "11348282",
+                            "name": "NASA",
+                            "isVerified": false,
+                            "isBlueVerified": true,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/1321163587679784960/0ZxKlEKB_normal.jpg",
+                            "coverPicture": "https://pbs.twimg.com/profile_banners/11348282/1788992290",
+                            "description": "Making the seemingly impossible, possible. ✨",
+                            "location": "Pale Blue Dot",
+                            "followers": 92376983,
+                            "following": 117,
+                            "createdAt": "Wed Dec 19 20:20:32 +0000 2007",
+                            "canDm": false
+                        },
+                        "quoted_tweet": null,
+                        "retweeted_tweet": null
+                    }
+                }
+            }
+        }
+    ]
+}

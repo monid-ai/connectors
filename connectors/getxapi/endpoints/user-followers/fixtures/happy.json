@@ -1,0 +1,61 @@
+{
+    "name": "happy",
+    "description": "Recorded live 2026-09-23 against api.getxapi.com with a production key, headers dropped, arrays trimmed to two items and PII scrubbed by `deno task record`. A billed HTTP 200 with the vendor's body relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/user/followers?userName=NASA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "userName": "NASA",
+                    "user_count": 200,
+                    "has_more": true,
+                    "next_cursor": "1877113054327258322",
+                    "followers": [
+                        {
+                            "type": "user",
+                            "id": "2102696828550459392",
+                            "userName": "br841ian169earl",
+                            "name": "Vincent Quinn",
+                            "url": "https://x.com/br841ian169earl",
+                            "isVerified": false,
+                            "isBlueVerified": false,
+                            "profilePicture": "https://pbs.twimg.com/profile_images/2102697164799344640/V37HCApH_400x400.jpg",
+                            "coverPicture": null,
+                            "description": "",
+                            "location": "",
+                            "followers": 0,
+                            "following": 1,
+                            "tweets": 0,
+                            "listed": 0,
+                            "createdAt": "Wed Sep 23 09:50:40 +0000 2026",
+                            "canDm": false
+                        },
+                        {
+                            "type": "user",
+                            "id": "2102696243764043776",
+                            "userName": "from_foum",
+                            "name": "foum",
+                            "url": "https://x.com/from_foum",
+                            "isVerified": false,
+                            "isBlueVerified": false,
+                            "profilePicture": "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png",
+                            "coverPicture": null,
+                            "description": "",
+                            "location": "",
+                            "followers": 0,
+                            "following": 2,
+                            "tweets": 0,
+                            "listed": 0,
+                            "createdAt": "Wed Sep 23 09:48:00 +0000 2026",
+                            "canDm": false
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

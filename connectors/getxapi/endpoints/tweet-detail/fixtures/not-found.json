@@ -1,0 +1,18 @@
+{
+    "name": "not-found",
+    "description": "Recorded live 2026-09-23: the vendor's real 404 for a lookup that does not exist. Data, not an exception; zero usage, digested by the provider fromError.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.getxapi.com/twitter/tweet/detail?id=1"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "Tweet not found: 1"
+                }
+            }
+        }
+    ]
+}
