@@ -124,6 +124,27 @@ for (const verdict of ["PASS", "FAIL", "REFUSE"]) {
     });
 }
 
+Deno.test("garnettwork: synthetic present receipt metadata stays native", async () => {
+    const body = {
+        schema_version: "garnett-deal-or-disaster-v1",
+        decision: { verdict: "PASS", reason: "SYNTHETIC_PROTOCOL_TEST_ONLY" },
+        receipt: {
+            receipt_status: "AVAILABLE",
+            receipt_id: "synthetic-receipt-id",
+            evidence_hash: "synthetic-evidence-hash",
+        },
+    };
+    const result = await runEndpoint({
+        unit: await testSealedUnit(endpointId),
+        input: { body: listingInput },
+        mode: "replay",
+        fixture: syntheticFixture(200, body),
+    });
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.output, body);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+});
+
 Deno.test("garnettwork: synthetic absent and null facts stay distinct", async () => {
     const cases: Json[] = [
         {
