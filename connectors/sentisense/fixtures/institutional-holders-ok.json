@@ -1,0 +1,84 @@
+{
+    "name": "institutional-holders-ok",
+    "description": "Recorded 2026-09-24: NVDA 13F holders, first page, trimmed to 2 holders with returnedCount to match (paging on, so notableChanges is present). One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/institutional/holders/NVDA?limit=3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": {
+                        "ticker": "NVDA",
+                        "companyName": "NVIDIA CORPORATION",
+                        "reportDate": "2026-06-30",
+                        "totalInstitutionalShares": 16606122762,
+                        "totalInstitutionalValue": 3316186684097,
+                        "holderCount": 5883,
+                        "holders": [
+                            {
+                                "filerCik": "0000102909",
+                                "filerName": "Vanguard",
+                                "filerCategory": "INDEX_FUND",
+                                "shares": 2309899495,
+                                "valueUsd": 462187789880,
+                                "changeType": "INCREASED",
+                                "sharesChange": 13120436,
+                                "sharesChangePct": 0.57,
+                                "entitySlug": "Vanguard",
+                                "cikCount": 10
+                            },
+                            {
+                                "filerCik": "0002012383",
+                                "filerName": "BlackRock",
+                                "filerCategory": "INDEX_FUND",
+                                "shares": 1941918386,
+                                "valueUsd": 388558449933,
+                                "changeType": "INCREASED",
+                                "sharesChange": 16385212,
+                                "sharesChangePct": 0.85,
+                                "entitySlug": "BlackRock",
+                                "cikCount": null
+                            }
+                        ],
+                        "returnedCount": 2,
+                        "offset": 0,
+                        "notableChanges": {
+                            "count": 1365,
+                            "top": [
+                                {
+                                    "filerCik": "0000914208",
+                                    "filerName": "Invesco Ltd",
+                                    "filerCategory": "INDEX_FUND",
+                                    "shares": 329593488,
+                                    "valueUsd": 65948361031,
+                                    "changeType": "INCREASED",
+                                    "sharesChange": 186832782,
+                                    "sharesChangePct": 130.87,
+                                    "entitySlug": "Invesco",
+                                    "cikCount": null
+                                },
+                                {
+                                    "filerCik": "0001374170",
+                                    "filerName": "Norges Bank",
+                                    "filerCategory": "SOVEREIGN_WEALTH",
+                                    "shares": 325951734,
+                                    "valueUsd": 65219682456,
+                                    "changeType": "NEW",
+                                    "sharesChange": 325951734,
+                                    "sharesChangePct": 100,
+                                    "entitySlug": "Norges-Bank",
+                                    "cikCount": null
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

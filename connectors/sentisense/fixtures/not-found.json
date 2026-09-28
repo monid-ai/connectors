@@ -1,0 +1,20 @@
+{
+    "name": "not-found",
+    "description": "Recorded 2026-09-24: an unknown symbol answers 404 entity_not_found with a suggestions list (empty here). Non-2xx is data and settles at zero.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/rating/ZZZZQ"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "entity_not_found",
+                    "message": "Unknown symbol 'ZZZZQ'. SentiSense tracks no stock by that symbol. Check suggestions, or discover handles via GET /api/v1/kb/entities/search?q=.",
+                    "suggestions": []
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,72 @@
+{
+    "name": "stories-by-ticker-ok",
+    "description": "Recorded 2026-09-24: the 2 latest NVDA stories, a bare array. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/documents/stories/ticker/NVDA?limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "meta-launches-muse-ai-agent-with-new-hardware-and-partner-integrations-shaking-m-09242026",
+                        "clusterId": "meta-launches-muse-ai-agent-with-new-hardware-and-partner-integrations-shaking-m-09242026",
+                        "cluster": {
+                            "id": "meta-launches-muse-ai-agent-with-new-hardware-and-partner-integrations-shaking-m-09242026",
+                            "title": "Meta Expands Muse AI Agent at Connect 2026 With New Hardware and Partner Integrations, Shaking Finance Stocks",
+                            "createdAt": 1790247135508,
+                            "clusteredAt": 1790247135,
+                            "clusterSize": 26,
+                            "averageSentiment": 0.47244094488188976,
+                            "storySource": "AI",
+                            "isLive": false
+                        },
+                        "displayTickers": [
+                            "Meta Platforms Inc. (META)",
+                            "Coinbase Global, Inc. (COIN)"
+                        ],
+                        "tickers": [
+                            "META",
+                            "COIN"
+                        ],
+                        "primaryEntityNames": [
+                            "Meta Platforms Inc.",
+                            "Artificial Intelligence"
+                        ],
+                        "impactScore": 10,
+                        "brokeAt": 1790181321
+                    },
+                    {
+                        "id": "trump-xi-summit-set-to-tackle-trade-ai-iran-and-taiwan-sparking-market-moves-09232026",
+                        "clusterId": "trump-xi-summit-set-to-tackle-trade-ai-iran-and-taiwan-sparking-market-moves-09232026",
+                        "cluster": {
+                            "id": "trump-xi-summit-set-to-tackle-trade-ai-iran-and-taiwan-sparking-market-moves-09232026",
+                            "title": "Trump and Xi Meet Thursday With Tariffs, AI, Iran and Taiwan on the Table",
+                            "createdAt": 1790201272203,
+                            "clusteredAt": 1790201272,
+                            "clusterSize": 12,
+                            "averageSentiment": 0,
+                            "storySource": "AI",
+                            "isLive": false
+                        },
+                        "displayTickers": [
+                            "The Boeing Company (BA)",
+                            "Coinbase Global, Inc. (COIN)"
+                        ],
+                        "tickers": [
+                            "BA",
+                            "COIN"
+                        ],
+                        "primaryEntityNames": [
+                            "Donald Trump"
+                        ],
+                        "impactScore": 7.721571428571427,
+                        "brokeAt": 1790156400
+                    }
+                ]
+            }
+        }
+    ]
+}

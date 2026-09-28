@@ -1,0 +1,69 @@
+{
+    "name": "congress-trades-ok",
+    "description": "Recorded 2026-09-24: STOCK Act trades in NVDA over 90 days, trimmed; member photo urls blanked. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/politicians/filings/NVDA?lookbackDays=90"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": [
+                        {
+                            "politicianName": "Gilbert Cisneros",
+                            "firstName": "Gilbert",
+                            "lastName": "Cisneros",
+                            "chamber": "HOUSE",
+                            "party": "Democrat",
+                            "state": "CA",
+                            "bioguideId": "C001123",
+                            "imageUrl": null,
+                            "ticker": "NVDA",
+                            "assetDescription": "NVIDIA Corporation",
+                            "assetType": "Stock",
+                            "assetMetadata": null,
+                            "transactionType": "SALE",
+                            "transactionDate": "2026-08-18",
+                            "disclosureDate": "2026-09-11",
+                            "disclosureDelayDays": 24,
+                            "amountRange": "$1,001 - $15,000",
+                            "amountMin": 1001,
+                            "amountMax": 15000,
+                            "owner": "",
+                            "urlSlug": "Gilbert-Cisneros",
+                            "sentiSenseScore": null
+                        },
+                        {
+                            "politicianName": "Cory A. Booker",
+                            "firstName": "Cory A.",
+                            "lastName": "Booker",
+                            "chamber": "SENATE",
+                            "party": "Democrat",
+                            "state": "NJ",
+                            "bioguideId": "B001288",
+                            "imageUrl": null,
+                            "ticker": "NVDA",
+                            "assetDescription": "NVIDIA Corporation",
+                            "assetType": "Stock",
+                            "assetMetadata": null,
+                            "transactionType": "SALE",
+                            "transactionDate": "2026-08-11",
+                            "disclosureDate": "2026-09-09",
+                            "disclosureDelayDays": 29,
+                            "amountRange": "$15,001 - $50,000",
+                            "amountMin": 15001,
+                            "amountMax": 50000,
+                            "owner": "Spouse",
+                            "urlSlug": "Cory-A-Booker",
+                            "sentiSenseScore": null
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

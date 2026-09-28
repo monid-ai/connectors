@@ -1,0 +1,65 @@
+{
+    "name": "insider-trades-ok",
+    "description": "Recorded 2026-09-24: NVDA Form 4 trades over 30 days, trimmed. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/insider/trades/NVDA?lookbackDays=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": [
+                        {
+                            "ticker": "NVDA",
+                            "companyName": "NVIDIA CORP",
+                            "insiderName": "Timothy S. Teter",
+                            "insiderTitle": "EVP, General Counsel and Sec",
+                            "insiderRelation": "OFFICER",
+                            "officer": true,
+                            "director": false,
+                            "tenPctOwner": false,
+                            "transactionDate": "2026-09-21",
+                            "filedDate": "2026-09-23",
+                            "transactionCode": "S",
+                            "transactionType": "SELL",
+                            "securityTitle": "Open Market Sale",
+                            "securityBasis": null,
+                            "sharesTransacted": 4499,
+                            "pricePerShare": 223.7479,
+                            "totalValue": 1006641,
+                            "sharesOwnedAfter": 2687660,
+                            "directOwnership": false,
+                            "rule10b51": true
+                        },
+                        {
+                            "ticker": "NVDA",
+                            "companyName": "NVIDIA CORP",
+                            "insiderName": "Timothy S. Teter",
+                            "insiderTitle": "EVP, General Counsel and Sec",
+                            "insiderRelation": "OFFICER",
+                            "officer": true,
+                            "director": false,
+                            "tenPctOwner": false,
+                            "transactionDate": "2026-09-21",
+                            "filedDate": "2026-09-23",
+                            "transactionCode": "S",
+                            "transactionType": "SELL",
+                            "securityTitle": "Open Market Sale",
+                            "securityBasis": null,
+                            "sharesTransacted": 13478,
+                            "pricePerShare": 223.0489,
+                            "totalValue": 3006253,
+                            "sharesOwnedAfter": 2687660,
+                            "directOwnership": false,
+                            "rule10b51": true
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,113 @@
+{
+    "name": "options-summary-ok",
+    "description": "Recorded 2026-09-24: NVDA end-of-day options summary in the preview envelope. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/stocks/NVDA/options/summary"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": {
+                        "asOf": "2026-09-24",
+                        "sentiment": 0.12380952380952381,
+                        "latest": {
+                            "date": "2026-09-24",
+                            "callVol": 1067832,
+                            "putVol": 595019,
+                            "callOi": 7718084,
+                            "putOi": 6685213,
+                            "pcVol": 0.5572,
+                            "pcOi": 0.8662,
+                            "vwIv": 0.379,
+                            "atmIv": 0.3076,
+                            "skew25d": 0.0098,
+                            "atmIv60": 0.3612,
+                            "atmIv90": 0.3563,
+                            "iv25c": 0.3076,
+                            "iv25p": 0.3173,
+                            "expectedMove1s1d": 0.0194,
+                            "expectedMove1s5d": 0.0433,
+                            "expectedMove1s20d": 0.0867,
+                            "expectedMove1d": 0.0287,
+                            "expectedMove5d": 0.0676,
+                            "expectedMove20d": 0.1352,
+                            "netDelta": 289892543.0000002,
+                            "notionalVol": 455502531,
+                            "contracts": 3830,
+                            "maxUnusualPremium": 34603142.00000001
+                        },
+                        "context": {
+                            "pcVolPctl1y": 51.98412698412698,
+                            "pcVolPctl5y": 41.4721723518851,
+                            "pcOiPctl1y": 55.55555555555556,
+                            "ivRank1y": 2.009020090200886,
+                            "skewPctl1y": 14.682539682539682,
+                            "observations1y": 252
+                        },
+                        "oiWalls": {
+                            "expiry": "2026-10-16",
+                            "maxPain": 205,
+                            "callWalls": [
+                                {
+                                    "strike": 220,
+                                    "oi": 106879
+                                },
+                                {
+                                    "strike": 180,
+                                    "oi": 106409
+                                }
+                            ],
+                            "putWalls": [
+                                {
+                                    "strike": 220,
+                                    "oi": 48551
+                                },
+                                {
+                                    "strike": 200,
+                                    "oi": 40823
+                                }
+                            ]
+                        },
+                        "unusual": [
+                            {
+                                "contract": "NVDA260925C00225000",
+                                "type": "call",
+                                "strike": 225,
+                                "expiry": "2026-09-25",
+                                "dte": 1,
+                                "volume": 260174,
+                                "oi": 38416,
+                                "volOiRatio": 6.77,
+                                "premium": 34603142.00000001,
+                                "oiPrior": 38416,
+                                "oiConfirmation": "pending",
+                                "oiObservedAt": 1790299688,
+                                "oiVintage": "prior_settle"
+                            },
+                            {
+                                "contract": "NVDA280121C00460000",
+                                "type": "call",
+                                "strike": 460,
+                                "expiry": "2028-01-21",
+                                "dte": 484,
+                                "volume": 20388,
+                                "oi": 6463,
+                                "volOiRatio": 3.15,
+                                "premium": 9011496,
+                                "oiPrior": 6463,
+                                "oiConfirmation": "pending",
+                                "oiObservedAt": 1790299688,
+                                "oiVintage": "prior_settle"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

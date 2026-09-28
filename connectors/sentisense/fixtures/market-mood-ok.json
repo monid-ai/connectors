@@ -1,0 +1,117 @@
+{
+    "name": "market-mood-ok",
+    "description": "Recorded 2026-09-24: Market Mood with 3 days of history, trimmed. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v2/market-mood?days=3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "market": {
+                        "currentScore": 53.96234380715093,
+                        "phase": "Neutral",
+                        "weeklyChange": null,
+                        "signals": [
+                            {
+                                "key": "social_sentiment",
+                                "label": "Social Sentiment",
+                                "value": 52.95,
+                                "change": null
+                            },
+                            {
+                                "key": "market_direction",
+                                "label": "Market Direction",
+                                "value": 48.87,
+                                "change": null
+                            }
+                        ],
+                        "history": [
+                            {
+                                "date": "2026-09-23",
+                                "timestamp": 1790136000000,
+                                "score": 49.40519210269225,
+                                "socialSentiment": 53.68,
+                                "marketDirection": 48.31,
+                                "fearGauge": 98.57,
+                                "socialMomentum": 20.88,
+                                "spyTrend": 23.33,
+                                "optionsFlow": 39.78
+                            },
+                            {
+                                "date": "2026-09-24",
+                                "timestamp": 1790222400000,
+                                "score": 53.96234380715093,
+                                "socialSentiment": 52.95,
+                                "marketDirection": 48.87,
+                                "fearGauge": 97.18,
+                                "socialMomentum": 42.86,
+                                "spyTrend": 22.22,
+                                "optionsFlow": 59.14
+                            }
+                        ]
+                    },
+                    "sectors": {
+                        "Consumer Staples": {
+                            "currentScore": 45.501585808264004,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Real Estate": {
+                            "currentScore": 35.91991801144178,
+                            "phase": "Anxiety",
+                            "weeklyChange": null
+                        },
+                        "Energy": {
+                            "currentScore": 43.86302388672282,
+                            "phase": "Anxiety",
+                            "weeklyChange": null
+                        },
+                        "Industrials": {
+                            "currentScore": 52.67408298673443,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Communication Services": {
+                            "currentScore": 51.719496862025,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Consumer Discretionary": {
+                            "currentScore": 47.43890632143439,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Information Technology": {
+                            "currentScore": 61.093305184196,
+                            "phase": "Optimism",
+                            "weeklyChange": null
+                        },
+                        "Financials": {
+                            "currentScore": 45.0857640324242,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Materials": {
+                            "currentScore": 52.098782132110586,
+                            "phase": "Neutral",
+                            "weeklyChange": null
+                        },
+                        "Health Care": {
+                            "currentScore": 57.17196721181493,
+                            "phase": "Optimism",
+                            "weeklyChange": null
+                        },
+                        "Utilities": {
+                            "currentScore": 39.60634554910373,
+                            "phase": "Anxiety",
+                            "weeklyChange": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

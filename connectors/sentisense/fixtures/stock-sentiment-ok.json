@@ -1,0 +1,83 @@
+{
+    "name": "stock-sentiment-ok",
+    "description": "Recorded 2026-09-24: NVDA sentiment in the {isPreview, previewReason, data} envelope on a full-access key. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/stocks/NVDA/sentiment"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": {
+                        "ticker": "NVDA",
+                        "companyName": "NVIDIA Corporation",
+                        "asOf": "2026-09-25",
+                        "sentisenseScore": null,
+                        "sentisenseScoreAvg30d": 47.17,
+                        "sentisenseScoreDelta30d": -50.95,
+                        "scoreLabel": "Strong Bullish",
+                        "direction": "Bullish",
+                        "latestDirection": null,
+                        "trend": "DOWN",
+                        "scoreSparkline": [
+                            86.49,
+                            56.82
+                        ],
+                        "mentions": 249,
+                        "mentionsAvg30d": 336,
+                        "socialDominance": 0.0188,
+                        "bySource": [
+                            {
+                                "source": "News",
+                                "direction": "Bullish",
+                                "mentionShare": 69,
+                                "value": 0.3953
+                            },
+                            {
+                                "source": "Reddit",
+                                "direction": "Bullish",
+                                "mentionShare": 13,
+                                "value": 0.0962
+                            }
+                        ],
+                        "relatedTickers": [
+                            {
+                                "ticker": "AMD",
+                                "name": "Advanced Micro Devices, Inc."
+                            },
+                            {
+                                "ticker": "AVGO",
+                                "name": "Broadcom Inc."
+                            }
+                        ],
+                        "drivers": [
+                            {
+                                "title": "Meta Expands Muse AI Agent at Connect 2026 With New Hardware and Partner Integrations, Shaking Finance Stocks",
+                                "tone": 0.47
+                            },
+                            {
+                                "title": "Trump and Xi Meet Thursday With Tariffs, AI, Iran and Taiwan on the Table",
+                                "tone": 0
+                            }
+                        ],
+                        "narrative": "NVDA sentiment is strong bullish (30-day SentiSense Score 47) and cooling from a month ago; there is no reading for today yet. Attention averages ~336 mentions/day (249 today).",
+                        "faq": [
+                            {
+                                "question": "Is NVDA bullish or bearish right now?",
+                                "answer": "NVIDIA Corporation (NVDA) sentiment is strong bullish (30-day SentiSense Score 47) on SentiSense. There is no reading for today yet."
+                            },
+                            {
+                                "question": "What is NVDA's sentiment score?",
+                                "answer": "SentiSense scores NVDA at a 30-day average of 47 (strong bullish) via the SentiSense Score, our proprietary read on how bullish or bearish the market is, from news and social sentiment weighted by how actively the stock is discussed."
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

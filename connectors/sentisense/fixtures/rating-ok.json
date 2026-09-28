@@ -1,0 +1,78 @@
+{
+    "name": "rating-ok",
+    "description": "Recorded 2026-09-24: NVDA SentiSense Rating, rated shape with its seven dimensions. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/rating/NVDA"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ticker": "NVDA",
+                    "kbEntityId": "kb/company/35",
+                    "rated": true,
+                    "letter": "A",
+                    "bucketLetter": "A",
+                    "riskConditions": [],
+                    "riskAdjustments": [],
+                    "penaltyPoints": 0,
+                    "score": 99.3,
+                    "percentile": 99.32627526467758,
+                    "composite": 0.5144221774291021,
+                    "ratedCount": 1039,
+                    "asOf": "2026-09-24",
+                    "methodologyVersion": "2026.09-v5",
+                    "dimensions": [
+                        {
+                            "key": "crowd",
+                            "label": "Crowd sentiment",
+                            "percentile": 99.63068181818181,
+                            "raw": 38.55136449075264,
+                            "rawLabel": "7-day SentiSense Score",
+                            "present": true
+                        },
+                        {
+                            "key": "smart_money",
+                            "label": "Smart money",
+                            "percentile": 48.52801519468186,
+                            "raw": null,
+                            "rawLabel": null,
+                            "present": true,
+                            "subLegs": [
+                                {
+                                    "key": "inst_13f",
+                                    "label": "13F net change",
+                                    "raw": 4.556718662417413,
+                                    "unit": "%"
+                                },
+                                {
+                                    "key": "insider",
+                                    "label": "Insider flow balance",
+                                    "raw": -1,
+                                    "unit": "ratio"
+                                }
+                            ]
+                        }
+                    ],
+                    "flags": [
+                        {
+                            "key": "clustered_insider_selling",
+                            "label": "Clustered insider selling",
+                            "active": false
+                        },
+                        {
+                            "key": "institutional_outflow_against_price",
+                            "label": "Institutional outflows against price",
+                            "active": false
+                        }
+                    ],
+                    "disclaimer": "The SentiSense Rating is a relative, automatically generated research signal for informational and educational purposes only. It is not financial, investment or trading advice, and it is not a recommendation about any security. Data may be delayed, incomplete or inaccurate. Verify with official sources and consult a qualified financial professional before making any investment decision.",
+                    "betaNotice": "Beta: the response shape is stable, but the method is still being tuned and a stock's score can shift between methodologyVersion values.",
+                    "companyName": "NVIDIA Corporation"
+                }
+            }
+        }
+    ]
+}

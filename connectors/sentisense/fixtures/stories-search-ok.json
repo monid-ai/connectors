@@ -1,0 +1,67 @@
+{
+    "name": "stories-search-ok",
+    "description": "Recorded 2026-09-24: story search for 'fed decision', 2 results, a bare array. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/documents/stories/search?query=fed+decision&limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "fed-rate-hike-signals-sticky-inflation-amid-accelerating-growth-09212026",
+                        "clusterId": "fed-rate-hike-signals-sticky-inflation-amid-accelerating-growth-09212026",
+                        "cluster": {
+                            "id": "fed-rate-hike-signals-sticky-inflation-amid-accelerating-growth-09212026",
+                            "title": "Fed raises rates 25 basis points to 3.75%-4%, its first hike since 2023",
+                            "createdAt": 1789987820929,
+                            "clusteredAt": 1789987820,
+                            "clusterSize": 1,
+                            "averageSentiment": 0.3,
+                            "storySource": "AI",
+                            "isLive": false
+                        },
+                        "displayTickers": [],
+                        "tickers": [],
+                        "primaryEntityNames": [
+                            "Federal Reserve",
+                            "Inflation"
+                        ],
+                        "impactScore": 2.20696875,
+                        "brokeAt": 1789921705
+                    },
+                    {
+                        "id": "boj-lifts-rates-to-31-year-high-triggering-yen-decline-and-market-ripples-09182026",
+                        "clusterId": "boj-lifts-rates-to-31-year-high-triggering-yen-decline-and-market-ripples-09182026",
+                        "cluster": {
+                            "id": "boj-lifts-rates-to-31-year-high-triggering-yen-decline-and-market-ripples-09182026",
+                            "title": "BOJ lifts rates to 31-year high, triggering yen decline and market ripples",
+                            "createdAt": 1789751260279,
+                            "clusteredAt": 1789751260,
+                            "clusterSize": 5,
+                            "averageSentiment": -0.34615384615384615,
+                            "storySource": "AI",
+                            "isLive": false
+                        },
+                        "displayTickers": [
+                            "Target Corporation (TGT)",
+                            "NVIDIA Corporation (NVDA)"
+                        ],
+                        "tickers": [
+                            "TGT",
+                            "NVDA"
+                        ],
+                        "primaryEntityNames": [
+                            "Interest Rates",
+                            "Inflation"
+                        ],
+                        "impactScore": 3.766372051648352,
+                        "brokeAt": 1789700777
+                    }
+                ]
+            }
+        }
+    ]
+}

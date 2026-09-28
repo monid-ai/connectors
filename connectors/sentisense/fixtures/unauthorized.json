@@ -1,0 +1,19 @@
+{
+    "name": "unauthorized",
+    "description": "A revoked or invalid key answers 401 with this body (recorded from the live API on 2026-09-24). The tests reuse this response against every endpoint's own recorded request, because the replay matcher compares the substituted url and a {{request.url}} binding holds the unsubstituted template.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/rating/NVDA"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "invalid_api_key",
+                    "message": "Invalid or revoked API key"
+                }
+            }
+        }
+    ]
+}

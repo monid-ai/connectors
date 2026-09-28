@@ -1,0 +1,30 @@
+{
+    "name": "entity-search-ok",
+    "description": "Recorded 2026-09-24: entity search for 'nvidia', 3 matches, a bare array. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/kb/entities/search?q=nvidia&limit=3"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "urlSlug": "NVIDIA-Corporation",
+                        "ticker": "NVDA",
+                        "listingCoverage": "public_tracked",
+                        "name": "NVIDIA Corporation",
+                        "type": "company"
+                    },
+                    {
+                        "urlSlug": "NVIDIA-DGX",
+                        "ticker": null,
+                        "name": "DGX",
+                        "type": "product"
+                    }
+                ]
+            }
+        }
+    ]
+}

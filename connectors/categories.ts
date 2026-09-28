@@ -312,6 +312,24 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Tools to pull crypto market signals, including sentiment indexes, technical indicators, project scores, and more.",
     },
     {
+        id: "stock-market-data",
+        displayName: "Stock Market Data",
+        description:
+            "Tools to pull US stock market data, including quotes, ratings, analyst consensus, earnings dates, options positioning, and more.",
+    },
+    {
+        id: "stock-sentiment",
+        displayName: "Stock Sentiment",
+        description:
+            "Tools to pull sentiment for stocks, including per-ticker news and social sentiment, market-wide mood, and the stories behind them.",
+    },
+    {
+        id: "ownership-filings",
+        displayName: "Insider & Institutional Filings",
+        description:
+            "Tools to pull trading and ownership disclosures, including insider Form 4 trades, congressional STOCK Act trades, 13F holdings, and more.",
+    },
+    {
         id: "web-extraction",
         displayName: "Content Extraction",
         description:

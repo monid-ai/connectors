@@ -1,0 +1,41 @@
+{
+    "name": "insider-cluster-buys-ok",
+    "description": "Recorded 2026-09-24: market-wide insider cluster buys over 30 days, trimmed. One request.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://app.sentisense.ai/api/v1/insider/cluster-buys?lookbackDays=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "isPreview": false,
+                    "previewReason": null,
+                    "data": [
+                        {
+                            "ticker": "TSM",
+                            "companyName": "TAIWAN SEMICONDUCTOR MANUFACTURING CO LTD",
+                            "insiderCount": 30,
+                            "tradeCount": 31,
+                            "totalShares": 1599,
+                            "totalValue": 121833,
+                            "firstBuyDate": "2026-09-07",
+                            "lastBuyDate": "2026-09-07"
+                        },
+                        {
+                            "ticker": "DKS",
+                            "companyName": "DICK'S SPORTING GOODS, INC.",
+                            "insiderCount": 6,
+                            "tradeCount": 8,
+                            "totalShares": 39130,
+                            "totalValue": 5088793,
+                            "firstBuyDate": "2026-08-26",
+                            "lastBuyDate": "2026-09-23"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
