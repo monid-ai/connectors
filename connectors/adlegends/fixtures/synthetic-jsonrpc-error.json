@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-jsonrpc-error",
+    "description": "SYNTHETIC — not recorded (no Ad Legends key held, 2026-09-22): JSON-RPC error on HTTP 200. lifecycle.start synthesizes COMPLETED 400 + providerHttpStatus 200 so the engine zero-bills it.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "error": {
+                        "code": -32602,
+                        "message": "Invalid params"
+                    }
+                }
+            }
+        }
+    ]
+}

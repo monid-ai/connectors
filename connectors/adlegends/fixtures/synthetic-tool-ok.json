@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-tool-ok",
+    "description": "SYNTHETIC — not recorded (no Ad Legends key held, 2026-09-22): MCP tools/call success envelope with structuredContent. Shared by every adlegends endpoint; {{request.url}} binds to POST /api/mcp/brands.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "ok"
+                            }
+                        ],
+                        "structuredContent": {
+                            "ok": true,
+                            "nextTool": "get_started"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

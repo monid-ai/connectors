@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "SYNTHETIC — not recorded (no Ad Legends key held, 2026-09-22): live-probed 401 shape when Authorization is missing or malformed. Vendor non-2xx is data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": null,
+                    "error": {
+                        "code": -32001,
+                        "message": "Missing or malformed Bearer token"
+                    }
+                }
+            }
+        }
+    ]
+}

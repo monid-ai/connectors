@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-tool-error",
+    "description": "SYNTHETIC — not recorded (no Ad Legends key held, 2026-09-22): MCP tools/call result.isError on HTTP 200. lifecycle.start synthesizes COMPLETED 400; fromError reads content[0].text.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "isError": true,
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "brand not found"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
