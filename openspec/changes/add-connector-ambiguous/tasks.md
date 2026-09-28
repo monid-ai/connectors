@@ -1,0 +1,8 @@
+- [x] Generate and account for the complete MCP-exposed catalog.
+- [x] Bind all operations to owned connection resources.
+- [x] Support create, connect, list and disconnect with existing core contracts.
+- [x] Keep delegated credentials and non-JSON adaptation on Ambiguous.
+- [x] Verify sealed artifacts, isolation, resource lifecycle and wire fidelity.
+- [ ] Deploy the companion Ambiguous provider adapter.
+- [ ] Configure Monid's ordinary Ambiguous provider credential and publish catalog.
+- [ ] Validate new and existing workspace flows on the hosted integration.

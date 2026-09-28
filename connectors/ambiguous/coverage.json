@@ -1,0 +1,3055 @@
+{
+  "totalOperations": 1335,
+  "includedOperations": 928,
+  "notExposedToMcp": [
+    {
+      "operationId": "acknowledge_onboarding_agent",
+      "method": "POST",
+      "path": "/api/identity/onboarding-agent/acknowledge",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "active_workspace_update",
+      "method": "PATCH",
+      "path": "/api/workspace",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_audit_log_export",
+      "method": "GET",
+      "path": "/api/admin/audit-log/export",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_billing_cancel",
+      "method": "POST",
+      "path": "/api/admin/billing/cancel",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_billing_get",
+      "method": "GET",
+      "path": "/api/admin/billing",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_billing_upgrade_plan",
+      "method": "POST",
+      "path": "/api/admin/billing/upgrade-plan",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_domain_register",
+      "method": "POST",
+      "path": "/api/admin/domains/register",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_domain_register_ses",
+      "method": "POST",
+      "path": "/api/admin/domains/{id}/register-ses",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_external_collaborator_revoke",
+      "method": "DELETE",
+      "path": "/api/admin/external-collaborators/{user_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_external_collaborators_list",
+      "method": "GET",
+      "path": "/api/admin/external-collaborators",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_init",
+      "method": "POST",
+      "path": "/api/admin/init",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_invite_link",
+      "method": "GET",
+      "path": "/api/admin/invites/{id}/link",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_referrals_get",
+      "method": "GET",
+      "path": "/api/admin/referrals",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_delete",
+      "method": "DELETE",
+      "path": "/api/admin/workspace",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_domain_quick_connect_detect",
+      "method": "POST",
+      "path": "/api/admin/workspace/domains/quick-connect/detect",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_domain_quick_connect_launch",
+      "method": "POST",
+      "path": "/api/admin/workspace/domains/quick-connect/launch",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_integrations_delete",
+      "method": "DELETE",
+      "path": "/api/admin/workspace/integrations/{provider}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_integrations_list",
+      "method": "GET",
+      "path": "/api/admin/workspace/integrations",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_integrations_upsert",
+      "method": "POST",
+      "path": "/api/admin/workspace/integrations",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_registrar_auto_configure",
+      "method": "POST",
+      "path": "/api/admin/workspace/registrar/auto-configure",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_registrar_connect",
+      "method": "POST",
+      "path": "/api/admin/workspace/registrar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_registrar_disconnect",
+      "method": "DELETE",
+      "path": "/api/admin/workspace/registrar/{provider}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "admin_workspace_registrar_list",
+      "method": "GET",
+      "path": "/api/admin/workspace/registrar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_claim_context",
+      "method": "POST",
+      "path": "/api/oauth/agent/claim/context",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_confirm_claim",
+      "method": "POST",
+      "path": "/api/oauth/agent/claim/confirm",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_connection_revoke",
+      "method": "POST",
+      "path": "/api/oauth/agent/connections/{id}/revoke",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_connections_list",
+      "method": "GET",
+      "path": "/api/oauth/agent/connections",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_register",
+      "method": "POST",
+      "path": "/oauth/agent/identity",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_auth_restart_claim",
+      "method": "POST",
+      "path": "/oauth/agent/claim",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_complete",
+      "method": "POST",
+      "path": "/api/auth/agent-claim/complete",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_context",
+      "method": "GET",
+      "path": "/api/public/agent-claim/context",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_current_identity",
+      "method": "POST",
+      "path": "/api/auth/agent-claim/current",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_google_identity",
+      "method": "POST",
+      "path": "/api/auth/agent-claim/google",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_handoff_consume",
+      "method": "GET",
+      "path": "/api/public/agent-claim/handoff/{handoff}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_claim_resend_email",
+      "method": "POST",
+      "path": "/api/public/agent-claim/resend",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_create_api_key",
+      "method": "POST",
+      "path": "/api/agents/{id}/api-keys",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_get",
+      "method": "GET",
+      "path": "/api/agents/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_get_email_access",
+      "method": "GET",
+      "path": "/api/agents/{id}/email-access",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_get_optimizer",
+      "method": "GET",
+      "path": "/api/agents/{id}/optimizer",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_get_subscriptions",
+      "method": "GET",
+      "path": "/api/agents/{id}/subscriptions",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_get_transport",
+      "method": "GET",
+      "path": "/api/agents/{id}/transport",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_list",
+      "method": "GET",
+      "path": "/api/agents",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_list_api_keys",
+      "method": "GET",
+      "path": "/api/agents/{id}/api-keys",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_list_optimizer_reviews",
+      "method": "GET",
+      "path": "/api/agents/{id}/optimizer/reviews",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_pairing_create",
+      "method": "POST",
+      "path": "/api/public/agent-pairings",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_pairing_handoff",
+      "method": "POST",
+      "path": "/api/public/agent-pairings/handoff",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_pairing_status",
+      "method": "GET",
+      "path": "/api/public/agent-pairings/status",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_put_subscriptions",
+      "method": "PUT",
+      "path": "/api/agents/{id}/subscriptions",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_revoke_api_key",
+      "method": "DELETE",
+      "path": "/api/agents/{id}/api-keys/{keyId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_rotate_api_key",
+      "method": "POST",
+      "path": "/api/agents/{id}/api-keys/{keyId}/rotate",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_set_email_access",
+      "method": "PATCH",
+      "path": "/api/agents/{id}/email-access",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_set_manager",
+      "method": "PATCH",
+      "path": "/api/agents/{id}/manager",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_set_optimizer",
+      "method": "PATCH",
+      "path": "/api/agents/{id}/optimizer",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "agent_upload_avatar",
+      "method": "POST",
+      "path": "/api/agents/{id}/avatar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "analytics_dashboard_share_get",
+      "method": "GET",
+      "path": "/api/analytics/dashboards/{id}/share",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "analytics_deletion_history",
+      "method": "GET",
+      "path": "/api/analytics/deletion-history",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "analytics_saved_report_export",
+      "method": "GET",
+      "path": "/api/analytics/{type}/{id}/export",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "apply_promotion_code",
+      "method": "POST",
+      "path": "/api/billing/promotion-code",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_capabilities",
+      "method": "GET",
+      "path": "/api/assistant/capabilities",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_chat_stream",
+      "method": "POST",
+      "path": "/api/assistant/chat/stream",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_create_conversation",
+      "method": "POST",
+      "path": "/api/assistant/conversations",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_delete_conversation",
+      "method": "DELETE",
+      "path": "/api/assistant/conversations/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_get_conversation",
+      "method": "GET",
+      "path": "/api/assistant/conversations/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_list_conversations",
+      "method": "GET",
+      "path": "/api/assistant/conversations",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_migrate_conversations",
+      "method": "POST",
+      "path": "/api/assistant/conversations/migrate",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_recent_activity",
+      "method": "GET",
+      "path": "/api/assistant/recent-activity",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_replay",
+      "method": "GET",
+      "path": "/api/assistant/turns/{id}/replay",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_share_conversation",
+      "method": "POST",
+      "path": "/api/assistant/conversations/{id}/share",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "assistant_update_conversation",
+      "method": "PATCH",
+      "path": "/api/assistant/conversations/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_claim_workspace",
+      "method": "POST",
+      "path": "/api/auth/claim-workspace",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_google_callback",
+      "method": "GET",
+      "path": "/api/auth/google/callback",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_key_handoff",
+      "method": "POST",
+      "path": "/api/auth/key-handoff",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_key_handoff_exchange",
+      "method": "POST",
+      "path": "/api/auth/key-handoff/exchange",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_merge_workspace",
+      "method": "POST",
+      "path": "/api/auth/merge-workspace",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_enroll_confirm",
+      "method": "POST",
+      "path": "/api/auth/mfa/enroll/confirm",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_enroll_start",
+      "method": "POST",
+      "path": "/api/auth/mfa/enroll/start",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_recovery_codes",
+      "method": "POST",
+      "path": "/api/users/me/mfa/recovery-codes",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_remove",
+      "method": "POST",
+      "path": "/api/users/me/mfa/remove",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_setup_confirm",
+      "method": "POST",
+      "path": "/api/users/me/mfa/setup/confirm",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_setup_start",
+      "method": "POST",
+      "path": "/api/users/me/mfa/setup",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_status",
+      "method": "GET",
+      "path": "/api/users/me/mfa",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_mfa_verify",
+      "method": "POST",
+      "path": "/api/auth/mfa/verify",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_native_code",
+      "method": "POST",
+      "path": "/api/auth/native/code",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_native_exchange",
+      "method": "POST",
+      "path": "/api/auth/native/exchange",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_register",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_registration_config",
+      "method": "GET",
+      "path": "/api/public/auth/registration-config",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_resend_workspace_claim",
+      "method": "POST",
+      "path": "/api/auth/resend-workspace-claim",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_signup_agent",
+      "method": "POST",
+      "path": "/api/auth/signup-agent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "auth_update_profile",
+      "method": "PATCH",
+      "path": "/api/users/me",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_create",
+      "method": "POST",
+      "path": "/api/automations",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_delete",
+      "method": "DELETE",
+      "path": "/api/automations/{id}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_disable",
+      "method": "POST",
+      "path": "/api/automations/{id}/disable",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_duplicate",
+      "method": "POST",
+      "path": "/api/automations/{id}/duplicate",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_enable",
+      "method": "POST",
+      "path": "/api/automations/{id}/enable",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_export",
+      "method": "GET",
+      "path": "/api/automations/{id}/export",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_get",
+      "method": "GET",
+      "path": "/api/automations/{id}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_import",
+      "method": "POST",
+      "path": "/api/automations/import",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_invoke",
+      "method": "POST",
+      "path": "/api/automations/{id}/invoke",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_list",
+      "method": "GET",
+      "path": "/api/automations",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_node_types_get",
+      "method": "GET",
+      "path": "/api/automations/node-types/{type}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_node_types_list",
+      "method": "GET",
+      "path": "/api/automations/node-types",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_permissions_list",
+      "method": "GET",
+      "path": "/api/automations/{id}/permissions",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_permissions_remove",
+      "method": "DELETE",
+      "path": "/api/automations/{id}/permissions/{userId}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_permissions_set",
+      "method": "POST",
+      "path": "/api/automations/{id}/permissions",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_rotate_key",
+      "method": "POST",
+      "path": "/api/automations/{id}/rotate-key",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_run",
+      "method": "POST",
+      "path": "/api/automations/{id}/run",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_runs_cancel",
+      "method": "POST",
+      "path": "/api/automations/runs/{runId}/cancel",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_runs_get",
+      "method": "GET",
+      "path": "/api/automations/runs/{runId}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_runs_heatmap",
+      "method": "GET",
+      "path": "/api/automations/{id}/runs/heatmap",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_runs_list",
+      "method": "GET",
+      "path": "/api/automations/{id}/runs",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_runs_retry",
+      "method": "POST",
+      "path": "/api/automations/runs/{runId}/retry",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_test",
+      "method": "POST",
+      "path": "/api/automations/{id}/test",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_update",
+      "method": "PATCH",
+      "path": "/api/automations/{id}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_versions_get",
+      "method": "GET",
+      "path": "/api/automations/{id}/versions/{version}",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_versions_list",
+      "method": "GET",
+      "path": "/api/automations/{id}/versions",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_versions_restore",
+      "method": "POST",
+      "path": "/api/automations/{id}/versions/{version}/restore",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_visibility",
+      "method": "PATCH",
+      "path": "/api/automations/{id}/visibility",
+      "expose": [
+        "automations",
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "automations_well_known_ips",
+      "method": "GET",
+      "path": "/.well-known/automations-ips",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "batch_delete_emails",
+      "method": "POST",
+      "path": "/api/mail/batch/delete",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_auto_recharge_get",
+      "method": "GET",
+      "path": "/api/billing/auto-recharge",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_auto_recharge_update",
+      "method": "PATCH",
+      "path": "/api/billing/auto-recharge",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_cancel",
+      "method": "POST",
+      "path": "/api/billing/cancel",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_checkout",
+      "method": "POST",
+      "path": "/api/billing/checkout",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_ledger_get",
+      "method": "GET",
+      "path": "/api/billing/ledger",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_notifications_dismiss",
+      "method": "POST",
+      "path": "/api/billing/notifications/dismiss",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_per_seat_cap_get",
+      "method": "GET",
+      "path": "/api/billing/per-seat-cap",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_per_seat_cap_update",
+      "method": "PATCH",
+      "path": "/api/billing/per-seat-cap",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_portal",
+      "method": "POST",
+      "path": "/api/billing/portal",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_topup_create",
+      "method": "POST",
+      "path": "/api/billing/topup",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "billing_webhook_receive",
+      "method": "POST",
+      "path": "/api/public/billing/webhook",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "calendar_event_rsvp_email",
+      "method": "GET",
+      "path": "/api/calendars/events/{id}/rsvp-email",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "calendar_external_callback",
+      "method": "GET",
+      "path": "/api/calendars/external/callback",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "calendar_external_status",
+      "method": "GET",
+      "path": "/api/calendars/external/status",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "calendar_public_feed",
+      "method": "GET",
+      "path": "/api/calendars/public/{token}/feed.ics",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "changelog_list",
+      "method": "GET",
+      "path": "/api/changelog",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "chat_draft_upsert_inflight",
+      "method": "PUT",
+      "path": "/api/chat-drafts",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "chat_emoji_fetch_url",
+      "method": "POST",
+      "path": "/api/channels/emoji/fetch-url",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "chat_message_get",
+      "method": "GET",
+      "path": "/api/channels/{channel_id}/messages/{message_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "claim_token_state",
+      "method": "GET",
+      "path": "/api/public/claim/{token}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "clear_completed_tasks",
+      "method": "POST",
+      "path": "/api/tasks/clear",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_api_key",
+      "method": "POST",
+      "path": "/api/admin/api-keys",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_file_comment",
+      "method": "POST",
+      "path": "/api/drive/{id}/comments",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_goal",
+      "method": "POST",
+      "path": "/api/tasks/goals",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_identity_api_key",
+      "method": "POST",
+      "path": "/api/identity/api-keys",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_onboarding_agent",
+      "method": "POST",
+      "path": "/api/identity/onboarding-agent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_sign_document",
+      "method": "POST",
+      "path": "/api/sign",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_sign_template",
+      "method": "POST",
+      "path": "/api/sign/templates",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_task_custom_field",
+      "method": "POST",
+      "path": "/api/tasks/custom-fields",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_task_status",
+      "method": "POST",
+      "path": "/api/tasks/statuses",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_task_template",
+      "method": "POST",
+      "path": "/api/tasks/templates",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "create_user",
+      "method": "POST",
+      "path": "/api/admin/users",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "decline_onboarding_agent",
+      "method": "POST",
+      "path": "/api/identity/onboarding-agent/decline",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_domain",
+      "method": "DELETE",
+      "path": "/api/admin/domains/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_file_comment",
+      "method": "DELETE",
+      "path": "/api/drive/{id}/comments/{commentId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_goal",
+      "method": "DELETE",
+      "path": "/api/tasks/goals/{id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_mail_thread",
+      "method": "DELETE",
+      "path": "/api/mail/thread/{thread_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_own_account",
+      "method": "DELETE",
+      "path": "/api/users/me",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_sign_document",
+      "method": "DELETE",
+      "path": "/api/sign/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_task_custom_field",
+      "method": "DELETE",
+      "path": "/api/tasks/custom-fields/{field_id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_task_status",
+      "method": "DELETE",
+      "path": "/api/tasks/statuses/{status_id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_task_time_entry",
+      "method": "DELETE",
+      "path": "/api/tasks/{task_id}/time-entries/{entry_id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_users_me_avatar",
+      "method": "DELETE",
+      "path": "/api/users/me/avatar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "delete_users_me_emails_id",
+      "method": "DELETE",
+      "path": "/api/users/me/emails/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "detach_and_delete_slide_master",
+      "method": "POST",
+      "path": "/api/slides/{id}/masters/{master_id}/detach-and-delete",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "dev_test_provision_emit_plan_changed",
+      "method": "POST",
+      "path": "/api/dev/test-provision/emit-plan-changed",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "dev_test_provision_integration",
+      "method": "POST",
+      "path": "/api/dev/test-provision/integration",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "dev_test_provision_verify_domain",
+      "method": "POST",
+      "path": "/api/dev/test-provision/verify-domain",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_content",
+      "method": "GET",
+      "path": "/api/drive/{id}/content",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_download_url",
+      "method": "GET",
+      "path": "/api/drive/{id}/download",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_extract_text",
+      "method": "POST",
+      "path": "/api/drive/{id}/extract-text",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_request_meta",
+      "method": "GET",
+      "path": "/api/public/file-requests/{token}/meta",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_request_upload",
+      "method": "POST",
+      "path": "/api/public/file-requests/{token}/upload",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_upload_proxy",
+      "method": "POST",
+      "path": "/api/drive/upload-proxy",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_version_create",
+      "method": "POST",
+      "path": "/api/drive/{id}/versions",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_version_delete",
+      "method": "DELETE",
+      "path": "/api/drive/{id}/versions/{versionId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_version_get",
+      "method": "GET",
+      "path": "/api/drive/{id}/versions/{versionId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_version_restore",
+      "method": "POST",
+      "path": "/api/drive/{id}/versions/{versionId}/restore",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_versions_list",
+      "method": "GET",
+      "path": "/api/drive/{id}/versions",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_view_record",
+      "method": "POST",
+      "path": "/api/drive/{id}/view",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_file_view_url",
+      "method": "GET",
+      "path": "/api/drive/{id}/view",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "drive_shared_drive_upload",
+      "method": "POST",
+      "path": "/api/drive/shared-drives/{driveId}/upload",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_payment_intent_create",
+      "method": "POST",
+      "path": "/api/forms/{id}/payment-intent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_get_by_slug",
+      "method": "GET",
+      "path": "/api/forms/s/{slug}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_get_by_workspace_slug",
+      "method": "GET",
+      "path": "/api/forms/w/{workspaceSlug}/{formSlug}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_submit_by_slug",
+      "method": "POST",
+      "path": "/api/forms/s/{slug}/submit",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_submit_by_workspace_slug",
+      "method": "POST",
+      "path": "/api/forms/w/{workspaceSlug}/{formSlug}/submit",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_upload_by_slug",
+      "method": "POST",
+      "path": "/api/forms/{slug}/upload",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_public_upload_by_workspace_slug",
+      "method": "POST",
+      "path": "/api/forms/w/{workspaceSlug}/{formSlug}/upload",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "forms_stripe_webhook",
+      "method": "POST",
+      "path": "/api/forms/stripe/webhook",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "gdpr_export_personal_data",
+      "method": "GET",
+      "path": "/api/gdpr/export/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "generate_image",
+      "method": "POST",
+      "path": "/api/images/generate",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_account_data_export",
+      "method": "GET",
+      "path": "/api/account/data-export",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_account_mail_client_profile",
+      "method": "GET",
+      "path": "/api/account/mail-client-profile",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_account_referrals",
+      "method": "GET",
+      "path": "/api/account/referrals",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_active_task_timer",
+      "method": "GET",
+      "path": "/api/tasks/timer/active",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_audit_log",
+      "method": "GET",
+      "path": "/api/admin/audit-log",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_automations_stats",
+      "method": "GET",
+      "path": "/api/admin/automations/stats",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_ai_usage",
+      "method": "GET",
+      "path": "/api/billing/ai-usage",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_bonuses",
+      "method": "GET",
+      "path": "/api/billing/bonuses",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_discount",
+      "method": "GET",
+      "path": "/api/billing/discount",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_features",
+      "method": "GET",
+      "path": "/api/billing/features",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_quota",
+      "method": "GET",
+      "path": "/api/billing/quota",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_seats",
+      "method": "GET",
+      "path": "/api/billing/seats",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_subscription",
+      "method": "GET",
+      "path": "/api/billing/subscription",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_billing_usage",
+      "method": "GET",
+      "path": "/api/billing/usage",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_cli",
+      "method": "GET",
+      "path": "/api/auth/cli",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_document_dictionary",
+      "method": "GET",
+      "path": "/api/documents/dictionary",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_domain",
+      "method": "GET",
+      "path": "/api/admin/domains/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_domain_deletion_impact",
+      "method": "GET",
+      "path": "/api/admin/domains/{id}/deletion-impact",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_goal",
+      "method": "GET",
+      "path": "/api/tasks/goals/{id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_invite_by_token",
+      "method": "GET",
+      "path": "/api/invite/{token}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_mail_approval_attachment_content",
+      "method": "GET",
+      "path": "/api/mail/approvals/{id}/attachments/{index}/content",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_module_availability",
+      "method": "GET",
+      "path": "/api/module-availability",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_notification_settings",
+      "method": "GET",
+      "path": "/api/users/{id}/notifications",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_sign_audit",
+      "method": "GET",
+      "path": "/api/sign/{id}/audit",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_sign_document",
+      "method": "GET",
+      "path": "/api/sign/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_sign_retention",
+      "method": "GET",
+      "path": "/api/sign/retention",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_task_analytics",
+      "method": "GET",
+      "path": "/api/tasks/analytics",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_task_workload",
+      "method": "GET",
+      "path": "/api/tasks/workload",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_users_id_avatar",
+      "method": "GET",
+      "path": "/api/users/{id}/avatar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_users_me_emails",
+      "method": "GET",
+      "path": "/api/users/me/emails",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_users_notification_preferences",
+      "method": "GET",
+      "path": "/api/users/notification-preferences",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "get_widget_summary",
+      "method": "GET",
+      "path": "/api/widget/summary",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "groups_unsubscribe",
+      "method": "POST",
+      "path": "/api/teams/unsubscribe",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "groups_unsubscribe_page",
+      "method": "GET",
+      "path": "/api/teams/unsubscribe",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "home_digest",
+      "method": "GET",
+      "path": "/api/home/digest",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "http_request",
+      "method": "POST",
+      "path": "/api/automations/http/request",
+      "expose": [
+        "automations"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "integration_github_callback",
+      "method": "GET",
+      "path": "/api/integrations/github/callback",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "integration_github_install",
+      "method": "GET",
+      "path": "/api/integrations/github/install",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "integration_slack_callback",
+      "method": "GET",
+      "path": "/api/integrations/slack/callback",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "integration_slack_install",
+      "method": "GET",
+      "path": "/api/integrations/slack/install",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_ad_clicks_counts_get",
+      "method": "GET",
+      "path": "/api/internal/ad-clicks/counts",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_assessments_case_patch",
+      "method": "PATCH",
+      "path": "/api/internal/assessments/cases/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_assessments_grid_get",
+      "method": "GET",
+      "path": "/api/internal/assessments/grid",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_assessments_result_get",
+      "method": "GET",
+      "path": "/api/internal/assessments/results/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_assessments_result_siblings_get",
+      "method": "GET",
+      "path": "/api/internal/assessments/results/{id}/siblings",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_dashboard_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_dispatch_send",
+      "method": "POST",
+      "path": "/api/internal/coworkers/dispatch",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_execution_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers/execution",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers/coworkers/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_llm_usage_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers/llm-usage",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_memories_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers/coworkers/{id}/memories",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_task_action",
+      "method": "POST",
+      "path": "/api/internal/coworkers/tasks/{id}/action",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_task_get",
+      "method": "GET",
+      "path": "/api/internal/coworkers/tasks/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_coworkers_update",
+      "method": "PATCH",
+      "path": "/api/internal/coworkers/coworkers/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_domains_delete",
+      "method": "DELETE",
+      "path": "/api/internal/domains/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_domains_list",
+      "method": "GET",
+      "path": "/api/internal/domains",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_domains_retry",
+      "method": "POST",
+      "path": "/api/internal/domains/{id}/retry",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "internal_virality_cohort_get",
+      "method": "GET",
+      "path": "/api/internal/virality/cohort/{month}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_accept",
+      "method": "POST",
+      "path": "/api/invite/{token}/accept",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_context_accept",
+      "method": "POST",
+      "path": "/api/invite/context/accept",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_context_create",
+      "method": "POST",
+      "path": "/api/invite/context",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_context_decline",
+      "method": "POST",
+      "path": "/api/invite/context/decline",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_context_get",
+      "method": "GET",
+      "path": "/api/invite/context",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "invite_decline",
+      "method": "POST",
+      "path": "/api/invite/{token}/decline",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_api_keys",
+      "method": "GET",
+      "path": "/api/admin/api-keys",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_billing_invoices",
+      "method": "GET",
+      "path": "/api/billing/invoices",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_billing_plans",
+      "method": "GET",
+      "path": "/api/billing/plans",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_coworkers",
+      "method": "GET",
+      "path": "/api/coworkers",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_domains",
+      "method": "GET",
+      "path": "/api/admin/domains",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_file_comments",
+      "method": "GET",
+      "path": "/api/drive/{id}/comments",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_goal_tasks",
+      "method": "GET",
+      "path": "/api/tasks/goals/{goal_id}/tasks",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_goals",
+      "method": "GET",
+      "path": "/api/tasks/goals",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_notification_previews",
+      "method": "GET",
+      "path": "/api/admin/test-notification-email/preview",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_ooo_conflicts",
+      "method": "GET",
+      "path": "/api/calendars/ooo-conflicts",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_promotion_candidates",
+      "method": "GET",
+      "path": "/api/crm/user-contacts/{id}/promotion-candidates",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_sign_documents",
+      "method": "GET",
+      "path": "/api/sign",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_sign_purge_queue",
+      "method": "GET",
+      "path": "/api/sign/purge-queue",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_sign_templates",
+      "method": "GET",
+      "path": "/api/sign/templates",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_task_custom_fields",
+      "method": "GET",
+      "path": "/api/tasks/custom-fields",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_task_statuses",
+      "method": "GET",
+      "path": "/api/tasks/statuses",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_task_time_entries",
+      "method": "GET",
+      "path": "/api/tasks/{task_id}/time-entries",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "list_trashed_tasks",
+      "method": "GET",
+      "path": "/api/tasks/trash",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "llm",
+      "method": "POST",
+      "path": "/api/llm",
+      "expose": [
+        "automations"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "log_task_time",
+      "method": "POST",
+      "path": "/api/tasks/{task_id}/time-entries",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "mail_external_callback",
+      "method": "GET",
+      "path": "/api/mail/external/callback",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "mail_forwarding_verify",
+      "method": "POST",
+      "path": "/api/mail-forwarding-public/verify",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_authorization_server_metadata",
+      "method": "GET",
+      "path": "/.well-known/oauth-authorization-server",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_authorize_get",
+      "method": "GET",
+      "path": "/oauth/authorize",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_client_public_profile",
+      "method": "GET",
+      "path": "/api/oauth/client/{client_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_grant",
+      "method": "POST",
+      "path": "/api/oauth/grant",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_list_authorizable_agents",
+      "method": "GET",
+      "path": "/api/oauth/agents",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_protected_resource_metadata",
+      "method": "GET",
+      "path": "/.well-known/oauth-protected-resource",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_register_client",
+      "method": "POST",
+      "path": "/oauth/register",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_revoke",
+      "method": "POST",
+      "path": "/oauth/revoke",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "oauth_token",
+      "method": "POST",
+      "path": "/oauth/token",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "patch_users_notification_preferences",
+      "method": "PATCH",
+      "path": "/api/users/notification-preferences",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "permanent_delete_email",
+      "method": "DELETE",
+      "path": "/api/mail/{id}/permanent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "permanent_delete_task",
+      "method": "DELETE",
+      "path": "/api/tasks/{id}/permanent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_account_rotate_referral_slug",
+      "method": "POST",
+      "path": "/api/account/rotate-referral-slug",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_api_admin_chat_purge_deleted_messages",
+      "method": "POST",
+      "path": "/api/admin/chat/purge-deleted-messages",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_api_auth_logout",
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_api_auth_picker_workspaces",
+      "method": "POST",
+      "path": "/api/auth/picker-workspaces",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_apple",
+      "method": "POST",
+      "path": "/api/auth/apple",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_change_password",
+      "method": "POST",
+      "path": "/api/auth/change-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_cli",
+      "method": "POST",
+      "path": "/api/auth/cli",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_cli_exchange",
+      "method": "POST",
+      "path": "/api/auth/cli/exchange",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_find_workspaces",
+      "method": "POST",
+      "path": "/api/auth/find-workspaces",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_forgot_password",
+      "method": "POST",
+      "path": "/api/auth/forgot-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_google",
+      "method": "POST",
+      "path": "/api/auth/google",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_reconsent",
+      "method": "POST",
+      "path": "/api/auth/reconsent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_resend_verification",
+      "method": "POST",
+      "path": "/api/auth/resend-verification",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_reset_password",
+      "method": "POST",
+      "path": "/api/auth/reset-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_select_workspace",
+      "method": "POST",
+      "path": "/api/auth/select-workspace",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_send_phone_verification",
+      "method": "POST",
+      "path": "/api/auth/send-phone-verification",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_users_me_avatar",
+      "method": "POST",
+      "path": "/api/users/me/avatar",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_users_me_emails",
+      "method": "POST",
+      "path": "/api/users/me/emails",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_users_me_emails_id_resend",
+      "method": "POST",
+      "path": "/api/users/me/emails/{id}/resend",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_users_me_push_token",
+      "method": "POST",
+      "path": "/api/users/me/push-token",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_verify_email",
+      "method": "POST",
+      "path": "/api/auth/verify-email",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_verify_external_email",
+      "method": "POST",
+      "path": "/api/auth/verify-external-email",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "post_verify_phone",
+      "method": "POST",
+      "path": "/api/auth/verify-phone",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "presence_activity_beacon",
+      "method": "POST",
+      "path": "/api/presence/activity",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "presence_heartbeat",
+      "method": "POST",
+      "path": "/api/presence/heartbeat",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "process_sequences",
+      "method": "POST",
+      "path": "/api/crm/sequences/process",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "project_github_connect",
+      "method": "POST",
+      "path": "/api/projects/{id}/github",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "project_github_disconnect",
+      "method": "DELETE",
+      "path": "/api/projects/{id}/github/{mappingId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "project_github_list",
+      "method": "GET",
+      "path": "/api/projects/{id}/github",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "project_github_update",
+      "method": "PATCH",
+      "path": "/api/projects/{id}/github/{mappingId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "promote_user_contact",
+      "method": "POST",
+      "path": "/api/crm/user-contacts/{id}/promote",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "provision_agent",
+      "method": "POST",
+      "path": "/api/admin/users/provision-agent",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "provision_coworker",
+      "method": "POST",
+      "path": "/api/coworkers/provision",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_assistant_conversation_get",
+      "method": "GET",
+      "path": "/api/public/assistant/conversations/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_document_get",
+      "method": "GET",
+      "path": "/api/public/documents/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_document_verify_password",
+      "method": "POST",
+      "path": "/api/public/documents/{id}/verify-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_drive_get",
+      "method": "GET",
+      "path": "/api/public/drive/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_drive_get_content",
+      "method": "GET",
+      "path": "/api/public/drive/{id}/content",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_drive_verify_password",
+      "method": "POST",
+      "path": "/api/public/drive/{id}/verify-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_scheduler_book",
+      "method": "POST",
+      "path": "/api/public/scheduler/{workspaceSlug}/{userSlug}/{linkSlug}/book",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_scheduler_booking_cancel",
+      "method": "POST",
+      "path": "/api/public/scheduler/bookings/{cancelToken}/cancel",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_scheduler_booking_get",
+      "method": "GET",
+      "path": "/api/public/scheduler/bookings/{cancelToken}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_scheduler_link_get",
+      "method": "GET",
+      "path": "/api/public/scheduler/{workspaceSlug}/{userSlug}/{linkSlug}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_scheduler_slots",
+      "method": "GET",
+      "path": "/api/public/scheduler/{workspaceSlug}/{userSlug}/{linkSlug}/slots",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_sequences_track_open",
+      "method": "GET",
+      "path": "/api/public/sequences/track/{tokenWithExt}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_sheet_get_range",
+      "method": "GET",
+      "path": "/api/public/sheets/{id}/range",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_slides_get",
+      "method": "GET",
+      "path": "/api/public/slides/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_wiki_legacy_get",
+      "method": "GET",
+      "path": "/api/public/wiki/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_wiki_legacy_verify_password",
+      "method": "POST",
+      "path": "/api/public/wiki/{id}/verify-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_wiki_page_get",
+      "method": "GET",
+      "path": "/api/public/wiki/pages/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_wiki_page_verify_password",
+      "method": "POST",
+      "path": "/api/public/wiki/pages/{id}/verify-password",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "public_workspace_logo",
+      "method": "GET",
+      "path": "/api/public/workspace/{workspaceId}/logo",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "purge_address_book_email",
+      "method": "POST",
+      "path": "/api/crm/address-book/purge",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "push_subscribe",
+      "method": "POST",
+      "path": "/api/push/subscribe",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "push_unsubscribe",
+      "method": "DELETE",
+      "path": "/api/push/subscribe",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "push_vapid_key",
+      "method": "GET",
+      "path": "/api/push/vapid-key",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "put_users_me_send_as",
+      "method": "PUT",
+      "path": "/api/users/me/send-as",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_advance_checkpoint",
+      "method": "POST",
+      "path": "/api/edge/realtime/checkpoint",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_apply_command",
+      "method": "POST",
+      "path": "/api/edge/realtime/command",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_bootstrap_anonymous_reader",
+      "method": "POST",
+      "path": "/api/public/realtime/bootstrap",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_catchup_stream",
+      "method": "POST",
+      "path": "/api/edge/realtime/catchup",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_exchange_connection_capability",
+      "method": "POST",
+      "path": "/api/realtime/capabilities/connection",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_exchange_resource_capability",
+      "method": "POST",
+      "path": "/api/realtime/capabilities/resource",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_exchange_static_resource_capability",
+      "method": "POST",
+      "path": "/api/edge/realtime/static-resource",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_get_verification_key_set",
+      "method": "GET",
+      "path": "/api/edge/realtime/jwks",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_hydrate_resource",
+      "method": "POST",
+      "path": "/api/edge/realtime/hydrate",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "realtime_mirror_resource",
+      "method": "POST",
+      "path": "/api/edge/realtime/mirror",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "record_form_view",
+      "method": "POST",
+      "path": "/api/forms/{id}/views",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "refresh_domain",
+      "method": "POST",
+      "path": "/api/admin/domains/{id}/refresh",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "remove_billing_discount",
+      "method": "DELETE",
+      "path": "/api/billing/discount",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "reorder_task_custom_fields",
+      "method": "POST",
+      "path": "/api/tasks/custom-fields/reorder",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "reorder_task_statuses",
+      "method": "POST",
+      "path": "/api/tasks/statuses/reorder",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "restore_sign_document_from_purge",
+      "method": "POST",
+      "path": "/api/sign/{id}/restore-from-purge",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "restore_workspace",
+      "method": "POST",
+      "path": "/api/workspaces/{workspace_id}/restore",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "rotate_api_key",
+      "method": "POST",
+      "path": "/api/admin/api-keys/{id}/rotate",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "rotate_identity_api_key",
+      "method": "POST",
+      "path": "/api/identity/api-keys/{id}/rotate",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "set_default_domain",
+      "method": "POST",
+      "path": "/api/admin/domains/{id}/set-default",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_add_field",
+      "method": "POST",
+      "path": "/api/sign/{id}/fields",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_add_signer",
+      "method": "POST",
+      "path": "/api/sign/{id}/signers",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_confirm_send",
+      "method": "POST",
+      "path": "/api/sign/{id}/confirm-send",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_execute_internal_signature",
+      "method": "POST",
+      "path": "/api/sign/{id}/sign",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_get_certificate",
+      "method": "GET",
+      "path": "/api/sign/{id}/certificate",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_get_references",
+      "method": "GET",
+      "path": "/api/documents/{id}/sign-references",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_prepare_send",
+      "method": "POST",
+      "path": "/api/sign/{id}/prepare-send",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_record_internal_consent",
+      "method": "POST",
+      "path": "/api/sign/{id}/consent",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_remind_signer",
+      "method": "POST",
+      "path": "/api/sign/{id}/signers/{signer_id}/remind",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_remove_field",
+      "method": "DELETE",
+      "path": "/api/sign/{id}/fields/{field_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_remove_signer",
+      "method": "DELETE",
+      "path": "/api/sign/{id}/signers/{signer_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_reorder_signers",
+      "method": "PUT",
+      "path": "/api/sign/{id}/signers/order",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_revert_to_draft",
+      "method": "POST",
+      "path": "/api/sign/{id}/revert-to-draft",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_update_field",
+      "method": "PATCH",
+      "path": "/api/sign/{id}/fields/{field_id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_verify_document",
+      "method": "GET",
+      "path": "/api/sign/{id}/verify",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sign_void_document",
+      "method": "POST",
+      "path": "/api/sign/{id}/void",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "switch_workspace",
+      "method": "POST",
+      "path": "/api/workspaces/{workspace_id}/switch",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "sync_billing_seats",
+      "method": "POST",
+      "path": "/api/billing/seats/sync",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "tasks_maintenance_auto_archive",
+      "method": "POST",
+      "path": "/api/tasks/maintenance/auto-archive",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "tasks_maintenance_auto_close",
+      "method": "POST",
+      "path": "/api/tasks/maintenance/auto-close",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_file_comment",
+      "method": "PATCH",
+      "path": "/api/drive/{id}/comments/{commentId}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_goal",
+      "method": "PATCH",
+      "path": "/api/tasks/goals/{id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_notification_settings",
+      "method": "PUT",
+      "path": "/api/users/{id}/notifications",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_sign_document",
+      "method": "PATCH",
+      "path": "/api/sign/{id}",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_sign_document_retention",
+      "method": "PATCH",
+      "path": "/api/sign/{id}/retention",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_sign_retention",
+      "method": "PATCH",
+      "path": "/api/sign/retention",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_task_custom_field",
+      "method": "PATCH",
+      "path": "/api/tasks/custom-fields/{field_id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "update_task_status",
+      "method": "PATCH",
+      "path": "/api/tasks/statuses/{status_id}",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "use_sign_template",
+      "method": "POST",
+      "path": "/api/sign/templates/{id}/use",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "webhooks_create",
+      "method": "POST",
+      "path": "/api/webhooks",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "webhooks_list",
+      "method": "GET",
+      "path": "/api/webhooks",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "webhooks_revoke_previous_secret",
+      "method": "POST",
+      "path": "/api/webhooks/{id}/revoke-previous-secret",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "webhooks_rotate_secret",
+      "method": "POST",
+      "path": "/api/webhooks/{id}/rotate-secret",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "wiki_page_import",
+      "method": "POST",
+      "path": "/api/wiki/spaces/{id}/pages/import",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "workspace_create",
+      "method": "POST",
+      "path": "/api/workspaces",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "zoom_auth_url",
+      "method": "GET",
+      "path": "/api/zoom/auth-url",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "zoom_callback",
+      "method": "GET",
+      "path": "/api/zoom/callback",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "zoom_create_meeting",
+      "method": "POST",
+      "path": "/api/zoom/meetings",
+      "expose": [
+        "assistant"
+      ],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "zoom_disconnect",
+      "method": "DELETE",
+      "path": "/api/zoom/connection",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    },
+    {
+      "operationId": "zoom_status",
+      "method": "GET",
+      "path": "/api/zoom/status",
+      "expose": [],
+      "reason": "Not exposed to MCP by the public API contract"
+    }
+  ]
+}

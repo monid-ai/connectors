@@ -13,6 +13,11 @@ import { defineLeafCategories } from "@shared/core";
  */
 export const LEAF_CATEGORIES = defineLeafCategories([
     {
+        id: "workspace",
+        displayName: "Workspace",
+        description: "Collaborative documents, tasks, and workspace search.",
+    },
+    {
         id: "web-search",
         displayName: "Web Search",
         description:
