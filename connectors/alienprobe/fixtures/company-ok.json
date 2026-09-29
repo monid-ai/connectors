@@ -1,0 +1,162 @@
+{
+    "name": "company-ok",
+    "description": "alienprobe#company 200 answer for q=HWUPKR0MPOU8FGXBT394 (Apple Inc. by LEI). NOT captured by the recorder: the bytes are the seller's own extensions.bazaar.info.output.example from the live 402 PAYMENT-REQUIRED header of GET /v1/lookup/company?q=apple.com (read 2026-09-29T17:16:40Z), which the seller states is byte-identical to the real paid record; a real paid call for this subject settled on Base 2026-09-29T03:10:21Z, tx 0x7885ab19b7ffe8c9e6a43cd7f986b924ab0ca83015c2f86b3f3ee699b1ac97f8 (40000 USDC base units to payTo, receipt read on-chain). Response body passed through the repo's trimCalls + scrubCalls (coverage strings capped at 500 chars, arrays at 2).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=HWUPKR0MPOU8FGXBT394"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "schema_version": "company-lookup.v1",
+                    "subject": {
+                        "type": "company",
+                        "value": "HWUPKR0MPOU8FGXBT394"
+                    },
+                    "answer": {
+                        "legal_name": {
+                            "value": "Apple Inc.",
+                            "source": "GLEIF",
+                            "as_of": "2026-09-28"
+                        },
+                        "lei": {
+                            "value": "HWUPKR0MPOU8FGXBT394",
+                            "source": "GLEIF",
+                            "as_of": "2026-09-28"
+                        },
+                        "cik": {
+                            "value": "0000320193",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "ein": {
+                            "value": "94-2404110",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "tickers": {
+                            "value": [
+                                "AAPL"
+                            ],
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "exchanges": {
+                            "value": [
+                                "Nasdaq"
+                            ],
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "sic": {
+                            "value": "3571",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "sic_description": {
+                            "value": "Electronic Computers",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "entity_type": {
+                            "value": "operating",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "state_of_incorporation": {
+                            "value": "CA",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "jurisdiction": {
+                            "value": "US-CA",
+                            "source": "GLEIF",
+                            "as_of": "2026-09-28"
+                        },
+                        "legal_address": {
+                            "value": "C/O C T Corporation System, Glendale, CA 91203, US",
+                            "source": "GLEIF",
+                            "as_of": "2026-09-28"
+                        },
+                        "hq_address": {
+                            "value": "ONE APPLE PARK WAY, CUPERTINO, CA 95014, US",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "business_phone": {
+                            "value": "(408) 996-1010",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "fiscal_year_end": {
+                            "value": "0926",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "website": {
+                            "value": "https://apple.com/",
+                            "source": "Wikidata",
+                            "as_of": "2026-09-28"
+                        },
+                        "domain": {
+                            "value": "apple.com",
+                            "source": "Wikidata",
+                            "as_of": "2026-09-28"
+                        },
+                        "revenue_latest": {
+                            "value": {
+                                "value_usd": 416161000000,
+                                "period_end": "2025-09-27",
+                                "form": "10-K"
+                            },
+                            "source": "SEC companyfacts",
+                            "as_of": "2026-09-28"
+                        },
+                        "employees": {
+                            "value": 164000,
+                            "source": "Wikidata",
+                            "as_of": "2022-01-01"
+                        },
+                        "founded": {
+                            "value": "1976",
+                            "source": "Wikidata",
+                            "as_of": "2026-09-28"
+                        },
+                        "entity_status": {
+                            "value": "ACTIVE",
+                            "source": "GLEIF",
+                            "as_of": "2026-09-28"
+                        },
+                        "last_filing_date": {
+                            "value": "2026-09-24",
+                            "source": "SEC",
+                            "as_of": "2026-09-28"
+                        },
+                        "sources": [
+                            {
+                                "name": "GLEIF Golden Copy",
+                                "url": "https://www.gleif.org/en/lei-data/gleif-golden-copy",
+                                "vintage": "2026-09-28"
+                            },
+                            {
+                                "name": "SEC EDGAR submissions",
+                                "url": "https://www.sec.gov/Archives/edgar/daily-index/bulkdata/submissions.zip",
+                                "vintage": "2026-09-28"
+                            }
+                        ],
+                        "coverage_note": "From the pinned snapshot, never live. Each field has its own source and as_of; unstated is null. SEC fields cover SEC filers with a SIC code; LEI fields, GLEIF entities; website, domain, employees and founded come from Wikidata and are often absent."
+                    },
+                    "source": {
+                        "name": "Company profile joined from the GLEIF golden copy (Level 1), SEC EDGAR (submissions, company tickers, companyfacts) and Wikidata",
+                        "vintage": "2026-09-28",
+                        "snapshot_sha256": "2204da1e5319ac551e286850578f2f5080b23cb26cd50d6b4682d9b26262c91b",
+                        "coverage": "3508642 entities as of 2026-09-28: 1758 joined LEI to CIK via Wikidata, 3434618 GLEIF-only, 72266 SEC-only (filers with a SIC code). Excludes GLEIF DUPLICATE or ANNULLED records and non-Latin-script names. Look up by LEI, CIK, ticker, legal name or domain. The domain index covers only the 22574 companies Wikidata links to a website, over 21270 distinct domains, 825 of them shared. A name or a shared domain matching several companies is refused free (409, up to 5 candidates). Revenue is the lates"
+                    },
+                    "delivered_at": "2026-08-22T00:00:00.000Z"
+                }
+            }
+        }
+    ]
+}

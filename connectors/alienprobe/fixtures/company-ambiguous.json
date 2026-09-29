@@ -1,0 +1,39 @@
+{
+    "name": "company-ambiguous",
+    "description": "alienprobe#company 409 ambiguous for q=Apple — recorded live 2026-09-29T17:16:39Z (free refusal): candidates with LEI/CIK plus a recovery block; zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=Apple"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "error": "ambiguous",
+                    "candidates": [
+                        {
+                            "legal_name": "Apple Ltd",
+                            "jurisdiction": "KY",
+                            "lei": "529900RYTCJRAG2BSI79"
+                        },
+                        {
+                            "legal_name": "Apple Inc.",
+                            "jurisdiction": "US-CA",
+                            "lei": "HWUPKR0MPOU8FGXBT394",
+                            "cik": "0000320193"
+                        }
+                    ],
+                    "truncated": false,
+                    "hint": "Several entities match the name. Query again by the LEI or CIK of the intended entity (kind=lei or kind=cik); do not automatically select a candidate or repeat the same query.",
+                    "recovery": {
+                        "action": "query_again_by_lei_or_cik",
+                        "required_input": "lei_or_cik",
+                        "path_template": "/v1/lookup/company?q=:lei_or_cik",
+                        "automatic_selection": false
+                    }
+                }
+            }
+        }
+    ]
+}

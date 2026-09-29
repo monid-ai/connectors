@@ -1,0 +1,24 @@
+{
+    "name": "company-miss",
+    "description": "alienprobe#company 404 not_found_in_source — recorded live 2026-09-29T17:16:38Z (free refusal) with the snapshot provenance it missed against; zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=zzqxnotacompanyxx.example"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "not_found_in_source",
+                    "source": {
+                        "name": "Company profile joined from the GLEIF golden copy (Level 1), SEC EDGAR (submissions, company tickers, companyfacts) and Wikidata",
+                        "vintage": "2026-09-28",
+                        "snapshot_sha256": "2204da1e5319ac551e286850578f2f5080b23cb26cd50d6b4682d9b26262c91b",
+                        "coverage": "3508642 entities as of 2026-09-28: 1758 joined LEI to CIK via Wikidata, 3434618 GLEIF-only, 72266 SEC-only (filers with a SIC code). Excludes GLEIF DUPLICATE or ANNULLED records and non-Latin-script names. Look up by LEI, CIK, ticker, legal name or domain. The domain index covers only the 22574 companies Wikidata links to a website, over 21270 distinct domains, 825 of them shared. A name or a shared domain matching several companies is refused free (409, up to 5 candidates). Revenue is the lates"
+                    }
+                }
+            }
+        }
+    ]
+}

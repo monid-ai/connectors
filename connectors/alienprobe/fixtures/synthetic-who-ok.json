@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-who-ok",
+    "description": "alienprobe#who 200 answer for q=apple.com. SYNTHETIC by this repo's rule (no paid recording exists): the bytes are the seller's own extensions.bazaar.info.output.example, copied verbatim from the live 402 PAYMENT-REQUIRED header of GET /v1/lookup/who?q=apple.com (read 2026-09-29T17:16:42Z), then trimCalls + scrubCalls. Nothing was invented or edited.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=apple.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "schema_version": "who-lookup.v1",
+                    "subject": {
+                        "type": "who",
+                        "value": "apple.com"
+                    },
+                    "answer": {
+                        "lei": "HWUPKR0MPOU8FGXBT394",
+                        "legal_name": "Apple Inc.",
+                        "jurisdiction": "US-CA",
+                        "entity_status": "ACTIVE",
+                        "registration_status": "ISSUED",
+                        "last_update": "2026-03-03T16:34:33.150Z",
+                        "match": {
+                            "by": "domain",
+                            "rule": "domain_exact"
+                        },
+                        "official_website": "https://apple.com/"
+                    },
+                    "source": {
+                        "name": "GLEIF golden copy, Level 1 LEI records admitted by the build (see coverage); domain map from Wikidata items carrying P1278 (LEI) and P856 (official website)",
+                        "vintage": "2026-09-03",
+                        "snapshot_sha256": "8c5bb11bdd14d0ae66d92b5abad648804fe463c8d83e487f897644b0f99f5792",
+                        "coverage": "Name and LEI resolution cover the 3283992 GLEIF Level 1 records ADMITTED by the build from the 3419883 records read of the 2026-09-03 golden copy (INACTIVE and LAPSED included). 135653 records were refused because their legal name normalizes to fewer than 2 Latin alphanumerics — in practice non-Latin-script names (CJK, Cyrillic, Greek, Arabic, Hebrew, Thai) — and 238 for unclean fields; a refused record is absent from EVERY door in this vintage — name, LEI and domain alike — not from the name do"
+                    },
+                    "delivered_at": "2026-08-22T00:00:00.000Z"
+                }
+            }
+        }
+    ]
+}

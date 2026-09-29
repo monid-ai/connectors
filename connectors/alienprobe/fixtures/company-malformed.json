@@ -1,0 +1,19 @@
+{
+    "name": "company-malformed",
+    "description": "alienprobe#company 400 invalid_subject (cik_malformed) for q=abc&kind=cik — recorded live 2026-09-29T17:16:40Z (free refusal); zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=abc&kind=cik"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "invalid_subject",
+                    "reason": "cik_malformed"
+                }
+            }
+        }
+    ]
+}

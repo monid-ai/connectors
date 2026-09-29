@@ -1,0 +1,80 @@
+{
+    "name": "lei-payment-required",
+    "description": "alienprobe#lei 402 x402 challenge — recorded live 2026-09-29T17:16:45Z; PAYMENT-REQUIRED header (x402 v2 terms) is NOT kept — it is not on RECORDED_RES_HEADERS; the body kept here carries the same terms in x402 v1 form (x402Version 1, accepts[0] exact/base/USDC/payTo). Zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?lei=HWUPKR0MPOU8FGXBT394"
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "error": "payment_required",
+                    "subject": {
+                        "type": "lei",
+                        "value": "HWUPKR0MPOU8FGXBT394"
+                    },
+                    "source": {
+                        "name": "GLEIF golden copy, Level 1 LEI records admitted by the build (see coverage); domain map from Wikidata items carrying P1278 (LEI) and P856 (official website)",
+                        "vintage": "2026-09-03",
+                        "snapshot_sha256": "8c5bb11bdd14d0ae66d92b5abad648804fe463c8d83e487f897644b0f99f5792",
+                        "coverage": "LEI resolution covers the 3283992 GLEIF Level 1 records ADMITTED by the build from the 3419883 records read of the 2026-09-03 golden copy (INACTIVE and LAPSED included). 135653 records were refused because their legal name normalizes to fewer than 2 Latin alphanumerics — in practice non-Latin-script names (CJK, Cyrillic, Greek, Arabic, Hebrew, Thai) — and 238 for unclean fields; a refused record is absent from this shelf in this vintage. The LEI is matched exactly, after a free ISO 7064 check-di"
+                    },
+                    "x402Version": 1,
+                    "accepts": [
+                        {
+                            "scheme": "exact",
+                            "network": "base",
+                            "maxAmountRequired": "5000",
+                            "resource": "https://lookups.alienprobe.ai/v1/lookup/lei?lei=HWUPKR0MPOU8FGXBT394",
+                            "description": "Verify a company by LEI: legal name, jurisdiction, entity and registration status, last update, by exact LEI from GLEIF Level 1. Vintage 2026-09-03, all statuses: 3283992 of 3419883 admitted; non-Latin-script names (<2 Latin alphanumerics normalized) are absent. A bad check digit, a miss and an unreadable shelf are refused free, by name, never guessed; a miss is from this snapshot only. $0.005 by LEI here; by name or domain use /v1/lookup/who/ at $0.05. Whole bound in the declaration.",
+                            "mimeType": "application/json",
+                            "payTo": "0x701fd2Fc3295Ff2E98d986BD2032A966f54555f7",
+                            "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                            "amount": "5000",
+                            "maxTimeoutSeconds": 60,
+                            "extra": {
+                                "name": "USD Coin",
+                                "version": "2"
+                            },
+                            "outputSchema": {
+                                "input": {
+                                    "type": "http",
+                                    "method": "GET",
+                                    "discoverable": true,
+                                    "queryParams": {
+                                        "lei": "the 20-character ISO 17442 legal entity identifier to resolve"
+                                    }
+                                },
+                                "output": {
+                                    "schema_version": "lei-lookup.v2",
+                                    "subject": {
+                                        "type": "lei",
+                                        "value": "HWUPKR0MPOU8FGXBT394"
+                                    },
+                                    "answer": {
+                                        "lei": "HWUPKR0MPOU8FGXBT394",
+                                        "legal_name": "Apple Inc.",
+                                        "jurisdiction": "US-CA",
+                                        "entity_status": "ACTIVE",
+                                        "registration_status": "ISSUED",
+                                        "last_update": "2026-03-03T16:34:33.150Z"
+                                    },
+                                    "source": {
+                                        "name": "GLEIF golden copy, Level 1 LEI records admitted by the build (see coverage); domain map from Wikidata items carrying P1278 (LEI) and P856 (official website)",
+                                        "vintage": "2026-09-03",
+                                        "snapshot_sha256": "8c5bb11bdd14d0ae66d92b5abad648804fe463c8d83e487f897644b0f99f5792",
+                                        "coverage": "LEI resolution covers the 3283992 GLEIF Level 1 records ADMITTED by the build from the 3419883 records read of the 2026-09-03 golden copy (INACTIVE and LAPSED included). 135653 records were refused because their legal name normalizes to fewer than 2 Latin alphanumerics — in practice non-Latin-script names (CJK, Cyrillic, Greek, Arabic, Hebrew, Thai) — and 238 for unclean fields; a refused record is absent from this shelf in this vintage. The LEI is matched exactly, after a free ISO 7064 check-di"
+                                    },
+                                    "delivered_at": "2026-08-22T00:00:00.000Z"
+                                },
+                                "routeTemplate": "/v1/lookup/lei"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
