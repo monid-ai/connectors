@@ -8,6 +8,7 @@ import {
     defineProvider,
     presets,
     sealUnit,
+    StopKind,
 } from "@shared/core";
 import { compileBundle } from "@shared/compiler";
 import {
@@ -1870,11 +1871,53 @@ Deno.test("lifecycle: run() timeout stops the vendor job then throws TIMEOUT", a
     const error = await assertRejects(() => loaded.run({ body: { q: "x" } }));
     assert(error instanceof EngineError);
     assertEquals(error.code, EngineErrorCode.TIMEOUT);
+    assertEquals(error.externalRunId, "j1");
+    assertEquals(error.state?.externalRunId, "j1");
+    assertEquals(error.stopResult?.kind, StopKind.STOPPED_UNSETTLED);
     // the LAST wire call is the best-effort abort
     assertEquals(seen[seen.length - 1], {
         method: "POST",
         url: "https://api.asyncdemo.test/jobs/j1/abort",
     });
+});
+
+Deno.test("lifecycle: run() timeout with unresolved stop preserves the unresolved state", async () => {
+    let fakeMs = 0;
+    const engine = new Engine({
+        transport: scriptTransport([
+            { status: 201, body: { jobId: "j2" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+            { status: 200, body: { status: "running" } },
+        ]),
+        ...INSTANT_SLEEP,
+        now: () => new Date(fakeMs += 1_000),
+    });
+    const loaded = await engine.load(
+        await asyncUnit((connectors) => {
+            connectors[0].provider.timeouts = {
+                requestMs: 1_000,
+                runMs: 3_500,
+                pollMs: 5,
+            };
+            connectors[0].provider.lifecycle!.stop = async () => {
+                return await Promise.resolve({
+                    kind: "UNRESOLVED",
+                    reason: "vendor teardown requires manual reconciliation",
+                    state: {
+                        stage: "requires_reconcile",
+                    },
+                });
+            };
+        }),
+    );
+    const error = await assertRejects(() => loaded.run({ body: { q: "x" } }));
+    assert(error instanceof EngineError);
+    assertEquals(error.code, EngineErrorCode.TIMEOUT);
+    assertEquals(error.externalRunId, "j2");
+    assertEquals(error.state?.externalRunId, "j2");
+    assertEquals(error.state?.stage, "requires_reconcile");
+    assertEquals(error.stopResult?.kind, StopKind.UNRESOLVED);
 });
 
 Deno.test("lifecycle: utils.http per-call header/query overrides + auth still injected", async () => {

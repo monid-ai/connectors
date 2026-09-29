@@ -1,3 +1,5 @@
+import type { RunState, RunStopResult } from "@shared/core";
+
 export const EngineErrorCode = {
     /** Doc requires a newer engine (minEngineVersion > ENGINE_VERSION). */
     UNSUPPORTED_DOC: "UNSUPPORTED_DOC",
@@ -57,18 +59,32 @@ const RETRIABLE: ReadonlySet<EngineErrorCode> = new Set([
     EngineErrorCode.RESOURCE_OP_FAILED,
 ]);
 
+export interface EngineErrorOptions {
+    cause?: unknown;
+    state?: RunState;
+    stopResult?: RunStopResult;
+}
+
 export class EngineError extends Error {
     readonly code: EngineErrorCode;
     readonly retriable: boolean;
+    readonly state?: RunState;
+    readonly stopResult?: RunStopResult;
 
     constructor(
         code: EngineErrorCode,
         message: string,
-        options?: { cause?: unknown },
+        options?: EngineErrorOptions,
     ) {
         super(`[${code}] ${message}`, options);
         this.name = "EngineError";
         this.code = code;
         this.retriable = RETRIABLE.has(code);
+        this.state = options?.state;
+        this.stopResult = options?.stopResult;
+    }
+
+    get externalRunId(): string | undefined {
+        return this.state?.externalRunId;
     }
 }

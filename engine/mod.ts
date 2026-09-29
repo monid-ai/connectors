@@ -21,7 +21,11 @@ export type {
     Transport,
     TransportResponse,
 } from "./interfaces/mod.ts";
-export { EngineError, EngineErrorCode } from "./errors.ts";
+export {
+    EngineError,
+    EngineErrorCode,
+    type EngineErrorOptions,
+} from "./errors.ts";
 export {
     fnUtils,
     jsonUtil,
