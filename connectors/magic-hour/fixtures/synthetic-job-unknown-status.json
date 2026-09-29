@@ -1,0 +1,69 @@
+{
+    "name": "synthetic-job-unknown-status",
+    "description": "SYNTHETIC: a status the connector does not recognize (not in the documented enum) keeps the run polling; the next tick completes normally and settles 50 credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "project_1",
+                    "frame_cost": 50,
+                    "credits_charged": 50
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/image-projects/project_1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "project_1",
+                    "name": "Untitled ai gif",
+                    "status": "paused",
+                    "image_count": 1,
+                    "type": "AI_GIF",
+                    "created_at": "2026-09-25T17:34:24.446Z",
+                    "enabled": true,
+                    "total_frame_cost": 50,
+                    "credits_charged": 50,
+                    "downloads": [],
+                    "error": null
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/image-projects/project_1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "project_1",
+                    "name": "Untitled ai gif",
+                    "status": "complete",
+                    "image_count": 1,
+                    "type": "AI_GIF",
+                    "created_at": "2026-09-25T17:34:24.446Z",
+                    "enabled": true,
+                    "total_frame_cost": 50,
+                    "credits_charged": 50,
+                    "downloads": [
+                        {
+                            "url": "https://videos.magichour.ai/project_1/output.gif",
+                            "expires_at": "2026-09-26T17:34:50.000Z"
+                        }
+                    ],
+                    "error": null
+                }
+            }
+        }
+    ]
+}

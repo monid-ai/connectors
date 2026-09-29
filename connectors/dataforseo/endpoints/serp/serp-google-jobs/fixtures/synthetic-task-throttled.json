@@ -1,0 +1,235 @@
+{
+    "name": "synthetic-task-throttled",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. task_post 20100, then a task_get answering 40202 (too many requests) and an upstream 503, then 20000: both keep the run RUNNING; settled at the stashed post charge.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.dataforseo.com/v3/serp/google/jobs/task_post",
+                "body": [
+                    {
+                        "keyword": "seo api",
+                        "depth": 10,
+                        "location_code": 2840,
+                        "language_code": "en",
+                        "priority": 2
+                    }
+                ]
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0.0012,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20100,
+                            "status_message": "Task Created.",
+                            "time": "0.5 sec.",
+                            "cost": 0.0012,
+                            "result_count": 0,
+                            "path": [
+                                "v3",
+                                "serp",
+                                "google",
+                                "jobs",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "serp",
+                                "function": "task_post"
+                            },
+                            "result": null
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/serp/google/jobs/task_get/advanced/09211200-1535-0066-0000-e0d0d9f4a7c1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 1,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 40202,
+                            "status_message": "Too many requests.",
+                            "time": "0.5 sec.",
+                            "cost": 0,
+                            "result_count": 0,
+                            "path": [
+                                "v3",
+                                "serp",
+                                "google",
+                                "jobs",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "serp",
+                                "function": "task_post"
+                            },
+                            "result": null
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/serp/google/jobs/task_get/advanced/09211200-1535-0066-0000-e0d0d9f4a7c1"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "status_code": 50000,
+                    "status_message": "Internal Error."
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/serp/google/jobs/task_get/advanced/09211200-1535-0066-0000-e0d0d9f4a7c1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20000,
+                            "status_message": "Ok.",
+                            "time": "0.5 sec.",
+                            "cost": 0,
+                            "result_count": 1,
+                            "path": [
+                                "v3",
+                                "serp",
+                                "google",
+                                "jobs",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "serp",
+                                "function": "task_post"
+                            },
+                            "result": [
+                                {
+                                    "total_count": 10,
+                                    "items_count": 10,
+                                    "items": [
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 1,
+                                            "rank_absolute": 1,
+                                            "domain": "example.com",
+                                            "title": "Result 1",
+                                            "url": "https://example.com/1"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 2,
+                                            "rank_absolute": 2,
+                                            "domain": "example.com",
+                                            "title": "Result 2",
+                                            "url": "https://example.com/2"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 3,
+                                            "rank_absolute": 3,
+                                            "domain": "example.com",
+                                            "title": "Result 3",
+                                            "url": "https://example.com/3"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 4,
+                                            "rank_absolute": 4,
+                                            "domain": "example.com",
+                                            "title": "Result 4",
+                                            "url": "https://example.com/4"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 5,
+                                            "rank_absolute": 5,
+                                            "domain": "example.com",
+                                            "title": "Result 5",
+                                            "url": "https://example.com/5"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 6,
+                                            "rank_absolute": 6,
+                                            "domain": "example.com",
+                                            "title": "Result 6",
+                                            "url": "https://example.com/6"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 7,
+                                            "rank_absolute": 7,
+                                            "domain": "example.com",
+                                            "title": "Result 7",
+                                            "url": "https://example.com/7"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 8,
+                                            "rank_absolute": 8,
+                                            "domain": "example.com",
+                                            "title": "Result 8",
+                                            "url": "https://example.com/8"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 9,
+                                            "rank_absolute": 9,
+                                            "domain": "example.com",
+                                            "title": "Result 9",
+                                            "url": "https://example.com/9"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 10,
+                                            "rank_absolute": 10,
+                                            "domain": "example.com",
+                                            "title": "Result 10",
+                                            "url": "https://example.com/10"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "name": "search-ok",
+    "description": "Search1API /search happy path: ranked results for 'deno 2 release notes' (array trimmed by record). 1 credit per call with results \u2014 no vendor meter on the envelope, so the derived fold is the bill.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "deno 2 release notes",
+                    "max_results": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchParameters": {
+                        "query": "deno 2 release notes",
+                        "max_results": 3,
+                        "page": 1,
+                        "crawl_results": 0,
+                        "image": false,
+                        "include_sites": [],
+                        "exclude_sites": []
+                    },
+                    "results": [
+                        {
+                            "title": "Releases \u00b7 denoland/deno - GitHub",
+                            "link": "https://github.com/denoland/deno/releases",
+                            "snippet": "A modern runtime for JavaScript and TypeScript. Contribute to denoland/deno development by creating an account on GitHub."
+                        },
+                        {
+                            "title": "Deno 2.8 | Deno",
+                            "link": "https://deno.com/blog/v2.8",
+                            "snippet": "May 22, 2026 \u00b7 Deno 2.8 is here. This is our biggest minor release to date and we\u2019re excited to share it with you. To upgrade to Deno 2.8, run the following in your terminal: If Deno is not yet installed, run one of the following commands to install or learn how to install it here."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. Recorded shape of a real 401 (bad credentials, 2026-09-21, no key needed): the vendor's HTTP 401 with 40100 in the body and no tasks — data, zero usage, digested by the provider fromError.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.dataforseo.com/v3/serp/google/organic/live/advanced",
+                "body": [
+                    {
+                        "keyword": "seo api",
+                        "depth": 10,
+                        "location_code": 2840,
+                        "language_code": "en"
+                    }
+                ]
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 40100,
+                    "status_message": "You are not authorized to access this resource. See your login details here: https://app.dataforseo.com/api-access .",
+                    "time": "0 sec.",
+                    "cost": 0,
+                    "tasks_count": 0,
+                    "tasks_error": 0,
+                    "tasks": null
+                }
+            }
+        }
+    ]
+}

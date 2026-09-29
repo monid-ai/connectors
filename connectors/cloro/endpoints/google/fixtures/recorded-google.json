@@ -1,0 +1,58 @@
+{
+    "name": "recorded-google",
+    "description": "raw recording (cloro#monitor/google, scenario recorded-google) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.cloro.dev/v1/monitor/google",
+                "body": {
+                    "query": "project management software",
+                    "country": "US"
+                }
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-credits-charged": "5"
+                },
+                "body": {
+                    "success": true,
+                    "result": {
+                        "organicResults": [
+                            {
+                                "position": 1,
+                                "title": "Honest Review of 6 Personal Project Management Tools ...",
+                                "link": "https://www.icagile.com/resources/honest-review-of-6-personal-project-management-tools-with-kanban-view",
+                                "displayedLink": "https://www.icagile.com› resources > honest-review-of...",
+                                "snippet": "Sep 13, 2024—Comparing 6 Popular Tools for Personal Project Management with Kanban View ·1. Clickup· 2. Trello · 3. Asana · 4. Wrike · 5. Monday.com · 6. Notion.",
+                                "page": 1,
+                                "redirectLink": "https://www.google.com/goto?url=CAESnwEB6zswFcg2kWF16819YHtqAJ-dEOuHFWvT9ciIOerw4PRk1kefDj4tMa17jquQMWZjGydF7ASVxzbsEDgkrTdbk-kWARmzGCRQzytdHHPlJfFq4sdqU7RU6rFeo2JvZNWp9uruKAhDQYsXs3dzpou8sytKF4wj8Dp-SgyFAGkB6bhCoB3QLF1HopZGBuC0SXRFS6wdBA1MHFjehF5aYUA"
+                            },
+                            {
+                                "position": 2,
+                                "title": "Best project management tools and software: My 21 top ...",
+                                "link": "https://www.wrike.com/project-management-guide/faq/what-are-project-management-tools/",
+                                "displayedLink": "https://www.wrike.com› ... > FAQ > Tools",
+                                "snippet": "Aug 14, 2026—What are the 11 best project management tools? ·1. Wrike· 2. Asana · 3. Monday.com · 4. Adobe Workfront · 5. Smartsheet · 6. Jira · 7. ClickUp.",
+                                "page": 1,
+                                "redirectLink": "https://www.google.com/goto?url=CAESjQEB6zswFQuosGCUJ3zuWvqU4QSm9klmOnUW48iuN2rsTvWH7hEL9BaNWkNpeaYjQs1zfxTVunKDUI_OE6dbGkszH2adEbqOLWVUPtBDAfCEtyqynVZg3JsbRswpAneU6FsfgYruZi4QNDqRwjFfevjlTVrZe3K2CQeW5lcsJSuTNxnEkxdConon-L4YUIE"
+                            }
+                        ],
+                        "peopleAlsoAsk": [
+                            {
+                                "question": "What is the most used project management software?",
+                                "type": "AIOVERVIEW"
+                            },
+                            {
+                                "question": "What is the best software for project management?",
+                                "type": "AIOVERVIEW"
+                            }
+                        ],
+                        "relatedSearches": []
+                    }
+                }
+            }
+        }
+    ]
+}

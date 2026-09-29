@@ -1,0 +1,159 @@
+{
+    "name": "synthetic-search-discovery",
+    "description": "A name query with candidate_discovery and limit 2: one index hit plus two discovered people, both built and charged as partial builds. Only one of them is ever seen `generating`; the other goes straight to `ready` between two ticks. The receipt settles 11 = 1 + 5 + 5. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "search_id": "SEARCH3",
+                    "request_id": "req-search3",
+                    "status": "running",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": false,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH3"
+                    },
+                    "billing": {
+                        "id": "op-search-3",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 21,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 21,
+                        "status": "open"
+                    },
+                    "candidate_discovery_completed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH3",
+                    "request_id": "req-search3",
+                    "status": "running",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": false,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_CD_1",
+                            "status": "generating",
+                            "generation_level": null,
+                            "sources": [
+                                "candidate_discovery"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH3"
+                    },
+                    "billing": {
+                        "id": "op-search-3",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 21,
+                        "consumedCredits": 1,
+                        "releasedCredits": 0,
+                        "heldCredits": 20,
+                        "status": "open"
+                    },
+                    "candidate_discovery_completed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH3",
+                    "request_id": "req-search3",
+                    "status": "completed",
+                    "candidate_discovery": true,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_CD_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "candidate_discovery"
+                            ]
+                        },
+                        {
+                            "profile_id": "PROF_CD_2",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "candidate_discovery"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH3"
+                    },
+                    "billing": {
+                        "id": "op-search-3",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 21,
+                        "consumedCredits": 11,
+                        "releasedCredits": 10,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    },
+                    "candidate_discovery_completed": true
+                }
+            }
+        }
+    ]
+}

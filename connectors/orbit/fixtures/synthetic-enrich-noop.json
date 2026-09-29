@@ -1,0 +1,81 @@
+{
+    "name": "synthetic-enrich-noop",
+    "description": "THE no-op, as it really answers: a profile already at level 3 asked for `full` comes back `202 running` with reservedCredits 0 — Orbit runs a free reconciliation — then `completed` a few seconds later with consumedCredits 0. So a 202 says nothing about whether work is charged; only the receipt does. Settles ZERO. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.orbitsearch.com/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "request_id": "ENRICH2",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "running",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 3,
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH2"
+                    },
+                    "billing": {
+                        "id": "op-enrich-2",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 0,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/ENRICH2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "ENRICH2",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "completed",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 3,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH2"
+                    },
+                    "billing": {
+                        "id": "op-enrich-2",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 0,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

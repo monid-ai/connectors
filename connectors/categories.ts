@@ -344,6 +344,27 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "and Google Play listings, rankings, reviews, and more.",
     },
     {
+        id: "image-search",
+        displayName: "Image Search",
+        description:
+            "Tools to search the web for images, including from text or image " +
+            "input, and more.",
+    },
+    {
+        id: "video-search",
+        displayName: "Video Search",
+        description:
+            "Tools to search the web for videos, including from a text query, " +
+            "and more.",
+    },
+    {
+        id: "equities",
+        displayName: "Stocks & Funds",
+        description:
+            "Tools to pull public market data, including quotes, fundamentals, " +
+            "earnings, screeners, and more.",
+    },
+    {
         id: "field-workforce",
         displayName: "Field Workforce",
         description:

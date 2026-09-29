@@ -1,0 +1,41 @@
+{
+    "name": "synthetic-task-no-id",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. task_post answers 20100 without a task id (a contract violation): synthesized 502, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.dataforseo.com/v3/serp/google/jobs/task_post",
+                "body": [
+                    {
+                        "keyword": "seo api",
+                        "depth": 10,
+                        "location_code": 2840,
+                        "language_code": "en",
+                        "priority": 2
+                    }
+                ]
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "status_code": 20100,
+                            "status_message": "Task Created.",
+                            "cost": 0,
+                            "result": null
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
