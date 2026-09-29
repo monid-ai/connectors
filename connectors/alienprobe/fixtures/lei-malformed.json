@@ -1,0 +1,18 @@
+{
+    "name": "lei-malformed",
+    "description": "alienprobe#lei 400 invalid_subject for lei=HWUPKR0MPOU8FGXBT395 (Apple's LEI with the last check digit changed: passes the 20-char pattern, fails the seller's ISO 7064 screen) — recorded live 2026-09-29T17:31:23Z (free refusal); zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?lei=HWUPKR0MPOU8FGXBT395"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "invalid_subject"
+                }
+            }
+        }
+    ]
+}

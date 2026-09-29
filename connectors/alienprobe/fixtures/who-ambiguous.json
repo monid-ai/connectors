@@ -1,0 +1,36 @@
+{
+    "name": "who-ambiguous",
+    "description": "alienprobe#who 409 ambiguous for q=Apple — recorded live 2026-09-29T17:16:41Z (free refusal); zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=Apple"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "error": "ambiguous",
+                    "candidates": [
+                        {
+                            "legal_name": "Apple Ltd",
+                            "jurisdiction": "KY"
+                        },
+                        {
+                            "legal_name": "Apple Inc.",
+                            "jurisdiction": "US-CA"
+                        }
+                    ],
+                    "truncated": false,
+                    "hint": "Use the exact legal_name and a ;jurisdiction suffix only if they identify the intended entity. If candidates remain ambiguous or indistinguishable, obtain an independently verified LEI and use the LEI route. Do not choose the first candidate or repeat the same query.",
+                    "recovery": {
+                        "action": "verify_entity_then_query_lei",
+                        "required_input": "independently_verified_lei",
+                        "path_template": "/v1/lookup/lei/:subject",
+                        "automatic_selection": false
+                    }
+                }
+            }
+        }
+    ]
+}

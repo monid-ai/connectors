@@ -1,0 +1,24 @@
+{
+    "name": "who-miss",
+    "description": "alienprobe#who 404 not_found_in_source — recorded live 2026-09-29T17:16:41Z (free refusal); zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?q=zzqxnotacompanyxx.example"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "not_found_in_source",
+                    "source": {
+                        "name": "GLEIF golden copy, Level 1 LEI records admitted by the build (see coverage); domain map from Wikidata items carrying P1278 (LEI) and P856 (official website)",
+                        "vintage": "2026-09-03",
+                        "snapshot_sha256": "8c5bb11bdd14d0ae66d92b5abad648804fe463c8d83e487f897644b0f99f5792",
+                        "coverage": "Name and LEI resolution cover the 3283992 GLEIF Level 1 records ADMITTED by the build from the 3419883 records read of the 2026-09-03 golden copy (INACTIVE and LAPSED included). 135653 records were refused because their legal name normalizes to fewer than 2 Latin alphanumerics — in practice non-Latin-script names (CJK, Cyrillic, Greek, Arabic, Hebrew, Thai) — and 238 for unclean fields; a refused record is absent from EVERY door in this vintage — name, LEI and domain alike — not from the name do"
+                    }
+                }
+            }
+        }
+    ]
+}
