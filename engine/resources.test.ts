@@ -52,6 +52,11 @@ function resourceConnector(): ConnectorSource[] {
             name: "widget",
             def: defineResource({
                 slug: "widget",
+                // the type vocabulary is CLOSED to what the repo ships
+                // (design D48), so this fictional resource borrows the
+                // one real member — the demo exercises the machinery,
+                // not the taxonomy
+                type: "phone_number",
                 meta: {
                     displayName: "Widget",
                     summary: "A demo widget.",
@@ -487,6 +492,35 @@ Deno.test("resources compiler: unknown binding id and dead keys are compile erro
             }),
         CompileError,
         "DEAD binding",
+    );
+});
+
+Deno.test("resources compiler: the generic type and lookup keys reach the doc", async () => {
+    // both are INLINE DATA on the compiled doc (design D48): a host
+    // filters by type and resolves keys without executing a fn, so they
+    // must survive compilation as plain values
+    const bundle = await bundleOf((connectors) => {
+        connectors[0].resources![0].def.keys = { hue: "$.color" };
+    });
+    const doc = bundle.resources!["resdemo/widget"];
+    assertEquals(doc.type, "phone_number");
+    assertEquals(doc.keys, { hue: "$.color" });
+});
+
+Deno.test("resources compiler: a lookup key naming no data field is a DEAD key", async () => {
+    // the whole point of a key is that the host can resolve it later. A
+    // path into a field the schema does not have never resolves, so the
+    // resource silently fails to answer to the id it advertises — the
+    // failure this feature exists to remove, caught at compile instead.
+    await assertRejects(
+        () =>
+            bundleOf((connectors) => {
+                connectors[0].resources![0].def.keys = {
+                    hue: "$.colour",
+                };
+            }),
+        CompileError,
+        "DEAD lookup",
     );
 });
 

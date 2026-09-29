@@ -109,7 +109,10 @@ path.
 
 Providers whose product is a durable OWNED thing (saperly's phone numbers)
 additionally declare a **resource** (`resources/<slug>/resource.ts`): its
-stored-snapshot shape, platform lifecycle (verify/release/refresh), live views,
+generic `type` (`phone_number`) beside the unique `<provider>/<slug>` id, its
+stored-snapshot shape, any named alternate `keys` it should answer to
+(`{ e164: "$.phoneNumber" }` — so the number resolves by its own phone number,
+not only by a uuid), platform lifecycle (verify/release/refresh), live views,
 and its usage rate card (fixed and/or estimated lines over one period clock).
 Endpoints then BIND to it (`resources: { uses: [{ id, key }] }` et al.,
 purpose-keyed) and the engine derives the rest — ownership gating, gated
@@ -149,6 +152,19 @@ deno task catalog endpoints --provider exa   # under one provider
 deno task catalog endpoints --category web-search
 deno task catalog inspect 'exa#search'       # one endpoint's full contract
 ```
+
+Browsing the catalog shows what COULD exist; if you run a provider that rents
+resources, `resources` shows what you actually own:
+
+```bash
+deno task resources list                     # everything in this environment
+deno task resources list --type phone_number # one kind, across providers
+deno task resources inspect +14155550123     # by externalId, identifier, or lookup key
+```
+
+Output mode is auto-detected: tables in a terminal, JSON when piped — so agents
+capturing stdout get JSON with no flag. `-j`/`--json` forces JSON, `--pretty`
+forces the formatted view even when piped.
 
 ```
 connectors/<name>/

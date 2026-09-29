@@ -4,7 +4,8 @@ import { zRunInput } from "../run/input.ts";
 import { zEndpointId } from "../common/ids.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
 import type { LifecycleHttpFn } from "./lifecycle.ts";
-import { zOwnedResource, zResourceTarget } from "../resource/row.ts";
+import { zOwnedResource } from "../resource/owned.ts";
+import { zResourceTarget } from "../resource/target.ts";
 
 /**
  * WEBHOOK HOOKS (design D36) — declared on docs, EXECUTED BY THE HOST

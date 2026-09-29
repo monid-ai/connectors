@@ -156,8 +156,37 @@ compile → sealed-unit pipeline:
 field the loader asserts against the folder (identity is declared, never
 inferred), id `<provider>/<slug>`, compiled to a `zResourceDoc` in the bundle's
 `resources` map and executed via `engine.loadResource(unit)`. The fn-facing
-instance is an `OwnedResource` (`{resource, externalId, data, syncedAt?}`); op
-ctx carries it as `data.resource`.
+instance is an `OwnedResource`
+(`{resource, externalId, type?, identifier?, keys?, data, syncedAt?}`); op ctx
+carries it as `data.resource`.
+
+**Identity: two axes, three handles** (openspec:
+`add-resource-identity-and-cli`). The def also declares a REQUIRED generic
+`type` from a closed vocabulary (`ResourceType`, today just `phone_number`) —
+the id `<provider>/<slug>` is the unique def identity, `type` is the
+cross-provider axis an id structurally cannot express ("every phone number I
+own, whoever sells it"). The vocabulary holds exactly what ships: one entry per
+resource def, added with the def.
+
+A row then carries three handles: `externalId` is THE address (the ownership
+key, and all `zResourceTarget` ever names), `identifier` is the display handle
+(the E.164, the mailbox address — defaults to `externalId`), and `keys` are
+NAMED alternate lookups the def declares as paths into its own `data`:
+
+```ts
+keys: {
+    e164: "$.phoneNumber";
+} // on the resource def
+```
+
+The host resolves each path when it persists a row and indexes the value, so the
+resource answers to it as well as to its `externalId` — which is how a Saperly
+`call.received` webhook (E.164, no numberId) finds its own number, and why
+pasting a phone number where a numberId goes now works. A lookup key is an index
+INTO identity, never a second identity. Paths are rooted at `data` (not the
+vendor envelope) so a `refresh` re-derives them, and a path naming no field in
+the data schema is a **DEAD lookup** — a compile error, not a silently unindexed
+resource.
 
 The def declares WHAT the resource is (`data` — the stored-snapshot schema),
 what the PLATFORM may do unprompted (`lifecycle.verify` / `lifecycle.release` /
@@ -236,6 +265,24 @@ KV store at `.output/local.db` (its default ownership window;
 `deno task webhook simulate|listen` signs / verifies / routes deliveries per the
 compiled descriptors (tunnels — cloudflared / tailscale / none — live in scripts
 only; the engine never listens).
+
+That store is what `deno task resources` reads:
+
+```
+["resources", <resourceId>, <externalId>]        → OwnedResource
+["index",     <resourceId>, <keyName>, <value>]  → { externalId }
+["released",  <resourceId>, <externalId>]        → { releasedAt }
+```
+
+Index rows come from the def's declared `keys` and are written, re-derived and
+deleted in the same atomic commits as the row itself, so a pointer never
+outlives what it names and a refresh never leaves a stale one resolving. Every
+read path resolves a handle through the index first — which is why the ownership
+gate accepts either handle with no engine change: the gate delegates to the
+reader port, and an unknown handle still owns nothing (uniform 404, zero usage,
+upstream untouched). A def that GAINS a key leaves existing rows unindexed;
+`deno task resources reindex` re-derives them from stored data (re-provisioning
+would buy a live resource twice).
 
 ## Configuration
 
@@ -316,18 +363,27 @@ Why tag-triggered, why a GitHub Release:
 
 ## CLI reference
 
-| Task                                                                                                           | What                                                                                                                                                              |
-| -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `deno task compiler:compile [--force] [--frozen-meta] [--publish <tag>]`                                       | compile EVERYTHING to `.output/catalog.json` (cached); `--publish` also emits the split publish tree                                                              |
-| `deno task catalog providers \| endpoints \| categories \| inspect <id>`                                       | browse compiled bundles (`--provider`/`--category` filters)                                                                                                       |
-| `deno task catalog resources [--provider] \| inspect-resource <id>`                                            | browse compiled resource docs                                                                                                                                     |
-| `deno task engine:run <id> [--body] [--query-params] [--path-params] [--resources <file>] [--scope-key <key>]` | JIT compile + execute with env credentials (flags = `RunInput` fields, kebab-case); ownership window = the local KV store (`--resources` swaps in a fixture file) |
-| `deno task webhook simulate <provider> <slug> --body <json> [--execute]`                                       | sign a synthetic delivery per the compiled verify descriptor, route it, print `{who, what}` (and act on it)                                                       |
-| `deno task webhook listen <provider> [--port] [--tunnel cloudflared\|tailscale\|none] [--execute]`             | serve the ingress route locally for REAL deliveries (tunnels are scripts-only)                                                                                    |
-| `deno task ids:check [--update]`                                                                               | identity guard: compiled ids vs `connectors/ids.lock.json`                                                                                                        |
-| `deno task record <id> <scenario> [--body] [--query-params] [--path-params]`                                   | fixture recorder: live call, {req,res} captured (headers dropped), written to fixtures/                                                                           |
-| `deno task test` / `test:live`                                                                                 | replay tests (zero network) / live tests, auto-skipped without `<NAME>_CREDENTIALS_<FIELD>`                                                                       |
-| `deno task check` / `lint` / `version:check`                                                                   | hygiene + contract guard                                                                                                                                          |
+| Task                                                                                                                                | What                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `deno task compiler:compile [--force] [--frozen-meta] [--publish <tag>]`                                                            | compile EVERYTHING to `.output/catalog.json` (cached); `--publish` also emits the split publish tree                                                              |
+| `deno task catalog providers \| endpoints \| categories \| inspect <id>`                                                            | browse compiled bundles (`--provider`/`--category` filters)                                                                                                       |
+| `deno task catalog resources [--provider] [--type] \| inspect-resource <id>`                                                        | browse compiled resource DEFS                                                                                                                                     |
+| `deno task resources list [--provider] [--type] [--resource] \| inspect <handle> \| released \| reindex \| forget <handle> --force` | browse what this environment OWNS (the local store); `inspect` takes an externalId, an identifier, or any indexed lookup key                                      |
+| `deno task engine:run <id> [--body] [--query-params] [--path-params] [--resources <file>] [--scope-key <key>]`                      | JIT compile + execute with env credentials (flags = `RunInput` fields, kebab-case); ownership window = the local KV store (`--resources` swaps in a fixture file) |
+| `deno task webhook simulate <provider> <slug> --body <json> [--execute]`                                                            | sign a synthetic delivery per the compiled verify descriptor, route it, print `{who, what}` (and act on it)                                                       |
+| `deno task webhook listen <provider> [--port] [--tunnel cloudflared\|tailscale\|none] [--execute]`                                  | serve the ingress route locally for REAL deliveries (tunnels are scripts-only)                                                                                    |
+| `deno task ids:check [--update]`                                                                                                    | identity guard: compiled ids vs `connectors/ids.lock.json`                                                                                                        |
+| `deno task record <id> <scenario> [--body] [--query-params] [--path-params]`                                                        | fixture recorder: live call, {req,res} captured (headers dropped), written to fixtures/                                                                           |
+| `deno task test` / `test:live`                                                                                                      | replay tests (zero network) / live tests, auto-skipped without `<NAME>_CREDENTIALS_<FIELD>`                                                                       |
+| `deno task check` / `lint` / `version:check`                                                                                        | hygiene + contract guard                                                                                                                                          |
+
+**Output mode** is detected, not configured: a terminal gets a formatted summary
+or an aligned table, a pipe gets JSON (`Deno.stdout.isTerminal()` — the
+isatty(1) check; an agent capturing stdout is a pipe, so agents get JSON with no
+flag), so `deno task engine:run …` is readable and `… | jq` keeps working. `-j`
+/ `--json` forces JSON, `--pretty` forces the formatted view — the flags name
+the format, never the audience. `inspect` / `inspect-resource` are JSON in both
+modes — a doc IS the contract.
 
 ## Authoring guide
 

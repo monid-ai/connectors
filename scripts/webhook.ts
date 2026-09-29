@@ -32,6 +32,7 @@
 import { Command } from "@cliffy/command";
 import {
     type Json,
+    type OwnedResource,
     type ProviderWebhookDoc,
     sealProviderUnit,
     sealResourceUnit,
@@ -45,7 +46,12 @@ import {
     instantiate,
 } from "@monid/connector-engine";
 import { compileToOutput } from "./lib.ts";
-import { admitInto, KvResourceStore, persistEffects } from "./store/kv.ts";
+import {
+    admitInto,
+    defsFromBundle,
+    KvResourceStore,
+    persistEffects,
+} from "./store/kv.ts";
 
 // ---------------------------------------------------------------------------
 // verify — the descriptor, executed (host-side crypto, raw bytes)
@@ -182,13 +188,70 @@ function loadHook(
     return { hook, route };
 }
 
+/**
+ * Resolve the verdict's WHO half to a concrete owned row (design D48).
+ *
+ * This half of the verdict used to be ignored entirely, which made the
+ * `alias` correlation dead code: saperly's `call.received` carries only
+ * the CALLED E.164 (`payload.to`) and no numberId, so the delivery's
+ * owning resource was unknowable locally. With the lookup-key index the
+ * E.164 resolves like any other handle.
+ *
+ * `alias` carries no resource id — it is provider-scoped by nature — so
+ * every resource this provider declares is tried, in bundle order. A
+ * provider with two resource families sharing a key value would be
+ * ambiguous; none does, and the index is per-resource so the collision
+ * is visible rather than silent.
+ */
+async function resolveWho(
+    bundle: Awaited<ReturnType<typeof compileToOutput>>["bundle"],
+    provider: string,
+    store: KvResourceStore,
+    who: WebhookRoute["who"],
+): Promise<OwnedResource | undefined> {
+    if (who.kind === "resource") {
+        return await store.get(who.target.resource, who.target.externalId);
+    }
+    if (who.kind === "alias") {
+        for (const doc of Object.values(bundle.resources ?? {})) {
+            if (doc.provider !== provider) continue;
+            const row = await store.get(doc.id, who.e164);
+            if (row !== undefined) return row;
+        }
+    }
+    return undefined;
+}
+
 async function executeVerdict(
     bundle: Awaited<ReturnType<typeof compileToOutput>>["bundle"],
     verdict: WebhookRoute,
+    provider: string,
 ): Promise<void> {
     const what = verdict.what;
-    const store = await KvResourceStore.open();
+    const store = await KvResourceStore.open({ defs: defsFromBundle(bundle) });
     const log = (line: string) => console.error(`[webhook] ${line}`);
+    // WHO first: name the owner before acting, so an operator can see
+    // which resource a delivery belongs to even when the action itself
+    // is `ignore`
+    const owner = await resolveWho(bundle, provider, store, verdict.who);
+    if (owner !== undefined) {
+        log(
+            `owner: ${owner.resource} "${owner.externalId}"` +
+                (owner.identifier !== undefined &&
+                        owner.identifier !== owner.externalId
+                    ? ` (${owner.identifier})`
+                    : "") +
+                (verdict.who.kind === "alias"
+                    ? ` — resolved from alias ${verdict.who.e164}`
+                    : ""),
+        );
+    } else if (verdict.who.kind === "alias") {
+        log(
+            `alias ${verdict.who.e164} resolves to no owned resource of ` +
+                `${provider} — the delivery is for a number this store ` +
+                `does not know`,
+        );
+    }
     try {
         switch (what.action) {
             case "run": {
@@ -447,7 +510,7 @@ const simulate = new Command()
             logger: HOOK_LOGGER,
         });
         console.log(JSON.stringify(verdict, null, 2));
-        if (options.execute) await executeVerdict(bundle, verdict);
+        if (options.execute) await executeVerdict(bundle, verdict, provider);
     });
 
 const listen = new Command()
@@ -530,7 +593,7 @@ const listen = new Command()
                 if (options.execute) {
                     // fire-and-forget: the vendor's timeout must never
                     // wait on our execution
-                    executeVerdict(bundle, verdict).catch((error) =>
+                    executeVerdict(bundle, verdict, provider).catch((error) =>
                         console.error(`[webhook] execute failed: ${error}`)
                     );
                 }

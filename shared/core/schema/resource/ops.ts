@@ -2,15 +2,10 @@ import { z } from "zod";
 import { type Json, zJson } from "../json/type.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "../hooks/ctx.ts";
 import type { LifecycleHttpFn, LifecycleSleepFn } from "../hooks/lifecycle.ts";
-import { zOwnedResource } from "./row.ts";
-export {
-    type OwnedResource,
-    type ResourceQuery,
-    type ResourceTarget,
-    zOwnedResource,
-    zResourceQuery,
-    zResourceTarget,
-} from "./row.ts";
+import { zOwnedResource } from "./owned.ts";
+export { type OwnedResource, zOwnedResource } from "./owned.ts";
+export { type ResourceQuery, zResourceQuery } from "./query.ts";
+export { type ResourceTarget, zResourceTarget } from "./target.ts";
 
 /**
  * The RESOURCE LIFECYCLE family (design D30/D41; ↔ v1 resourceDef

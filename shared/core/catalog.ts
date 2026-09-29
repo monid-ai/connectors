@@ -79,10 +79,11 @@ export function inspectEndpoint(
 
 export function listResources(
     bundle: Bundle,
-    filter: { provider?: string } = {},
+    filter: { provider?: string; type?: string } = {},
 ): {
     id: string;
     provider: string;
+    type: string;
     displayName: string;
     summary: string;
     billed: boolean;
@@ -92,9 +93,13 @@ export function listResources(
         .filter((doc) =>
             filter.provider === undefined || doc.provider === filter.provider
         )
+        // the GENERIC axis (design D48): `--type phone_number` spans
+        // providers, which `--provider` and the id never can
+        .filter((doc) => filter.type === undefined || doc.type === filter.type)
         .map((doc) => ({
             id: doc.id,
             provider: doc.provider,
+            type: doc.type,
             displayName: doc.meta.displayName,
             summary: doc.meta.summary,
             billed: Object.values(doc.usage.lines).some((line) =>

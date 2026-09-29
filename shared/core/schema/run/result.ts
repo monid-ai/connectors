@@ -3,7 +3,7 @@ import { zJson } from "../json/type.ts";
 import { zUsage } from "../usage/usage.ts";
 import { StopKind, zLifecycleRunning } from "../hooks/lifecycle.ts";
 import { zProvisionSeed } from "../hooks/resource-binding.ts";
-import { zResourceTarget } from "../resource/row.ts";
+import { zResourceTarget } from "../resource/target.ts";
 import { RunKind, zRunState } from "./state.ts";
 
 /**

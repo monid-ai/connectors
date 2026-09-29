@@ -4,11 +4,8 @@ import { type Json, zJson } from "../json/type.ts";
 import { zRunInput } from "../run/input.ts";
 import { RunKind, zFnState, zRunState } from "../run/state.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
-import {
-    type OwnedResource,
-    type ResourceQuery,
-    zOwnedResource,
-} from "../resource/row.ts";
+import { type OwnedResource, zOwnedResource } from "../resource/owned.ts";
+import type { ResourceQuery } from "../resource/query.ts";
 
 /**
  * THE LIFECYCLE HOOK FAMILY — `lifecycle.start` / `lifecycle.poll` /

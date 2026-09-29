@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { defineResource } from "@shared/core";
+import { defineResource, ResourceType } from "@shared/core";
 import {
     zConnectionPatchInput,
     zCountry,
@@ -27,6 +27,19 @@ import {
  */
 export default defineResource({
     slug: "phone-number",
+    type: ResourceType.PHONE_NUMBER,
+    /**
+     * The E.164 is this resource's SECOND name (design D48). Saperly's
+     * account webhook proves why it must resolve: `call.received` carries
+     * `payload.to` — the called number — and NO numberId, so without an
+     * index the owning resource of an inbound call is unfindable. It is
+     * also simply what a human has: nobody knows a number by its uuid.
+     *
+     * Create/release-stable, as an index key must be: a live number's
+     * E.164 never changes, and a degraded provision that read no
+     * phoneNumber just has no key until a refresh fills it in.
+     */
+    keys: { e164: "$.phoneNumber" },
     meta: {
         displayName: "Phone Number",
         summary: "A rented US phone number with its AI persona.",

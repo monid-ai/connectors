@@ -47,7 +47,9 @@ const CONTRACT_PATHS = [
     "shared/core/schema/resource/usage.ts", // the resource family (0.4.0):
     "shared/core/schema/resource/def.ts", //   the rate card + def shape
     "shared/core/schema/resource/ops.ts", //   op ctx/outcomes + ResourceOpUtils
-    "shared/core/schema/resource/row.ts", //   target/instance/query (reader port)
+    "shared/core/schema/resource/target.ts", //   cross-doc address
+    "shared/core/schema/resource/owned.ts", //   the owned instance
+    "shared/core/schema/resource/query.ts", //   reader-port query
     "shared/core/schema/resource/doc.ts", //   resource doc format
     "shared/core/schema/sections/resource-binding.ts", // endpoint binding shape
     "shared/core/schema/sections/webhooks.ts", // webhook section shapes

@@ -7,6 +7,8 @@ import { zFnRef } from "../fn-table/ref.ts";
 import { zWebhookSlug } from "../sections/webhooks.ts";
 import { zWebhookVerify } from "../hooks/webhooks.ts";
 import { zResourceId } from "./ids.ts";
+import { zResourceType } from "./type.ts";
+import { zResourceLookupKeys } from "./keys.ts";
 import {
     isEstimatedLine,
     RECONCILE_EVERY_FLOOR_MS,
@@ -44,9 +46,16 @@ export const zResourceDoc = z.strictObject({
     /** "<provider>/<slug>". */
     id: zResourceId,
     provider: zProviderName,
+    /** The generic kind — the cross-provider grouping axis (design D48).
+     *  Inline data: a host filters on it without executing anything. */
+    type: zResourceType,
     /** Compiler-derived: semverMax(resources_since, api of every $fn). */
     minEngineVersion: zSemverString,
     meta: zBaseMeta,
+    /** Named alternate lookups into `data` — pure data, no fn: the HOST
+     *  resolves these paths when it persists a row and indexes the
+     *  results (design D48). */
+    keys: zResourceLookupKeys.optional(),
     data: z.strictObject({ schema: zJsonSchemaDoc }),
     inputs: z.strictObject({
         create: zJsonSchemaDoc.optional(),

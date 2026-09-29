@@ -1302,6 +1302,35 @@ async function compileResource(args: {
 
     // ---- schemas ---------------------------------------------------------
     const dataSchema = toJsonSchema(def.data, `${where}: data`);
+
+    // ---- lookup keys (design D48): every declared path must actually
+    // reach a property of the DATA schema. A key that resolves to
+    // nothing is not a harmless no-op — it is an index the host will
+    // never write and an id the resource silently fails to answer to,
+    // which is precisely the failure this feature exists to remove. The
+    // walk is permissive where the schema stops describing properties
+    // (a record/additionalProperties node): unknown is not wrong.
+    for (const [name, path] of Object.entries(def.keys ?? {})) {
+        const segments = path.slice(1).match(/\.[A-Za-z_][A-Za-z0-9_-]*/g) ??
+            [];
+        let node = dataSchema as Record<string, Json> | undefined;
+        for (const segment of segments) {
+            const properties = node?.properties as
+                | Record<string, Json>
+                | undefined;
+            if (properties === undefined) break; // not property-described
+            const field = segment.slice(1);
+            if (!(field in properties)) {
+                throw new CompileError(
+                    CompileErrorCode.DOC_MALFORMED,
+                    `${where}: keys.${name} is a DEAD lookup — ` +
+                        `"${field}" (from ${path}) is not a property of ` +
+                        `the declared data schema`,
+                );
+            }
+            node = properties[field] as Record<string, Json>;
+        }
+    }
     const inputs = def.inputs
         ? pruneUndefined({
             create: def.inputs.create
@@ -1422,11 +1451,18 @@ async function compileResource(args: {
         specVersion: SC.specVersion,
         id,
         provider: providerName,
+        // the GENERIC kind rides through verbatim (design D48) — closed
+        // vocabulary, already validated by zResourceDef
+        type: def.type,
         // the family floor rides in explicitly: a minimal resource doc
         // (default-credential provider) might otherwise carry only
         // fnAbiSince-stamped inject
         minEngineVersion: semverMax([SC.resourcesSince]),
         meta,
+        // named lookup paths — pure data the HOST executes at persist
+        keys: def.keys && Object.keys(def.keys).length > 0
+            ? def.keys as unknown as Json
+            : undefined,
         data: { schema: dataSchema },
         inputs: inputs && Object.keys(inputs).length > 0 ? inputs : undefined,
         usage: def.usage as unknown as Json,

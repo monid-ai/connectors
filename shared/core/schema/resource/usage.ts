@@ -4,7 +4,7 @@ import { zUnit } from "../usage/unit.ts";
 import { fnCarrier } from "../hooks/ctx.ts";
 import type { HookLogger } from "../hooks/ctx.ts";
 import type { ResourceOpUtils } from "./ops.ts";
-import { zOwnedResource } from "./row.ts";
+import { zOwnedResource } from "./owned.ts";
 
 /**
  * Resource USAGE — the RATE CARD (design D39), pure data like an

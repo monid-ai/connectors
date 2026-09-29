@@ -4,6 +4,10 @@
  * Thin cliffy CLI over the `.output/` compile cache + @shared/core's pure
  * catalog readers (list/inspect are bundle-shape functions — no engine, no
  * compiler).
+ *
+ * Output follows the shared rule (design D49): a terminal gets aligned
+ * columns, a pipe gets JSON, `-j` / `--pretty` force it. `inspect` is the
+ * exception — a doc IS the contract, so it stays JSON in both modes.
  */
 import { Command } from "@cliffy/command";
 import {
@@ -15,6 +19,7 @@ import {
     listResources,
 } from "@shared/core";
 import { compileToOutput } from "./lib.ts";
+import { countLine, emit, mark, table } from "./output.ts";
 
 await new Command()
     .name("catalog")
@@ -23,41 +28,72 @@ await new Command()
         this.showHelp();
     })
     .command("providers", "List providers.")
-    .action(async () => {
+    .option("-j, --json", "Emit raw rows as JSON.")
+    .option("--pretty", "Force the formatted table even when piped.")
+    .action(async (options) => {
         const { bundle } = await compileToOutput();
-        for (const provider of listProviders(bundle)) {
-            console.log(
-                `${provider.name} — ${provider.displayName}: ${provider.summary} ` +
-                    `(${provider.endpointCount} endpoints)`,
-            );
-        }
+        const rows = listProviders(bundle);
+        emit(rows, () => {
+            console.log(table(
+                ["PROVIDER", "NAME", "ENDPOINTS", "SUMMARY"],
+                rows.map((provider) => [
+                    provider.name,
+                    provider.displayName,
+                    String(provider.endpointCount),
+                    provider.summary,
+                ]),
+            ));
+            console.log(`\n${countLine(rows.length, "provider")}`);
+        }, options);
     })
     .command("endpoints", "List endpoints, optionally filtered.")
     .option("--provider <name:string>", "Only endpoints of this provider.")
     .option("--category <id:string>", "Only endpoints in this category.")
-    .action(async ({ provider, category }) => {
+    .option("-j, --json", "Emit raw rows as JSON.")
+    .option("--pretty", "Force the formatted table even when piped.")
+    .action(async (options) => {
         const { bundle } = await compileToOutput();
-        for (const endpoint of listEndpoints(bundle, { provider, category })) {
-            console.log(
-                `${endpoint.id} — ${endpoint.summary} [${
-                    endpoint.categories.join(", ")
-                }]`,
-            );
-        }
+        const rows = listEndpoints(bundle, {
+            provider: options.provider,
+            category: options.category,
+        });
+        emit(rows, () => {
+            if (rows.length === 0) {
+                console.log(mark.muted("no endpoints match those filters"));
+                return;
+            }
+            console.log(table(
+                ["ENDPOINT", "CATEGORIES", "SUMMARY"],
+                rows.map((endpoint) => [
+                    endpoint.id,
+                    endpoint.categories.join(", "),
+                    endpoint.summary,
+                ]),
+            ));
+            console.log(`\n${countLine(rows.length, "endpoint")}`);
+        }, options);
     })
     .command(
         "categories",
         "List the closed category vocabulary + endpoint counts.",
     )
-    .action(async () => {
+    .option("-j, --json", "Emit raw rows as JSON.")
+    .option("--pretty", "Force the formatted table even when piped.")
+    .action(async (options) => {
         const { bundle } = await compileToOutput();
-        for (const category of listCategories(bundle)) {
-            console.log(
-                `${category.id} — ${category.displayName}` +
-                    (category.description ? `: ${category.description}` : "") +
-                    ` (${category.endpointCount} endpoints)`,
-            );
-        }
+        const rows = listCategories(bundle);
+        emit(rows, () => {
+            console.log(table(
+                ["CATEGORY", "NAME", "ENDPOINTS", "DESCRIPTION"],
+                rows.map((category) => [
+                    category.id,
+                    category.displayName,
+                    String(category.endpointCount),
+                    category.description ?? "",
+                ]),
+            ));
+            console.log(`\n${countLine(rows.length, "category")}`);
+        }, options);
     })
     .command(
         "inspect <endpoint:string>",
@@ -67,17 +103,39 @@ await new Command()
         const { bundle } = await compileToOutput();
         console.log(JSON.stringify(inspectEndpoint(bundle, endpoint), null, 2));
     })
-    .command("resources", "List resource docs, optionally filtered.")
+    .command("resources", "List resource DEFS, optionally filtered.")
     .option("--provider <name:string>", "Only resources of this provider.")
-    .action(async ({ provider }) => {
+    .option(
+        "--type <type:string>",
+        "Only this generic kind (e.g. phone_number) — spans providers.",
+    )
+    .option("-j, --json", "Emit raw rows as JSON.")
+    .option("--pretty", "Force the formatted table even when piped.")
+    .action(async (options) => {
         const { bundle } = await compileToOutput();
-        for (const resource of listResources(bundle, { provider })) {
+        const rows = listResources(bundle, {
+            provider: options.provider,
+            type: options.type,
+        });
+        emit(rows, () => {
+            if (rows.length === 0) {
+                console.log(mark.muted("no resource defs match those filters"));
+                return;
+            }
+            console.log(table(
+                ["RESOURCE", "TYPE", "BILLED", "SUMMARY"],
+                rows.map((resource) => [
+                    resource.id,
+                    resource.type,
+                    resource.billed ? "yes" : "no",
+                    resource.summary,
+                ]),
+            ));
             console.log(
-                `${resource.id} — ${resource.displayName}: ` +
-                    `${resource.summary}` +
-                    (resource.billed ? " [billed]" : " [free]"),
+                `\n${countLine(rows.length, "resource def")}  ` +
+                    mark.muted("(`resources list` shows what you OWN)"),
             );
-        }
+        }, options);
     })
     .command(
         "inspect-resource <resource:string>",
