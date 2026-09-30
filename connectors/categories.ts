@@ -364,4 +364,10 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Tools to pull public market data, including quotes, fundamentals, " +
             "earnings, screeners, and more.",
     },
+    {
+        id: "llm-inference",
+        displayName: "LLM Inference",
+        description:
+            "Run chat completions against hosted or community language models.",
+    },
 ]);

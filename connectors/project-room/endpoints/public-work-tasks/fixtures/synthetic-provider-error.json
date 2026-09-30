@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "synthetic chain for project-room#public-work/tasks, scenario 'provider-error' — vendor 503; a non-2xx is data and settles at zero",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://room.trydemigod.com/api/public-work/tasks?limit=2"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": {
+                        "message": "board temporarily unavailable",
+                        "type": "server_error"
+                    }
+                }
+            }
+        }
+    ]
+}

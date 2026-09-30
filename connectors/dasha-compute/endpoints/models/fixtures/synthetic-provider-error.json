@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "synthetic chain for dasha-compute#models, scenario 'provider-error' — the gateway answers 503 when no community Mac is online; a non-2xx is data and settles at zero",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://lobby.getdasha.com/compute/api/v1/models"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": {
+                        "message": "no providers online",
+                        "type": "server_error"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "synthetic chain for dasha-compute#chat/completions, scenario 'provider-error' — the vendor's OpenAI-style error envelope (402/429/503 all share it); a non-2xx is data and settles at zero",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://lobby.getdasha.com/compute/api/v1/chat/completions",
+                "body": {
+                    "model": "qwen3-32b",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "anything"
+                        }
+                    ]
+                }
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "error": {
+                        "message": "top up credits",
+                        "type": "invalid_request_error"
+                    }
+                }
+            }
+        }
+    ]
+}

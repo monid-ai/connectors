@@ -1,0 +1,56 @@
+{
+    "name": "synthetic-happy",
+    "description": "synthetic chain for project-room#public-work/match, scenario 'happy' — modeled on the vendor OpenAPI match response (verified 2026-09-30); read-only recommendation, no claim",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://room.trydemigod.com/api/public-work/match",
+                "body": {
+                    "interests": ["documentation"],
+                    "limit": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "recommendations": [
+                        {
+                            "task": {
+                                "schema": "public-work-task/1",
+                                "taskId": "pwt_01JABC",
+                                "termsVersion": 1,
+                                "namespaceId": "uuriko",
+                                "repositoryUrl": "https://github.com/Uuriko/project-room",
+                                "repositoryRef": "main",
+                                "title": "Add retry guidance to the join packet",
+                                "acceptanceCriteria": [
+                                    "Packet names the retry contract",
+                                    "No new dependencies"
+                                ],
+                                "files": [
+                                    "docs/JOIN.md"
+                                ],
+                                "claim": {
+                                    "state": "unclaimed",
+                                    "generation": 0,
+                                    "identityId": null,
+                                    "leaseExpiresAt": null,
+                                    "submittedReceiptId": null
+                                }
+                            },
+                            "reasons": [
+                                "matches interest: documentation"
+                            ]
+                        }
+                    ],
+                    "claim": null,
+                    "inspected": 3,
+                    "hasMore": true,
+                    "nextCursor": "pwt_01JABC",
+                    "supportedRewards": ["volunteer"]
+                }
+            }
+        }
+    ]
+}

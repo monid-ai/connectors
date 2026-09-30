@@ -1,0 +1,61 @@
+{
+    "name": "synthetic-happy",
+    "description": "synthetic chain for dasha-compute#chat/completions, scenario 'happy' — modeled on the live non-stream response shape (verified against the vendor source, 2026-09-30); replace with a recording once a funded key exists",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://lobby.getdasha.com/compute/api/v1/chat/completions",
+                "body": {
+                    "model": "qwen3-32b",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "What is the capital of France?"
+                        }
+                    ],
+                    "max_tokens": 64
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "chatcmpl_a1b2c3d4e",
+                    "job_id": "job_a1b2c3d4e",
+                    "request_id": "req_f5g6h7i8j9",
+                    "object": "chat.completion",
+                    "created": 1759180800,
+                    "model": "qwen3-32b",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "message": {
+                                "role": "assistant",
+                                "content": "The capital of France is Paris."
+                            },
+                            "finish_reason": "stop"
+                        }
+                    ],
+                    "usage": {
+                        "prompt_tokens": 14,
+                        "completion_tokens": 7,
+                        "total_tokens": 21
+                    },
+                    "receipt": {
+                        "job_id": "job_a1b2c3d4e",
+                        "attestation": null,
+                        "model_id": "qwen3-32b",
+                        "request_id": "req_f5g6h7i8j9",
+                        "provider_class": "community",
+                        "completed_at": "2026-09-29T21:20:31.000Z",
+                        "tokens_per_second": 41.7,
+                        "settled": {
+                            "cents": 5,
+                            "state": "pending_operator"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

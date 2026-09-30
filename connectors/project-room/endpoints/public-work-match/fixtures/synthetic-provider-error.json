@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "synthetic chain for project-room#public-work/match, scenario 'provider-error' — vendor 500; a non-2xx is data and settles at zero",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://room.trydemigod.com/api/public-work/match",
+                "body": {
+                    "interests": ["documentation"],
+                    "limit": 1
+                }
+            },
+            "res": {
+                "status": 500,
+                "body": {
+                    "error": {
+                        "message": "internal matcher error",
+                        "type": "server_error"
+                    }
+                }
+            }
+        }
+    ]
+}
