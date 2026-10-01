@@ -1,8 +1,10 @@
 import { z } from "zod";
 
-/** Native field mirrors from https://www.refetcher.com/docs (2026-09-22).
+/** Native field mirrors from https://www.refetcher.com/docs (2026-09-22), with
+ * the YouTube pages/count contract deployed upstream on 2026-10-01:
+ * all accounts can request up to 25 pages / 300 uploads.
  * Optionality is the vendor's. Endpoint bindings select the resource, require
- * one target, and restrict this initial connector to one billable page.
+ * one target, and bound profile pagination and YouTube upload limits.
  * Strict objects prevent unsupported target aliases or pagination multipliers
  * from reaching the vendor without being represented in the cost estimate.
  */
@@ -35,10 +37,10 @@ export const zProfileBody = z.strictObject({
     platform: z.enum(["instagram", "tiktok", "facebook", "x", "twitter"])
         .optional(),
     includeRecentPosts: z.boolean().optional().describe(
-        "Include recent public posts or lightweight post references; vendor default false.",
+        "Include recent public posts or lightweight post references; vendor default false. Set true when requesting recent-post pages.",
     ),
     pages: z.number().int().min(1).max(25).optional().describe(
-        "Requested recent-post pages; vendor default 1. This connector binds this to one page.",
+        "Requested recent-post pages, from 1 to 25; vendor default 1. Set includeRecentPosts to true to request recent-post data.",
     ),
     after: z.string().min(1).max(12000).optional().describe(
         "Facebook continuation cursor from pageInfo.recentPosts.endCursor.",
@@ -57,7 +59,10 @@ export const zYouTubeChannelBody = z.strictObject({
     includeRecentVideos: z.boolean().optional().describe(
         "Include lightweight upload references with channel metadata; vendor default true for type channel.",
     ),
-    recentVideosLimit: z.number().int().min(1).max(50).optional().describe(
-        "Maximum recent uploads; vendor default 12. This connector caps the value at 12 (one billable page).",
+    recentVideosLimit: z.number().int().min(1).max(300).optional().describe(
+        "Maximum recent uploads, from 1 to 300. Takes precedence over pages when both are supplied. With neither input, the vendor defaults to 12.",
+    ),
+    pages: z.number().int().min(1).max(25).optional().describe(
+        "Requested upload pages, from 1 to 25, with up to 12 videos per page. Used when recentVideosLimit is omitted; omit both inputs for the default 12 videos.",
     ),
 });

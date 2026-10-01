@@ -6,10 +6,9 @@ export default defineEndpoint({
     endpoint: "/youtube/channel-videos",
     meta: {
         displayName: "YouTube Channel Videos",
-        summary:
-            "Read a page of recent YouTube uploads with video engagement metrics.",
+        summary: "Read recent YouTube uploads with video engagement metrics.",
         description:
-            "Fetch up to 12 recent uploads from one public YouTube channel, including available per-video views, likes, and comments. Pass a channel URL, @handle, or raw UC channel ID. The returned upload page counts as one successful scrape; failed scrapes are not charged.",
+            "Fetch recent uploads from one public YouTube channel, including available per-video views, likes, and comments. Request pages from 1 to 25 (12 videos per page), or recentVideosLimit from 1 to 300; an explicit video limit takes precedence when both are supplied. Omit both for the unchanged 12-video default. Pass a channel URL, @handle, or raw UC channel ID. Successful reads cost one unit per 12 delivered videos rounded up, with a one-unit minimum. Failed scrapes are not charged.",
         docsUrl: "https://www.refetcher.com/docs#req-youtube-channel",
         categories: ["youtube"],
     },
@@ -21,6 +20,7 @@ export default defineEndpoint({
                 type: true,
                 channelUrl: true,
                 recentVideosLimit: true,
+                pages: true,
             }).extend({
                 platform: z.literal("youtube").default("youtube"),
                 type: z.literal("channelVideos").default("channelVideos"),
@@ -28,9 +28,8 @@ export default defineEndpoint({
                     /^(?:UC[A-Za-z0-9_-]{20,}|@[A-Za-z0-9._-]{3,}|https?:\/\/(?:www\.|m\.)?youtube\.com\/(?:@[A-Za-z0-9._-]+|channel\/UC[A-Za-z0-9_-]{20,}|user\/[A-Za-z0-9._-]+)\/?(?:[?#][^\s]*)?)$/,
                     "Provide one YouTube channel URL, @handle, or UC channel ID.",
                 ),
-                // The public API defaults to 12; cap this connector at one page.
-                recentVideosLimit: zYouTubeChannelBody.shape.recentVideosLimit
-                    .unwrap().max(12).default(12),
+                // Leave both depth inputs optional so pages is not shadowed
+                // by an injected video limit. The vendor defaults to 12.
             }),
         },
     },

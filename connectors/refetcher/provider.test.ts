@@ -66,7 +66,10 @@ const cases: {
     })),
     {
         id: "youtube/channel",
-        body: { channelUrl: "https://www.youtube.com/@samplecreator" },
+        body: {
+            channelUrl: "https://www.youtube.com/@samplecreator",
+            recentVideosLimit: 12,
+        },
         wire: {
             channelUrl: "https://www.youtube.com/@samplecreator",
             platform: "youtube",
@@ -77,7 +80,7 @@ const cases: {
     },
     {
         id: "youtube/channel-videos",
-        body: { channelUrl: "@samplecreator" },
+        body: { channelUrl: "@samplecreator", recentVideosLimit: 12 },
         wire: {
             channelUrl: "@samplecreator",
             platform: "youtube",
@@ -119,7 +122,7 @@ Deno.test("refetcher catalog: eleven platform tools share one public API and one
             consumes: { credit: "default", amount: 0.0009 },
             label: "successful scrape",
             description:
-                "One successful target with at most one returned page.",
+                "One successful post/video or billable profile/YouTube upload page; successful profile and channel metadata costs at least one unit.",
         });
         assertEquals(doc.usage.credits, { default: { label: "US dollars" } });
         assertEquals(doc.usage.consolidate, undefined);
@@ -266,6 +269,7 @@ Deno.test("refetcher input: reject hidden batches, extra query/path parameters, 
                 { usernames: ["another"] },
                 { recentPostsLimit: 100 },
                 { cursor: "unmodeled-alias" },
+                { includePagination: true },
                 { apiKey: "must-not-reach-vendor" },
             ] as Record<string, Json>[]
         ) {
@@ -281,7 +285,7 @@ Deno.test("refetcher input: reject hidden batches, extra query/path parameters, 
 
 Deno.test("refetcher input: enforce page limits and resource discriminators", async () => {
     for (const platform of ["instagram", "tiktok", "facebook", "x"]) {
-        for (const pages of [0, 2, 25, 1.5, "1"]) {
+        for (const pages of [0, -1, 26, 1.5, "1"]) {
             await rejects(`${platform}/profile`, {
                 body: { username: "creator", pages },
             });
@@ -297,10 +301,20 @@ Deno.test("refetcher input: enforce page limits and resource discriminators", as
         });
     }
     for (const id of ["youtube/channel", "youtube/channel-videos"]) {
-        for (const recentVideosLimit of [0, 13, 50, 1.5, "12"]) {
+        for (const recentVideosLimit of [0, -1, 301, 1.5, "12"]) {
             await rejects(id, {
                 body: { channelUrl: "@creator", recentVideosLimit },
             });
+        }
+        for (
+            const alias of [{ videoLimit: 300 }, {
+                limit: 300,
+            }] as Record<string, Json>[]
+        ) {
+            await rejects(id, { body: { channelUrl: "@creator", ...alias } });
+        }
+        for (const pages of [0, -1, 26, 1.5, "25", null, true]) {
+            await rejects(id, { body: { channelUrl: "@creator", pages } });
         }
         await rejects(id, {
             body: { channelUrl: "@creator", platform: "instagram" },
@@ -314,13 +328,22 @@ Deno.test("refetcher input: enforce page limits and resource discriminators", as
         await rejects(id, {
             body: { channelUrl: "@creator", type: wrongType },
         });
-        for (const recentVideosLimit of [1, 12]) {
+        for (
+            const recentVideosLimit of [
+                ...Array.from({ length: 50 }, (_, index) => index + 1),
+                300,
+            ]
+        ) {
             const unit = await testSealedUnit(idFor(id));
+            const pages = Math.ceil(recentVideosLimit / 12);
             assertEquals(
                 await estimateEndpoint(unit, {
                     body: { channelUrl: "@creator", recentVideosLimit },
                 }),
-                successUsage,
+                {
+                    credits: { default: pages * 0.0009 },
+                    evidence: { RESULT: pages },
+                },
             );
         }
     }

@@ -9,7 +9,7 @@ export default defineEndpoint({
         summary:
             "Read public TikTok profile metadata and optional recent posts.",
         description:
-            "Fetch one TikTok profile by username. Optionally include the first page of up to 12 recent public posts. Returned posts can include available engagement metrics, rich media, and image slideshows. This connector allows one page per call. Failed scrapes are not charged.",
+            "Fetch one TikTok profile by username. Set includeRecentPosts to true to request 1–25 pages of available public posts, with up to 12 posts per page. Pages default to 1 and includeRecentPosts defaults to false. Returned posts can include available engagement metrics, rich media, and image slideshows. Returned pages depend on public data availability. Failed scrapes are not charged.",
         docsUrl: "https://www.refetcher.com/docs#req-tiktok-profile",
         categories: ["tiktok"],
     },
@@ -27,8 +27,8 @@ export default defineEndpoint({
                     /^@?[A-Za-z0-9._-]{1,64}$/,
                     "Provide one TikTok Profile username, not a URL or a list.",
                 ),
-                // One page is the native default and bounds the bill to one unit.
-                pages: z.literal(1).default(1),
+                // Keep the native default within the shared 1–25-page bound.
+                pages: zProfileBody.shape.pages.unwrap().default(1),
             }),
         },
     },

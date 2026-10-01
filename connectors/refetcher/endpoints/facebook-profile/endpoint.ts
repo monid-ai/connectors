@@ -7,9 +7,9 @@ export default defineEndpoint({
     meta: {
         displayName: "Facebook Profile",
         summary:
-            "Read public Facebook profile metadata and a page of recent post links.",
+            "Read public Facebook profile metadata and optional recent post links.",
         description:
-            "Fetch one Facebook profile or page by username. Optionally include one page of up to 3 public post links. Pass the returned pageInfo.recentPosts.endCursor as after to continue in another call. Inspect limitations and pageInfo.recentPosts.incomplete before treating the page as complete. Post references omit engagement metrics. Failed scrapes are not charged.",
+            "Fetch one Facebook profile or page by username. Set includeRecentPosts to true to request 1–25 pages of available public post links, with up to 3 links per page. Pages default to 1 and includeRecentPosts defaults to false. Pass the returned pageInfo.recentPosts.endCursor as after to continue in another call. Inspect limitations and pageInfo.recentPosts.incomplete before treating the requested window as complete. Post references omit engagement metrics. Failed scrapes are not charged.",
         docsUrl: "https://www.refetcher.com/docs#req-facebook-profile",
         categories: ["facebook"],
     },
@@ -28,8 +28,8 @@ export default defineEndpoint({
                     /^@?[A-Za-z0-9.-]{1,100}$/,
                     "Provide one Facebook Profile username, not a URL or a list.",
                 ),
-                // One page is the native default and bounds the bill to one unit.
-                pages: z.literal(1).default(1),
+                // Keep the native default within the shared 1–25-page bound.
+                pages: zProfileBody.shape.pages.unwrap().default(1),
             }),
         },
     },
