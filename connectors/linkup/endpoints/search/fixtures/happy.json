@@ -1,0 +1,39 @@
+{
+    "name": "happy",
+    "description": "recorded chain for linkup#search, scenario 'happy' (fast depth, outputType searchResults; content trimmed)",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.linkup.so/v1/search",
+                "body": {
+                    "q": "latest advances in solid-state batteries",
+                    "depth": "fast",
+                    "maxResults": 3,
+                    "outputType": "searchResults"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "name": "SK On Presents New Research Advances in Solid-State Batteries | SK",
+                            "url": "https://eng.sk.com/news/sk-on-presents-new-research-advances-in-solid-state-batteries",
+                            "content": "SK On, a leading global battery and trading company, presented today its latest findings on solid-state battery research in collaboration with academic partners.",
+                            "favicon": "https://favicons.linkup.so?domain=eng.sk.com",
+                            "type": "text"
+                        },
+                        {
+                            "name": "Innovations in Solid State Batteries: A Technical Review",
+                            "url": "https://www.freefullpdf.com/emerging-innovations-and-advances-in-solid-state-batteries/",
+                            "content": "This article delves into the latest innovations and advances in solid state batteries, encompassing materials research, safety enhancements, and scalable production techniques.",
+                            "favicon": "https://favicons.linkup.so?domain=www.freefullpdf.com",
+                            "type": "text"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "name": "happy",
+    "description": "recorded chain for linkup#fetch, scenario 'happy' (standard mode, no JS rendering)",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.linkup.so/v1/fetch",
+                "body": {
+                    "url": "https://example.com",
+                    "mode": "standard",
+                    "renderJs": false
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "favicon": "https://favicons.linkup.so?domain=example.com",
+                    "images": [],
+                    "markdown": "This domain is for use in documentation examples without needing permission. This is not a service, avoid relying on it for testing and monitoring purposes.\n\n[Learn more](https://iana.org/help/example-domains)"
+                }
+            }
+        }
+    ]
+}

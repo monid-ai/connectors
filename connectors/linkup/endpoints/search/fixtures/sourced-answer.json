@@ -1,0 +1,38 @@
+{
+    "name": "sourced-answer",
+    "description": "recorded chain for linkup#search, scenario 'sourced-answer' (standard depth, outputType sourcedAnswer; snippets trimmed)",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.linkup.so/v1/search",
+                "body": {
+                    "q": "When was Deno 2.0 released?",
+                    "depth": "standard",
+                    "outputType": "sourcedAnswer",
+                    "maxResults": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "answer": "Deno 2.0 was released on October 8, 2024.",
+                    "sources": [
+                        {
+                            "name": "All Deno Versions: Release Dates, EOL Schedule &amp; Support Status - ReleaseRun",
+                            "url": "https://releaserun.com/versions/deno/",
+                            "favicon": "https://favicons.linkup.so?domain=releaserun.com",
+                            "snippet": "Deno 2.0 (October 2024) was a major milestone, adding full Node.js compatibility and npm package support."
+                        },
+                        {
+                            "name": "Deno 2.0 Release Candidate | Deno",
+                            "url": "https://deno.com/blog/v2.0-release-candidate",
+                            "favicon": "https://favicons.linkup.so?domain=deno.com",
+                            "snippet": "Last month, we released the final 1.x version with 1.46, and today, we're cutting the release candidate for Deno 2.0."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
