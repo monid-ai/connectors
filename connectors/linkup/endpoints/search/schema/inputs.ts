@@ -4,8 +4,9 @@ import { z } from "zod";
  * Linkup /search request body — mirrors `SearchInput` from
  * https://api.linkup.so/v1/openapi.json. Strict: every field that moves the
  * price is modeled, so an unknown key is rejected here rather than sent
- * unpriced. The vendor's boolean flags also accept strings; the mirror takes
- * booleans only.
+ * unpriced. The vendor's flags are `boolean | string`, as in the spec:
+ * Linkup reads "true"/"false" case-insensitively and answers 400 to any other
+ * string.
  */
 export const zLinkupSearchBody = z.object({
     q: z.string().min(1).describe(
@@ -29,15 +30,15 @@ export const zLinkupSearchBody = z.object({
         "Required when outputType is 'structured': a JSON Schema, " +
             "serialized as a string, whose root is type 'object'.",
     ).optional(),
-    includeSources: z.boolean().describe(
+    includeSources: z.boolean().or(z.string()).describe(
         "Only with outputType 'structured': wrap the response as " +
             "{data, sources}.",
     ).optional(),
-    includeInlineCitations: z.boolean().describe(
+    includeInlineCitations: z.boolean().or(z.string()).describe(
         "Only with outputType 'sourcedAnswer': add inline citations to " +
             "the answer.",
     ).optional(),
-    includeImages: z.boolean().describe(
+    includeImages: z.boolean().or(z.string()).describe(
         "Include image results alongside text results.",
     ).optional(),
     maxResults: z.number().int().min(1).describe(
@@ -49,10 +50,10 @@ export const zLinkupSearchBody = z.object({
     excludeDomains: z.array(z.string()).describe(
         "Drop results from these domains, e.g. 'wikipedia.org'.",
     ).optional(),
-    fromDate: z.iso.date().describe(
+    fromDate: z.iso.date().nullable().describe(
         "Only consider results from this date on (YYYY-MM-DD).",
     ).optional(),
-    toDate: z.iso.date().describe(
+    toDate: z.iso.date().nullable().describe(
         "Only consider results up to this date (YYYY-MM-DD).",
     ).optional(),
 }).strict();

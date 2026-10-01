@@ -41,8 +41,10 @@ is `searchResults`, `*_answer` otherwise. The binding SHALL default
 ($0.001), `standard_render_js` ($0.005), `pro` ($0.005), `pro_render_js`
 ($0.01) and `structured_output` ($0.001). Estimate and evidence SHALL count
 exactly one of the first four from `mode` × `renderJs`, plus
-`structured_output` when `schema` is present. The binding SHALL default
-`mode` to `standard` and `renderJs` to `false`.
+`structured_output` when `schema` is present. `renderJs` SHALL count as
+rendered when it is `true` or a case-insensitive `"true"` string, which is
+how Linkup reads it. The binding SHALL default `mode` to `standard` and
+`renderJs` to `false`.
 
 #### Scenario: Default fetch
 - **WHEN** `linkup#fetch` runs with only `url` and returns 200
@@ -54,9 +56,14 @@ exactly one of the first four from `mode` × `renderJs`, plus
 - **THEN** evidence is `{pro_render_js: 1, structured_output: 1}` and the
   card is $0.011
 
+#### Scenario: A string "false" does not bill rendering
+- **WHEN** `linkup#fetch` runs with `renderJs: "false"`
+- **THEN** usage is `{credits: {default: 0.001}, evidence: {standard: 1}}`
+
 ### Requirement: Inputs mirror the OpenAPI request bodies
 Each `schema/inputs.ts` SHALL mirror its OpenAPI request body with
-optionality only, as a strict object.
+optionality only, as a strict object: boolean flags accept `boolean | string`
+and the search date filters accept `null`, as the spec declares.
 
 #### Scenario: Unknown fields are rejected before the wire
 - **WHEN** either endpoint runs with a field the spec does not declare, or

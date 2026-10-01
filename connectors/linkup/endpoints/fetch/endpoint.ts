@@ -96,10 +96,14 @@ export default defineEndpoint({
             },
         },
         /** One call, priced by the request's `mode` × `renderJs`, plus the
-         *  structured-output surcharge when `schema` is set. */
+         *  structured-output surcharge when `schema` is set. `renderJs` may be
+         *  a string: Linkup renders on a case-insensitive "true" and rejects
+         *  every string but "true"/"false" with an unbilled 400. */
         estimate: ({ data }) => {
             const pro = data.input.body.mode === "pro";
-            const js = data.input.body.renderJs;
+            const flag = data.input.body.renderJs;
+            const js = flag === true ||
+                (typeof flag === "string" && flag.toLowerCase() === "true");
             const key = pro
                 ? (js ? "pro_render_js" : "pro")
                 : (js ? "standard_render_js" : "standard");
@@ -116,7 +120,9 @@ export default defineEndpoint({
          *  error envelopes never reach this fn) — keyed from the request. */
         evidence: ({ data }) => {
             const pro = data.input.body.mode === "pro";
-            const js = data.input.body.renderJs;
+            const flag = data.input.body.renderJs;
+            const js = flag === true ||
+                (typeof flag === "string" && flag.toLowerCase() === "true");
             const key = pro
                 ? (js ? "pro_render_js" : "pro")
                 : (js ? "standard_render_js" : "standard");

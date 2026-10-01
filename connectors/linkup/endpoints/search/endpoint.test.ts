@@ -164,6 +164,19 @@ Deno.test(`${ID}: strict body — unknown keys and bad enums never reach the wir
             "INVALID_INPUT",
         );
     }
+    // passing near-twins: ISO dates, the vendor's null dates, and the
+    // string spelling of a boolean flag all clear the gate
+    const accepted: Json[] = [
+        { q: "x", fromDate: "2026-01-01", toDate: "2026-06-30" },
+        { q: "x", fromDate: null, toDate: null },
+        { q: "x", includeImages: "true" },
+    ];
+    for (const body of accepted) {
+        assertEquals(await estimateEndpoint(unit, { body }), {
+            credits: { default: 0.005 },
+            evidence: { search: 1 },
+        });
+    }
 });
 
 Deno.test("linkup interning: estimate == evidence; auth + fromError provider-shared", async () => {
@@ -202,10 +215,9 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage, {
-            credits: { default: 0.005 },
-            evidence: { search: 1 },
-        });
+        // shape, not amounts: one priced line, settled in the dollar pool
+        assertEquals(Object.keys(result.usage.evidence), ["search"]);
+        assertEquals(typeof result.usage.credits.default, "number");
         const results = (result.output as { results: unknown[] }).results;
         assert(Array.isArray(results) && results.length > 0);
     },

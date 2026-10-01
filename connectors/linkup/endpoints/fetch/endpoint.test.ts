@@ -68,6 +68,39 @@ Deno.test(`${ID}: mode × renderJs selects the line, schema adds the surcharge`,
     assertEquals(Math.abs(total - 0.011) < 1e-9, true, String(total));
 });
 
+Deno.test(`${ID}: string flags price as Linkup reads them (case-insensitive "true")`, async () => {
+    const unit = await testSealedUnit(ID);
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
+    const run = (renderJs: string) =>
+        runEndpoint({
+            unit,
+            input: { body: { url: "https://example.com", renderJs } },
+            mode: "replay",
+            fixture,
+        });
+
+    assertEquals((await run("TRUE")).usage, {
+        credits: { default: 0.005 },
+        evidence: { standard_render_js: 1 },
+    });
+    // a string "false" must not bill the rendered line
+    assertEquals((await run("false")).usage, {
+        credits: { default: 0.001 },
+        evidence: { standard: 1 },
+    });
+    // non-price flags take the string form through validation too
+    assertEquals(
+        await estimateEndpoint(unit, {
+            body: {
+                url: "https://example.com",
+                extractImages: "true",
+                includeRawContent: "false",
+            },
+        }),
+        { credits: { default: 0.001 }, evidence: { standard: 1 } },
+    );
+});
+
 Deno.test(`${ID} estimate: the same cell the settle bills`, async () => {
     const unit = await testSealedUnit(ID);
     assertEquals(
@@ -135,10 +168,9 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage, {
-            credits: { default: 0.001 },
-            evidence: { standard: 1 },
-        });
+        // shape, not amounts: one priced line, settled in the dollar pool
+        assertEquals(Object.keys(result.usage.evidence), ["standard"]);
+        assertEquals(typeof result.usage.credits.default, "number");
         const output = result.output as { markdown: string };
         assertEquals(output.markdown.length > 0, true);
     },
