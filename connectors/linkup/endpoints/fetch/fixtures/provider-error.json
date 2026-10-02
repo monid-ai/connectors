@@ -1,0 +1,28 @@
+{
+    "name": "provider-error",
+    "description": "recorded chain for linkup#fetch, scenario 'provider-error' (invalid key → 401)",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.linkup.so/v1/fetch",
+                "body": {
+                    "url": "https://example.com/x",
+                    "mode": "standard",
+                    "renderJs": false
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": {
+                        "code": "UNAUTHORIZED",
+                        "details": [],
+                        "message": "Unauthorized action"
+                    },
+                    "statusCode": 401
+                }
+            }
+        }
+    ]
+}

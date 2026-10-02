@@ -421,6 +421,8 @@
         "kling#text-to-video/kling-2.6",
         "kling#text-to-video/kling-3.0",
         "kling#text-to-video/kling-3.0-turbo",
+        "linkup#fetch",
+        "linkup#search",
         "minimax#v1/image_generation",
         "minimax#v1/music_generation",
         "minimax#v1/t2a_v2",
