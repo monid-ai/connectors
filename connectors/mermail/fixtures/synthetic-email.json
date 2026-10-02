@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-email",
+    "description": "Synthetic mermail#mailboxes/{mailboxId}/emails/{emailId} success (200). Flat 1 credit call. Not a live recording.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://console.mermail.app/api/v1/mailboxes/mb_public_1/emails/em_1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "em_1",
+                    "subject": "Welcome",
+                    "sender": "ada@example.com",
+                    "recipient": "agent@mermail.app",
+                    "date": "2026-10-01T12:00:00.000Z",
+                    "read": false,
+                    "starred": false,
+                    "snippet": "Hello",
+                    "body": "Hello",
+                    "scan_status": "clean",
+                    "thread_id": "th_1"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-mailboxes-create",
+    "description": "Synthetic mermail#mailboxes/create success (201). Flat 10 credit call. Not a live recording.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://console.mermail.app/api/v1/mailboxes",
+                "body": {
+                    "email": "agent@mermail.app",
+                    "name": "Agent"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "alias_1",
+                    "public_id": "mb_public_1",
+                    "workspace_id": "ws_1",
+                    "email": "agent@mermail.app",
+                    "name": "Agent",
+                    "can_receive": true,
+                    "receiving_status": "ready",
+                    "disabled_at": null,
+                    "disabled_reason": null
+                }
+            }
+        }
+    ]
+}
