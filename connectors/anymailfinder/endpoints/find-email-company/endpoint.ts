@@ -45,15 +45,23 @@ export default defineEndpoint({
             consumes: { credit: "default", amount: 1 },
         },
         estimate: () => ({ counts: { RESULT: 1 } }),
-        /** Found = `valid_emails` is a non-empty list. */
+        /** Found = `valid_emails` is a non-empty list; an explicit zero
+         *  meter (a 30-day repeat) counts zero. */
         evidence: ({ data, utils }) => {
             const valid = utils.json.optionalGet(
                 data.output,
                 "$.valid_emails",
             );
+            const charged = utils.json.optionalGet(
+                data.output,
+                "$.credits_charged",
+            );
             return {
                 counts: {
-                    RESULT: Array.isArray(valid) && valid.length > 0 ? 1 : 0,
+                    RESULT: Array.isArray(valid) && valid.length > 0 &&
+                            charged !== 0
+                        ? 1
+                        : 0,
                 },
             };
         },

@@ -62,13 +62,23 @@ export default defineEndpoint({
             consumes: { credit: "default", amount: 2 },
         },
         estimate: () => ({ counts: { RESULT: 1 } }),
-        /** Found = `email_status` is `valid`. */
+        /** Found = `email_status` is `valid`; an explicit zero meter (a
+         *  30-day repeat) counts zero so the pruned claim's fallback is
+         *  free too. */
         evidence: ({ data, utils }) => {
             const status = utils.json.optionalGet(
                 data.output,
                 "$.email_status",
             );
-            return { counts: { RESULT: status === "valid" ? 1 : 0 } };
+            const charged = utils.json.optionalGet(
+                data.output,
+                "$.credits_charged",
+            );
+            return {
+                counts: {
+                    RESULT: status === "valid" && charged !== 0 ? 1 : 0,
+                },
+            };
         },
     },
 });

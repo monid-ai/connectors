@@ -39,7 +39,7 @@ const RATE: Record<
     },
     "anymailfinder#verify-email": {
         input: { body: { email: "jane.doe@example.com" } },
-        usage: { credits: { default: 0.2 }, evidence: { CALL: 1 } },
+        usage: { credits: { default: 0.2 }, evidence: { RESULT: 1 } },
     },
 };
 
@@ -75,6 +75,26 @@ Deno.test("anymailfinder: every endpoint's happy run settles its published draw"
         assertEquals(result.httpStatus, 200, id);
         assertEquals(result.isProviderError, false, id);
         assertEquals(result.usage, usage, id);
+    }
+});
+
+Deno.test("anymailfinder: a 30-day repeat (credits_charged 0) settles free on every endpoint", async () => {
+    for (const [id, { input }] of Object.entries(RATE)) {
+        const fixture = structuredClone(await happyFixture(id));
+        (fixture.calls[0].res.body as Record<string, unknown>)
+            .credits_charged = 0;
+        const result = await runEndpoint({
+            unit: await testSealedUnit(id),
+            input,
+            mode: "replay",
+            fixture,
+        });
+        assertEquals(result.httpStatus, 200, id);
+        assertEquals(
+            result.usage,
+            { credits: {}, evidence: { RESULT: 0 } },
+            id,
+        );
     }
 });
 

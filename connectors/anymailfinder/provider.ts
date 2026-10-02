@@ -21,15 +21,17 @@ import { defineProvider, presets } from "@shared/core";
  * meter for that call - so the provider declares ONE consolidate that
  * reads it as the claim and strips it from the output (design D27); each
  * endpoint states its own evidence. A 30-day repeat reports
- * `credits_charged: 0`, which prunes to an empty claim and settles the
- * derived fold (the published rate), surfaced as a mismatch.
+ * `credits_charged: 0`; the engine prunes that zero claim, so every
+ * endpoint's evidence also counts zero on an explicit zero meter (the
+ * ahrefs pattern) and the derived fold settles free too.
  */
 export default defineProvider({
     name: "anymailfinder",
     meta: {
         displayName: "Anymail Finder",
-        summary: "Find and verify B2B work emails - charged only for " +
-            "verified results.",
+        summary: "Find and verify B2B work emails - finds are charged " +
+            "only for verified results, a verification costs 0.2 credits " +
+            "whatever the verdict.",
         description: "Anymail Finder - verified work emails for agents: " +
             "find a person's email from their name and company or from " +
             "a LinkedIn URL, find the decision maker in a department at a " +

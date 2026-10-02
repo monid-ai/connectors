@@ -17,8 +17,9 @@ decision maker in a department at a company when the caller has no name.
   synchronous POST endpoints: `find-email/person`,
   `find-email/decision-maker`, `find-email/company`, `verify-email`.
   The three finds are leaf `PER_UNIT` (1, 2 and 1 credit), counted 1 only
-  when the response is a verified hit; `verify-email` is leaf `PER_CALL`
-  at 0.2. Every billable response carries the vendor's own meter,
+  when the response is a verified hit; `verify-email` is leaf `PER_UNIT`
+  at 0.2, counted 1 per verification. An explicit `credits_charged: 0`
+  (a free 30-day repeat) counts zero on every endpoint. Every billable response carries the vendor's own meter,
   `credits_charged`, so the provider declares ONE `consolidate` that
   plucks it as the claim and strips it from the output. Request bodies
   are `.strict()`; each find binds the vendor's identification rules as a

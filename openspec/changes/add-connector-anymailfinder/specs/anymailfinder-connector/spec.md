@@ -21,8 +21,10 @@ that plucks `$.credits_charged` as the claim, and a provider-level
 `find-email/person` SHALL consume 1 `default` credit and
 `find-email/decision-maker` 2, each counted 1 only when the response's
 `email_status` is `valid`. `find-email/company` SHALL consume 1 credit,
-counted 1 only when `valid_emails` is non-empty. `verify-email` SHALL be
-a flat PER_CALL at 0.2 credits. The vendor's `credits_charged` SHALL be
+counted 1 only when `valid_emails` is non-empty. `verify-email` SHALL
+consume 0.2 credits, counted 1 per verification whatever the verdict.
+Every endpoint SHALL count zero when the response reports
+`credits_charged: 0` (a free 30-day repeat). The vendor's `credits_charged` SHALL be
 the claim and SHALL be absent from the output.
 
 #### Scenario: Verified find
@@ -37,7 +39,12 @@ the claim and SHALL be absent from the output.
 
 #### Scenario: Verification costs the same whatever the verdict
 - **WHEN** a `verify-email` run returns 200 with `email_status` `invalid`
-- **THEN** usage is `{credits: {default: 0.2}, evidence: {CALL: 1}}`
+- **THEN** usage is `{credits: {default: 0.2}, evidence: {RESULT: 1}}`
+
+#### Scenario: A 30-day repeat is free
+- **WHEN** any endpoint returns 200 with `credits_charged: 0`, verified
+  hit included
+- **THEN** usage is `{credits: {}, evidence: {RESULT: 0}}`
 
 #### Scenario: Errors are free
 - **WHEN** the vendor answers 401

@@ -94,5 +94,22 @@ Deno.test({
             false,
             JSON.stringify(result.output).slice(0, 500),
         );
+        const output = result.output as Record<string, unknown>;
+        assertEquals(
+            ["valid", "risky", "not_found", "blacklisted"].includes(
+                output.email_status as string,
+            ),
+            true,
+        );
+        assertEquals(
+            output.valid_email === null ||
+                typeof output.valid_email === "string",
+            true,
+        );
+        assertEquals("credits_charged" in output, false);
+        assertEquals(Object.keys(result.usage.evidence), ["RESULT"]);
+        for (const amount of Object.values(result.usage.credits)) {
+            assertEquals(typeof amount, "number");
+        }
     },
 });

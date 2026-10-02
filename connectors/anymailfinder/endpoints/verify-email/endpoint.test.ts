@@ -33,7 +33,7 @@ Deno.test(`${ID} happy (synthetic): a valid verdict: 0.2 credits`, async () => {
     assertEquals(result.isProviderError, false);
     assertEquals(result.usage, {
         credits: { default: 0.2 },
-        evidence: { CALL: 1 },
+        evidence: { RESULT: 1 },
     });
     assertEquals(result.output, withoutMeter(fixture.calls[0].res.body));
 });
@@ -43,7 +43,7 @@ Deno.test(`${ID} an invalid verdict (synthetic): still 0.2`, async () => {
     assertEquals(result.httpStatus, 200);
     assertEquals(result.usage, {
         credits: { default: 0.2 },
-        evidence: { CALL: 1 },
+        evidence: { RESULT: 1 },
     });
 });
 
@@ -58,7 +58,13 @@ Deno.test(`${ID} provider error (synthetic 401): zero usage, the {error, message
 });
 
 Deno.test(`${ID}: the schema gate - the vendor's rules and strictness`, async () => {
-    for (const bad of [{}, { email: "jane.doe@example.com", extra: true }]) {
+    for (
+        const bad of [
+            {},
+            { email: "not-an-email" },
+            { email: "jane.doe@example.com", extra: true },
+        ]
+    ) {
         await assertRejects(
             () => run("synthetic-happy", { body: bad as Record<string, Json> }),
             Error,
@@ -81,5 +87,17 @@ Deno.test({
             false,
             JSON.stringify(result.output).slice(0, 500),
         );
+        const output = result.output as Record<string, unknown>;
+        assertEquals(
+            ["valid", "risky", "invalid"].includes(
+                output.email_status as string,
+            ),
+            true,
+        );
+        assertEquals("credits_charged" in output, false);
+        assertEquals(Object.keys(result.usage.evidence), ["RESULT"]);
+        for (const amount of Object.values(result.usage.credits)) {
+            assertEquals(typeof amount, "number");
+        }
     },
 });

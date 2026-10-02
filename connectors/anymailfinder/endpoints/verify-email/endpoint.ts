@@ -1,4 +1,4 @@
-import { defineEndpoint, UsageModelKind } from "@shared/core";
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zVerifyEmailBody } from "./schema/inputs.ts";
 
 /** POST /verify-email - live deliverability check of one address. */
@@ -25,10 +25,23 @@ export default defineEndpoint({
     request: { method: "POST", path: "/verify-email" },
     input: { schema: { body: zVerifyEmailBody } },
     usage: {
+        /** 0.2 per verification whatever the verdict. PER_UNIT, not
+         *  PER_CALL, so an explicit zero meter (a 30-day repeat) can count
+         *  zero: the engine prunes the zero claim and settles this fold. */
         model: {
-            kind: UsageModelKind.PER_CALL,
+            kind: UsageModelKind.PER_UNIT,
+            unit: Unit.RESULT,
             label: "verifications",
+            description: "verifications run (a free 30-day repeat counts zero)",
             consumes: { credit: "default", amount: 0.2 },
+        },
+        estimate: () => ({ counts: { RESULT: 1 } }),
+        evidence: ({ data, utils }) => {
+            const charged = utils.json.optionalGet(
+                data.output,
+                "$.credits_charged",
+            );
+            return { counts: { RESULT: charged === 0 ? 0 : 1 } };
         },
     },
 });
