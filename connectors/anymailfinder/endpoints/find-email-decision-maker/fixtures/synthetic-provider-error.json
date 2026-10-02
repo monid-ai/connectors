@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC - shape taken from live v5.1 responses recorded by the vendor on 2026-10-01 (api.anymailfinder.com/openapi.json); values are placeholders. A bad key: 401 with the {error, message} envelope, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.anymailfinder.com/v5.1/find-email/decision-maker",
+                "body": {
+                    "domain": "example.com",
+                    "decision_maker_category": [
+                        "ceo"
+                    ]
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "unauthorized",
+                    "message": "Missing or invalid API key."
+                }
+            }
+        }
+    ]
+}
