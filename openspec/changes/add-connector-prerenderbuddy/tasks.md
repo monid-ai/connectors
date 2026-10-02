@@ -12,7 +12,8 @@
       check and byte-identical frozen compiles pass. The identity checker
       reports the same 83 pre-existing drift entries on untouched upstream
       HEAD and this branch; this PR adds only the six PB IDs to the lock.
-- [ ] Submit the PR with contact details and hosted activation requirements.
+- [x] Submit the PR with contact details and hosted activation requirements:
+      https://github.com/monid-ai/monid/pull/92.
 
 Hosted publication, production credential provisioning and settlement agreement
 are maintainer steps after review; this change does not claim catalog activation.
