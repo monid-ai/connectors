@@ -1,0 +1,126 @@
+{
+    "name": "claude-completed",
+    "description": "Recorded live through the compiled connector on 2026-10-02. claude; first submit, distinct pending states and terminal answer. Repeated polls omitted.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/developer/marketplace/answers/claude",
+                "body": {
+                    "prompt": "What is prerendering for JavaScript websites? Give one concise paragraph with sources.",
+                    "brand": {
+                        "name": "Prerender Buddy",
+                        "domain": "prerenderbuddy.com"
+                    }
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "jobId": "913097b1-1b8b-4e7b-a198-0a6f02eb0b4c",
+                    "platform": "claude",
+                    "status": "queued",
+                    "createdAt": "2026-10-02T17:42:51.691Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:42:51.691Z",
+                    "pollAfterSeconds": 60,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.024,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "replayed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/913097b1-1b8b-4e7b-a198-0a6f02eb0b4c"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "913097b1-1b8b-4e7b-a198-0a6f02eb0b4c",
+                    "platform": "claude",
+                    "status": "submitted",
+                    "createdAt": "2026-10-02T17:42:51.691Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:42:51.691Z",
+                    "pollAfterSeconds": 60,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.024,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/913097b1-1b8b-4e7b-a198-0a6f02eb0b4c"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "913097b1-1b8b-4e7b-a198-0a6f02eb0b4c",
+                    "platform": "claude",
+                    "status": "completed",
+                    "createdAt": "2026-10-02T17:42:51.691Z",
+                    "completedAt": "2026-10-02T17:51:03.584Z",
+                    "expiresAt": "2026-10-03T16:42:51.691Z",
+                    "pollAfterSeconds": 60,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0,
+                        "chargedUsd": 0.024,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "result": {
+                        "brand": {
+                            "name": "Prerender Buddy",
+                            "mentions": [],
+                            "mentioned": false,
+                            "websiteCited": false,
+                            "recommendations": [],
+                            "recommendationDetected": false
+                        },
+                        "answer": "I'll search for current information about prerendering for JavaScript websites.\nPrerendering is a technique that generates a fully rendered static HTML snapshot of a JavaScript page and serves it to search engine and AI crawlers, so they can index the content without executing JavaScript.\n \nIt operates at the proxy or middleware level, requires no application code changes, and leaves the experience for human visitors untouched.\n \nPrerendering solves this by generating static HTML snapshots of Ja",
+                        "sources": [
+                            {
+                                "url": "https://prerender.io/blog/how-prerender-renders-javascript-websites/",
+                                "title": "How Prerender Renders JavaScript Websites",
+                                "hostname": "prerender.io",
+                                "relationship": "returned_source"
+                            },
+                            {
+                                "url": "https://medium.com/@webprerender/what-is-java-script-prerendering-372a7c41cb26",
+                                "title": "What is java script-prerendering?",
+                                "hostname": "medium.com",
+                                "relationship": "returned_source"
+                            }
+                        ],
+                        "citations": [
+                            {
+                                "url": "https://prerendering.info/blog/what-is-prerendering",
+                                "title": "What Is Prerendering? Complete SEO Guide 2026",
+                                "hostname": "prerendering.info",
+                                "relationship": "explicit"
+                            }
+                        ],
+                        "competitors": [],
+                        "methodology": {
+                            "mentions": "Exact name/alias matches in this answer only.",
+                            "collection": "Provider API sample, not the consumer app or a web-wide mentions index.",
+                            "websiteCited": "Explicit returned citation URLs matched to the supplied domain. Null means no domain was supplied or an opaque citation prevents a negative determination.",
+                            "recommendations": "Conservative deterministic wording detection; review the supporting span."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

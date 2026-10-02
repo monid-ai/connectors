@@ -1,0 +1,119 @@
+{
+    "name": "gemini-completed",
+    "description": "Recorded live through the compiled connector on 2026-10-02. gemini; first submit, distinct pending states and terminal answer. Repeated polls omitted.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/developer/marketplace/answers/gemini",
+                "body": {
+                    "prompt": "What is prerendering for JavaScript websites? Give one concise paragraph with sources.",
+                    "brand": {
+                        "name": "Prerender Buddy",
+                        "domain": "prerenderbuddy.com"
+                    }
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "jobId": "4616e994-5aaf-4139-89dc-cc6ffd0ccc4d",
+                    "platform": "gemini",
+                    "status": "queued",
+                    "createdAt": "2026-10-02T17:43:20.532Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:43:20.532Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.035,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "replayed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/4616e994-5aaf-4139-89dc-cc6ffd0ccc4d"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "4616e994-5aaf-4139-89dc-cc6ffd0ccc4d",
+                    "platform": "gemini",
+                    "status": "running",
+                    "createdAt": "2026-10-02T17:43:20.532Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:43:20.532Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.035,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/4616e994-5aaf-4139-89dc-cc6ffd0ccc4d"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "4616e994-5aaf-4139-89dc-cc6ffd0ccc4d",
+                    "platform": "gemini",
+                    "status": "completed",
+                    "createdAt": "2026-10-02T17:43:20.532Z",
+                    "completedAt": "2026-10-02T17:43:32.864Z",
+                    "expiresAt": "2026-10-03T16:43:20.532Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0,
+                        "chargedUsd": 0.035,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "result": {
+                        "brand": {
+                            "name": "Prerender Buddy",
+                            "mentions": [],
+                            "mentioned": false,
+                            "websiteCited": null,
+                            "recommendations": [],
+                            "recommendationDetected": false
+                        },
+                        "answer": "**Prerendering** is an optimization technique for JavaScript-heavy single-page applications (SPAs) where client-side code is executed in advance to generate static HTML snapshots of pages before or during a request. Because web crawlers like Googlebot and Bingbot, as well as AI scraping agents (such as OpenAI’s GPTBot and ClaudeBot), can face delays or resource limits when processing client-side JavaScript, prerendering ensures bots and social link previews immediately receive a fully formed DOM",
+                        "sources": [],
+                        "citations": [
+                            {
+                                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFFFA7snqSLjXDTexaJao-81vl6kxpsrMrffaCkgNfd9hEo_JR8wSceNAgjuNb0CwYNsNOAngIdr3Y_f8ikuDZKVNGwoaK7mYO6EO1tIvmr1mYNk56ye3BCVvKt559HVAurlxaanv06yWCT0n_n4VFfIAKWpA==",
+                                "title": "netlify.com",
+                                "hostname": "vertexaisearch.cloud.google.com",
+                                "relationship": "explicit"
+                            },
+                            {
+                                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGopGJW_XFB_dSGHTPL54U7WGer4dbzSxj8jeuDVtfXkGCvV8gF6_3Yfx9MRjsH-FhWgBtiDV0x28vDI4SkwIN57KGKb6sXw8uh_6UrMNQ=",
+                                "title": "prerendering.com",
+                                "hostname": "vertexaisearch.cloud.google.com",
+                                "relationship": "explicit"
+                            }
+                        ],
+                        "competitors": [],
+                        "methodology": {
+                            "mentions": "Exact name/alias matches in this answer only.",
+                            "collection": "Provider API sample, not the consumer app or a web-wide mentions index.",
+                            "websiteCited": "Explicit returned citation URLs matched to the supplied domain. Null means no domain was supplied or an opaque citation prevents a negative determination.",
+                            "recommendations": "Conservative deterministic wording detection; review the supporting span."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

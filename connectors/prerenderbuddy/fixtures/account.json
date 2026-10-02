@@ -1,0 +1,24 @@
+{
+    "name": "account",
+    "description": "Live free API account balance read on 2026-10-02; no subscription or payment action.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/account"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "connected": true,
+                    "currency": "USD",
+                    "balanceUsd": 0.8444,
+                    "reservedUsd": 0.024,
+                    "availableUsd": 0.8204,
+                    "subscriptionRequired": false,
+                    "creditSuspended": false
+                }
+            }
+        }
+    ]
+}

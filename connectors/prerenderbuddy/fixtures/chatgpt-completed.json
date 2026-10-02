@@ -1,0 +1,150 @@
+{
+    "name": "chatgpt-completed",
+    "description": "Recorded live through the compiled connector on 2026-10-02. chatgpt; first submit, distinct pending states and terminal answer. Repeated polls omitted.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/developer/marketplace/answers/chatgpt",
+                "body": {
+                    "prompt": "What is prerendering for JavaScript websites? Give one concise paragraph with sources.",
+                    "brand": {
+                        "name": "Prerender Buddy",
+                        "domain": "prerenderbuddy.com"
+                    }
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "jobId": "d4a45754-c7d1-4aca-9894-efc0698a8cc9",
+                    "platform": "chatgpt",
+                    "status": "queued",
+                    "createdAt": "2026-10-02T17:42:51.701Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:42:51.701Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.025,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "replayed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/d4a45754-c7d1-4aca-9894-efc0698a8cc9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "d4a45754-c7d1-4aca-9894-efc0698a8cc9",
+                    "platform": "chatgpt",
+                    "status": "queued",
+                    "createdAt": "2026-10-02T17:42:51.701Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:42:51.701Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.025,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/d4a45754-c7d1-4aca-9894-efc0698a8cc9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "d4a45754-c7d1-4aca-9894-efc0698a8cc9",
+                    "platform": "chatgpt",
+                    "status": "running",
+                    "createdAt": "2026-10-02T17:42:51.701Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:42:51.701Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.025,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/d4a45754-c7d1-4aca-9894-efc0698a8cc9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "d4a45754-c7d1-4aca-9894-efc0698a8cc9",
+                    "platform": "chatgpt",
+                    "status": "completed",
+                    "createdAt": "2026-10-02T17:42:51.701Z",
+                    "completedAt": "2026-10-02T17:43:07.554Z",
+                    "expiresAt": "2026-10-03T16:42:51.701Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0,
+                        "chargedUsd": 0.025,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "result": {
+                        "brand": {
+                            "name": "Prerender Buddy",
+                            "mentions": [],
+                            "mentioned": false,
+                            "websiteCited": false,
+                            "recommendations": [],
+                            "recommendationDetected": false
+                        },
+                        "answer": "For a JavaScript website, **prerendering** means generating a page’s HTML ahead of time—at build time or on the server—so the browser receives meaningful content immediately instead of an almost-empty HTML shell that must run JavaScript first. JavaScript can then “hydrate” that HTML to add interactivity. This can speed up the initial display and help crawlers that don’t execute JavaScript; Google recommends server-side or static rendering over dynamic rendering as a workaround. ([developers.goog",
+                        "sources": [
+                            {
+                                "url": "https://developers.google.com/search/docs/crawling-indexing/javascript/dynamic-rendering",
+                                "title": null,
+                                "hostname": "developers.google.com",
+                                "relationship": "searched_source"
+                            },
+                            {
+                                "url": "https://developers.google.com/search/docs/fundamentals/get-started-developers",
+                                "title": null,
+                                "hostname": "developers.google.com",
+                                "relationship": "searched_source"
+                            }
+                        ],
+                        "citations": [
+                            {
+                                "url": "https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics?utm_source=openai",
+                                "title": "Understand JavaScript SEO Basics | Google Search Central  |  Documentation  |  Google for Developers",
+                                "hostname": "developers.google.com",
+                                "relationship": "explicit"
+                            }
+                        ],
+                        "competitors": [],
+                        "methodology": {
+                            "mentions": "Exact name/alias matches in this answer only.",
+                            "collection": "Provider API sample, not the consumer app or a web-wide mentions index.",
+                            "websiteCited": "Explicit returned citation URLs matched to the supplied domain. Null means no domain was supplied or an opaque citation prevents a negative determination.",
+                            "recommendations": "Conservative deterministic wording detection; review the supporting span."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
