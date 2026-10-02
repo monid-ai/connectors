@@ -1,6 +1,11 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import { loadFixture, runEndpoint, testSealedUnit } from "@shared/testing";
+import {
+    estimateEndpoint,
+    loadFixture,
+    runEndpoint,
+    testSealedUnit,
+} from "@shared/testing";
 
 const ID = "mermail#mailboxes/{mailboxId}/emails";
 const FIXTURES = fromFileUrl(new URL("../../fixtures/", import.meta.url));
@@ -55,5 +60,12 @@ Deno.test(`${ID} schema gate: rejects a bad input`, async () => {
             }),
         Error,
         "INVALID_INPUT",
+    );
+    assertEquals(
+        await estimateEndpoint(unit, {
+            pathParams: { mailboxId: "mb_public_1" },
+            queryParams: { limit: 10 },
+        }),
+        { credits: { default: 1 }, evidence: { CALL: 1 } },
     );
 });

@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
+    estimateEndpoint,
     liveSkip,
     loadFixture,
     runEndpoint,
@@ -25,6 +26,7 @@ Deno.test(`${ID} happy: 1 credit`, async () => {
         evidence: { CALL: 1 },
     });
     const rows = result.output as Array<Record<string, unknown>>;
+    assertEquals(rows.length, 1);
     assertEquals(rows[0].public_id, "mb_public_1");
     assertEquals(rows[0].email, "agent@mermail.app");
 });
@@ -55,6 +57,14 @@ Deno.test(`${ID} schema gate: rejects a bad input`, async () => {
             }),
         Error,
         "INVALID_INPUT",
+    );
+    // Optional workspaceId is accepted. Estimate is pure, so the query
+    // string does not need its own fixture.
+    assertEquals(
+        await estimateEndpoint(unit, {
+            queryParams: { workspaceId: "ws_1" },
+        }),
+        { credits: { default: 1 }, evidence: { CALL: 1 } },
     );
 });
 

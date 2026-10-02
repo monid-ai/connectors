@@ -1,6 +1,11 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import { loadFixture, runEndpoint, testSealedUnit } from "@shared/testing";
+import {
+    liveSkip,
+    loadFixture,
+    runEndpoint,
+    testSealedUnit,
+} from "@shared/testing";
 
 const ID = "mermail#mailboxes/{mailboxId}/emails/send";
 const FIXTURES = fromFileUrl(new URL("../../fixtures/", import.meta.url));
@@ -74,4 +79,43 @@ Deno.test(`${ID} schema gate: rejects a bad input`, async () => {
         Error,
         "INVALID_INPUT",
     );
+});
+
+Deno.test({
+    name: `${ID} live (gated on MERMAIL_API_KEY)`,
+    ignore: liveSkip("mermail"),
+    fn: async () => {
+        const listed = await runEndpoint({
+            unit: await testSealedUnit("mermail#mailboxes"),
+            input: {},
+            mode: "live",
+        });
+        const mailbox = (listed.output as Array<Record<string, unknown>>)[0];
+        const mailboxId = mailbox?.public_id;
+        const from = mailbox?.email;
+        if (typeof mailboxId !== "string" || typeof from !== "string") {
+            throw new Error("live send needs one mailbox on the API key");
+        }
+        const result = await runEndpoint({
+            unit: await testSealedUnit(ID),
+            input: {
+                pathParams: { mailboxId },
+                body: {
+                    to: from,
+                    from,
+                    subject: "Monid live send",
+                    text: "Shape check only.",
+                },
+            },
+            mode: "live",
+        });
+        assertEquals(
+            result.isProviderError,
+            false,
+            JSON.stringify(result.output),
+        );
+        const output = result.output as Record<string, unknown>;
+        assertEquals(typeof output.id, "string");
+        assertEquals(typeof output.status, "string");
+    },
 });
