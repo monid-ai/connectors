@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-mailboxes-create-error",
+    "description": "Synthetic mermail#mailboxes/create 401. Vendor non-2xx settles at zero credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://console.mermail.app/api/v1/mailboxes",
+                "body": {
+                    "email": "agent@mermail.app",
+                    "name": "Agent"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Unauthorized",
+                    "code": "api_key_required"
+                }
+            }
+        }
+    ]
+}

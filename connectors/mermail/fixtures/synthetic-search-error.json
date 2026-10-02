@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-search-error",
+    "description": "Synthetic mermail#mailboxes/{mailboxId}/search 401. Vendor non-2xx settles at zero credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://console.mermail.app/api/v1/mailboxes/mb_public_1/search"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Unauthorized",
+                    "code": "api_key_required"
+                }
+            }
+        }
+    ]
+}

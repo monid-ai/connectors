@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-forward",
+    "description": "Synthetic mermail#mailboxes/{mailboxId}/emails/{emailId}/forward success (202). Flat 5 credit call. Not a live recording.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://console.mermail.app/api/v1/mailboxes/mb_public_1/emails/em_1/forward",
+                "body": {
+                    "to": "ada@example.com",
+                    "from": "agent@mermail.app",
+                    "subject": "Hello",
+                    "text": "Hello from Mermail"
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "id": "em_sent",
+                    "status": "sent"
+                }
+            }
+        }
+    ]
+}

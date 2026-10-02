@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-mailboxes",
+    "description": "Synthetic mermail#mailboxes success (200). Flat 1 credit call. Not a live recording.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://console.mermail.app/api/v1/mailboxes"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "alias_1",
+                        "public_id": "mb_public_1",
+                        "workspace_id": "ws_1",
+                        "email": "agent@mermail.app",
+                        "name": "Agent",
+                        "can_receive": true,
+                        "receiving_status": "ready",
+                        "disabled_at": null,
+                        "disabled_reason": null,
+                        "inbox_unread_by_category": {
+                            "customer_support": 0,
+                            "partnership": 0,
+                            "technical": 0,
+                            "other": 1
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
