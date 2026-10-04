@@ -214,6 +214,12 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "TikTok data: videos, profiles, comments, and search results.",
     },
     {
+        id: "huggingface",
+        displayName: "Hugging Face",
+        description:
+            "Hugging Face Hub data: models, datasets, Spaces, and papers.",
+    },
+    {
         id: "agents",
         displayName: "Agents",
         description:
@@ -363,5 +369,13 @@ export const LEAF_CATEGORIES = defineLeafCategories([
         description:
             "Tools to pull public market data, including quotes, fundamentals, " +
             "earnings, screeners, and more.",
+    },
+    {
+        id: "package-registries",
+        displayName: "Package Registries",
+        description:
+            "Tools to pull package metadata from registries such as npm, " +
+            "PyPI, and crates.io, including versions, licenses, " +
+            "dependencies, and more.",
     },
 ]);

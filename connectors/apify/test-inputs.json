@@ -131,6 +131,22 @@
         ],
         "maxReviews": 2
     },
+    "conserving_celerytop/huggingface-hub-search-api": {
+        "resource": "models",
+        "sortBy": "trendingScore",
+        "maxItems": 2
+    },
+    "conserving_celerytop/package-registry-metadata-api": {
+        "packageNames": [
+            "npm:react",
+            "npm:next",
+            "pypi:django",
+            "pypi:fastapi",
+            "crates:tokio",
+            "crates:axum"
+        ],
+        "maxItems": 6
+    },
     "crawlerbros/reddit-comment-scraper": {
         "postUrls": [
             "https://www.reddit.com/r/programming/comments/1g5x1wz/"

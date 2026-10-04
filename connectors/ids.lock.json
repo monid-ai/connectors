@@ -72,6 +72,8 @@
         "apify#cleansyntax/facebook-profile-posts-scraper",
         "apify#clockworks/tiktok-video-scraper",
         "apify#compass/google-maps-reviews-scraper",
+        "apify#conserving_celerytop/huggingface-hub-search-api",
+        "apify#conserving_celerytop/package-registry-metadata-api",
         "apify#crawlerbros/reddit-comment-scraper",
         "apify#curious_coder/facebook-ads-library-scraper",
         "apify#damilo/google-maps-scraper",

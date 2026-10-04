@@ -528,6 +528,44 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         }),
         { credits: { default: 0.0192 }, evidence: { result: 8 } },
     );
+    // huggingface-hub-search-api: maxItems IS the count (single-metered
+    // composite keyed by the card's `search_result` line): 7 × $0.0021
+    // plus the $0.00005 actor_start flat (written as the same
+    // left-to-right arithmetic creditsOf performs)
+    assertEquals(
+        await estimateFor(
+            "apify#conserving_celerytop/huggingface-hub-search-api",
+            {
+                resource: "models",
+                maxItems: 7,
+            },
+        ),
+        {
+            credits: { default: 0.00005 + 7 * 0.0021 },
+            evidence: { search_result: 7, actor_start: 1 },
+        },
+    );
+    // …and a paper search returns at most 120 rows (the actor's own
+    // input description), so the paper estimate is capped there
+    assertEquals(
+        (await estimateFor(
+            "apify#conserving_celerytop/huggingface-hub-search-api",
+            { resource: "papers", maxItems: 1000 },
+        )).evidence,
+        { search_result: 120, actor_start: 1 },
+    );
+    // maxItems rows × the Business-tier $0.0014 package-record, plus the
+    // flat $0.00005 actor-start event (512 MB default memory = 1 event)
+    assertEquals(
+        await estimateFor(
+            "apify#conserving_celerytop/package-registry-metadata-api",
+            { packageNames: ["npm:react", "pypi:django"], maxItems: 6 },
+        ),
+        {
+            credits: { default: 0.00005 + 6 * 0.0014 },
+            evidence: { package_record: 6, actor_start: 1 },
+        },
+    );
     // NO fallback constants (design D24): a body without the limiting knob
     // is REJECTED at validation — the estimate is deduced or the run never
     // starts (v1's DEFAULT_ESTIMATED_RESULTS = 3 posture is dead)
