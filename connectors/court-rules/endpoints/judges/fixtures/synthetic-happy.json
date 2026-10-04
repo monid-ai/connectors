@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC (no Court Rules API key in the authoring environment, so deno task record has not run yet): the documented envelope for GET /api/v1/judges filtered by district_id. Shape only, no real judge data; replace with a recorded fixture when a key is available.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "slug": "judge-carol-bagley-amon",
+                            "name": "Carol Bagley Amon",
+                            "title": "United States District Judge",
+                            "district_id": "edny",
+                            "court_id": "nysd-edny",
+                            "rule_count": 12
+                        }
+                    ],
+                    "total": 1
+                }
+            }
+        }
+    ]
+}

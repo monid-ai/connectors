@@ -1,0 +1,32 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC (no Court Rules API key in the authoring environment, so deno task record has not run yet): the documented envelope for GET /api/v1/holidays filtered by district_id and year. Shape only, no real closure data; replace with a recorded fixture when a key is available.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "date": "2026-01-01",
+                            "name": "New Year's Day",
+                            "district_id": "edny",
+                            "observed": false
+                        },
+                        {
+                            "date": "2026-01-19",
+                            "name": "Martin Luther King Jr. Day",
+                            "district_id": "edny",
+                            "observed": false
+                        }
+                    ],
+                    "total": 2
+                }
+            }
+        }
+    ]
+}
