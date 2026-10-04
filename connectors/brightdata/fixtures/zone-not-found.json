@@ -1,0 +1,16 @@
+{
+    "name": "zone-not-found",
+    "description": "A zone the account does not hold, recorded live 2026-09-23: HTTP 400, bare string body. The shape a caller meets when the credential's zone name is wrong or its type does not match the endpoint — the failure mode that makes the zone credential material rather than an argument (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 400,
+                "body": "zone \"no_such_zone_xyz\" not found"
+            }
+        }
+    ]
+}

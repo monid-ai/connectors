@@ -1,0 +1,20 @@
+{
+    "name": "serp-wrong-api",
+    "description": "A SERP zone sent a url it does not serve, recorded live 2026-10-04. Outer 200 again, but this time the body is NOT empty — a plain-text explanation — so an empty-body delivery check would have billed it. `x-brd-error-code: wrong_api` with `x-brd-status-code: 400` is the verdict; the provider lifecycle settles OURS 400 / THEIRS 200, zero usage (design D4).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-brd-status-code": "400",
+                    "x-brd-error-code": "wrong_api"
+                },
+                "body": "This target URL isn't supported with SERP API, use the Web Unlocker product for targeting this URL"
+            }
+        }
+    ]
+}

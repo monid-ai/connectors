@@ -1,0 +1,16 @@
+{
+    "name": "unlocker-markdown-ok",
+    "description": "Web Unlocker happy path, a real 2026-09-23 recording of `format: \"raw\"` with `data_format: \"markdown\"` — the payload is the converted page as a bare STRING, not an object. Pins the engine's sniffing decode: a body that is not JSON rides through as a faithful Json string, so no connector-side parsing is needed and none is authored.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": "Example Domain\n\n# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+            }
+        }
+    ]
+}

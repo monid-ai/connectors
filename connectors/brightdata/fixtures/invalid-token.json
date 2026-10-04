@@ -1,0 +1,16 @@
+{
+    "name": "invalid-token",
+    "description": "A rejected key, recorded live 2026-09-23: HTTP 401 whose body is the bare STRING `Invalid token` — Bright Data does not wrap errors in a JSON envelope. Zero usage, and the string passes through untouched (design D5).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": "Invalid token"
+            }
+        }
+    ]
+}

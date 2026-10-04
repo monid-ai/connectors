@@ -1,0 +1,23 @@
+{
+    "name": "unlock-failed-json",
+    "description": "The same failed unlock under `format: \"json\"`, recorded live 2026-10-04. Here the outer envelope carries NO `x-brd-*` header at all — the verdict rides INSIDE the body, as `status_code: 502` beside `headers.x-brd-error-code: no_peers`. A header-only check would bill it; the provider lifecycle reads the body too and settles 502 / 200, zero usage, the body passed through as the reason (design D4). Transport headers (`date`, `connection`) trimmed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status_code": 502,
+                    "headers": {
+                        "x-brd-error": "No Peer Found",
+                        "x-brd-error-code": "no_peers"
+                    },
+                    "body": ""
+                }
+            }
+        }
+    ]
+}

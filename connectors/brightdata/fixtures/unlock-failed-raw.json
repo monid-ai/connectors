@@ -1,0 +1,20 @@
+{
+    "name": "unlock-failed-raw",
+    "description": "A failed unlock under `format: \"raw\"`, recorded live 2026-10-04 (Web Unlocker, `country: \"aq\"` — a valid code with no peers). Bright Data accepted the request, so the outer status is 200 with an empty body; the verdict rides ONLY in headers: `x-brd-error-code: no_peers` and `x-brd-status-code: 502`. The provider lifecycle reads them and settles OURS 502 / THEIRS 200 — a provider error, zero usage — lifting the code into the `format: \"json\"` envelope shape so the caller sees why (design D4).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-brd-status-code": "502",
+                    "x-brd-error-code": "no_peers"
+                },
+                "body": ""
+            }
+        }
+    ]
+}

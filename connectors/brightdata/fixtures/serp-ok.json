@@ -1,0 +1,90 @@
+{
+    "name": "serp-ok",
+    "description": "SERP API happy path, minimized from a real 2026-09-23 recording of `POST /request` with a `brd_json=1` google url and `format: \"raw\"` — the payload IS the parsed results page. Arrays capped at 2 and the base64 `icon` leaves dropped; keys and shape untouched. Bright Data reports no meter anywhere in it, which is the point: the flat $0.0015 fold settles the run alone.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "general": {
+                        "search_engine": "google",
+                        "query": "solid state battery suppliers",
+                        "results_cnt": 120,
+                        "search_time": 0.33,
+                        "language": "en-IN",
+                        "country_code": "IN",
+                        "location": "United States",
+                        "mobile": false,
+                        "search_type": "text",
+                        "page_title": "solid state battery suppliers - Google Search",
+                        "timestamp": "2026-09-23T06:58:53.839Z"
+                    },
+                    "input": {
+                        "original_url": "https://www.google.com/search?q=solid+state+battery+suppliers&brd_json=1",
+                        "request_id": "hl_00000000_aaaaaaaaaaa"
+                    },
+                    "organic": [
+                        {
+                            "link": "https://inventus.in/our-new-business-and-rd-centre/",
+                            "source": "Inventus Battery Energy Technologies Pvt Ltd",
+                            "display_link": "https://inventus.in › our-new-business-and-rd-centre",
+                            "title": "Solid State Battery Technology Development Centre",
+                            "description": "INDIA's FIRST DEMONSTRATED 350Wh/kg ALL-SOLID-STATE LITHIUM-METAL ANODE BATTERY CELL · powered by · Ceramion+™ Flexible Ceramic Solid Electrolyte · Ceramion+™ ...Read more",
+                            "snippet_highlighted_words": [
+                                "INDIA's FIRST DEMONSTRATED 350Wh/kg ALL-SOLID-STATE LITHIUM-METAL ANODE BATTERY CELL"
+                            ],
+                            "rank": 1,
+                            "global_rank": 1
+                        },
+                        {
+                            "link": "https://www.xtbattery.com/news/top-10-solid-state-battery-companies-in-2026-best-manufacturers-technology-market-trends/",
+                            "source": "Zhuoxun Intelligent Technology (Henan) Co., Ltd.",
+                            "display_link": "https://www.xtbattery.com › News",
+                            "title": "Top 10 Solid State Battery Companies in 2026",
+                            "description": "The top solid state battery companies in 2026 include CATL, Toyota, Panasonic, QuantumScape, Solid Power, ProLogium, Samsung SDI, LG Energy ...Read more",
+                            "snippet_highlighted_words": [
+                                "CATL, Toyota, Panasonic, QuantumScape, Solid Power, ProLogium, Samsung SDI, LG Energy"
+                            ],
+                            "extensions": [
+                                {
+                                    "inline": true,
+                                    "type": "text",
+                                    "text": "28 Feb 2026",
+                                    "rank": 1
+                                }
+                            ],
+                            "rank": 2,
+                            "global_rank": 2
+                        }
+                    ],
+                    "people_also_ask": [
+                        {
+                            "question": "Who is leading in solid-state batteries?",
+                            "question_type": "ai_overview",
+                            "rank": 1,
+                            "global_rank": 5
+                        },
+                        {
+                            "question": "Can I buy solid-state batteries yet?",
+                            "question_type": "ai_overview",
+                            "rank": 2,
+                            "global_rank": 6
+                        }
+                    ],
+                    "related": [
+                        {
+                            "text": "Solid state battery suppliers in india"
+                        },
+                        {
+                            "text": "Solid State battery manufacturers in India"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

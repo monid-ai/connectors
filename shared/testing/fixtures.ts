@@ -39,6 +39,13 @@ export const RECORDED_RES_HEADERS = [
     "x-api-units-cost-total-actual",
     "x-api-cache",
     "x-credits-charged",
+    // Bright Data's in-band unlock verdict (a 200 whose result failed). The
+    // machine codes and the result status only — `x-brd-error`, the prose
+    // message, is left out: its `premium` form embeds the zone's control
+    // panel edit url, which identifies the account.
+    "x-brd-status-code",
+    "x-brd-error-code",
+    "x-brd-err-code",
 ] as const;
 
 export const zRecordedCall = z.object({
