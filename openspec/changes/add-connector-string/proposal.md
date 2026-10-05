@@ -2,13 +2,11 @@
 
 ## Why
 
-String is durable-alpha's own web-access API: search past each engine's
-anti-bot protection and fetch any URL as clean, LLM-ready content, with
-automatic proxy rotation, CAPTCHA solving and JavaScript rendering. Two JSON
-endpoints on one host, one bearer key, no new engine capability — search
-settles a flat per-page rate, fetch settles one of four output-determined
-rates read off a response header. Listing it here reaches every
-Monid-integrated agent.
+String is our own web-access API: search the web and fetch any URL as clean,
+LLM-ready content. Two JSON endpoints on one host, one bearer key, no new
+engine capability — search settles a flat per-page rate, fetch settles one
+of four output-determined rates read off a response header. Listing it here
+reaches every Monid-integrated agent.
 
 ## What Changes
 

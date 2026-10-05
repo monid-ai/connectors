@@ -1,15 +1,15 @@
 import { defineProvider, presets } from "@shared/core";
 
 /**
- * String — web search and page fetching for agents, past each target's
- * anti-bot protection. JSON-over-HTTP against
+ * String — web search and page fetching for agents, returned as clean,
+ * LLM-ready content. JSON-over-HTTP against
  * `https://request.usestring.ai/v1` with `Authorization: Bearer <key>`
  * (portal.usestring.ai/docs/get-started/authentication).
  *
  * This cut ports `/search` and `/fetch` (see the PR description for why
  * `/sitemap` and the rest of the surface are left for a later PR).
  * Sourced entirely from String's own public docs, not third-party
- * reverse engineering — String is durable-alpha's own product, so the docs
+ * reverse engineering — String is our own product, so the docs
  * are authoritative here rather than something to verify live against a
  * key the repo's author didn't have in hand while drafting this.
  *
@@ -22,15 +22,13 @@ export default defineProvider({
     name: "string",
     meta: {
         displayName: "String",
-        summary: "Web search and page fetching for agents, past anti-bot " +
-            "and CAPTCHA protection.",
+        summary: "Web search and page fetching for agents, as clean, " +
+            "LLM-ready content.",
         description: "Search the web and fetch any page as clean, " +
-            "LLM-ready content — automatic proxy rotation, anti-bot and " +
-            "CAPTCHA handling, and JavaScript rendering when a page needs " +
-            "it. Search covers Google, DuckDuckGo, Brave, and Mojeek, " +
-            "including Google's rendered surfaces (ads, local packs, " +
-            "knowledge panels, AI overviews, and more) alongside ranked " +
-            "results.",
+            "LLM-ready content. Search covers Google, DuckDuckGo, " +
+            "Brave, and Mojeek, including Google's rendered surfaces " +
+            "(ads, local packs, knowledge panels, AI overviews, and " +
+            "more) alongside ranked results.",
         homepageUrl: "https://usestring.ai",
         docsUrl: "https://portal.usestring.ai/docs/api-reference/overview",
         categories: ["web-search"],

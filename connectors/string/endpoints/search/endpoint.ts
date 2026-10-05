@@ -2,8 +2,8 @@ import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { zSearchBody } from "./schema/inputs.ts";
 
 /**
- * `POST /v1/search` — search Google, DuckDuckGo, Brave, or Mojeek past
- * each engine's own anti-bot protection.
+ * `POST /v1/search` — search Google, DuckDuckGo, Brave, or Mojeek and get
+ * ranked organic results back.
  *
  * BILLING, from String's own published docs (not third-party reverse
  * engineering — get-started/pricing and api-reference/search on
@@ -38,8 +38,8 @@ import { zSearchBody } from "./schema/inputs.ts";
 export default defineEndpoint({
     meta: {
         displayName: "String Search",
-        summary: "Search Google, DuckDuckGo, Brave, or Mojeek, past each " +
-            "engine's anti-bot protection.",
+        summary: "Search Google, DuckDuckGo, Brave, or Mojeek and get " +
+            "ranked organic results back.",
         description: "Search the web and get ranked organic results " +
             "back. `engine` selects Google (default), DuckDuckGo, Brave, " +
             "or Mojeek; `country` and `language` localize results. " +

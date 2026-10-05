@@ -46,12 +46,11 @@ import { zFetchBody } from "./schema/inputs.ts";
 export default defineEndpoint({
     meta: {
         displayName: "String Fetch",
-        summary: "Fetch any URL as clean, LLM-ready content, past " +
-            "anti-bot and CAPTCHA protection.",
+        summary: "Fetch any URL as clean, LLM-ready content.",
         description: "Executes an HTTP/HTTPS request to a URL and " +
             "returns the result, automatically choosing between a " +
             "lightweight request-based fetch and full browser " +
-            "execution with residential proxies and CAPTCHA solving. " +
+            "execution. " +
             "`format` controls the response shape (JSON envelope, raw " +
             "bytes, or Markdown); `executeJS`/`requireWSS` force " +
             "browser rendering; `screenshot`/`actions` capture an " +
