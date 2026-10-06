@@ -1,5 +1,5 @@
 {
-    "name": "provider-error",
+    "name": "synthetic-provider-error",
     "description": "SYNTHETIC, not recorded against a live key. Shape matches the documented error body on portal.usestring.ai/docs/api-reference/errors (retrieved 2026-09-22): {error, message, statusCode}. Must be replaced with a real `deno task record` capture before this connector ships.",
     "calls": [
         {

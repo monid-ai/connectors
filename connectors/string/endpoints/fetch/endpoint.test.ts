@@ -86,7 +86,9 @@ Deno.test("string#fetch happy: unrecognized billed-type header settles zero usag
 
 Deno.test("string#fetch provider error (synthetic 502): zero usage", async () => {
     const unit = await testSealedUnit("string#fetch");
-    const fixture = await loadFixture(`${fixturesDir}provider-error.json`);
+    const fixture = await loadFixture(
+        `${fixturesDir}synthetic-provider-error.json`,
+    );
     const result = await runEndpoint({
         unit,
         input: { body: { url: "https://httpbin.org/json" } },

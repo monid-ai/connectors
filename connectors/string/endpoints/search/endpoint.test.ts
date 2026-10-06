@@ -39,7 +39,9 @@ Deno.test("string#search happy: no searchCount, evidence settles at one page", a
 
 Deno.test("string#search provider error (synthetic 401): zero usage", async () => {
     const unit = await testSealedUnit("string#search");
-    const fixture = await loadFixture(`${fixturesDir}provider-error.json`);
+    const fixture = await loadFixture(
+        `${fixturesDir}synthetic-provider-error.json`,
+    );
     const result = await runEndpoint({
         unit,
         input: { body: { query: "best running shoes" } },
