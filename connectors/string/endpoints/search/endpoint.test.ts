@@ -10,11 +10,6 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-// Rate card: portal.usestring.ai/docs/get-started/pricing "Search",
-// retrieved 2026-09-22 — $1.00 per 1,000 searches on the Growth tier,
-// i.e. $0.001/page. Pinned below wherever a happy-path test asserts
-// result.usage.credits.default.
-
 Deno.test("string#search happy: no searchCount, evidence settles at one page", async () => {
     const unit = await testSealedUnit("string#search");
     const fixture = await loadFixture(`${fixturesDir}synthetic-search-ok.json`);
