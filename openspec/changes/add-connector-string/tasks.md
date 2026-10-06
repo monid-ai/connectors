@@ -41,15 +41,21 @@
       `fetch` (happy path per billed-type fixture including a non-default
       class, so the test proves the correct line is picked rather than
       always the cheap floor; schema-shape assertion that `jsonSchema`
-      is absent)
+      is absent); both with a provider-error case (zero usage) and a
+      schema gate (rejected inputs plus a passing near-valid twin)
 - [x] 4.3 Live tests for both endpoints, gated on `liveSkip("string")`
+- [x] 4.4 Provider rate table (`provider.test.ts`): every compiled
+      endpoint has a row, and every billed line consumes the published
+      Growth-tier rate
 
 ## 5. Wiring + verification
 
-- [x] 5.1 `fmt` · `lint` · `check` · `test` (`connectors/string/`: 5
-      passed) · `compiler:compile` (both docs compile into the full
-      catalog) — all green
+- [x] 5.1 `fmt` · `lint` · `check` · `test` (`connectors/string/`: every
+      replay test passes, live tests skip without a key) ·
+      `compiler:compile` (both docs compile into the full catalog) — all
+      green
 - [x] 5.2 Full-repo `test` re-run after the `shared/testing/fixtures.ts`
       change, to confirm the widened `RECORDED_RES_HEADERS` allowlist
       doesn't affect any other connector's fixtures — green, no
       regressions
+- [x] 5.3 Add the 2 ids to `connectors/ids.lock.json`

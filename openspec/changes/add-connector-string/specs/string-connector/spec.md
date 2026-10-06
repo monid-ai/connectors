@@ -14,9 +14,10 @@ settle-time cost receipt on the response body.
 
 `POST /search` SHALL default `engine` to `google` at the binding, model
 usage as `PER_UNIT`·`PAGE` at the Growth-tier rate ($0.001/page), estimate 1
-page when `searchCount` is absent or the engine is not `google`, else
-`min(10, ceil(searchCount / 8))`, and settle evidence from
-`paging.pages` when the response carries it, else 1.
+page when `searchCount` is absent or the engine is not `google`, else the
+documented 10-page cap (an admission hold that settlement can never
+exceed), and settle evidence from `paging.pages` when the response carries
+it, else 1.
 
 #### Scenario: No searchCount settles at exactly one page
 
