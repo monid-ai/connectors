@@ -7,23 +7,23 @@ import { zSearchBody } from "./schema/inputs.ts";
  *
  * BILLING, from String's own published docs (not third-party reverse
  * engineering — get-started/pricing and api-reference/search on
- * portal.usestring.ai/docs, read 2026-09-22): every search is billed as
+ * portal.usestring.ai/docs, read 2026-10-06): every search is billed as
  * one "browser standard rate" request. Without `searchCount`, one request
  * is always exactly one billed page. WITH `searchCount`, only the
  * `google` engine is paged: the API keeps fetching further Google results
- * pages (up to 10) until `searchCount` organic results are collected or
+ * pages (up to 36) until `searchCount` organic results are collected or
  * the time budget runs out, and "each page that answered is billed as one
- * search." `duckduckgo`, `brave`, and `mojeek` accept `searchCount` but
- * ignore it — always exactly one billed page.
+ * search." `duckduckgo`, `brave`, and `mojeek` return their one results
+ * page, cut to `searchCount` — always exactly one billed page.
  *
  * ESTIMATE is an admission hold, not a best guess: it must not undershoot
  * what settlement can actually charge. Without `searchCount`, always 1
  * page. With it, on `google` (the default when `engine` is omitted):
- * String's docs describe a hard 10-page cap and settlement reads whatever
+ * String's docs describe a hard 36-page cap and settlement reads whatever
  * `paging.pages` the response reports, which can land anywhere up to that
- * cap — so the hold reserves the full 10 rather than a per-page-count
+ * cap — so the hold reserves the full 36 rather than a per-page-count
  * heuristic that could settle under what it promised. Any non-google
- * engine always estimates 1, since searchCount is a no-op there.
+ * engine always estimates 1, since it never pages.
  *
  * SETTLE: reads `paging.pages` from the response when present (String
  * only sends it when `searchCount` was in the request); otherwise 1.
@@ -43,11 +43,11 @@ export default defineEndpoint({
         description: "Search the web and get ranked organic results " +
             "back. `engine` selects Google (default), DuckDuckGo, Brave, " +
             "or Mojeek; `country` and `language` localize results. " +
-            "`searchCount` (1-50) asks for more organic results than a " +
+            "`searchCount` (1-300) asks for more organic results than a " +
             "single page carries — on Google this re-fetches further " +
-            "results pages (up to 10) until enough are collected, " +
+            "results pages (up to 36) until enough are collected, " +
             "billing one search per page fetched; the other engines " +
-            "ignore it and always return one page. Google responses can " +
+            "always return one page. Google responses can " +
             "also carry ads, local-pack places, a knowledge panel, " +
             "related searches, People Also Ask, AI overviews, and other " +
             "rendered surfaces alongside the ranked results.",
@@ -76,10 +76,10 @@ export default defineEndpoint({
             if (body.engine !== "google" || body.searchCount === undefined) {
                 return { counts: { PAGE: 1 } };
             }
-            // Hold the documented 10-page cap, not a per-page-count
+            // Hold the documented 36-page cap, not a per-page-count
             // guess: settlement reads the real `paging.pages` and must
             // never be able to charge more than this hold reserved.
-            return { counts: { PAGE: 10 } };
+            return { counts: { PAGE: 36 } };
         },
         evidence: ({ data, utils }) => {
             const pages = utils.json.optionalNum(

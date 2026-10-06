@@ -13,10 +13,10 @@ reaches every Monid-integrated agent.
 - **connectors/string** — 2 endpoints against
   `https://request.usestring.ai/v1`, bearer auth.
   - `POST /search`: `PER_UNIT`·`PAGE`, Growth-tier rate ($0.001/page).
-    Without `searchCount`, always 1 page. With it, only the `google` engine
-    pages further results (up to 10) to collect enough; `duckduckgo`,
-    `brave` and `mojeek` accept but ignore `searchCount`. Evidence reads
-    `paging.pages` when present, else 1.
+    Without `searchCount` (1-300), always 1 page. With it, only the
+    `google` engine pages further results (up to 36) to collect enough, and
+    the estimate holds that 36-page cap; `duckduckgo`, `brave` and `mojeek`
+    return one page. Evidence reads `paging.pages` when present, else 1.
   - `POST /fetch`: `COMPOSITE` of four `PER_UNIT`·`RESULT` components
     (`request_standard`, `request_premium`, `browser_standard`,
     `browser_premium`), each the Growth-tier rate for that class

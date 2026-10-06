@@ -1,6 +1,7 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import { assertAlmostEquals, assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
-import type { Json } from "@shared/core";
+import type { Json, RunInput } from "@shared/core";
+import { directTransport, Engine } from "@monid/connector-engine";
 import {
     liveSkip,
     loadFixture,
@@ -48,12 +49,12 @@ Deno.test("string#search provider error (synthetic 401): zero usage", async () =
     assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
-Deno.test("string#search: query required, searchCount capped at 50, no unrecognized fields", async () => {
+Deno.test("string#search: query required, searchCount capped at 300, no unrecognized fields", async () => {
     const unit = await testSealedUnit("string#search");
     const fixture = await loadFixture(`${fixturesDir}synthetic-search-ok.json`);
     const rejected: Json[] = [
         { searchCount: 10 },
-        { query: "shoes", searchCount: 51 },
+        { query: "shoes", searchCount: 301 },
         { query: "shoes", searchCount: 0 },
         { query: "shoes", region: "us" },
     ];
@@ -69,7 +70,7 @@ Deno.test("string#search: query required, searchCount capped at 50, no unrecogni
     // near-valid twin — same shape, at the documented cap — succeeds
     const result = await runEndpoint({
         unit,
-        input: { body: { query: "shoes", searchCount: 50 } },
+        input: { body: { query: "shoes", searchCount: 300 } },
         mode: "replay",
         fixture,
     });
@@ -83,6 +84,31 @@ Deno.test("string#search: engine defaults to google when omitted", async () => {
         { default?: unknown }
     >;
     assertEquals(properties.engine.default, "google");
+});
+
+const estimateFor = async (body: RunInput["body"]) => {
+    const loaded = await new Engine({
+        transport: directTransport({
+            params: () => Promise.resolve({ apiKey: "test-key" }),
+            fetch: () => Promise.reject(new Error("estimate must not do IO")),
+        }),
+    }).load(await testSealedUnit("string#search"));
+    return loaded.estimate({ body });
+};
+
+Deno.test("string#search: the estimate holds one page, or the 36-page cap when google pages", async () => {
+    assertEquals(await estimateFor({ query: "shoes" }), {
+        credits: { default: 0.001 },
+        evidence: { PAGE: 1 },
+    });
+    // 36 × 0.001 is not exact in floating point
+    const hold = await estimateFor({ query: "shoes", searchCount: 5 });
+    assertEquals(hold.evidence, { PAGE: 36 });
+    assertAlmostEquals(hold.credits.default, 0.036, 1e-9);
+    assertEquals(
+        await estimateFor({ query: "shoes", engine: "brave", searchCount: 5 }),
+        { credits: { default: 0.001 }, evidence: { PAGE: 1 } },
+    );
 });
 
 Deno.test({
