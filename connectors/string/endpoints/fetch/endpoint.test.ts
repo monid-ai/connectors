@@ -100,12 +100,14 @@ Deno.test("string#fetch provider error (synthetic 502): zero usage", async () =>
     assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
-Deno.test("string#fetch: url must be http(s); method accepts any case", async () => {
+Deno.test("string#fetch: url must be http(s) with a host; method accepts any case", async () => {
     const unit = await testSealedUnit("string#fetch");
     const fixture = await loadFixture(`${fixturesDir}synthetic-fetch-ok.json`);
     const rejected: Json[] = [
         {},
         { url: "ftp://example.test/file" },
+        { url: "https://" },
+        { url: "https:///path" },
         { url: "https://example.test", method: "DELETE" },
         { url: "https://example.test", notAField: true },
     ];

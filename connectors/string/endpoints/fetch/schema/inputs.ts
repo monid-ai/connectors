@@ -23,8 +23,10 @@ export const zFetchBody = z.object({
     // ftp:// URL passed it), so this mirrors the plain-regex convention
     // the rest of the repo already uses for URL fields (e.g.
     // connectors/minimax/schema/h3-video.ts).
-    url: z.string().regex(/^https?:\/\//, "must be a public http(s) URL")
-        .describe("The http/https URL to fetch."),
+    url: z.string().regex(
+        /^https?:\/\/[^/?#\s]/,
+        "must be a public http(s) URL",
+    ).describe("The http/https URL to fetch."),
     // The `i` regex flag doesn't survive compilation to the runtime JSON
     // Schema `pattern` (confirmed empirically, same as the url protocol
     // constraint below), so case-insensitivity is spelled out with
