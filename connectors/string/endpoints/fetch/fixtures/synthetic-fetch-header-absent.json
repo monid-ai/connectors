@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-fetch-header-absent",
+    "description": "SYNTHETIC, not recorded against a live key. Same 200 body as synthetic-fetch-ok.json, but with no x-billed-request-type response header at all — proves a transport that does not surface the header settles zero usage rather than guessing which billed class applies. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "statusCode": 200,
+                    "headers": {
+                        "content-type": ["application/json"]
+                    },
+                    "data": {
+                        "message": "Hello World"
+                    }
+                }
+            }
+        }
+    ]
+}

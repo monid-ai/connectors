@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-fetch-ok",
+    "description": "SYNTHETIC, not recorded against a live key (no String API key was available while drafting this connector). Built from the JSON-format example response body on portal.usestring.ai/docs/api-reference/fetch, plus the `x-billed-request-type: request_standard` response header documented on portal.usestring.ai/docs/api-reference/overview for a plain (non-executeJS) GET. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-billed-request-type": "request_standard"
+                },
+                "body": {
+                    "statusCode": 200,
+                    "headers": {
+                        "content-type": ["application/json"]
+                    },
+                    "data": {
+                        "message": "Hello World"
+                    }
+                }
+            }
+        }
+    ]
+}

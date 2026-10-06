@@ -519,6 +519,8 @@
         "saperly#send-messages",
         "saperly#sync-numbers",
         "saperly#update-numbers",
+        "string#fetch",
+        "string#search",
         "surf#dex/token/price",
         "surf#exchange/candles",
         "surf#exchange/coverage",

@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC, not recorded against a live key. Shape matches the documented error body on portal.usestring.ai/docs/api-reference/errors (retrieved 2026-09-22): {error, message, statusCode}. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Unauthorized",
+                    "message": "Missing or invalid API key.",
+                    "statusCode": 401
+                }
+            }
+        }
+    ]
+}

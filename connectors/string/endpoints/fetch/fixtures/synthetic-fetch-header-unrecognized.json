@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-fetch-header-unrecognized",
+    "description": "SYNTHETIC, not recorded against a live key. Same 200 body as synthetic-fetch-ok.json, but x-billed-request-type carries a value outside the four documented billed classes — proves the closed-term vocabulary check in usage.evidence settles zero usage on an unrecognized value instead of charging it anyway. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-billed-request-type": "request_extra_premium"
+                },
+                "body": {
+                    "statusCode": 200,
+                    "headers": {
+                        "content-type": ["application/json"]
+                    },
+                    "data": {
+                        "message": "Hello World"
+                    }
+                }
+            }
+        }
+    ]
+}

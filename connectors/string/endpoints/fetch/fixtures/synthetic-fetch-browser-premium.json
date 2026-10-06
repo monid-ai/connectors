@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-fetch-browser-premium",
+    "description": "SYNTHETIC, not recorded against a live key. Represents a request that forced browser rendering (`executeJS: true`) against a target requiring a premium residential proxy — the `x-billed-request-type: browser_premium` case from portal.usestring.ai/docs/api-reference/overview, which the estimate's cheaper-floor promise cannot see coming. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "headers": {
+                    "x-billed-request-type": "browser_premium"
+                },
+                "body": {
+                    "statusCode": 200,
+                    "headers": {
+                        "content-type": ["application/json"]
+                    },
+                    "data": {
+                        "message": "Hello World"
+                    }
+                }
+            }
+        }
+    ]
+}

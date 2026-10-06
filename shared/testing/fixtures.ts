@@ -39,6 +39,7 @@ export const RECORDED_RES_HEADERS = [
     "x-api-units-cost-total-actual",
     "x-api-cache",
     "x-credits-charged",
+    "x-billed-request-type",
 ] as const;
 
 export const zRecordedCall = z.object({

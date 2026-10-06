@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC, not recorded against a live key. 502 is String's own code for 'upstream/destination error' (api-reference/fetch, retrieved 2026-09-22); body shape matches the documented error format. No x-billed-request-type header — the engine forces zero usage on any non-2xx httpStatus before evidence ever runs, so this fixture also proves that path never needs the header. Must be replaced with a real `deno task record` capture before this connector ships.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 502,
+                "body": {
+                    "error": "Request failed",
+                    "message": "Upstream service error",
+                    "statusCode": 502
+                }
+            }
+        }
+    ]
+}
