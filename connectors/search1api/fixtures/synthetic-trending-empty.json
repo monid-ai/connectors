@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-trending-empty",
+    "description": "Search1API /trending with an empty list (200 + results: []). Unbilled on the Monid side. Hand-built from the vendor's documented shape.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "search_service": "hackernews",
+                    "max_results": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "trendingParameters": {
+                        "search_service": "hackernews",
+                        "max_results": 3
+                    },
+                    "results": []
+                }
+            }
+        }
+    ]
+}

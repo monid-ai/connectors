@@ -1,0 +1,158 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. task_post answers 20100 with the task id and the whole charge ($0.0015, high priority); task_get answers 40602 once, then 20000 with the rows at cost 0. The settle adds the stashed task_post charge to the task_get receipt.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.dataforseo.com/v3/business_data/tripadvisor/reviews/task_post",
+                "body": [
+                    {
+                        "depth": 10,
+                        "location_code": 2840,
+                        "language_code": "en",
+                        "priority": 2,
+                        "keyword": "Pike Place Market"
+                    }
+                ]
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0.0015,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20100,
+                            "status_message": "Task Created.",
+                            "time": "0.5 sec.",
+                            "cost": 0.0015,
+                            "result_count": 0,
+                            "path": [
+                                "v3",
+                                "business_data",
+                                "tripadvisor",
+                                "reviews",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "business_data",
+                                "function": "task_post"
+                            },
+                            "result": null
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/business_data/tripadvisor/reviews/task_get/09211200-1535-0066-0000-e0d0d9f4a7c1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 40602,
+                            "status_message": "Task In Queue.",
+                            "time": "0.5 sec.",
+                            "cost": 0,
+                            "result_count": 0,
+                            "path": [
+                                "v3",
+                                "business_data",
+                                "tripadvisor",
+                                "reviews",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "business_data",
+                                "function": "task_post"
+                            },
+                            "result": null
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/business_data/tripadvisor/reviews/task_get/09211200-1535-0066-0000-e0d0d9f4a7c1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20000,
+                            "status_message": "Ok.",
+                            "time": "0.5 sec.",
+                            "cost": 0,
+                            "result_count": 1,
+                            "path": [
+                                "v3",
+                                "business_data",
+                                "tripadvisor",
+                                "reviews",
+                                "task_post"
+                            ],
+                            "data": {
+                                "api": "business_data",
+                                "function": "task_post"
+                            },
+                            "result": [
+                                {
+                                    "total_count": 2,
+                                    "items_count": 2,
+                                    "items": [
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 1,
+                                            "rank_absolute": 1,
+                                            "domain": "example.com",
+                                            "title": "Result 1",
+                                            "url": "https://example.com/1"
+                                        },
+                                        {
+                                            "type": "organic",
+                                            "rank_group": 2,
+                                            "rank_absolute": 2,
+                                            "domain": "example.com",
+                                            "title": "Result 2",
+                                            "url": "https://example.com/2"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

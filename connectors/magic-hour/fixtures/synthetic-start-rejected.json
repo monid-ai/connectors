@@ -1,0 +1,13 @@
+{
+    "name": "synthetic-start-rejected",
+    "description": "A rejected submission never starts polling and settles no usage.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 402,
+                "body": { "message": "Insufficient credits" }
+            }
+        }
+    ]
+}

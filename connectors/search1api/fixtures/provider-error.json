@@ -1,0 +1,23 @@
+{
+    "name": "provider-error",
+    "description": "Search1API 401 envelope (recorded with an invalid key): {detail} error body, zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "test"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Unauthorized: Invalid bearer credential",
+                    "message": "Unauthorized: Invalid bearer credential",
+                    "ok": false
+                }
+            }
+        }
+    ]
+}

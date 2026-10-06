@@ -1,0 +1,10 @@
+{
+    "ai-gif-generator": {
+        "body": {
+            "style": {
+                "prompt": "A paper kite drifting across a blue sky"
+            },
+            "output_format": "gif"
+        }
+    }
+}

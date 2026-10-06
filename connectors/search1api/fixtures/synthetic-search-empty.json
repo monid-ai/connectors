@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-search-empty",
+    "description": "Search1API /search completed with zero results (200 + results: []). The vendor charges this call; Monid does not pass it on, so usage is empty. Hand-built from the vendor's documented empty-result shape.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "zxqv no such phrase 7f3k",
+                    "max_results": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchParameters": {
+                        "query": "zxqv no such phrase 7f3k",
+                        "max_results": 3,
+                        "page": 1,
+                        "crawl_results": 0,
+                        "image": false,
+                        "include_sites": [],
+                        "exclude_sites": []
+                    },
+                    "results": []
+                }
+            }
+        }
+    ]
+}

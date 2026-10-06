@@ -1,0 +1,52 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no DataForSEO credentials held, 2026-09-21): the envelope is the shape v1's 2026-09-18 drill returned (status_code / cost at the top and on tasks[0], data echoing the request, result holding the rows); rows are placeholders. Unverified against live traffic — replace via `deno task record`. HTTP 200 with the one nested catalogue object the vendor returns; relayed whole (no search / limit). cost 0, FREE.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.dataforseo.com/v3/domain_analytics/technologies/technologies"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "version": "0.1.20260917",
+                    "status_code": 20000,
+                    "status_message": "Ok.",
+                    "time": "0.6 sec.",
+                    "cost": 0,
+                    "tasks_count": 1,
+                    "tasks_error": 0,
+                    "tasks": [
+                        {
+                            "id": "09211200-1535-0066-0000-e0d0d9f4a7c1",
+                            "status_code": 20000,
+                            "status_message": "Ok.",
+                            "time": "0.5 sec.",
+                            "cost": 0,
+                            "result_count": 1,
+                            "path": [
+                                "v3",
+                                "domain_analytics",
+                                "technologies",
+                                "technologies"
+                            ],
+                            "data": {
+                                "api": "domain_analytics",
+                                "function": "technologies"
+                            },
+                            "result": [
+                                {
+                                    "placeholder_group": {
+                                        "field_a": "string",
+                                        "field_b": "number"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
