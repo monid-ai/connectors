@@ -108,7 +108,7 @@ Deno.test("string#fetch: url must be http(s) with a host; method accepts any cas
         { url: "ftp://example.test/file" },
         { url: "https://" },
         { url: "https:///path" },
-        { url: "https://example.test", method: "DELETE" },
+        { url: "https://example.test", method: "TRACE" },
         { url: "https://example.test", notAField: true },
     ];
     for (const body of rejected) {
@@ -120,14 +120,16 @@ Deno.test("string#fetch: url must be http(s) with a host; method accepts any cas
             JSON.stringify(body),
         );
     }
-    // near-valid twin, lowercase method — proves the case-insensitive fix
-    const result = await runEndpoint({
-        unit,
-        input: { body: { url: "https://example.test", method: "get" } },
-        mode: "replay",
-        fixture,
-    });
-    assertEquals(result.isProviderError, false);
+    // near-valid twins: any case, and every method the vendor accepts
+    for (const method of ["get", "Delete", "head", "OPTIONS"]) {
+        const result = await runEndpoint({
+            unit,
+            input: { body: { url: "https://example.test", method } },
+            mode: "replay",
+            fixture,
+        });
+        assertEquals(result.isProviderError, false, method);
+    }
 });
 
 Deno.test("string#fetch: jsonSchema is not exposed on the input schema", async () => {

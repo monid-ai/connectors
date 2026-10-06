@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * `POST /v1/fetch` request body — the vendor mirror (String's own docs,
- * portal.usestring.ai/docs/api-reference/fetch, read 2026-09-22).
+ * portal.usestring.ai/docs/api-reference/fetch, read 2026-10-06).
  * Optionality only, per the mirror convention: String rejects any other
  * field with a 400, so the mirror is strict; defaults documented as vendor
  * behavior are applied at the endpoint binding, not here.
@@ -32,15 +32,16 @@ export const zFetchBody = z.object({
     // constraint below), so case-insensitivity is spelled out with
     // per-letter character classes instead of a flag.
     method: z.string().regex(
-        /^([gG][eE][tT]|[pP][oO][sS][tT]|[pP][uU][tT]|[pP][aA][tT][cC][hH])$/,
+        /^([gG][eE][tT]|[pP][oO][sS][tT]|[pP][uU][tT]|[pP][aA][tT][cC][hH]|[dD][eE][lL][eE][tT][eE]|[hH][eE][aA][dD]|[oO][pP][tT][iI][oO][nN][sS])$/,
     ).optional().describe(
-        "HTTP method, case-insensitive (vendor default 'GET'). `body` is " +
-            "only valid for non-GET.",
+        "HTTP method: GET, POST, PUT, PATCH, DELETE, HEAD or OPTIONS, in " +
+            "any case (vendor default 'GET'). `body` is forbidden on GET " +
+            "and HEAD.",
     ),
     body: z.union([z.string(), z.record(z.string(), z.unknown())])
         .optional().describe(
-            "Request body for POST/PUT/PATCH. Objects are JSON-" +
-                "stringified. Forbidden on GET.",
+            "Request body. A string is sent as given; an object is sent " +
+                "as its JSON text. Forbidden on GET and HEAD.",
         ),
     format: z.enum(["json", "raw", "markdown"]).optional().describe(
         "Response format (vendor default 'json').",
