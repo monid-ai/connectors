@@ -63,6 +63,11 @@ export default defineEndpoint({
             "AI structured extraction (`jsonSchema`) is not exposed by " +
             "this connector — its surcharge scales with page and " +
             "schema size with no published flat rate.",
+            "String can still bill a destination TLS/SSL failure when " +
+            "an upstream attempt already did billable work; that `502` " +
+            "names its class in `x-billed-request-type`. This connector " +
+            "settles every non-2xx at zero usage, so such a charge is not " +
+            "passed through.",
         ],
     },
     request: { method: "POST", path: "/fetch" },
