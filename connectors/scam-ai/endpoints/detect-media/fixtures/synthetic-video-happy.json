@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-video-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the POST /v1/detections envelope (scam.ai/llms.txt + api-gateway detectionEnvelope.ts, checked 2026-10-06): a video run sampled at 1 fps answered ALERT with per-frame scores, settled at 12 credits for 12 sampled frames (frames trimmed to 2 here).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.scam.ai/v1/detections"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "det_1a2b3c4d5e6f7a8b9c0d1e2f",
+                    "status": "completed",
+                    "created_at": "2026-10-06T12:01:00.000Z",
+                    "media": {
+                        "type": "video",
+                        "filename": "interview-clip.mp4",
+                        "mime_type": "video/mp4",
+                        "bytes": 24117248
+                    },
+                    "model": "Eva V1.6",
+                    "verdict": "ALERT",
+                    "score": 0.6804,
+                    "summary": "This video shows signs of AI manipulation.",
+                    "credits_used": 12,
+                    "threshold_used": 0.5,
+                    "frames": [
+                        { "t": 0.0, "score": 0.7231 },
+                        { "t": 1.0, "score": 0.6988 }
+                    ],
+                    "source": {
+                        "url": "https://example.com/interview-clip.mp4",
+                        "duration_s": 12.0,
+                        "analyzed_duration_s": 12.0,
+                        "truncated": false
+                    }
+                }
+            }
+        }
+    ]
+}

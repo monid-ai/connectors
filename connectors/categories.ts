@@ -364,4 +364,11 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Tools to pull public market data, including quotes, fundamentals, " +
             "earnings, screeners, and more.",
     },
+    {
+        id: "ai-detection",
+        displayName: "AI Detection",
+        description:
+            "Detect AI-generated or manipulated media — images, video, " +
+            "audio, and documents.",
+    },
 ]);

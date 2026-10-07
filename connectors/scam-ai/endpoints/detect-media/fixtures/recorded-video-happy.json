@@ -1,0 +1,54 @@
+{
+    "name": "recorded-video-happy",
+    "description": "Recorded from the public API on 2026-10-07 using MDN's CC0 flower video. Single synchronous call; five billed credits. The recorder trims frames to two entries while preserving credits_used: billing follows the vendor meter, not the retained frame count. Request headers are omitted.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.scam.ai/v1/detections",
+                "body": {
+                    "url": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "d64a4673-ef88-4f0d-90e1-12c0f0dccc92",
+                    "status": "completed",
+                    "created_at": "2026-10-07T23:10:57.927Z",
+                    "media": {
+                        "type": "video",
+                        "filename": "direct-d2999480117c1bb6.mp4",
+                        "mime_type": "video/mp4",
+                        "bytes": 1128375
+                    },
+                    "model": "Eva V1.6",
+                    "verdict": "LIKELY_REAL",
+                    "score": 0.01,
+                    "summary": "No strong signs of deepfake manipulation were found.",
+                    "credits_used": 5,
+                    "threshold_used": 0.5,
+                    "frames": [
+                        {
+                            "index": 0,
+                            "timestamp_s": 0,
+                            "score": 0.0006
+                        },
+                        {
+                            "index": 1,
+                            "timestamp_s": 1.011,
+                            "score": 0.0008
+                        }
+                    ],
+                    "source": {
+                        "url": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+                        "canonical_url": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+                        "platform": "direct",
+                        "title": "flower.mp4",
+                        "truncated": false
+                    }
+                }
+            }
+        }
+    ]
+}
