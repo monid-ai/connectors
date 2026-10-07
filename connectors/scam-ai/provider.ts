@@ -1,12 +1,11 @@
 import { defineProvider, presets } from "@shared/core";
 
-/** Scam.ai — AI-content detection for images, video, audio, and documents. */
+/** Scam.ai — AI-content detection for images, video, and audio. */
 export default defineProvider({
     name: "scam-ai",
     meta: {
         displayName: "Scam.ai",
-        summary:
-            "Detect AI-generated images, video, audio, and documents with one call.",
+        summary: "Detect AI-generated images, video, and audio with one call.",
         description: "Scam.ai is detection-as-an-API for AI-generated and " +
             "manipulated media — one endpoint takes a public media URL, " +
             "infers the media type server-side, and answers a verdict " +
@@ -40,7 +39,7 @@ export default defineProvider({
                 description: "the account's API credit balance ($0.02 per " +
                     "credit); each run's draw depends on the media — image " +
                     "1, video 1 per sampled frame (max 20), audio 1 per " +
-                    "minute, documents 2 per page",
+                    "minute",
             },
         },
         // The vendor's own meter settles the bill: credits_used is lifted

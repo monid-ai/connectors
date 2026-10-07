@@ -3,7 +3,7 @@
 ## Why
 
 Scam.ai provides AI-content detection as an API: one synchronous endpoint
-scores images, video, audio, and documents and answers a verdict with a
+scores images, video, and audio and answers a verdict with a
 calibrated score. Adding it gives Monid agents media-authenticity checks —
 screening attachments, verifying interview recordings, checking claim photos —
 with provider-reported credit settlement and no new engine capability.
@@ -16,7 +16,7 @@ with provider-reported credit settlement and no new engine capability.
 - Add `/v1/detections`, which scores a public https:// media URL and returns
   verdict, score, summary, and media metadata; media type is inferred
   server-side, and the rate card is media-dependent (image 1 credit, video 1
-  per sampled frame capped at 20, audio 1 per minute, documents 2 per page).
+  per sampled frame capped at 20, audio 1 per minute).
 - Add the `ai-detection` leaf category; no existing leaf covers
   detection/authenticity tooling.
 
@@ -29,6 +29,8 @@ with provider-reported credit settlement and no new engine capability.
 - Multipart file upload: the engine transport speaks JSON, so this connector
   takes public URLs only; direct upload stays with the native API and SDKs.
 - Additional Scam.ai endpoints (credit balance, usage reads).
+- Document analysis: the public detection route supports images, video, and
+  audio only.
 
 ## Impact
 

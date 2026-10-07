@@ -12,3 +12,4 @@
 - [x] 2.2 Add synthetic fixtures and replay tests (happy image, happy video, missing-meter, 402, input gate)
 - [x] 2.3 Run formatting, type checks, tests, and the id-lock update
 - [x] 2.4 Record real image/video responses with a detection-scoped key and add replay coverage for the recorded payloads and credit settlement
+- [x] 2.5 Align the supported-media descriptions and docs link with the current public detection route
