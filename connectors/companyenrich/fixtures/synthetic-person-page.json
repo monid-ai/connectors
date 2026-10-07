@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-person-page",
+    "description": "Synthetic CompanyEnrich person-page response following the official OpenAPI schema checked 2026-10-07; not recorded vendor traffic. Example identities only. Request placeholders allow reuse across endpoints with the same envelope.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "items": [
+                        {
+                            "id": "00000000-0000-4000-8000-000000000002",
+                            "name": "Example Person",
+                            "position": "Software Engineer",
+                            "experiences": []
+                        },
+                        {
+                            "id": "00000000-0000-4000-8000-000000000004",
+                            "name": "Another Example Person",
+                            "position": "Software Engineer",
+                            "experiences": []
+                        }
+                    ],
+                    "page": 1,
+                    "totalItems": 125,
+                    "totalPages": 63
+                }
+            }
+        }
+    ]
+}

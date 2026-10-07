@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-person",
+    "description": "Synthetic CompanyEnrich person response following the official OpenAPI schema checked 2026-10-07; not recorded vendor traffic. Example identities only. Request placeholders allow reuse across endpoints with the same envelope.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "00000000-0000-4000-8000-000000000002",
+                    "name": "Example Person",
+                    "position": "Software Engineer",
+                    "experiences": []
+                }
+            }
+        }
+    ]
+}

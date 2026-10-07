@@ -1,0 +1,472 @@
+import { z } from "zod";
+import {
+    zCompanyCategory,
+    zCompanyEmployees,
+    zCompanyExcludeFilters,
+    zCompanyFundingAmountRange,
+    zCompanyFundingRound,
+    zCompanyRevenue,
+    zCompanyType,
+    zCompanyWorkforceGrowthInput,
+    zCompanyWorkforceSizeInput,
+    zFeatureRequirement,
+    zNullableOfCompanyWorkforceGrowthDepartment,
+    zNullableOfCompanyWorkforceGrowthDepartment2,
+    zNullableOfCompanyWorkforceGrowthPeriod,
+    zNullableOfFilterOperator,
+    zYearRange,
+} from "../../../schema/common.ts";
+
+/** Vendor input mirror: https://docs.companyenrich.com/reference/post_people-search
+ * OpenAPI checked 2026-10-07; no connector defaults in this mirror. */
+
+export const zCompanySearchInput2 = z.object({
+    lists: z.array(z.uuid()).nullable().describe("The list IDs to filter by")
+        .optional(),
+    semanticQuery: z.string().max(500).nullable().describe(
+        "The semantic search query to find companies with. More natural language version of the standard query.",
+    ).optional(),
+    semanticWeight: z.number().min(0).max(1).nullable().describe(
+        "The semantic weight to apply to the results. Must be between 0 and 1. 0.7 is default. Larger values will prioritize semantic similarity, smaller values will prioritize traditional search factors.",
+    ).optional(),
+    exclude: zCompanyExcludeFilters.optional(),
+    query: z.string().max(250).nullable().describe(
+        "The search query to apply on the company name and domain",
+    ).optional(),
+    foundedYear: zYearRange.optional(),
+    fundingAmount: zCompanyFundingAmountRange.optional(),
+    fundingYear: zYearRange.optional(),
+    categoryOperator: zNullableOfFilterOperator.optional(),
+    keywordsOperator: zNullableOfFilterOperator.optional(),
+    technologiesOperator: zNullableOfFilterOperator.optional(),
+    workforceGrowth: zCompanyWorkforceGrowthInput.optional(),
+    workforceSize: z.array(zCompanyWorkforceSizeInput).nullable().describe(
+        "Filter companies by absolute workforce headcount. Multiple entries can be provided to filter on different departments simultaneously.",
+    ).optional(),
+    require: z.array(zFeatureRequirement).nullable().describe(
+        "The features that must exist for the company",
+    ).optional(),
+    regions: z.array(z.string()).nullable().describe(
+        "The region IDs to filter by",
+    ).optional(),
+    countries: z.array(z.string()).nullable().describe(
+        "The 2 letter country codes to filter by",
+    ).optional(),
+    states: z.array(z.number().int()).nullable().describe(
+        "The state IDs to filter by",
+    ).optional(),
+    cities: z.array(z.number().int()).nullable().describe(
+        "The city IDs to filter by",
+    ).optional(),
+    type: z.array(zCompanyType).nullable().describe(
+        "The list of company types to filter by",
+    ).optional(),
+    category: z.array(zCompanyCategory).nullable().describe(
+        "The list of company categories to filter by",
+    ).optional(),
+    employees: z.array(zCompanyEmployees).nullable().describe(
+        "The list of employee counts to filter by",
+    ).optional(),
+    reportedEmployees: z.array(zCompanyEmployees).nullable().describe(
+        "The list of externally reported employee counts to filter by",
+    ).optional(),
+    revenue: z.array(zCompanyRevenue).nullable().describe(
+        "The list of revenue ranges to filter by",
+    ).optional(),
+    naicsCode: z.array(z.number().int()).nullable().describe(
+        "The NAICS codes to filter by. Can be 2 to 6 digit codes. In case of a 2-5 digit code, all 6 digit codes under it will be included",
+    ).optional(),
+    keywords: z.array(z.string()).nullable().describe(
+        "The keywords to filter by",
+    ).optional(),
+    technologies: z.array(z.string()).nullable().describe(
+        "The technologies to filter by",
+    ).optional(),
+    fundingRounds: z.array(zCompanyFundingRound).nullable().describe(
+        "The funding rounds to filter by",
+    ).optional(),
+}).nullable().describe("The filters to be applied on the companies");
+
+export const zCompanySimilarInput = z.object({
+    domains: z.array(z.string()).min(1).max(10).describe(
+        "The domains to find similar companies for. Up to 10 domains are allowed.",
+    ).optional(),
+    similarityWeight: z.number().min(-1).max(1).describe(
+        "The similarity weight to apply to the results. Must be between -1 and 1. 0 is default. Larger values will prioritize more similar companies, smaller values will prioritize more established companies.",
+    ).optional(),
+    minScore: z.number().min(0).max(1).nullable().describe(
+        "The minimum similarity score required for results. Must be between 0 and 1. When omitted, the default cutoff is used.",
+    ).optional(),
+    exclude: zCompanyExcludeFilters.optional(),
+    query: z.string().max(250).nullable().describe(
+        "The search query to apply on the company name and domain",
+    ).optional(),
+    foundedYear: zYearRange.optional(),
+    fundingAmount: zCompanyFundingAmountRange.optional(),
+    fundingYear: zYearRange.optional(),
+    categoryOperator: zNullableOfFilterOperator.optional(),
+    keywordsOperator: zNullableOfFilterOperator.optional(),
+    technologiesOperator: zNullableOfFilterOperator.optional(),
+    workforceGrowth: zCompanyWorkforceGrowthInput.optional(),
+    workforceSize: z.array(z.unknown()).nullable().describe(
+        "Filter companies by absolute workforce headcount. Multiple entries can be provided to filter on different departments simultaneously.",
+    ).optional(),
+    require: z.array(zFeatureRequirement).nullable().describe(
+        "The features that must exist for the company",
+    ).optional(),
+    regions: z.array(z.string()).nullable().describe(
+        "The region IDs to filter by",
+    ).optional(),
+    countries: z.array(z.string()).nullable().describe(
+        "The 2 letter country codes to filter by",
+    ).optional(),
+    states: z.array(z.number().int()).nullable().describe(
+        "The state IDs to filter by",
+    ).optional(),
+    cities: z.array(z.number().int()).nullable().describe(
+        "The city IDs to filter by",
+    ).optional(),
+    type: z.array(zCompanyType).nullable().describe(
+        "The list of company types to filter by",
+    ).optional(),
+    category: z.array(zCompanyCategory).nullable().describe(
+        "The list of company categories to filter by",
+    ).optional(),
+    employees: z.array(zCompanyEmployees).nullable().describe(
+        "The list of employee counts to filter by",
+    ).optional(),
+    reportedEmployees: z.array(zCompanyEmployees).nullable().describe(
+        "The list of externally reported employee counts to filter by",
+    ).optional(),
+    revenue: z.array(zCompanyRevenue).nullable().describe(
+        "The list of revenue ranges to filter by",
+    ).optional(),
+    naicsCode: z.array(z.number().int()).nullable().describe(
+        "The NAICS codes to filter by. Can be 2 to 6 digit codes. In case of a 2-5 digit code, all 6 digit codes under it will be included",
+    ).optional(),
+    keywords: z.array(z.string()).nullable().describe(
+        "The keywords to filter by",
+    ).optional(),
+    technologies: z.array(z.string()).nullable().describe(
+        "The technologies to filter by",
+    ).optional(),
+    fundingRounds: z.array(zCompanyFundingRound).nullable().describe(
+        "The funding rounds to filter by",
+    ).optional(),
+}).nullable().describe("The filters used to find similar companies");
+
+export const zCompanyLookupInput = z.object({
+    search: zCompanySearchInput2.optional(),
+    similar: zCompanySimilarInput.optional(),
+}).nullable().describe(
+    "The filters to be applied on the companies to find people for",
+);
+
+export const zPersonDepartment = z.enum([
+    "c-suite",
+    "c-suite/executive",
+    "c-suite/finance-executive",
+    "c-suite/founder",
+    "c-suite/human-resources-executive",
+    "c-suite/information-technology-executive",
+    "c-suite/legal-executive",
+    "c-suite/marketing-executive",
+    "c-suite/medical-health-executive",
+    "c-suite/operations-executive",
+    "c-suite/sales-executive",
+    "product-management",
+    "product-management/product-development",
+    "product-management/product-management",
+    "engineering-technical",
+    "engineering-technical/artificial-intelligence-machine-learning",
+    "engineering-technical/bioengineering",
+    "engineering-technical/biometrics",
+    "engineering-technical/business-intelligence",
+    "engineering-technical/chemical-engineering",
+    "engineering-technical/cloud-mobility",
+    "engineering-technical/data-science",
+    "engineering-technical/devops",
+    "engineering-technical/digital-transformation",
+    "engineering-technical/emerging-technology-innovation",
+    "engineering-technical/engineering-technical",
+    "engineering-technical/industrial-engineering",
+    "engineering-technical/mechanic",
+    "engineering-technical/mobile-development",
+    "engineering-technical/project-management",
+    "engineering-technical/research-development",
+    "engineering-technical/scrum-master-agile-coach",
+    "engineering-technical/software-development",
+    "engineering-technical/support-technical-services",
+    "engineering-technical/technician",
+    "engineering-technical/technology-operations",
+    "engineering-technical/test-quality-assurance",
+    "engineering-technical/ui-ux",
+    "engineering-technical/web-development",
+    "design",
+    "design/all-design",
+    "design/product-ui-ux-design",
+    "design/graphic-design",
+    "education",
+    "education/teacher",
+    "education/principal",
+    "education/superintendent",
+    "education/professor",
+    "finance",
+    "finance/accounting",
+    "finance/finance",
+    "finance/financial-planning-analysis",
+    "finance/financial-reporting",
+    "finance/financial-strategy",
+    "finance/financial-systems",
+    "finance/internal-audit-control",
+    "finance/investor-relations",
+    "finance/mergers-acquisitions",
+    "finance/real-estate-finance",
+    "finance/financial-risk",
+    "finance/shared-services",
+    "finance/sourcing-procurement",
+    "finance/tax",
+    "finance/treasury",
+    "human-resources",
+    "human-resources/compensation-benefits",
+    "human-resources/culture-diversity-inclusion",
+    "human-resources/employee-labor-relations",
+    "human-resources/health-safety",
+    "human-resources/human-resource-information-system",
+    "human-resources/human-resources",
+    "human-resources/hr-business-partner",
+    "human-resources/learning-development",
+    "human-resources/organizational-development",
+    "human-resources/recruiting-talent-acquisition",
+    "human-resources/talent-management",
+    "human-resources/workforce-management",
+    "human-resources/people-operations",
+    "information-technology",
+    "information-technology/application-development",
+    "information-technology/business-service-management-itsm",
+    "information-technology/collaboration-web-app",
+    "information-technology/data-center",
+    "information-technology/data-warehouse",
+    "information-technology/database-administration",
+    "information-technology/ecommerce-development",
+    "information-technology/enterprise-architecture",
+    "information-technology/help-desk-desktop-services",
+    "information-technology/hr-financial-erp-systems",
+    "information-technology/information-security",
+    "information-technology/information-technology",
+    "information-technology/infrastructure",
+    "information-technology/it-asset-management",
+    "information-technology/it-audit-it-compliance",
+    "information-technology/it-operations",
+    "information-technology/it-procurement",
+    "information-technology/it-strategy",
+    "information-technology/it-training",
+    "information-technology/networking",
+    "information-technology/project-program-management",
+    "information-technology/quality-assurance",
+    "information-technology/retail-store-systems",
+    "information-technology/servers",
+    "information-technology/storage-disaster-recovery",
+    "information-technology/telecommunications",
+    "information-technology/virtualization",
+    "legal",
+    "legal/acquisitions",
+    "legal/compliance",
+    "legal/contracts",
+    "legal/corporate-secretary",
+    "legal/ediscovery",
+    "legal/ethics",
+    "legal/governance",
+    "legal/governmental-affairs-regulatory-law",
+    "legal/intellectual-property-patent",
+    "legal/labor-employment",
+    "legal/lawyer-attorney",
+    "legal/legal",
+    "legal/legal-counsel",
+    "legal/legal-operations",
+    "legal/litigation",
+    "legal/privacy",
+    "marketing",
+    "marketing/advertising",
+    "marketing/brand-management",
+    "marketing/content-marketing",
+    "marketing/customer-experience",
+    "marketing/customer-marketing",
+    "marketing/demand-generation",
+    "marketing/digital-marketing",
+    "marketing/ecommerce-marketing",
+    "marketing/event-marketing",
+    "marketing/field-marketing",
+    "marketing/lead-generation",
+    "marketing/marketing",
+    "marketing/marketing-analytics-insights",
+    "marketing/marketing-communications",
+    "marketing/marketing-operations",
+    "marketing/product-marketing",
+    "marketing/public-relations",
+    "marketing/search-engine-optimization-pay-per-click",
+    "marketing/social-media-marketing",
+    "marketing/strategic-communications",
+    "marketing/technical-marketing",
+    "medical-health",
+    "medical-health/anesthesiology",
+    "medical-health/chiropractics",
+    "medical-health/clinical-systems",
+    "medical-health/dentistry",
+    "medical-health/dermatology",
+    "medical-health/doctors-physicians",
+    "medical-health/epidemiology",
+    "medical-health/first-responder",
+    "medical-health/infectious-disease",
+    "medical-health/medical-administration",
+    "medical-health/medical-education-training",
+    "medical-health/medical-research",
+    "medical-health/medicine",
+    "medical-health/neurology",
+    "medical-health/nursing",
+    "medical-health/nutrition-dietetics",
+    "medical-health/obstetrics-gynecology",
+    "medical-health/oncology",
+    "medical-health/opthalmology",
+    "medical-health/optometry",
+    "medical-health/orthopedics",
+    "medical-health/pathology",
+    "medical-health/pediatrics",
+    "medical-health/pharmacy",
+    "medical-health/physical-therapy",
+    "medical-health/psychiatry",
+    "medical-health/psychology",
+    "medical-health/public-health",
+    "medical-health/radiology",
+    "medical-health/social-work",
+    "operations",
+    "operations/call-center",
+    "operations/construction",
+    "operations/corporate-strategy",
+    "operations/customer-service-support",
+    "operations/enterprise-resource-planning",
+    "operations/facilities-management",
+    "operations/leasing",
+    "operations/logistics",
+    "operations/office-operations",
+    "operations/operations",
+    "operations/physical-security",
+    "operations/project-development",
+    "operations/quality-management",
+    "operations/real-estate",
+    "operations/safety",
+    "operations/store-operations",
+    "operations/supply-chain",
+    "sales",
+    "sales/account-management",
+    "sales/business-development",
+    "sales/channel-sales",
+    "sales/customer-retention-development",
+    "sales/customer-success",
+    "sales/field-outside-sales",
+    "sales/inside-sales",
+    "sales/partnerships",
+    "sales/revenue-operations",
+    "sales/sales",
+    "sales/sales-enablement",
+    "sales/sales-engineering",
+    "sales/sales-operations",
+    "sales/sales-training",
+    "consulting",
+    "consulting/consultant",
+]);
+
+export const zPersonEducationFilterInput = z.object({
+    institutionLinkedinHandles: z.array(z.string()).nullable().describe(
+        "The LinkedIn handles of education institutions to filter by",
+    ).optional(),
+    institutionNameQuery: z.array(z.string()).nullable().describe(
+        "The search queries to apply on education institution names",
+    ).optional(),
+}).nullable().describe("The education history filters to apply");
+
+export const zPersonSeniority = z.enum([
+    "owner",
+    "founder",
+    "c-suite",
+    "partner",
+    "vp",
+    "head",
+    "director",
+    "manager",
+    "senior",
+    "entry",
+    "intern",
+]);
+
+export const zPersonExcludeFilters = z.object({
+    positionQuery: z.array(z.string()).nullable().describe(
+        "The list of search queries to exclude on the person's current job position/title",
+    ).optional(),
+    countries: z.array(z.string()).nullable().describe(
+        "The 2 letter country codes to filter by",
+    ).optional(),
+    domains: z.array(z.string()).nullable().describe(
+        "The domains to find people for. Up to 2,500 domains are allowed.",
+    ).optional(),
+    seniority: z.array(zPersonSeniority).nullable().describe(
+        "The seniorities to filter by",
+    ).optional(),
+    department: z.array(zPersonDepartment).nullable().describe(
+        "The departments to filter by",
+    ).optional(),
+    education: zPersonEducationFilterInput.optional(),
+}).nullable().describe(
+    "Exclusion filters to apply on the people. If a person matches any of the filters here, it will be excluded from the results.",
+);
+
+export const zPersonSearchPageInput = z.object({
+    page: z.number().int().min(1).max(1000000).describe(
+        "The page number to return. Must be greater than 0",
+    ).optional(),
+    pageSize: z.number().int().min(1).max(100).describe(
+        "The number of results to return in each page. Must be between 1 and 100",
+    ).optional(),
+    companyFilter: zCompanyLookupInput.optional(),
+    query: z.string().max(250).nullable().describe(
+        "The search query to apply on the company name and domain",
+    ).optional(),
+    positionQuery: z.array(z.string()).nullable().describe(
+        "The list of search queries to apply on the person's current job position/title",
+    ).optional(),
+    atCurrentCompanyAfter: z.iso.datetime({ offset: true }).nullable().describe(
+        "Filter by current company join date - only include people who joined after this UTC date",
+    ).optional(),
+    atCurrentCompanyBefore: z.iso.datetime({ offset: true }).nullable()
+        .describe(
+            "Filter by current company join date - only include people who joined before this UTC date",
+        ).optional(),
+    atCurrentPositionAfter: z.iso.datetime({ offset: true }).nullable()
+        .describe(
+            "Filter by current position start date - only include people who started after this UTC date",
+        ).optional(),
+    atCurrentPositionBefore: z.iso.datetime({ offset: true }).nullable()
+        .describe(
+            "Filter by current position start date - only include people who started before this UTC date",
+        ).optional(),
+    exclude: zPersonExcludeFilters.optional(),
+    countries: z.array(z.string()).nullable().describe(
+        "The 2 letter country codes to filter by",
+    ).optional(),
+    domains: z.array(z.string()).nullable().describe(
+        "The domains to find people for. Up to 2,500 domains are allowed.",
+    ).optional(),
+    seniority: z.array(zPersonSeniority).nullable().describe(
+        "The seniorities to filter by",
+    ).optional(),
+    department: z.array(zPersonDepartment).nullable().describe(
+        "The departments to filter by",
+    ).optional(),
+    education: zPersonEducationFilterInput.optional(),
+});
+
+export const zSearchPeopleQuery = z.object({
+    expand: z.array(z.enum(["education"])).describe(
+        "Expandable response fields. Repeat the parameter to request multiple expansions.\n\nSupported values:\n- `education`: costs 1 credit per person and adds the `education` field to `PersonInfo`.",
+    ).optional(),
+});
