@@ -1,0 +1,49 @@
+{
+    "name": "synthetic-success",
+    "description": "Synthetic shared MCP transport case; contains no household records or credentials.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "structuredContent": {
+                            "ok": true,
+                            "schemaVersion": "4",
+                            "data": {
+                                "synthetic": true
+                            },
+                            "currency": "USD",
+                            "timezone": "America/Los_Angeles",
+                            "asOf": "2026-10-07",
+                            "householdRevision": 0,
+                            "quality": {
+                                "state": "partial",
+                                "reasons": [
+                                    "Synthetic fixture; connected sources are incomplete."
+                                ]
+                            },
+                            "evidence": [],
+                            "page": {
+                                "returnedCount": 0,
+                                "totalCount": null,
+                                "truncated": false,
+                                "nextCursor": null
+                            },
+                            "warnings": [
+                                "Synthetic replay result."
+                            ]
+                        },
+                        "content": []
+                    }
+                }
+            }
+        }
+    ]
+}

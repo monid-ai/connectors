@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-forbidden",
+    "description": "Synthetic shared MCP transport case; contains no household records or credentials.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 403,
+                "body": {
+                    "code": "AGENT_GRANT_REVOKED",
+                    "error": "Grant expired or revoked."
+                }
+            }
+        }
+    ]
+}

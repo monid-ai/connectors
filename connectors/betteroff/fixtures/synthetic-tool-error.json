@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-tool-error",
+    "description": "Synthetic shared MCP transport case; contains no household records or credentials.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "isError": true,
+                        "structuredContent": {
+                            "ok": false,
+                            "code": "AGENT_ACCESS_DENIED",
+                            "error": "Synthetic denial."
+                        },
+                        "content": []
+                    }
+                }
+            }
+        }
+    ]
+}

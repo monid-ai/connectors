@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-rpc-error",
+    "description": "Synthetic shared MCP transport case; contains no household records or credentials.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "error": {
+                        "code": -32602,
+                        "message": "Invalid params"
+                    }
+                }
+            }
+        }
+    ]
+}

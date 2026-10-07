@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "Synthetic shared MCP transport case; contains no household records or credentials.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": null,
+                    "error": {
+                        "code": -32000,
+                        "message": "missing authorization header"
+                    }
+                }
+            }
+        }
+    ]
+}
