@@ -1,0 +1,25 @@
+{
+    "name": "not-media",
+    "description": "recorded chain for unsavedai#transcribe, scenario 'not-media': caller passed a social post page instead of a media file; 400 not_media, unbilled",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tools.unsavedai.com/v1/transcribe",
+                "body": {
+                    "url": "https://www.tiktok.com/@nasa",
+                    "max_minutes": 1
+                }
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": {
+                        "code": "not_media",
+                        "message": "The URL returned a web page, not a media file. Pass a direct audio/video file URL (for example the download URL returned by a TikTok, Instagram or Douyin video-download tool)."
+                    }
+                }
+            }
+        }
+    ]
+}

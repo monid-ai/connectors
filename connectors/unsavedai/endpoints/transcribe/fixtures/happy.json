@@ -1,0 +1,50 @@
+{
+    "name": "happy",
+    "description": "recorded chain for unsavedai#transcribe, scenario 'happy': first minute of the JFK inaugural address (US public domain), segments requested; 1 billed minute",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tools.unsavedai.com/v1/transcribe",
+                "body": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/JFK_inaugural_address.ogg",
+                    "max_minutes": 1,
+                    "include": [
+                        "segments"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "text": "Vice President Johnson, Mr. Speaker, Mr. Chief Justice, President Eisenhower, Vice President Nixon, President Truman, Reverend Clergy, fellow citizens. We observe today not a victory of party, but a celebration of freedom, symbolizing an end as well as a beginning, signifying renewal as well as change. For I have sworn before you and Almighty God the same solemn oath our forebears prescribed nearly a century and three quarters ago. The world is very different now, for man holds in his mortal han",
+                    "language": "en",
+                    "language_probability": 0.996,
+                    "translated_to_english": false,
+                    "duration_seconds": 840.23,
+                    "processed_seconds": 60,
+                    "truncated": true,
+                    "complete": true,
+                    "model": "large-v3-turbo",
+                    "usage": {
+                        "billed_minutes": 1,
+                        "price_per_minute_usd": 0.003,
+                        "cost_usd": 0.003
+                    },
+                    "segments": [
+                        {
+                            "start": 0.34,
+                            "end": 10.88,
+                            "text": "Vice President Johnson, Mr. Speaker, Mr. Chief Justice, President Eisenhower, Vice President"
+                        },
+                        {
+                            "start": 10.88,
+                            "end": 16.8,
+                            "text": "Nixon, President Truman, Reverend Clergy, fellow citizens."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
