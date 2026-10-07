@@ -1,4 +1,4 @@
-import { join } from "@std/path";
+import { basename, dirname, fromFileUrl, join } from "@std/path";
 import { ensureDir, walk } from "@std/fs";
 import {
     type Bundle,
@@ -11,7 +11,7 @@ import {
 import type { Json } from "@shared/core";
 import { compileBundle } from "@shared/compiler";
 
-export const REPO_ROOT = new URL("../", import.meta.url).pathname;
+export const REPO_ROOT = fromFileUrl(new URL("../", import.meta.url));
 export const OUTPUT_DIR = join(REPO_ROOT, ".output");
 
 /** Versions read as DATA (scripts do not need the packages' code). */
@@ -48,7 +48,7 @@ export async function inputsKey(versions: string[]): Promise<string> {
 }
 
 /**
- * The ONE place the user-facing endpoint id form ("exa#search") is split —
+ * The ONE place the user-facing endpoint id form ("exa#search") is split -
  * needed only where the two halves matter separately (record's fixture
  * path). Bundle lookups take the id directly (sealUnit, inspectEndpoint).
  */
@@ -97,8 +97,8 @@ export async function compileToOutput(
         compilerVersion(),
     ]);
     const key = await inputsKey([engine, compiler]);
-    // ALWAYS the whole repo → ONE artifact. Lookups (provider/endpoint) read
-    // the compiled bundle — never re-load defs (design D28).
+    // ALWAYS the whole repo ? ONE artifact. Lookups (provider/endpoint) read
+    // the compiled bundle - never re-load defs (design D28).
     const outputPath = join(OUTPUT_DIR, "catalog.json");
     const keyPath = `${outputPath}.key`;
 
@@ -141,15 +141,15 @@ export async function compileToOutput(
 
 /**
  * Locate an endpoint's SOURCE directory under
- * `connectors/<provider>/endpoints/**` — endpoints may sit inside GROUP
- * directories (the platform grouping, e.g. apify/endpoints/amazon/…), and
+ * `connectors/<provider>/endpoints/**` - endpoints may sit inside GROUP
+ * directories (the platform grouping, e.g. apify/endpoints/amazon/.), and
  * since design D22 the endpoint IDENTITY is the def's native path, not
  * the folder name. `endpoint` is the id tail ("apidojo/tweet-scraper",
  * "v1/company/search", "search"); matched in order:
  *   1. a pinned `endpoint: "/<identity>"` field in the def source,
  *   2. a `request.path` whose trailing-slash-stripped form is the
  *      identity (the default-identity rule),
- *   3. the LEAF directory name (pre-D22 convention — scaffold refreshes
+ *   3. the LEAF directory name (pre-D22 convention - scaffold refreshes
  *      still address dirs directly).
  */
 export async function findEndpointDir(
@@ -164,7 +164,7 @@ export async function findEndpointDir(
             match: [/endpoint\.ts$/],
         })
     ) {
-        const dir = entry.path.slice(0, -"/endpoint.ts".length);
+        const dir = dirname(entry.path);
         const source = await Deno.readTextFile(entry.path);
         if (source.includes(`endpoint: "/${endpoint}"`)) return dir;
         if (
@@ -173,23 +173,23 @@ export async function findEndpointDir(
         ) {
             return dir;
         }
-        if (dir.endsWith(`/${endpoint}`)) leafMatch = dir;
+        if (basename(dir) === endpoint) leafMatch = dir;
     }
     return leafMatch;
 }
 
-// ── publish emit (.output/publish/) ─────────────────────────────────────
+// ?? publish emit (.output/publish/) ?????????????????????????????????????
 //
 // The split, content-addressed layout the hosted catalog service ingests
 // from S3 (the manifest schema is mirrored as zPublishManifest in
-// monid-services' shared/models/catalog/publish.ts — the publish job's
+// monid-services' shared/models/catalog/publish.ts - the publish job's
 // download-verify step validates against it, so drift fails loudly there):
 //
 //   .output/publish/
-//   ├── latest.json                          ← pointer; uploaded LAST by CI
-//   └── publishes/
-//       ├── <tag>/manifest.json
-//       └── objects/sha256/<hex>.json        ← doc + fn payloads, pooled
+//   ??? latest.json                          ? pointer; uploaded LAST by CI
+//   ??? publishes/
+//       ??? <tag>/manifest.json
+//       ??? objects/sha256/<hex>.json        ? doc + fn payloads, pooled
 //
 // Objects are content-addressed and pooled across tags, so `aws s3 sync`
 // moves only genuinely new content and the catalog's diff ingest skips
@@ -255,7 +255,7 @@ export async function emitPublish(
         });
     }
     // The fnTable key hashes only the normalized `src`, but the stored
-    // object is the FULL entry (api/kind/src/provenance) — provenance can
+    // object is the FULL entry (api/kind/src/provenance) - provenance can
     // change while src stays identical. Pooled objects must be addressed by
     // the bytes they contain, so the STORAGE key is the hash of the whole
     // entry; the fnTable key stays the logical id in the manifest.
