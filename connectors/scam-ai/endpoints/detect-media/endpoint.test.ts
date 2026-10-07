@@ -52,6 +52,62 @@ Deno.test(`${ID} happy (synthetic): a video run settles per sampled frame`, asyn
     });
 });
 
+Deno.test(`${ID} happy (recorded): an image run preserves the response payload`, async () => {
+    const unit = await testSealedUnit(ID);
+    const fixture = await loadFixture(
+        `${fixturesDir}recorded-image-happy.json`,
+    );
+    const result = await runEndpoint({
+        unit,
+        input: { body: fixture.calls[0].req.body },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.usage, {
+        credits: { default: 1 },
+        evidence: { CREDIT: 1 },
+    });
+    const { credits_used: _settled, ...body } = fixture.calls[0].res
+        .body as Record<string, Json>;
+    assertEquals(
+        ((result.output as Record<string, Json>).media as Record<string, Json>)
+            .type,
+        "image",
+    );
+    assertEquals((result.output as Record<string, Json>).media, body.media);
+    assertEquals(result.output, body);
+});
+
+Deno.test(`${ID} happy (recorded): a video run preserves the response payload`, async () => {
+    const unit = await testSealedUnit(ID);
+    const fixture = await loadFixture(
+        `${fixturesDir}recorded-video-happy.json`,
+    );
+    const result = await runEndpoint({
+        unit,
+        input: { body: fixture.calls[0].req.body },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.usage, {
+        credits: { default: 5 },
+        evidence: { CREDIT: 5 },
+    });
+    const { credits_used: _settled, ...body } = fixture.calls[0].res
+        .body as Record<string, Json>;
+    assertEquals(
+        ((result.output as Record<string, Json>).media as Record<string, Json>)
+            .type,
+        "video",
+    );
+    assertEquals((result.output as Record<string, Json>).media, body.media);
+    assertEquals(result.output, body);
+});
+
 Deno.test(`${ID}: a 200 without the vendor's meter fails instead of settling zero`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);

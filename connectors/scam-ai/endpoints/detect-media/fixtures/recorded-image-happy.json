@@ -1,0 +1,41 @@
+{
+    "name": "recorded-image-happy",
+    "description": "Recorded from the public API on 2026-10-07 using Wikimedia's sample flower image. Single synchronous call; one billed credit. Request headers are omitted by the recorder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.scam.ai/v1/detections",
+                "body": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "2a2e553f-9b5a-4b60-bee6-ef8f27f944e7",
+                    "status": "completed",
+                    "created_at": "2026-10-07T23:10:24.641Z",
+                    "media": {
+                        "type": "image",
+                        "filename": "direct-7dc44aad3f2acbaa.jpeg",
+                        "mime_type": "image/jpeg",
+                        "bytes": 36287
+                    },
+                    "model": "Eva V1.6",
+                    "verdict": "LIKELY_REAL",
+                    "score": 0,
+                    "summary": "No strong signs of AI generation or editing were found.",
+                    "credits_used": 1,
+                    "source": {
+                        "url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg",
+                        "canonical_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/JPEG_example_flower.jpg",
+                        "platform": "direct",
+                        "title": "JPEG_example_flower.jpg",
+                        "truncated": false
+                    }
+                }
+            }
+        }
+    ]
+}
