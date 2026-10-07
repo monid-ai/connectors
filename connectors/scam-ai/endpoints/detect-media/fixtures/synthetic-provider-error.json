@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. Shape from the documented error contract (scam.ai/docs/errors, checked 2026-10-06): 402 INSUFFICIENT_CREDITS when the key is out of credits — an error, never a reassuring verdict.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.scam.ai/v1/detections"
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "success": false,
+                    "error": {
+                        "code": "INSUFFICIENT_CREDITS",
+                        "message": "This API key is out of credits. Top up the balance at app.scam.ai to keep detecting."
+                    }
+                }
+            }
+        }
+    ]
+}
