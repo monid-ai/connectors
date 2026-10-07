@@ -16,7 +16,8 @@
                 "body": {
                     "error": {
                         "code": "not_media",
-                        "message": "The URL returned a web page, not a media file. Pass a direct audio/video file URL (for example the download URL returned by a TikTok, Instagram or Douyin video-download tool)."
+                        "message": "The URL returned a web page, not a media file. Pass a direct audio/video file URL (for example the download URL returned by a TikTok, Instagram or Douyin video-download tool).",
+                        "request_id": "6a64ae70f55f4387"
                     }
                 }
             }

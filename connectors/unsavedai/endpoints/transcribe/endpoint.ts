@@ -4,9 +4,9 @@ import { zTranscribeBody } from "./schema/inputs.ts";
 /**
  * UnsavedAI /v1/transcribe — speech-to-text for a media file URL.
  *
- * Billed per started minute of processed audio. `max_minutes` is the
+ * Billed per second of processed audio ($0.003/min). `max_minutes` is the
  * caller's cap and therefore the pre-run estimate (D25: limiting knob
- * REQUIRED at the binding); the settle reads the minutes actually
+ * REQUIRED at the binding); the settle reads the seconds actually
  * processed from the raw envelope.
  */
 export default defineEndpoint({
@@ -19,7 +19,8 @@ export default defineEndpoint({
             "Pair it with a video-download endpoint: fetch a TikTok, " +
             "Instagram Reel, Douyin or podcast file URL first, then pass it " +
             "here. 'include' adds timestamped 'segments' and 'srt'/'vtt' " +
-            "subtitles. 'max_minutes' (1-30) caps how much audio is processed " +
+            "subtitles. Billed per second of audio ($0.003/min). " +
+            "'max_minutes' (1-30) caps how much audio is processed " +
             "and billed; longer media is truncated and flagged 'truncated'. " +
             "Typical speed is ~9x real time (a 1-minute clip in ~7 s). A web " +
             "page URL fails fast with 'not_media' and a busy server answers " +
@@ -44,18 +45,19 @@ export default defineEndpoint({
     usage: {
         model: {
             kind: UsageModelKind.PER_UNIT,
-            unit: Unit.MINUTE,
-            label: "audio minutes",
-            consumes: { credit: "default", amount: 0.003 },
+            unit: Unit.SECOND,
+            label: "audio seconds",
+            // $0.003 per minute, billed per second
+            consumes: { credit: "default", amount: 0.00005 },
         },
         estimate: ({ data }) => ({
-            counts: { "MINUTE": data.input.body.max_minutes },
+            counts: { "SECOND": data.input.body.max_minutes * 60 },
         }),
         evidence: ({ data, utils }) => ({
             counts: {
-                "MINUTE": utils.json.optionalNum(
+                "SECOND": utils.json.optionalNum(
                     data.output,
-                    "$.usage.billed_minutes",
+                    "$.usage.billed_seconds",
                 ) ?? 0,
             },
         }),

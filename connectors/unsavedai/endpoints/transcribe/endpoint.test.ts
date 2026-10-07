@@ -9,7 +9,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 
-Deno.test("unsavedai#transcribe happy: cost_usd claim agrees with 1 started minute × $0.003", async () => {
+Deno.test("unsavedai#transcribe happy: cost_usd claim agrees with 60 billed seconds × $0.00005", async () => {
     const unit = await testSealedUnit("unsavedai#transcribe");
     const fixture = await loadFixture(`${fixturesDir}happy.json`);
     const result = await runEndpoint({
@@ -27,7 +27,7 @@ Deno.test("unsavedai#transcribe happy: cost_usd claim agrees with 1 started minu
     assertEquals(result.httpStatus, 200);
     assertEquals(result.usage, {
         credits: { default: 0.003 },
-        evidence: { MINUTE: 1 },
+        evidence: { SECOND: 60 },
     });
     assert(!("usage" in (result.output as Record<string, unknown>)));
 });
@@ -67,6 +67,6 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.evidence, { MINUTE: 1 });
+        assertEquals(result.usage.evidence, { SECOND: 60 });
     },
 });

@@ -1,6 +1,6 @@
 {
     "name": "happy",
-    "description": "recorded chain for unsavedai#transcribe, scenario 'happy': first minute of the JFK inaugural address (US public domain), segments requested; 1 billed minute",
+    "description": "recorded chain for unsavedai#transcribe, scenario 'happy': first minute of the JFK inaugural address (US public domain), segments requested; 60 billed seconds",
     "calls": [
         {
             "req": {
@@ -17,6 +17,7 @@
             "res": {
                 "status": 200,
                 "body": {
+                    "request_id": "7d5da3ce4fd3460c",
                     "text": "Vice President Johnson, Mr. Speaker, Mr. Chief Justice, President Eisenhower, Vice President Nixon, President Truman, Reverend Clergy, fellow citizens. We observe today not a victory of party, but a celebration of freedom, symbolizing an end as well as a beginning, signifying renewal as well as change. For I have sworn before you and Almighty God the same solemn oath our forebears prescribed nearly a century and three quarters ago. The world is very different now, for man holds in his mortal han",
                     "language": "en",
                     "language_probability": 0.996,
@@ -27,7 +28,7 @@
                     "complete": true,
                     "model": "large-v3-turbo",
                     "usage": {
-                        "billed_minutes": 1,
+                        "billed_seconds": 60,
                         "price_per_minute_usd": 0.003,
                         "cost_usd": 0.003
                     },
@@ -35,12 +36,14 @@
                         {
                             "start": 0.34,
                             "end": 10.88,
-                            "text": "Vice President Johnson, Mr. Speaker, Mr. Chief Justice, President Eisenhower, Vice President"
+                            "text": "Vice President Johnson, Mr. Speaker, Mr. Chief Justice, President Eisenhower, Vice President",
+                            "confidence": 0.858
                         },
                         {
                             "start": 10.88,
                             "end": 16.8,
-                            "text": "Nixon, President Truman, Reverend Clergy, fellow citizens."
+                            "text": "Nixon, President Truman, Reverend Clergy, fellow citizens.",
+                            "confidence": 0.858
                         }
                     ]
                 }
