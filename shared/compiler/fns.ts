@@ -30,6 +30,25 @@ export async function extractFn(
     provenance: string,
     fnAbiSince: string,
 ): Promise<ExtractedFn> {
+    return await extractFnWithCache(fn, provenance, fnAbiSince);
+}
+
+/** Cache only successful, source-dependent analysis. Per-use ABI,
+ * provenance, kind and factory arguments remain independently constructed. */
+async function extractFnWithCache(
+    fn: unknown,
+    provenance: string,
+    fnAbiSince: string,
+    analyzed?: Map<string, string>,
+): Promise<ExtractedFn> {
+    const analyze = async (src: string, label: string): Promise<string> => {
+        const cached = analyzed?.get(src);
+        if (cached !== undefined) return cached;
+        lintClosedTerm(src, label);
+        const key = await fnKey(src);
+        analyzed?.set(src, key);
+        return key;
+    };
     if (typeof fn !== "function") {
         throw new Error(`${provenance}: expected a function, got ${typeof fn}`);
     }
@@ -38,9 +57,7 @@ export async function extractFn(
             (fn as unknown as Record<symbol, PresetMeta>)[PRESET_MARKER];
         const src = normalizeFnSource(meta.src);
 
-        lintClosedTerm(src, `preset ${meta.name} (${provenance})`);
-
-        const key = await fnKey(src);
+        const key = await analyze(src, `preset ${meta.name} (${provenance})`);
         return {
             key,
             entry: parseSchema(zFnEntry, {
@@ -56,8 +73,7 @@ export async function extractFn(
         };
     }
     const src = normalizeFnSource(fn.toString());
-    lintClosedTerm(src, provenance);
-    const key = await fnKey(src);
+    const key = await analyze(src, provenance);
     return {
         key,
         entry: parseSchema(zFnEntry, {
@@ -73,13 +89,19 @@ export async function extractFn(
 /** Interning table builder — identical normalized source ⇒ one shared entry. */
 export class FnInterner {
     readonly table: Record<string, FnEntry> = {};
+    private readonly analyzed = new Map<string, string>();
 
     async intern(
         fn: unknown,
         provenance: string,
         fnAbiSince: string,
     ): Promise<FnRef> {
-        const { key, entry, ref } = await extractFn(fn, provenance, fnAbiSince);
+        const { key, entry, ref } = await extractFnWithCache(
+            fn,
+            provenance,
+            fnAbiSince,
+            this.analyzed,
+        );
         const existing = this.table[key];
         if (existing) {
             if (existing.src !== entry.src) {
