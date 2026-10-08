@@ -1,0 +1,36 @@
+{
+    "name": "empty",
+    "description": "Recorded chain for jobspipe#v1/jobs/search (2026-10-07): a valid search that matches nothing. A 200 with an empty data[], credits_charged 0 and a next_delta_cursor — nothing to bill.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/search",
+                "body": {
+                    "job_title_or": [
+                        "zzzz-no-such-title-qqq"
+                    ],
+                    "limit": 5
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "metadata": {
+                        "total_results": null,
+                        "truncated_results": 0,
+                        "total_companies": null,
+                        "truncated_companies": 0,
+                        "next_cursor": null,
+                        "next_delta_cursor": "ZGMxOjIwMjYtMTAtMDcgMDc6MTA6NDk",
+                        "credits_charged": 0,
+                        "jobs_already_paid": 0,
+                        "credits_remaining": 9007199254725794,
+                        "credits_allowance": 9007199254740991
+                    },
+                    "data": []
+                }
+            }
+        }
+    ]
+}

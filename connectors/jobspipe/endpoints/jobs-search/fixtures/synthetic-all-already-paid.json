@@ -1,0 +1,57 @@
+{
+    "name": "synthetic-all-already-paid",
+    "description": "SYNTHETIC (hand-derived from synthetic-already-paid): every posting on the page was paid for earlier this month \u2014 the vendor claims 0 credits for 3 rows (jobs_already_paid: 3). Not recordable from one account on demand.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/search",
+                "body": {
+                    "job_title_or": [
+                        "data engineer"
+                    ],
+                    "job_country_code_or": [
+                        "US"
+                    ],
+                    "limit": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "metadata": {
+                        "total_results": null,
+                        "truncated_results": 3,
+                        "total_companies": null,
+                        "truncated_companies": 0,
+                        "next_cursor": "eyJvZmZzZXQiOjN9",
+                        "credits_charged": 0,
+                        "jobs_already_paid": 3,
+                        "credits_remaining": 24997,
+                        "credits_allowance": 25000
+                    },
+                    "data": [
+                        {
+                            "id": 101,
+                            "job_title": "Senior Data Engineer",
+                            "company": "Acme Analytics",
+                            "status": "active"
+                        },
+                        {
+                            "id": 102,
+                            "job_title": "Data Engineer II",
+                            "company": "Globex Retail",
+                            "status": "active"
+                        },
+                        {
+                            "id": 104,
+                            "job_title": "Analytics Engineer",
+                            "company": "Umbrella Health",
+                            "status": "active"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

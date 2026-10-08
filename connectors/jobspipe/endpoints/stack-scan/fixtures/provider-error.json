@@ -1,0 +1,21 @@
+{
+    "name": "provider-error",
+    "description": "Recorded chain for jobspipe#v1/stack/scan (2026-10-07): a string that is not a domain. A 400 {error: 'not a valid domain: …'} — error-as-data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/stack/scan",
+                "body": {
+                    "domain": "not a domain"
+                }
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "not a valid domain: not a domain"
+                }
+            }
+        }
+    ]
+}

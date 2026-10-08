@@ -1,0 +1,24 @@
+{
+    "name": "empty",
+    "description": "Recorded chain for jobspipe#v1/stack/scan (2026-10-07): a domain the scanner could not fetch (stripe.com answered no HTTP response — http_status 0 — and the empty result is cached upstream for 14 days). A 200 with detected [] — JobsPipe bills a scan only when it detected something, so this costs nothing.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/stack/scan",
+                "body": {
+                    "domain": "stripe.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "domain": "stripe.com",
+                    "scanned_at": "2026-10-06T14:50:14Z",
+                    "http_status": 0,
+                    "detected": []
+                }
+            }
+        }
+    ]
+}

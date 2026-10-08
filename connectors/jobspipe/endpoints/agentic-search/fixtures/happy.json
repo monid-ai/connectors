@@ -1,0 +1,473 @@
+{
+    "name": "happy",
+    "description": "Recorded chain for jobspipe#v1/jobs/agentic-search (2026-10-07, trimmed): a plain-language query with limit 2 returns 2 ranked postings, the plan under metadata.agentic (lanes, judge, timings) and the vendor's meter (credits_charged 2, jobs_already_paid 0). The vendor reports truncated_results 0 on this surface even with rows in data[] — evidence counts data[], not the metadata.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/agentic-search",
+                "body": {
+                    "query": "senior backend engineer in Berlin, visa sponsorship, hybrid ok",
+                    "limit": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "metadata": {
+                        "total_results": null,
+                        "truncated_results": 0,
+                        "total_companies": 0,
+                        "truncated_companies": 0,
+                        "next_cursor": null,
+                        "next_delta_cursor": null,
+                        "credits_charged": 2,
+                        "jobs_already_paid": 0,
+                        "agentic": {
+                            "intent": "Senior backend engineer in Berlin, with visa sponsorship, and hybrid work arrangement is acceptable.",
+                            "role_intent": "Senior backend engineer",
+                            "rounds": 1,
+                            "stop": "enough candidates passed",
+                            "candidates": 25,
+                            "dropped": 0,
+                            "passed": 6,
+                            "fallback_used": false,
+                            "lanes": [
+                                {
+                                    "round": 1,
+                                    "name": "Senior Backend Engineer - Berlin",
+                                    "filters": {
+                                        "job_title_or": [
+                                            "Senior Backend Engineer",
+                                            "Lead Backend Engineer"
+                                        ],
+                                        "job_country_code_or": [
+                                            "DE"
+                                        ],
+                                        "city_or": [
+                                            "Berlin"
+                                        ],
+                                        "include_unknown": [
+                                            "visa_sponsorship",
+                                            "work_arrangement"
+                                        ],
+                                        "posted_at_max_age_days": 90
+                                    },
+                                    "returned": 0,
+                                    "relevant": 0,
+                                    "ms": 8000,
+                                    "error": "cut at the soft cap after 8000 ms"
+                                },
+                                {
+                                    "round": 1,
+                                    "name": "Backend Engineer - Berlin (Broader Seniority)",
+                                    "filters": {
+                                        "job_title_or": [
+                                            "Backend Engineer",
+                                            "Software Engineer Backend"
+                                        ],
+                                        "job_country_code_or": [
+                                            "DE"
+                                        ],
+                                        "city_or": [
+                                            "Berlin"
+                                        ],
+                                        "include_unknown": [
+                                            "visa_sponsorship",
+                                            "work_arrangement"
+                                        ],
+                                        "posted_at_max_age_days": 90
+                                    },
+                                    "returned": 0,
+                                    "relevant": 0,
+                                    "ms": 8000,
+                                    "error": "cut at the soft cap after 8000 ms"
+                                }
+                            ],
+                            "judge": [
+                                {
+                                    "key": "seniority",
+                                    "question": "What is the seniority level of the role?",
+                                    "want": "yes",
+                                    "hard": false
+                                },
+                                {
+                                    "key": "location_match",
+                                    "question": "Is the job located in Berlin?",
+                                    "want": "yes",
+                                    "hard": false
+                                }
+                            ],
+                            "verify": {},
+                            "jev_calls": 4,
+                            "jev_failed_batches": 0,
+                            "recheck": {
+                                "ran": true,
+                                "candidates": 10,
+                                "failed": false,
+                                "ms": 281
+                            },
+                            "timings": {
+                                "planner_ms": 2620,
+                                "search_ms": 8003,
+                                "jev_ms": 631,
+                                "total_ms": 11270
+                            }
+                        },
+                        "credits_remaining": 9007199254725790,
+                        "credits_allowance": 9007199254740991
+                    },
+                    "data": [
+                        {
+                            "id": "9c6e78e68160f296",
+                            "job_title": "Senior Backend Engineer",
+                            "url": "https://www.indeed.com/viewjob?jk=9c6e78e68160f296",
+                            "date_posted": "2026-10-06T05:00:00+00:00",
+                            "has_blurred_data": false,
+                            "company": "GetYourGuide",
+                            "final_url": null,
+                            "source_url": "https://www.indeed.com/viewjob?jk=9c6e78e68160f296",
+                            "location": "Berlin",
+                            "short_location": "Berlin",
+                            "long_location": "Berlin",
+                            "state_code": "BE",
+                            "latitude": 52.52437,
+                            "longitude": 13.41053,
+                            "coordinates_source": "source",
+                            "postal_code": null,
+                            "remote": false,
+                            "hybrid": true,
+                            "salary_string": null,
+                            "min_annual_salary": null,
+                            "min_annual_salary_usd": null,
+                            "max_annual_salary": null,
+                            "max_annual_salary_usd": null,
+                            "avg_annual_salary_usd": null,
+                            "salary_currency": null,
+                            "countries": [
+                                "Deutschland"
+                            ],
+                            "country": "Deutschland",
+                            "country_codes": [
+                                "DE"
+                            ],
+                            "country_code": "DE",
+                            "cities": [
+                                "Berlin"
+                            ],
+                            "continents": [
+                                "Europe"
+                            ],
+                            "seniority": "senior",
+                            "discovered_at": "2026-10-06T14:56:33.429549+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": "getyourguide.com",
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "java",
+                                "spring"
+                            ],
+                            "keyword_slugs": [
+                                "customer-focus",
+                                "mentoring"
+                            ],
+                            "occupation_code": "2512",
+                            "occupation_label": "Software Developers",
+                            "employer_type": "employer",
+                            "isic_division": "79",
+                            "isic_division_label": "Travel agency, tour operator, reservation service and related activities",
+                            "description": "Change the way the world travels\n\nJoin the GetYourGuide journey to connect people with unforgettable travel experiences around the world. Millions look to us for unique activities they can trust, and it's all powered by our commitment to make every single journey extraordinary - including yours. Ready to unlock your potential with a community of fellow explorers? Find your next role at our Berlin HQ or one of our local offices around the globe, from New York to Bangkok. Head to getyourguide.care",
+                            "company_object": {
+                                "name": "GetYourGuide",
+                                "domain": "getyourguide.com",
+                                "url": "https://getyourguide.careers/",
+                                "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQGt0La3X2N-eA/company-logo_200_200/B4DZ09lyFwJMAI-/0/1774854808323/getyourguide_ag_logo?e=2147483647&v=beta&t=5KybumizGnOh-oipblX9ygIat4YscylXVDcJZBeZpTw",
+                                "employee_count": 1525,
+                                "employee_count_min": 51,
+                                "linkedin_url": "https://de.linkedin.com/company/getyourguide-ag",
+                                "description": "GetYourGuide is a leading global online marketplace to discover and book experiences worth traveling for. Travelers can use GetYourGuide to find things to do in more than 18,000 cities, including tours from local experts, exclusive access to must-see attractions, as well as immersive bucket-list experiences. More than 50,000 supply partners leverage GetYourGuide’s easy-to-use platform to grow their businesses, offering 200,000 experiences to travelers around the world. \n\nIf you share our passion",
+                                "founded": "2009",
+                                "location": {
+                                    "street": "Sonnenburger Straße 73",
+                                    "city": "Berlin",
+                                    "region": "Berlin",
+                                    "postal_code": "10437",
+                                    "country": "DE"
+                                },
+                                "intelligence": {
+                                    "revenue_usd": 2100000,
+                                    "revenue_year": null,
+                                    "revenue_source": "directory",
+                                    "revenue_confidence": "band",
+                                    "entity_kind": "company",
+                                    "founded_year": null,
+                                    "headcount": 16,
+                                    "industry": "Hospitality",
+                                    "hq_region": "Berlin",
+                                    "hq_city": "Berlin",
+                                    "revenue_low_usd": 1050000,
+                                    "revenue_high_usd": 4200000,
+                                    "headcount_low": null,
+                                    "headcount_high": null,
+                                    "lei": null,
+                                    "legal_name": null,
+                                    "group_lei": null,
+                                    "group_name": null
+                                }
+                            },
+                            "normalized_title": "Senior Backend Engineer",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": "hybrid",
+                            "is_manager": false,
+                            "job_function": "Engineering",
+                            "last_seen_at": "2026-10-07 06:48:34",
+                            "verified_at": "2026-10-07 06:48:42",
+                            "sources": [
+                                {
+                                    "provider": "indeed",
+                                    "url": "https://www.indeed.com/viewjob?jk=9c6e78e68160f296",
+                                    "seen_at": "2026-10-06T14:56:33.429549+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": "source",
+                            "visa_sponsorship": null,
+                            "benefits": [
+                                "work_from_home",
+                                "wellness_program"
+                            ],
+                            "salary_source": null,
+                            "salary_type": "estimated",
+                            "estimated_min_annual_salary_usd": 78590,
+                            "estimated_avg_annual_salary_usd": 96985,
+                            "estimated_max_annual_salary_usd": 128072,
+                            "expires_at": null,
+                            "applicant_count": null,
+                            "recruiter_emails": [
+                                "user@example.com"
+                            ],
+                            "listing_type": null,
+                            "metro_code": null,
+                            "metro_label": null,
+                            "normalized_city": "Berlin",
+                            "normalized_region": "DE-BE",
+                            "seniority_source": "title",
+                            "esco_skills": [
+                                {
+                                    "id": "19a8293b-8e95-4de3-983f-77484079c389",
+                                    "label": "Java (computer programming)"
+                                },
+                                {
+                                    "id": "15d76317-c71a-4fa2-aadc-2ecc34e627b7",
+                                    "label": "communication"
+                                }
+                            ],
+                            "ghost_score": 5,
+                            "language": "en",
+                            "relevance": 0.9216000000000001,
+                            "uncertain": false,
+                            "judgments": {
+                                "relevance": 0.96,
+                                "constraints": {
+                                    "seniority": {
+                                        "yes": 1,
+                                        "no": 0,
+                                        "not_stated": 0
+                                    },
+                                    "location_match": {
+                                        "yes": 1,
+                                        "no": 0,
+                                        "not_stated": 0
+                                    }
+                                },
+                                "injection": 0.03,
+                                "recheck": 0.8
+                            },
+                            "lanes": [
+                                "Backend Engineer - Germany (Visa Sponsorship Focus)"
+                            ]
+                        },
+                        {
+                            "id": "4476172073",
+                            "job_title": "Senior Backend Engineer C#/.Net (m/f/d)",
+                            "url": "https://de.linkedin.com/jobs/view/senior-backend-engineer-c%23-net-m-f-d-at-riverty-4476172073",
+                            "date_posted": "2026-10-06",
+                            "has_blurred_data": false,
+                            "company": "Riverty",
+                            "final_url": null,
+                            "source_url": "https://de.linkedin.com/jobs/view/senior-backend-engineer-c%23-net-m-f-d-at-riverty-4476172073",
+                            "location": "Berlin, Germany",
+                            "short_location": "Berlin, Germany",
+                            "long_location": "Berlin, Germany",
+                            "state_code": null,
+                            "latitude": 52.52437,
+                            "longitude": 13.41053,
+                            "coordinates_source": "city_centroid",
+                            "postal_code": null,
+                            "remote": false,
+                            "hybrid": true,
+                            "salary_string": null,
+                            "min_annual_salary": null,
+                            "min_annual_salary_usd": null,
+                            "max_annual_salary": null,
+                            "max_annual_salary_usd": null,
+                            "avg_annual_salary_usd": null,
+                            "salary_currency": null,
+                            "countries": [
+                                "Germany"
+                            ],
+                            "country": "Germany",
+                            "country_codes": [
+                                "DE"
+                            ],
+                            "country_code": "DE",
+                            "cities": [
+                                "Berlin"
+                            ],
+                            "continents": [
+                                "Europe"
+                            ],
+                            "seniority": "senior",
+                            "discovered_at": "2026-10-06T09:14:28.007603+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": "riverty.com",
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [
+                                "full_time"
+                            ],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "c#",
+                                ".net"
+                            ],
+                            "keyword_slugs": [
+                                "c#",
+                                ".net"
+                            ],
+                            "occupation_code": "2512",
+                            "occupation_label": "Software Developers",
+                            "employer_type": "employer",
+                            "isic_division": "64",
+                            "isic_division_label": "Financial service activities, except insurance and pension funding",
+                            "description": "Company Description\n\nEveryone’s story matters. Come shape your story with us at Riverty.\n\nBut where does that take you?\n\nTo one of our 30 hybrid workspaces – designed for exchanging ideas, learning from others, and shaping the way we work. An international community of over 4,000 people, representing almost 80 nationalities across 11 countries. United by one mission: Combining empathy, advanced technology and data-driven insights to keep people and businesses in flow. With payments made for them",
+                            "company_object": {
+                                "name": "Riverty",
+                                "domain": "riverty.com",
+                                "url": "http://www.riverty.com",
+                                "logo": "https://media.licdn.com/dms/image/v2/D560BAQGcL_qgMtXakg/company-logo_200_200/B56Z_HiVj6IcAE-/0/1785759095233/riverty_logo?e=2147483647&v=beta&t=mwrmPQqAXnK2ZserMYxUXKIF_VpcSBR_y54OFNSmKMA",
+                                "employee_count": 2297,
+                                "employee_count_min": null,
+                                "linkedin_url": "https://de.linkedin.com/company/riverty",
+                                "description": "Riverty is a FinTech company that offers a new perspective on financial solutions. \nFinancial needs, patterns and worries of consumers are our starting point for innovation. \nWe combine technology, data, and process optimization to create the next generation of financial products driving sustainable business ahead. Offering payments, accounting and debt collection products, we support our customers along the full transactional cycle whilst keeping their consumers at the core every step of the wa",
+                                "founded": null,
+                                "location": {
+                                    "street": "Rheinstraße 99 ",
+                                    "city": "Baden-Baden",
+                                    "region": null,
+                                    "postal_code": "76532 ",
+                                    "country": "DE"
+                                },
+                                "intelligence": {
+                                    "revenue_usd": 329900000,
+                                    "revenue_year": null,
+                                    "revenue_source": "directory",
+                                    "revenue_confidence": "band",
+                                    "entity_kind": "company",
+                                    "founded_year": null,
+                                    "headcount": 5998,
+                                    "industry": "Credit Cards & Transaction Processing",
+                                    "hq_region": "Baden-Wuerttemberg",
+                                    "hq_city": "Baden-Baden",
+                                    "revenue_low_usd": 164950000,
+                                    "revenue_high_usd": 659800000,
+                                    "headcount_low": null,
+                                    "headcount_high": null,
+                                    "lei": "5299000OGZU8QU22ZH28",
+                                    "legal_name": "Riverty GmbH",
+                                    "group_lei": "5299001BUUGXAREGE533",
+                                    "group_name": "Bertelsmann SE & Co. KGaA"
+                                }
+                            },
+                            "normalized_title": "Senior Backend Engineer C#/.NET",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": "hybrid",
+                            "is_manager": false,
+                            "job_function": "Engineering",
+                            "last_seen_at": "2026-10-06 09:14:28",
+                            "verified_at": "2026-10-06 09:14:36",
+                            "sources": [
+                                {
+                                    "provider": "linkedin",
+                                    "url": "https://de.linkedin.com/jobs/view/senior-backend-engineer-c%23-net-m-f-d-at-riverty-4476172073",
+                                    "seen_at": "2026-10-06T09:14:28.007603+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": "text",
+                            "visa_sponsorship": null,
+                            "benefits": [],
+                            "salary_source": null,
+                            "salary_type": "estimated",
+                            "estimated_min_annual_salary_usd": 78590,
+                            "estimated_avg_annual_salary_usd": 96985,
+                            "estimated_max_annual_salary_usd": 128072,
+                            "expires_at": null,
+                            "applicant_count": 25,
+                            "recruiter_emails": [],
+                            "listing_type": null,
+                            "metro_code": null,
+                            "metro_label": null,
+                            "normalized_city": "Berlin",
+                            "normalized_region": null,
+                            "seniority_source": "title",
+                            "esco_skills": [
+                                {
+                                    "id": "4c016b68-4116-468c-9dc6-42710c239e4a",
+                                    "label": "C#"
+                                },
+                                {
+                                    "id": "56a7f561-1d55-43c9-9cd7-36a0a9bc6c50",
+                                    "label": "ASP.NET"
+                                }
+                            ],
+                            "ghost_score": 25,
+                            "language": "en",
+                            "relevance": 0.9116448,
+                            "uncertain": false,
+                            "judgments": {
+                                "relevance": 0.96,
+                                "constraints": {
+                                    "seniority": {
+                                        "yes": 1,
+                                        "no": 0,
+                                        "not_stated": 0
+                                    },
+                                    "location_match": {
+                                        "yes": 0.93,
+                                        "no": 0,
+                                        "not_stated": 0.07
+                                    }
+                                },
+                                "injection": 0.02,
+                                "recheck": 0.85
+                            },
+                            "lanes": [
+                                "Backend Engineer - Germany (Visa Sponsorship Focus)"
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

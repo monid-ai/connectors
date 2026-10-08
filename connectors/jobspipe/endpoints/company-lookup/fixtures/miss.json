@@ -1,0 +1,18 @@
+{
+    "name": "miss",
+    "description": "Recorded chain for jobspipe#v1/companies/{key} (2026-10-07): no company matched the key. A 404 {error: company_not_found} — error-as-data, zero usage; the vendor refunds its own gate credit on a miss.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.jobspipe.dev/v1/companies/no-such-company-zzzz.example"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "company_not_found"
+                }
+            }
+        }
+    ]
+}

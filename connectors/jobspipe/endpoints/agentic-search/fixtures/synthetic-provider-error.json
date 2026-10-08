@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC chain for jobspipe#v1/jobs/agentic-search: the agentic search is switched off upstream. A 503 with the {error} body — error-as-data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/agentic-search",
+                "body": {
+                    "query": "senior backend engineer in Berlin",
+                    "limit": 5
+                }
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": "Agentic search is switched off"
+                }
+            }
+        }
+    ]
+}

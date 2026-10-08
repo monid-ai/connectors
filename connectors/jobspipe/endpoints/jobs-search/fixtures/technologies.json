@@ -1,0 +1,382 @@
+{
+    "name": "technologies",
+    "description": "raw recording (jobspipe#v1/jobs/search, scenario technologies) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/search",
+                "body": {
+                    "job_title_or": [
+                        "data engineer"
+                    ],
+                    "job_country_code_or": [
+                        "US"
+                    ],
+                    "posted_at_max_age_days": 30,
+                    "limit": 2,
+                    "include_technologies": true
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "metadata": {
+                        "total_results": null,
+                        "truncated_results": 2,
+                        "total_companies": null,
+                        "truncated_companies": 0,
+                        "next_cursor": "eyJwIjoiMjAyNi0xMC0wOCAwNTowMDowMCIsImsiOiI4OTk0Njg3NTYxNjYxNTI5MDc5IiwidiI6Mn0",
+                        "next_delta_cursor": null,
+                        "credits_charged": 4,
+                        "jobs_already_paid": 0,
+                        "technologies_credits_charged": 2,
+                        "technologies_already_paid": 0,
+                        "credits_remaining": 9007199254722407,
+                        "credits_allowance": 9007199254740991
+                    },
+                    "data": [
+                        {
+                            "id": "c677b12d72481756",
+                            "job_title": "Director of Data Engineering and Analytics",
+                            "url": "https://www.indeed.com/viewjob?jk=c677b12d72481756",
+                            "date_posted": "2026-10-08T00:56:41.983680+00:00",
+                            "has_blurred_data": false,
+                            "company": "TGH Senior Center Powered by Greenbrook Medical",
+                            "final_url": null,
+                            "source_url": "https://www.indeed.com/viewjob?jk=c677b12d72481756",
+                            "location": "New York, NY",
+                            "short_location": "New York, NY",
+                            "long_location": "New York, NY",
+                            "state_code": "NY",
+                            "latitude": 40.71427,
+                            "longitude": -74.00597,
+                            "coordinates_source": "source",
+                            "postal_code": null,
+                            "remote": true,
+                            "hybrid": false,
+                            "salary_string": null,
+                            "min_annual_salary": 160000,
+                            "min_annual_salary_usd": 160000,
+                            "max_annual_salary": 210000,
+                            "max_annual_salary_usd": 210000,
+                            "avg_annual_salary_usd": 185000,
+                            "salary_currency": "USD",
+                            "countries": [
+                                "United States"
+                            ],
+                            "country": "United States",
+                            "country_codes": [
+                                "US"
+                            ],
+                            "country_code": "US",
+                            "cities": [
+                                "New York"
+                            ],
+                            "continents": [
+                                "North America"
+                            ],
+                            "seniority": "director",
+                            "discovered_at": "2026-10-08T00:56:41.983680+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": "tghseniorcenter.com",
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "dbt",
+                                "react"
+                            ],
+                            "keyword_slugs": [
+                                "data-engineering",
+                                "observability"
+                            ],
+                            "occupation_code": "1330",
+                            "occupation_label": "Information and Communications Technology Services Managers",
+                            "employer_type": "employer",
+                            "isic_division": "86",
+                            "isic_division_label": "Human health activities",
+                            "description": "About Us\n\nGreenbrook Medical is building the new standard in primary care.\n\nWe deliver high-touch, relationship-based care through neighborhood clinics, grounded in a simple belief: every senior deserves the kind of care we would want for our own families. Our model prioritizes time with patients, strong care coordination, and a personalized approach that improves outcomes while lowering total cost of care.\n\nWe take full accountability for patient outcomes and overall cost of care, aligning clin",
+                            "company_object": {
+                                "name": "TGH Senior Center Powered by Greenbrook Medical",
+                                "domain": "tghseniorcenter.com",
+                                "url": "https://tghseniorcenter.com",
+                                "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQFaTRZiRsDk2A/company-logo_200_200/company-logo_200_200/0/1709484876031?e=2147483647&v=beta&t=gz7Vci3njP4Zxf2JdAqNHapZIlgK05gJBx5xeEdJ5iQ",
+                                "employee_count": 4,
+                                "employee_count_min": null,
+                                "linkedin_url": "https://www.linkedin.com/company/tgh-senior-center-powered-by-greenbrook-medical",
+                                "description": "Welcome to the TGH Senior Center - A new experience designed exclusively for patients 65 and older.",
+                                "founded": null,
+                                "location": {
+                                    "street": "10453 Stelling Dr.",
+                                    "city": "Riverview",
+                                    "region": "Florida",
+                                    "postal_code": "33578",
+                                    "country": "US"
+                                },
+                                "intelligence": null
+                            },
+                            "normalized_title": "Director of Data Engineering and Analytics",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": "remote",
+                            "is_manager": true,
+                            "job_function": "Data & Analytics",
+                            "last_seen_at": "2026-10-08 01:19:23",
+                            "verified_at": "2026-10-08 01:19:33",
+                            "sources": [
+                                {
+                                    "provider": "indeed",
+                                    "url": "https://www.indeed.com/viewjob?jk=c677b12d72481756",
+                                    "seen_at": "2026-10-08T00:56:41.983680+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": "source",
+                            "visa_sponsorship": null,
+                            "benefits": [
+                                "bonus",
+                                "dental_insurance"
+                            ],
+                            "salary_source": "source",
+                            "salary_type": "observed",
+                            "estimated_min_annual_salary_usd": 171950,
+                            "estimated_avg_annual_salary_usd": 215300,
+                            "estimated_max_annual_salary_usd": 285570,
+                            "expires_at": null,
+                            "applicant_count": null,
+                            "recruiter_emails": [
+                                "user@example.com"
+                            ],
+                            "listing_type": null,
+                            "metro_code": "35620",
+                            "metro_label": "New York-Newark-Jersey City, NY-NJ",
+                            "normalized_city": "New York",
+                            "normalized_region": "US-NY",
+                            "seniority_source": "title",
+                            "esco_skills": [
+                                {
+                                    "id": "598de5b0-5b58-4ea7-8058-a4bc4d18c742",
+                                    "label": "SQL"
+                                },
+                                {
+                                    "id": "ccd0a1d9-afda-43d9-b901-96344886e14d",
+                                    "label": "Python (computer programming)"
+                                }
+                            ],
+                            "ghost_score": 0,
+                            "language": null,
+                            "technologies": [
+                                {
+                                    "slug": "dbt",
+                                    "name": "dbt",
+                                    "kind": "product",
+                                    "category": "Data platforms",
+                                    "parent_category": "Software and tools",
+                                    "logo": "https://jobspipe.dev/tech-icons/dbt.png",
+                                    "strength": "required",
+                                    "confidence": "medium",
+                                    "sections": [
+                                        "responsibilities"
+                                    ],
+                                    "in_title": false,
+                                    "terms": [
+                                        "dbt",
+                                        "data build tool"
+                                    ],
+                                    "terms_cs": [
+                                        "DBT",
+                                        "dbt"
+                                    ]
+                                },
+                                {
+                                    "slug": "hl7",
+                                    "name": "HL7 FHIR",
+                                    "kind": "standard",
+                                    "category": "Standard & regulation",
+                                    "parent_category": "Standards and regulations",
+                                    "logo": "https://jobspipe.dev/tech-icons/hl7.png",
+                                    "strength": "required",
+                                    "confidence": "medium",
+                                    "sections": [
+                                        "requirements"
+                                    ],
+                                    "in_title": false,
+                                    "terms": [
+                                        "HL7 FHIR",
+                                        "hl7"
+                                    ],
+                                    "terms_cs": [
+                                        "FHIR",
+                                        "Fhir"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "dfb72edaec6cad88",
+                            "job_title": "Data Engineer-5",
+                            "url": "https://www.indeed.com/viewjob?jk=dfb72edaec6cad88",
+                            "date_posted": "2026-10-07T23:55:48.532081+00:00",
+                            "has_blurred_data": false,
+                            "company": "Realign",
+                            "final_url": null,
+                            "source_url": "https://www.indeed.com/viewjob?jk=dfb72edaec6cad88",
+                            "location": "Seattle, WA",
+                            "short_location": "Seattle, WA",
+                            "long_location": "Seattle, WA",
+                            "state_code": "WA",
+                            "latitude": 47.60621,
+                            "longitude": -122.33207,
+                            "coordinates_source": "source",
+                            "postal_code": null,
+                            "remote": false,
+                            "hybrid": null,
+                            "salary_string": null,
+                            "min_annual_salary": null,
+                            "min_annual_salary_usd": null,
+                            "max_annual_salary": null,
+                            "max_annual_salary_usd": null,
+                            "avg_annual_salary_usd": null,
+                            "salary_currency": null,
+                            "countries": [
+                                "United States"
+                            ],
+                            "country": "United States",
+                            "country_codes": [
+                                "US"
+                            ],
+                            "country_code": "US",
+                            "cities": [
+                                "Seattle"
+                            ],
+                            "continents": [
+                                "North America"
+                            ],
+                            "seniority": null,
+                            "discovered_at": "2026-10-07T23:55:48.532081+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": null,
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [
+                                "full_time"
+                            ],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "sql",
+                                "aws"
+                            ],
+                            "keyword_slugs": [
+                                "data-engineering",
+                                "sql"
+                            ],
+                            "occupation_code": "2512",
+                            "occupation_label": "Software Developers",
+                            "employer_type": "employer",
+                            "isic_division": null,
+                            "isic_division_label": null,
+                            "description": "Seattle, Washington 98039 Posted October 8th, 2026\n\nJob Type: Full Time\n\nJob Category: IT\n\nJob Description\n\nData Engineer\n\nSeattle, WA\n\nFulltime\n\n-JOB DESCRIPTION-\n\nMust Have Technical/Functional Skills\n\n- Data engineer experience, SQL, AWS, Python\n\nRoles & Responsibilities\n\nBasic Qualifications\n\n- 6+ years of data engineering experience\n\n- 3+ year of experience working in a data engineering, data science, or software engineering capacity\n\n- Expertise in writing and maintaining robust data pipel",
+                            "company_object": null,
+                            "normalized_title": "Data Engineer",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": null,
+                            "is_manager": false,
+                            "job_function": "Engineering",
+                            "last_seen_at": "2026-10-08 01:08:14",
+                            "verified_at": "2026-10-08 01:08:24",
+                            "sources": [
+                                {
+                                    "provider": "indeed",
+                                    "url": "https://www.indeed.com/viewjob?jk=dfb72edaec6cad88",
+                                    "seen_at": "2026-10-07T23:55:48.532081+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": null,
+                            "visa_sponsorship": null,
+                            "benefits": [
+                                "commuter_assistance",
+                                "bonus"
+                            ],
+                            "salary_source": null,
+                            "salary_type": "estimated",
+                            "estimated_min_annual_salary_usd": 130500,
+                            "estimated_avg_annual_salary_usd": 164766,
+                            "estimated_max_annual_salary_usd": 208940,
+                            "expires_at": null,
+                            "applicant_count": null,
+                            "recruiter_emails": [],
+                            "listing_type": null,
+                            "metro_code": "42660",
+                            "metro_label": "Seattle-Tacoma-Bellevue, WA",
+                            "normalized_city": "Seattle",
+                            "normalized_region": "US-WA",
+                            "seniority_source": null,
+                            "esco_skills": [
+                                {
+                                    "id": "598de5b0-5b58-4ea7-8058-a4bc4d18c742",
+                                    "label": "SQL"
+                                },
+                                {
+                                    "id": "ccd0a1d9-afda-43d9-b901-96344886e14d",
+                                    "label": "Python (computer programming)"
+                                }
+                            ],
+                            "ghost_score": 45,
+                            "language": "en",
+                            "technologies": [
+                                {
+                                    "slug": "aws",
+                                    "name": "Amazon Web Services",
+                                    "kind": "product",
+                                    "category": "DevOps & CI/CD",
+                                    "parent_category": "Software and tools",
+                                    "logo": "https://jobspipe.dev/tech-icons/aws.svg",
+                                    "strength": "required",
+                                    "confidence": "medium",
+                                    "sections": [
+                                        "requirements"
+                                    ],
+                                    "in_title": false,
+                                    "terms": [
+                                        "Amazon Web Services"
+                                    ],
+                                    "terms_cs": [
+                                        "AWS",
+                                        "Aws"
+                                    ]
+                                },
+                                {
+                                    "slug": "python",
+                                    "name": "Python",
+                                    "kind": "language",
+                                    "category": "Programming languages",
+                                    "parent_category": "Programming languages",
+                                    "logo": "https://jobspipe.dev/tech-icons/python.svg",
+                                    "strength": "required",
+                                    "confidence": "medium",
+                                    "sections": [
+                                        "requirements"
+                                    ],
+                                    "in_title": false,
+                                    "terms": [
+                                        "Python",
+                                        "python 3"
+                                    ],
+                                    "terms_cs": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

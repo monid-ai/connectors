@@ -1,0 +1,34 @@
+{
+    "name": "happy",
+    "description": "Recorded chain for jobspipe#v1/companies/{key} (2026-10-07): GET by domain returns the enriched record (headcount, structured location, LinkedIn page, founding year; intelligence null) — no meter in the body, so the flat 1 credit settles from the fold.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.jobspipe.dev/v1/companies/stripe.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "name": "Stripe",
+                    "domain": "stripe.com",
+                    "url": "https://stripe.com",
+                    "logo": "https://media.licdn.com/dms/image/v2/D560BAQE2ZfJyfn-VCg/company-logo_200_200/B56ZlyKwpUKIAI-/0/1758557047806/stripe_logo?e=2147483647&v=beta&t=En4Hm6NDGbDTYCoOQ0Ko5Ne2gylx0WRb0yL2GlOeXBQ",
+                    "employee_count": 16983,
+                    "employee_count_min": null,
+                    "linkedin_url": "https://www.linkedin.com/company/stripe",
+                    "description": "Stripe builds programmable financial services. Millions of companies—from the world’s largest enterprises to the most ambitious startups—use Stripe to accept payments, grow their revenue, and accelerate new business opportunities. Headquartered in San Francisco and Dublin, the company aims to increase the GDP of the internet.",
+                    "location": {
+                        "street": "354 Oyster Point Blvd",
+                        "city": "South San Francisco",
+                        "region": "California",
+                        "postal_code": "94080",
+                        "country": "US"
+                    },
+                    "founded": "2010",
+                    "intelligence": null
+                }
+            }
+        }
+    ]
+}

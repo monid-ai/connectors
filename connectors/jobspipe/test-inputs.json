@@ -1,0 +1,22 @@
+{
+    "v1/jobs/search": {
+        "body": {
+            "job_title_or": ["data engineer"],
+            "job_country_code_or": ["US"],
+            "posted_at_max_age_days": 30,
+            "limit": 3
+        }
+    },
+    "v1/jobs/agentic-search": {
+        "body": {
+            "query": "senior backend engineer in Berlin, visa sponsorship, hybrid ok",
+            "limit": 2
+        }
+    },
+    "v1/companies/{key}": {
+        "pathParams": { "key": "stripe.com" }
+    },
+    "v1/stack/scan": {
+        "body": { "domain": "stripe.com" }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC chain for jobspipe#v1/jobs/search: the monthly credit quota is exhausted. JobsPipe answers 402 with its {error, message, ...} body — error-as-data, zero usage, digested by the provider's fromError with the raw body kept.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/search",
+                "body": {
+                    "job_title_or": ["data engineer"],
+                    "limit": 1
+                }
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "error": "Monthly request quota exceeded",
+                    "message": "You have used all jobs included in your current plan (1 credit = 1 job returned). Upgrade or manage billing to continue.",
+                    "credits_used": 25000,
+                    "credits_included": 25000,
+                    "upgrade_url": "https://jobspipe.dev/pricing"
+                }
+            }
+        }
+    ]
+}

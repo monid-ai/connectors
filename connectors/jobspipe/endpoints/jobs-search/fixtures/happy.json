@@ -1,0 +1,334 @@
+{
+    "name": "happy",
+    "description": "Recorded chain for jobspipe#v1/jobs/search (2026-10-07, trimmed): POST JSON with job_title_or + job_country_code_or + limit 2 returns 2 postings in data[], the paging cursor, and the vendor's own meter in metadata (credits_charged 2, jobs_already_paid 0, credits_remaining / credits_allowance of the recording account).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/jobs/search",
+                "body": {
+                    "job_title_or": [
+                        "data engineer"
+                    ],
+                    "job_country_code_or": [
+                        "US"
+                    ],
+                    "posted_at_max_age_days": 30,
+                    "limit": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "metadata": {
+                        "total_results": null,
+                        "truncated_results": 2,
+                        "total_companies": null,
+                        "truncated_companies": 0,
+                        "next_cursor": "eyJwIjoiMjAyNi0xMC0wNyAwNTowMDowMCIsImsiOiI0NTMzMDcwNjAwMjAyMjMzODI1IiwidiI6Mn0",
+                        "next_delta_cursor": null,
+                        "credits_charged": 2,
+                        "jobs_already_paid": 0,
+                        "credits_remaining": 9007199254725788,
+                        "credits_allowance": 9007199254740991
+                    },
+                    "data": [
+                        {
+                            "id": "bcf7fa21f837a788",
+                            "job_title": "Imaging Data Engineer",
+                            "url": "https://www.indeed.com/viewjob?jk=bcf7fa21f837a788",
+                            "date_posted": "2026-10-07T05:06:20.562000+00:00",
+                            "has_blurred_data": false,
+                            "company": "Vega Imaging Informatics",
+                            "final_url": null,
+                            "source_url": "https://www.indeed.com/viewjob?jk=bcf7fa21f837a788",
+                            "location": "United States",
+                            "short_location": "United States",
+                            "long_location": "United States",
+                            "state_code": null,
+                            "latitude": null,
+                            "longitude": null,
+                            "coordinates_source": null,
+                            "postal_code": null,
+                            "remote": true,
+                            "hybrid": false,
+                            "salary_string": null,
+                            "min_annual_salary": 80000,
+                            "min_annual_salary_usd": 80000,
+                            "max_annual_salary": 110000,
+                            "max_annual_salary_usd": 110000,
+                            "avg_annual_salary_usd": 95000,
+                            "salary_currency": "USD",
+                            "countries": [
+                                "United States"
+                            ],
+                            "country": "United States",
+                            "country_codes": [
+                                "US"
+                            ],
+                            "country_code": "US",
+                            "cities": [],
+                            "continents": [
+                                "North America"
+                            ],
+                            "seniority": null,
+                            "discovered_at": "2026-10-07T05:48:52.931528+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": null,
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [
+                                "full_time"
+                            ],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "python",
+                                "powershell"
+                            ],
+                            "keyword_slugs": [
+                                "data-engineering",
+                                "etl"
+                            ],
+                            "occupation_code": "2512",
+                            "occupation_label": "Software Developers",
+                            "employer_type": "employer",
+                            "isic_division": null,
+                            "isic_division_label": null,
+                            "description": "Vega Imaging Informatics is looking for an exceptional Imaging Data Engineer to help us build and manage some of the world’s largest and most diverse collections of de-identified medical imaging data.\n\nWe work at the intersection of medical imaging, data engineering, AI, and healthcare. Our datasets are used by organizations developing and validating the next generation of medical AI.\n\nThis is a highly hands-on role for someone who enjoys solving difficult data problems. You will work directly w",
+                            "company_object": {
+                                "name": "Vega Imaging Informatics",
+                                "domain": null,
+                                "url": null,
+                                "logo": null,
+                                "employee_count": 7,
+                                "employee_count_min": null,
+                                "linkedin_url": null,
+                                "description": null,
+                                "founded": null,
+                                "location": null,
+                                "intelligence": {
+                                    "revenue_usd": 1700000,
+                                    "revenue_year": null,
+                                    "revenue_source": "directory",
+                                    "revenue_confidence": "band",
+                                    "entity_kind": "company",
+                                    "founded_year": 2018,
+                                    "headcount": 7,
+                                    "industry": "Business Services",
+                                    "hq_region": "California",
+                                    "hq_city": "Ontario",
+                                    "revenue_low_usd": 850000,
+                                    "revenue_high_usd": 3400000,
+                                    "headcount_low": null,
+                                    "headcount_high": null,
+                                    "lei": null,
+                                    "legal_name": null,
+                                    "group_lei": null,
+                                    "group_name": null
+                                }
+                            },
+                            "normalized_title": "Imaging Data Engineer",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": "remote",
+                            "is_manager": false,
+                            "job_function": "Engineering",
+                            "last_seen_at": "2026-10-07 07:02:32",
+                            "verified_at": "2026-10-07 07:02:36",
+                            "sources": [
+                                {
+                                    "provider": "indeed",
+                                    "url": "https://www.indeed.com/viewjob?jk=bcf7fa21f837a788",
+                                    "seen_at": "2026-10-07T05:48:52.931528+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": "source",
+                            "visa_sponsorship": null,
+                            "benefits": [
+                                "paid_holidays",
+                                "health_insurance"
+                            ],
+                            "salary_source": "source",
+                            "salary_type": "observed",
+                            "estimated_min_annual_salary_usd": 102730,
+                            "estimated_avg_annual_salary_usd": 132824,
+                            "estimated_max_annual_salary_usd": 168115,
+                            "expires_at": null,
+                            "applicant_count": null,
+                            "recruiter_emails": [],
+                            "listing_type": null,
+                            "metro_code": null,
+                            "metro_label": null,
+                            "normalized_city": null,
+                            "normalized_region": null,
+                            "seniority_source": null,
+                            "esco_skills": [
+                                {
+                                    "id": "9d0d89be-bffa-4393-b6f6-8d05bea49051",
+                                    "label": "data extraction, transformation and loading tools"
+                                },
+                                {
+                                    "id": "ccd0a1d9-afda-43d9-b901-96344886e14d",
+                                    "label": "Python (computer programming)"
+                                }
+                            ],
+                            "ghost_score": 0,
+                            "language": "en"
+                        },
+                        {
+                            "id": "fe3d8af1f9eb7919",
+                            "job_title": "Senior Data Engineer",
+                            "url": "https://www.indeed.com/viewjob?jk=fe3d8af1f9eb7919",
+                            "date_posted": "2026-10-07T05:00:00+00:00",
+                            "has_blurred_data": false,
+                            "company": "UniFirst",
+                            "final_url": null,
+                            "source_url": "https://www.indeed.com/viewjob?jk=fe3d8af1f9eb7919",
+                            "location": "United States",
+                            "short_location": "United States",
+                            "long_location": "United States",
+                            "state_code": null,
+                            "latitude": null,
+                            "longitude": null,
+                            "coordinates_source": null,
+                            "postal_code": null,
+                            "remote": false,
+                            "hybrid": null,
+                            "salary_string": null,
+                            "min_annual_salary": 109000,
+                            "min_annual_salary_usd": 109000,
+                            "max_annual_salary": 152000,
+                            "max_annual_salary_usd": 152000,
+                            "avg_annual_salary_usd": 130500,
+                            "salary_currency": "USD",
+                            "countries": [
+                                "United States"
+                            ],
+                            "country": "United States",
+                            "country_codes": [
+                                "US"
+                            ],
+                            "country_code": "US",
+                            "cities": [],
+                            "continents": [
+                                "North America"
+                            ],
+                            "seniority": "senior",
+                            "discovered_at": "2026-10-07T02:59:10.282457+00:00",
+                            "status": "active",
+                            "closed_at": null,
+                            "closed_reason": null,
+                            "company_domain": "unifirst.com",
+                            "hiring_team": [],
+                            "reposted": false,
+                            "date_reposted": null,
+                            "employment_statuses": [
+                                "full_time"
+                            ],
+                            "easy_apply": null,
+                            "technology_slugs": [
+                                "sql-server",
+                                "azure"
+                            ],
+                            "keyword_slugs": [
+                                "data-engineering",
+                                "sql-server"
+                            ],
+                            "occupation_code": "2512",
+                            "occupation_label": "Software Developers",
+                            "employer_type": "employer",
+                            "isic_division": "14",
+                            "isic_division_label": "Manufacture of wearing apparel",
+                            "description": "Description:\n\nWe are seeking a highly skilled and experienced Senior Data Engineer specializing in Microsoft SQL Server, Azure data services, and Microsoft Fabric. The ideal candidate will design, develop, and maintain enterprise data warehouses, lakehouses, and data pipelines, ensuring data reliability, performance, quality, and security. The Senior Data Engineer will collaborate closely with software developers, data analysts, and other stakeholders to deliver trusted data for reporting, analy",
+                            "company_object": {
+                                "name": "UniFirst",
+                                "domain": "unifirst.com",
+                                "url": "https://unifirst.com",
+                                "logo": "https://d2q79iu7y748jz.cloudfront.net/s/_squarelogo/256x256/d312bc7f853fef58f15179cfb1876265",
+                                "employee_count": 7504,
+                                "employee_count_min": null,
+                                "linkedin_url": "https://www.linkedin.com/company/unifirst-corporation",
+                                "description": "\nHeadquartered in Wilmington, Mass., UniFirst Corporation (NYSE: UNF) is a North American leader in the supply and servicing of uniform and workwear programs, facility service products, as well as first aid and safety supplies and services. Together with its subsidiaries, the Company also manages specialized garment programs for the cleanroom and nuclear industries. In addition to partnering with leading brands, UniFirst manufactures its own branded workwear, protective clothing, and floorcare p",
+                                "founded": "1936",
+                                "location": {
+                                    "street": "68 Jonspin Road",
+                                    "city": "Wilmington",
+                                    "region": "MA",
+                                    "postal_code": "01887",
+                                    "country": "US"
+                                },
+                                "intelligence": {
+                                    "revenue_usd": 2432352000,
+                                    "revenue_year": 2025,
+                                    "revenue_source": "sec",
+                                    "revenue_confidence": "filed",
+                                    "entity_kind": "company",
+                                    "founded_year": 1936,
+                                    "headcount": 16000,
+                                    "industry": "Cleaning Services",
+                                    "hq_region": "Massachusetts",
+                                    "hq_city": "Wilmington",
+                                    "revenue_low_usd": null,
+                                    "revenue_high_usd": null,
+                                    "headcount_low": null,
+                                    "headcount_high": null,
+                                    "lei": "5493003XBTNWBC8UK019",
+                                    "legal_name": "UniFirst Corporation",
+                                    "group_lei": null,
+                                    "group_name": null
+                                }
+                            },
+                            "normalized_title": "Senior Data Engineer",
+                            "matching_phrases": [],
+                            "matching_words": [],
+                            "work_arrangement": null,
+                            "is_manager": false,
+                            "job_function": "Engineering",
+                            "last_seen_at": "2026-10-07 06:55:13",
+                            "verified_at": "2026-10-07 06:55:18",
+                            "sources": [
+                                {
+                                    "provider": "indeed",
+                                    "url": "https://www.indeed.com/viewjob?jk=fe3d8af1f9eb7919",
+                                    "seen_at": "2026-10-07T02:59:10.282457+00:00"
+                                }
+                            ],
+                            "work_arrangement_source": null,
+                            "visa_sponsorship": null,
+                            "benefits": [],
+                            "salary_source": "source",
+                            "salary_type": "observed",
+                            "estimated_min_annual_salary_usd": 102730,
+                            "estimated_avg_annual_salary_usd": 132824,
+                            "estimated_max_annual_salary_usd": 168115,
+                            "expires_at": null,
+                            "applicant_count": null,
+                            "recruiter_emails": [],
+                            "listing_type": null,
+                            "metro_code": null,
+                            "metro_label": null,
+                            "normalized_city": null,
+                            "normalized_region": null,
+                            "seniority_source": "title",
+                            "esco_skills": [
+                                {
+                                    "id": "c062bab3-3ea0-4291-9220-a2d8fef4bead",
+                                    "label": "SQL Server"
+                                },
+                                {
+                                    "id": "9d0d89be-bffa-4393-b6f6-8d05bea49051",
+                                    "label": "data extraction, transformation and loading tools"
+                                }
+                            ],
+                            "ghost_score": 0,
+                            "language": "en"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

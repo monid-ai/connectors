@@ -1,0 +1,67 @@
+{
+    "name": "happy",
+    "description": "Recorded chain for jobspipe#v1/stack/scan (2026-10-07, detected[] trimmed to 2): POST {domain} returns the detections with slug, categories, confidence, signals and pricing flags — no meter in the body, so the flat 1 credit settles from the fold. The live body carries no render_path despite the published schema listing it as required.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.jobspipe.dev/v1/stack/scan",
+                "body": {
+                    "domain": "vercel.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "domain": "vercel.com",
+                    "scanned_at": "2026-09-21T14:37:38Z",
+                    "http_status": 200,
+                    "detected": [
+                        {
+                            "slug": "linkedin-insight-tag",
+                            "name": "Linkedin Insight Tag",
+                            "categories": [
+                                "Analytics"
+                            ],
+                            "confidence": 100,
+                            "version": null,
+                            "signals": [
+                                {
+                                    "kind": "header",
+                                    "match": "content-security-policy: \\.licdn\\.com"
+                                }
+                            ],
+                            "description": "LinkedIn Insight Tag is a lightweight JavaScript tag that powers conversion tracking, website audiences, and website demographics.",
+                            "website": "https://business.linkedin.com/marketing-solutions/insight-tag",
+                            "icon": "Linkedin.svg",
+                            "pricing": [],
+                            "saas": false,
+                            "oss": false
+                        },
+                        {
+                            "slug": "amazon-s3",
+                            "name": "Amazon S3",
+                            "categories": [
+                                "CDN"
+                            ],
+                            "confidence": 100,
+                            "version": null,
+                            "signals": [
+                                {
+                                    "kind": "header",
+                                    "match": "content-security-policy: s3[^ ]*amazonaws\\.com"
+                                }
+                            ],
+                            "description": "Amazon S3 or Amazon Simple Storage Service is a service offered by Amazon Web Services (AWS) that provides object storage through a web service interface.",
+                            "website": "https://aws.amazon.com/s3/",
+                            "icon": "Amazon S3.svg",
+                            "pricing": [],
+                            "saas": true,
+                            "oss": false
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
