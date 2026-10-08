@@ -15,6 +15,7 @@ import {
 } from "@shared/testing";
 
 const chains = fromFileUrl(new URL("./fixtures/", import.meta.url));
+// Rates: https://api.prerenderbuddy.com/v1/developer/marketplace/rate-card (2026-10-02)
 const RATES = {
     chatgpt: 0.025,
     claude: 0.024,

@@ -1,3 +1,4 @@
+// Rates: https://api.prerenderbuddy.com/v1/developer/marketplace/rate-card (2026-10-02)
 import { defineProvider, presets } from "@shared/core";
 import { zJob } from "./schema/outputs.ts";
 
