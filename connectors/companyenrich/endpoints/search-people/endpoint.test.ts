@@ -255,13 +255,21 @@ Deno.test("companyenrich: rich filters preserve native arrays, nulls and nested 
                 return Promise.resolve(
                     new Response(JSON.stringify({ items: [] }), {
                         status: 200,
+                        headers: { "content-type": "application/json" },
                     }),
                 );
             },
         }),
     });
-    await (await engine.load(unit)).run(input);
+    const result = await (await engine.load(unit)).run(input);
     assert(sent);
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.output, { items: [] });
+    assertEquals(result.usage, {
+        credits: { default: 2 },
+        evidence: { result: 1, education: 0 },
+    });
 });
 
 // Optional smoke check: at most one result, with expansions disabled.
