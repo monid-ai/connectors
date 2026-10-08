@@ -38,6 +38,21 @@ Deno.test(`${ID} happy (recorded): one image on the $0.01 line`, async () => {
     assertEquals((output.images as unknown[]).length, 1);
 });
 
+Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}unauthorized.json`),
+    });
+    assertEquals(result.httpStatus, 401);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "Authentication failed");
+});
+
 Deno.test(`${ID} provider error (429): no usage`, async () => {
     const unit = await testSealedUnit(ID);
     const result = await runEndpoint({
@@ -60,7 +75,7 @@ Deno.test(`${ID} provider error (429): no usage`, async () => {
     assertEquals(output.message, "rate limit exceeded");
 });
 
-Deno.test(`${ID} schema gate: tiered and unknown models are rejected, binary is not exposed`, async () => {
+Deno.test(`${ID} schema gate: tiered and unknown models are rejected, the max variants pass`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${chains}image-ok.json`);
     // resolution-tiered — deliberately not carried by this rate card
@@ -86,11 +101,21 @@ Deno.test(`${ID} schema gate: tiered and unknown models are rejected, binary is 
         Error,
         "INVALID_INPUT",
     );
-    // Passing near-twin: four variants is the supported upper limit.
+    // near-twin: variants 4 (the cap) passes the gate and holds 4 images;
+    // the recorded single image settles as one — evidence counts what
+    // came back, not what was asked for
     const accepted = await estimateEndpoint(unit, {
         body: { ...body, variants: 4 },
     });
     assertEquals(accepted.evidence, { img_001: 4 });
+    const ok = await runEndpoint({
+        unit,
+        input: { body: { ...body, variants: 4 } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(ok.isProviderError, false);
+    assertEquals(ok.usage.evidence, { img_001: 1 });
 });
 
 Deno.test({

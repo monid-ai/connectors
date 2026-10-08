@@ -1,0 +1,22 @@
+{
+    "name": "unauthorized",
+    "description": "Venice 401 envelope (recorded with an invalid key against /embeddings; /image/generate and /augment/search answer the identical body): {error: \"Authentication failed\"}, zero-billed. One shared chain for every endpoint's provider-error test.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "model": "text-embedding-bge-m3",
+                    "input": "hi"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Authentication failed"
+                }
+            }
+        }
+    ]
+}

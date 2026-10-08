@@ -35,6 +35,21 @@ Deno.test(`${ID} happy (recorded): prompt_tokens on the model's line, no vendor 
     assertEquals(Array.isArray(output.data), true);
 });
 
+Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}unauthorized.json`),
+    });
+    assertEquals(result.httpStatus, 401);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "Authentication failed");
+});
+
 Deno.test(`${ID} provider error (429): no usage`, async () => {
     const unit = await testSealedUnit(ID);
     const result = await runEndpoint({
@@ -57,7 +72,7 @@ Deno.test(`${ID} provider error (429): no usage`, async () => {
     assertEquals(output.message, "rate limit exceeded");
 });
 
-Deno.test(`${ID} schema gate: unknown model and token arrays are rejected`, async () => {
+Deno.test(`${ID} schema gate: unknown model and token arrays are rejected, a documented one passes`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${chains}embeddings-ok.json`);
     await assertRejects(
@@ -82,7 +97,17 @@ Deno.test(`${ID} schema gate: unknown model and token arrays are rejected`, asyn
         Error,
         "INVALID_INPUT",
     );
-    // Passing near-twin: a single string is also a valid embedding input.
+    // near-twin: a documented model and a single string input pass the gate
+    const ok = await runEndpoint({
+        unit,
+        input: {
+            body: { model: "text-embedding-qwen3-8b", input: "privacy" },
+        },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(ok.isProviderError, false);
+    // and a single string estimates on its model's line, one token per byte
     const accepted = await estimateEndpoint(unit, {
         body: { ...body, input: "hello" },
     });

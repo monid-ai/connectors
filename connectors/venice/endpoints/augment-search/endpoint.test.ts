@@ -31,6 +31,21 @@ Deno.test(`${ID} happy (recorded): flat $0.01, structured results`, async () => 
     assertEquals(typeof results[0].title, "string");
 });
 
+Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { query: "venice ai", limit: 3 } },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}unauthorized.json`),
+    });
+    assertEquals(result.httpStatus, 401);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "Authentication failed");
+});
+
 Deno.test(`${ID} provider error (429): no usage`, async () => {
     const unit = await testSealedUnit(ID);
     const result = await runEndpoint({

@@ -22,11 +22,20 @@ then `error.message`.
 $0.000000001 per unit whose evidence is
 `round((cost.usd + cost.diem) × 1e9)` read off the raw envelope (0 when
 absent), so the derived fold equals the consolidated claim. Its binding
-SHALL require `max_completion_tokens`, and its estimate SHALL be the
-ceiling `bytes(text parts) × 12000 + max_completion_tokens × 60000 +
-10000000 × (enabled augmentations)` nano-dollars, where augmentations are
-`enable_web_search` `on`/`auto`, `enable_web_scraping`, and
-`enable_x_search`.
+SHALL require `max_completion_tokens`, and its estimate SHALL be, in
+nano-dollars, `(bytes + 2000 + 8000 × images + 8000 × search + 25000 ×
+scrape + 8000 × xSearch) × 12000 + max_completion_tokens × 60000 +
+10000000 × search + 50000000 × scrape + 50000000 × xSearch`, where `bytes`
+counts the UTF-8 bytes of text parts, assistant `tool_calls`, `tools` and
+`response_format`; `images` counts image parts; and `search`, `scrape`,
+`xSearch` are 1 when `enable_web_search` is `on`/`auto`,
+`enable_web_scraping` is true, or `enable_x_search` is true.
+
+#### Scenario: The hold covers injected search context
+- **WHEN** a web-search run whose prompt text is 42 bytes settles at
+  4,126 prompt tokens
+- **THEN** the estimate is `(42 + 2000 + 8000) × 12000 + 60 × 60000 +
+  10000000` nano-dollars and is greater than the settled credits
 
 #### Scenario: Plain completion settle
 - **WHEN** a run returns 200 with `cost: {usd: 0.0000126, diem: 0}`

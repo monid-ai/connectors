@@ -33,10 +33,17 @@ new engine capability.
   balance, priced 1:1 with USD; a request is charged in exactly one of the
   two, so the claim is their sum.
 - **Bounded chat hold.** `max_completion_tokens` is REQUIRED at the
-  binding (the primary limiting knob — D25). The estimate is a provable
-  ceiling: input UTF-8 bytes at the highest published input rate
-  ($12 / 1M), `max_completion_tokens` at the highest output rate ($60 / 1M),
-  plus $0.01 per enabled augmentation. The settle trues down to the claim.
+  binding (the primary limiting knob — D25). The estimate is a conservative
+  bound at the top published rates ($12 / 1M input, $60 / 1M output):
+  everything the caller sends — text parts, assistant `tool_calls`,
+  `tools`, `response_format` — as UTF-8 bytes, plus 8,000 tokens per image
+  part, plus measured allowances for what Venice injects server-side
+  (2,000 tokens of overhead and default system prompt; 8,000 for web
+  search; 25,000 for web scraping, Venice's scraped-content cap; 8,000 for
+  X search) and the augmentation fees ($0.01 search, $0.01 × 5 URLs
+  scrape, $0.01 × 5 X searches). Injected context is sized by Venice, so
+  the allowances are measured bounds rather than a proof; the settle trues
+  down to the claim.
 - **Pinned rate cards where Venice reports no cost.** `embeddings` is a
   COMPOSITE of five linear per-token lines, one per published price tier,
   read off `usage.prompt_tokens`; `image/generate` is a COMPOSITE of three

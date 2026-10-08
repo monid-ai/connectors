@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
+    estimateEndpoint,
     liveSkip,
     loadFixture,
     runEndpoint,
@@ -70,6 +71,95 @@ Deno.test(`${ID} web search (recorded): the reported cost already includes augme
         credits: { default: 0.0108378 },
         evidence: { CREDIT: 10837800 },
     });
+});
+
+Deno.test(`${ID} estimate: the hold covers the recorded web-search settle`, async () => {
+    const unit = await testSealedUnit(ID);
+    const input = {
+        body: {
+            model: "venice-uncensored-1-2",
+            messages: [{
+                role: "user",
+                content: "What is the latest Deno release? One line.",
+            }],
+            max_completion_tokens: 60,
+            venice_parameters: {
+                enable_web_search: "on",
+                include_venice_system_prompt: false,
+            },
+        },
+    };
+    const hold = await estimateEndpoint(unit, input);
+    const settled = await runEndpoint({
+        unit,
+        input,
+        mode: "replay",
+        fixture: await loadFixture(`${chains}chat-web-search.json`),
+    });
+    // 42 text bytes + 2,000 overhead + 8,000 search context, at $12/1M;
+    // 60 output tokens at $60/1M; + the $0.01 search fee
+    assertEquals(hold.evidence, {
+        CREDIT: (42 + 2_000 + 8_000) * 12_000 + 60 * 60_000 + 10_000_000,
+    });
+    // 4,126 prompt tokens were billed — far past the text, still inside
+    assertEquals(
+        (hold.credits.default ?? 0) >= (settled.usage.credits.default ?? 0),
+        true,
+    );
+});
+
+Deno.test(`${ID} estimate: tools, schemas, images and scraping raise the hold`, async () => {
+    const unit = await testSealedUnit(ID);
+    const base = await estimateEndpoint(unit, { body });
+    const tools = [{
+        type: "function",
+        function: {
+            name: "get_weather",
+            parameters: {
+                type: "object",
+                properties: { city: { type: "string" } },
+            },
+        },
+    }];
+    const withTools = await estimateEndpoint(unit, {
+        body: { ...body, tools },
+    });
+    assertEquals(
+        (withTools.evidence.CREDIT ?? 0) - (base.evidence.CREDIT ?? 0),
+        JSON.stringify(tools).length * 12_000,
+    );
+    const withImage = await estimateEndpoint(unit, {
+        body: {
+            ...body,
+            messages: [{
+                role: "user",
+                content: [
+                    { type: "text", text: "What is in this image?" },
+                    {
+                        type: "image_url",
+                        image_url: { url: "https://example.com/a.png" },
+                    },
+                ],
+            }],
+        },
+    });
+    // the image URL is not counted as text; the image is 8,000 tokens
+    assertEquals(
+        withImage.evidence.CREDIT,
+        ("What is in this image?".length + 2_000 + 8_000) * 12_000 +
+            40 * 60_000,
+    );
+    const withScrape = await estimateEndpoint(unit, {
+        body: {
+            ...body,
+            venice_parameters: { enable_web_scraping: true },
+        },
+    });
+    // 25,000 tokens of scraped context + $0.01 × 5 URLs
+    assertEquals(
+        (withScrape.evidence.CREDIT ?? 0) - (base.evidence.CREDIT ?? 0),
+        25_000 * 12_000 + 50_000_000,
+    );
 });
 
 Deno.test(`${ID} provider error (recorded 404): zero usage, digested error`, async () => {

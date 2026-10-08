@@ -22,7 +22,8 @@
 
 - [x] 2.1 Real fixtures recorded with a vendor key (`deno task record`,
       trimmed) — chat, chat with web search, 404, embeddings, search,
-      scrape, scrape refusal (400), image; provider-level shared chains with
+      scrape, scrape refusal (400), image, and a 401 shared by every
+      endpoint's provider-error test; provider-level shared chains with
       `{{request.url}}`
 - [x] 2.2 Replay + schema-gate + gated-live tests per endpoint
 - [x] 2.3 Live tests pass against the production API (`VENICE_API_KEY`)

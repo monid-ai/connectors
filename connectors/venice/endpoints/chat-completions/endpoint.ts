@@ -14,12 +14,12 @@ import { zChatCompletionsBody } from "./schema/inputs.ts";
  * at $0.000000001 each), so the derived fold reproduces the claim exactly
  * and the per-run mismatch check stays silent.
  *
- * The estimate is a PROVABLE CEILING, not a guess: input bytes priced at
- * the highest published input rate ($12 / 1M tokens — a byte-level BPE
- * token consumes at least one byte), `max_completion_tokens` at the
- * highest output rate ($60 / 1M), plus $0.01 per enabled augmentation.
- * `max_completion_tokens` is therefore REQUIRED at the binding (the
- * primary limiting knob — D25); the settle trues down to the real cost.
+ * The estimate is a CONSERVATIVE BOUND priced at the top published rates:
+ * everything the caller sends (text, tool definitions, schemas, images)
+ * plus measured allowances for what Venice injects server-side (overhead,
+ * system prompt, search and scrape context) — see `estimate` below.
+ * `max_completion_tokens` is REQUIRED at the binding (the primary limiting
+ * knob — D25); the settle trues down to the real cost.
  */
 export default defineEndpoint({
     meta: {
@@ -50,6 +50,9 @@ export default defineEndpoint({
             "`max_completion_tokens` is required here so the pre-run hold " +
             "is bounded; the bill is the reported cost, which is almost " +
             "always far below the hold.",
+            "The hold prices every token at the top published rates and " +
+            "adds allowances for context Venice injects: web scraping alone " +
+            "reserves ~$0.35, so enable it only when the prompt has URLs.",
             "Model capabilities (vision, tools, structured output, " +
             "reasoning, X search) vary per model — check GET " +
             "/models?type=text on Venice before relying on one.",
@@ -73,44 +76,74 @@ export default defineEndpoint({
                 "of $0.000000001",
             consumes: { credit: "default", amount: 0.000000001 },
         },
-        /** Ceiling hold, in nano-dollars: UTF-8 bytes of every text part
-         *  × $12/1M, `max_completion_tokens` × $60/1M, + $0.01 per
-         *  enabled augmentation. Image parts are not counted (a vision
-         *  model bills them in prompt tokens; the settle carries them). */
+        /** Conservative hold, in nano-dollars, every token priced at the
+         *  top published rates ($12/1M input = 12,000 per token, $60/1M
+         *  output = 60,000 per token):
+         *   - caller-sent input: UTF-8 bytes of text parts, assistant
+         *     `tool_calls`, `tools` and `response_format` (byte-level BPE
+         *     spends ≥1 byte per token);
+         *   - 2,000 tokens of Venice-side overhead (measured 2026-10-08:
+         *     ~560 fixed + ~1,200 for the default system prompt);
+         *   - 8,000 tokens per image part (vision models bill images as
+         *     prompt tokens; inline base64 bytes are NOT counted as text);
+         *   - web search: 8,000 injected tokens (measured 3,700-4,400)
+         *     + the $0.01 search fee;
+         *   - web scraping: 25,000 injected tokens (Venice's default
+         *     scraped-content cap) + $0.01 per URL for the 5 URLs Venice
+         *     scrapes at most;
+         *   - X search: 8,000 injected tokens + $0.01 per search, 5 assumed;
+         *   - `max_completion_tokens` at the output rate.
+         *  Injected context is sized server-side by Venice, so the
+         *  allowances are measured bounds, not a proof; the settle always
+         *  trues down to the reported cost. */
         estimate: ({ data }) => {
-            let bytes = 0;
-            for (const message of data.input.body.messages) {
+            const body = data.input.body;
+            const texts = [""];
+            let images = 0;
+            for (const message of body.messages) {
                 const content = "content" in message ? message.content : "";
-                const parts = typeof content === "string"
-                    ? [content]
-                    : Array.isArray(content)
-                    ? content.map((p) => p.type === "text" ? p.text : "")
-                    : [];
-                for (const text of parts) {
-                    for (const ch of text) {
-                        const cp = ch.codePointAt(0) ?? 0;
-                        bytes += cp <= 0x7f
-                            ? 1
-                            : cp <= 0x7ff
-                            ? 2
-                            : cp <= 0xffff
-                            ? 3
-                            : 4;
+                if (typeof content === "string") texts.push(content);
+                else if (Array.isArray(content)) {
+                    for (const part of content) {
+                        if (part.type === "text") texts.push(part.text);
+                        else images += 1;
                     }
                 }
+                if ("tool_calls" in message && message.tool_calls) {
+                    texts.push(JSON.stringify(message.tool_calls));
+                }
             }
-            const vp = data.input.body.venice_parameters;
+            if (body.tools) texts.push(JSON.stringify(body.tools));
+            if (body.response_format) {
+                texts.push(JSON.stringify(body.response_format));
+            }
+            let bytes = 0;
+            for (const text of texts) {
+                for (const ch of text) {
+                    const cp = ch.codePointAt(0) ?? 0;
+                    bytes += cp <= 0x7f
+                        ? 1
+                        : cp <= 0x7ff
+                        ? 2
+                        : cp <= 0xffff
+                        ? 3
+                        : 4;
+                }
+            }
+            const vp = body.venice_parameters;
             const search = vp?.enable_web_search === "on" ||
-                    vp?.enable_web_search === "auto"
-                ? 10_000_000
-                : 0;
-            const scrape = vp?.enable_web_scraping === true ? 10_000_000 : 0;
-            const xSearch = vp?.enable_x_search === true ? 10_000_000 : 0;
+                vp?.enable_web_search === "auto";
+            const scrape = vp?.enable_web_scraping === true;
+            const xSearch = vp?.enable_x_search === true;
+            const inputTokens = bytes + 2_000 + images * 8_000 +
+                (search ? 8_000 : 0) + (scrape ? 25_000 : 0) +
+                (xSearch ? 8_000 : 0);
+            const fees = (search ? 10_000_000 : 0) +
+                (scrape ? 50_000_000 : 0) + (xSearch ? 50_000_000 : 0);
             return {
                 counts: {
-                    "CREDIT": bytes * 12_000 +
-                        data.input.body.max_completion_tokens * 60_000 +
-                        search + scrape + xSearch,
+                    "CREDIT": inputTokens * 12_000 +
+                        body.max_completion_tokens * 60_000 + fees,
                 },
             };
         },
