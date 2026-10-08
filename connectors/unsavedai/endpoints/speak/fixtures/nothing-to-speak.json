@@ -1,0 +1,25 @@
+{
+    "name": "nothing-to-speak",
+    "description": "recorded chain for unsavedai#speak, scenario 'nothing-to-speak': text made only of control characters; the service answers 400 invalid_request and bills nothing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tools.unsavedai.com/v1/speak",
+                "body": {
+                    "text": "\u0001\u0002"
+                }
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": {
+                        "code": "invalid_request",
+                        "message": "text: nothing to speak after removing control characters",
+                        "request_id": "fe5f19dfd19a4dd1"
+                    }
+                }
+            }
+        }
+    ]
+}

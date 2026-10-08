@@ -4,14 +4,16 @@ export default defineProvider({
     name: "unsavedai",
     meta: {
         displayName: "UnsavedAI",
-        summary:
-            "Private, no-log speech-to-text for any audio or video file URL.",
-        description: "Private speech-to-text for agents — transcribe any " +
+        summary: "Private speech tools for agents: transcribe any audio or " +
+            "video file URL, and speak text aloud.",
+        description: "Private speech tools for agents. Transcribe: any " +
             "direct audio or video file URL (TikTok, Instagram, Douyin, " +
-            "podcast and meeting downloads) in ~99 languages including " +
-            "Chinese, with timestamped segments and SRT/VTT subtitles. " +
-            "Media is deleted from disk as soon as its audio is decoded, " +
-            "before transcription, and transcripts are never stored or logged.",
+            "podcast and meeting downloads) to text in ~99 languages " +
+            "including Chinese, with timestamped segments and SRT/VTT " +
+            "subtitles. Speak: natural English speech from text, 28 US and " +
+            "UK voices. Media is deleted as soon as its audio is decoded, " +
+            "transcripts and input text are never stored or logged, and " +
+            "generated audio is deleted an hour after it is made.",
         homepageUrl: "https://unsavedai.com",
         docsUrl: "https://unsavedai.com",
         categories: ["speech"],
