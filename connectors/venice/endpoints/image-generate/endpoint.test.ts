@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
+    estimateEndpoint,
     liveSkip,
     loadFixture,
     runEndpoint,
@@ -37,6 +38,28 @@ Deno.test(`${ID} happy (recorded): one image on the $0.01 line`, async () => {
     assertEquals((output.images as unknown[]).length, 1);
 });
 
+Deno.test(`${ID} provider error (429): no usage`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body },
+        mode: "replay",
+        fixture: {
+            name: "synthetic-image-generate-rate-limited",
+            description: "A Venice 429 must not bill image generation usage.",
+            calls: [{
+                req: { method: "POST", url: unit.doc.request.url },
+                res: { status: 429, body: { error: "rate limit exceeded" } },
+            }],
+        },
+    });
+    assertEquals(result.httpStatus, 429);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "rate limit exceeded");
+});
+
 Deno.test(`${ID} schema gate: tiered and unknown models are rejected, binary is not exposed`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${chains}image-ok.json`);
@@ -63,6 +86,11 @@ Deno.test(`${ID} schema gate: tiered and unknown models are rejected, binary is 
         Error,
         "INVALID_INPUT",
     );
+    // Passing near-twin: four variants is the supported upper limit.
+    const accepted = await estimateEndpoint(unit, {
+        body: { ...body, variants: 4 },
+    });
+    assertEquals(accepted.evidence, { img_001: 4 });
 });
 
 Deno.test({

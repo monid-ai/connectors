@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
+    estimateEndpoint,
     liveSkip,
     loadFixture,
     runEndpoint,
@@ -64,6 +65,11 @@ Deno.test(`${ID} schema gate: a non-URL is rejected before the wire`, async () =
         Error,
         "INVALID_INPUT",
     );
+    // Passing near-twin: a different valid https URL clears the gate.
+    const accepted = await estimateEndpoint(unit, {
+        body: { url: "https://example.org/valid-page" },
+    });
+    assertEquals(accepted.evidence, { CALL: 1 });
 });
 
 Deno.test({

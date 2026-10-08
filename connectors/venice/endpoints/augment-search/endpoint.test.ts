@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
+    estimateEndpoint,
     liveSkip,
     loadFixture,
     runEndpoint,
@@ -30,6 +31,28 @@ Deno.test(`${ID} happy (recorded): flat $0.01, structured results`, async () => 
     assertEquals(typeof results[0].title, "string");
 });
 
+Deno.test(`${ID} provider error (429): no usage`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { query: "deno 2.9 release notes", limit: 3 } },
+        mode: "replay",
+        fixture: {
+            name: "synthetic-augment-search-rate-limited",
+            description: "A Venice 429 must not bill search usage.",
+            calls: [{
+                req: { method: "POST", url: unit.doc.request.url },
+                res: { status: 429, body: { error: "rate limit exceeded" } },
+            }],
+        },
+    });
+    assertEquals(result.httpStatus, 429);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "rate limit exceeded");
+});
+
 Deno.test(`${ID} schema gate: limit over 20 and unknown backends are rejected`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${chains}search-ok.json`);
@@ -55,6 +78,11 @@ Deno.test(`${ID} schema gate: limit over 20 and unknown backends are rejected`, 
         Error,
         "INVALID_INPUT",
     );
+    // Passing near-twin: limit 20 is allowed.
+    const accepted = await estimateEndpoint(unit, {
+        body: { query: "q", limit: 20 },
+    });
+    assertEquals(accepted.evidence, { CALL: 1 });
 });
 
 Deno.test({
