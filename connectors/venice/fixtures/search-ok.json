@@ -1,0 +1,37 @@
+{
+    "name": "search-ok",
+    "description": "Venice /augment/search happy path (recorded): brave backend, limit 3 (results array trimmed by record). No meter on the envelope — flat $0.01 per call.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "deno 2.9 release notes",
+                    "limit": 3,
+                    "search_provider": "brave"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "query": "deno 2.9 release notes",
+                    "results": [
+                        {
+                            "content": "Releases · denoland/deno · Previous Next · Jump to release · v2.9.7 · v2.9.6 · v2.9.5 · v2.9.4 · v2.9.3 · v2.9.2 · v2.9.1 · v2.9.0 · v2.8.3 · v2.8.2 · Previous Next · v2.9.7 Latest · Latest · Compare · Filter · Loading · There was an error while loading. Please reload this page. View all tags · github-actions released this · 17 Sep 09:04 · Immutable release. Only release title and notes can be modified.\n\nReleases · denoland/deno · Previous Next · Jump to release · v2.9.7 · v2.9.6 · v2.9.5 · v2.9",
+                            "date": "",
+                            "title": "Releases · denoland/deno",
+                            "url": "https://github.com/denoland/deno/releases/"
+                        },
+                        {
+                            "content": "Deno 2.9 is here, headlined by deno desktop, <strong>a new way to build native desktop applications from the web stack you already know, with no Electron boilerplate and a single binary at the end</strong>.\n\n`deno desktop` for building native desktop apps from web tech, first-class migration from npm/pnpm/yarn/Bun, CSS module imports, snapshot and parameterized testing, smaller `deno compile --bundle` binaries, and Node.js 26 compatibility.\n\nDeno 2.9 is here, headlined by deno desktop, a new way",
+                            "date": "",
+                            "title": "Deno 2.9 | Deno",
+                            "url": "https://deno.com/blog/v2.9"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

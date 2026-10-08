@@ -1,0 +1,48 @@
+{
+    "name": "embeddings-ok",
+    "description": "Venice /embeddings happy path (recorded): text-embedding-bge-m3, two inputs, usage.prompt_tokens 14 and cost null — no vendor meter, so the pinned per-token rate is the bill. Vectors trimmed by record.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "model": "text-embedding-bge-m3",
+                    "input": [
+                        "privacy-first AI",
+                        "uncensored inference"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "object": "list",
+                    "model": "text-embedding-bge-m3",
+                    "usage": {
+                        "prompt_tokens": 14,
+                        "total_tokens": 14
+                    },
+                    "data": [
+                        {
+                            "index": 0,
+                            "object": "embedding",
+                            "embedding": [
+                                -0.0003863378369715065,
+                                0.0012840995332226157
+                            ]
+                        },
+                        {
+                            "index": 1,
+                            "object": "embedding",
+                            "embedding": [
+                                -0.04031122848391533,
+                                0.03129810839891434
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

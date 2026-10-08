@@ -1,0 +1,21 @@
+{
+    "name": "scrape-blocked",
+    "description": "Venice /augment/scrape refusal (recorded): an X/Twitter URL answers 400 {error} before any fetch, zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "url": "https://x.com/venice_ai"
+                }
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "X (formerly Twitter) blocks automated access to their content. Unable to scrape this URL."
+                }
+            }
+        }
+    ]
+}

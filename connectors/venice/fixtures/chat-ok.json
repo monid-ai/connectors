@@ -1,0 +1,85 @@
+{
+    "name": "chat-ok",
+    "description": "Venice /chat/completions happy path (recorded): venice-uncensored-1-2, one-sentence answer. The response carries cost {usd: 0.0000126, diem: 0} — the vendor claim the provider consolidate lifts.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "model": "venice-uncensored-1-2",
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": "Answer in one short sentence."
+                        },
+                        {
+                            "role": "user",
+                            "content": "What is the capital of Portugal?"
+                        }
+                    ],
+                    "max_completion_tokens": 40,
+                    "venice_parameters": {
+                        "include_venice_system_prompt": false
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "chatcmpl-669233b225572a82dc59a419d0995e10",
+                    "object": "chat.completion",
+                    "created": 1791491779,
+                    "model": "venice-uncensored-1-2",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "message": {
+                                "role": "assistant",
+                                "content": "Lisbon is the capital of Portugal.",
+                                "refusal": null,
+                                "annotations": null,
+                                "audio": null,
+                                "function_call": null,
+                                "tool_calls": []
+                            },
+                            "logprobs": null,
+                            "finish_reason": "stop",
+                            "stop_reason": null,
+                            "token_ids": null
+                        }
+                    ],
+                    "service_tier": null,
+                    "usage": {
+                        "prompt_tokens": 18,
+                        "completion_tokens": 10,
+                        "total_tokens": 28,
+                        "prompt_tokens_details": {
+                            "cached_tokens": 0
+                        }
+                    },
+                    "prompt_logprobs": null,
+                    "prompt_token_ids": null,
+                    "kv_transfer_params": null,
+                    "cost": {
+                        "usd": 1.26e-05,
+                        "diem": 0
+                    },
+                    "venice_parameters": {
+                        "strip_thinking_response": false,
+                        "disable_thinking": false,
+                        "enable_e2ee": true,
+                        "enable_web_search": "off",
+                        "enable_web_scraping": false,
+                        "enable_web_citations": false,
+                        "include_search_results_in_stream": false,
+                        "include_venice_system_prompt": false,
+                        "enable_x_search": false,
+                        "web_search_citations": [],
+                        "return_search_results_as_documents": false
+                    }
+                }
+            }
+        }
+    ]
+}

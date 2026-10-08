@@ -629,7 +629,12 @@
         "suzanne#v1/models/download",
         "suzanne#v1/uploads",
         "tinyfish#fetch",
-        "tinyfish#search"
+        "tinyfish#search",
+        "venice#augment/scrape",
+        "venice#augment/search",
+        "venice#chat/completions",
+        "venice#embeddings",
+        "venice#image/generate"
     ],
     "resources": [
         "saperly/phone-number"

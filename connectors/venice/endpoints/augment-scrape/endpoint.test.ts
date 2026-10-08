@@ -1,0 +1,87 @@
+import { assertEquals, assertRejects } from "@std/assert";
+import { fromFileUrl } from "@std/path";
+import {
+    liveSkip,
+    loadFixture,
+    runEndpoint,
+    testSealedUnit,
+} from "@shared/testing";
+
+const ID = "venice#augment/scrape";
+const chains = fromFileUrl(new URL("../../fixtures/", import.meta.url));
+
+Deno.test(`${ID} happy (recorded): flat $0.01, markdown content`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { url: "https://example.com" } },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}scrape-ok.json`),
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.usage, {
+        credits: { default: 0.01 },
+        evidence: { CALL: 1 },
+    });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.format, "markdown");
+    assertEquals(typeof output.content, "string");
+});
+
+Deno.test(`${ID} blocked site (recorded 400): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { url: "https://x.com/venice_ai" } },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}scrape-blocked.json`),
+    });
+    assertEquals(result.httpStatus, 400);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(
+        (output.message as string).includes("blocks automated access"),
+        true,
+    );
+});
+
+Deno.test(`${ID} schema gate: a non-URL is rejected before the wire`, async () => {
+    const unit = await testSealedUnit(ID);
+    await assertRejects(
+        () =>
+            runEndpoint({
+                unit,
+                input: { body: { url: "not a url" } },
+                mode: "replay",
+                fixture: {
+                    name: "unused",
+                    description: "never reached",
+                    calls: [],
+                },
+            }),
+        Error,
+        "INVALID_INPUT",
+    );
+});
+
+Deno.test({
+    name: `${ID} live (gated on VENICE_API_KEY)`,
+    ignore: liveSkip("venice"),
+    fn: async () => {
+        const unit = await testSealedUnit(ID);
+        const result = await runEndpoint({
+            unit,
+            input: { body: { url: "https://example.com" } },
+            mode: "live",
+        });
+        assertEquals(
+            result.isProviderError,
+            false,
+            JSON.stringify(result.output),
+        );
+        const output = result.output as Record<string, unknown>;
+        assertEquals(output.format, "markdown");
+    },
+});

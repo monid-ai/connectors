@@ -1,0 +1,28 @@
+{
+    "name": "provider-error",
+    "description": "Venice 404 envelope (recorded with an unknown model id): {error} body, zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "model": "no-such-model",
+                    "messages": [
+                        {
+                            "role": "user",
+                            "content": "hi"
+                        }
+                    ],
+                    "max_completion_tokens": 10
+                }
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "Specified model not found: no-such-model. Did you mean: abliteration-abliterated-model-large-v2, openai-gpt-52-codex, openai-gpt-53-codex?"
+                }
+            }
+        }
+    ]
+}
