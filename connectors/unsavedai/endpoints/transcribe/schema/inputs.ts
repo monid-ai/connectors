@@ -14,7 +14,14 @@ export const zTranscribeBody = z.object({
     language: z.string().regex(/^[A-Za-z]{2,3}$/).optional().describe(
         "Whisper language code such as 'en', 'zh', 'es', 'yue'. Omit to auto-detect.",
     ),
-    include: z.array(z.enum(["segments", "srt", "vtt"])).optional().describe(
-        "Extra outputs: timestamped segments, SRT and/or WebVTT subtitles.",
+    include: z.array(z.enum(["segments", "words", "speakers", "srt", "vtt"]))
+        .optional().describe(
+            "Extra outputs: timestamped 'segments', 'words' (word-level timings), " +
+                "'speakers' (beta: who spoke when, a speaker on every segment and " +
+                "word plus 'turns'; +$0.0018/min; up to 20 minutes per request), " +
+                "'srt' and/or 'vtt' subtitles.",
+        ),
+    num_speakers: z.number().int().min(1).max(10).optional().describe(
+        "With 'speakers': how many people speak, if known (more accurate).",
     ),
 });

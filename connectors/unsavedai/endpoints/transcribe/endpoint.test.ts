@@ -27,7 +27,7 @@ Deno.test("unsavedai#transcribe happy: cost_usd claim agrees with 60 billed seco
     assertEquals(result.httpStatus, 200);
     assertEquals(result.usage, {
         credits: { default: 0.003 },
-        evidence: { SECOND: 60 },
+        evidence: { seconds: 60, speaker_seconds: 0 },
     });
     assert(!("usage" in (result.output as Record<string, unknown>)));
 });
@@ -67,6 +67,33 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.evidence, { SECOND: 60 });
+        assertEquals(result.usage.evidence, {
+            seconds: 60,
+            speaker_seconds: 0,
+        });
     },
+});
+
+Deno.test("unsavedai#transcribe speakers: the add-on line bills the same seconds", async () => {
+    const unit = await testSealedUnit("unsavedai#transcribe");
+    const fixture = await loadFixture(`${fixturesDir}speakers.json`);
+    const result = await runEndpoint({
+        unit,
+        input: {
+            body: {
+                url: "https://images-assets.nasa.gov/video/Explore%20our%20Home%20Planet%20and%20the%20Universe%20With%20NASA%20Podcasts/Explore%20our%20Home%20Planet%20and%20the%20Universe%20With%20NASA%20Podcasts~mobile.mp4",
+                max_minutes: 2,
+                include: ["speakers", "segments"],
+            },
+        },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.usage.evidence, { seconds: 63, speaker_seconds: 63 });
+    const credits = (result.usage.credits as Record<string, number>).default;
+    assert(
+        Math.abs(credits - 63 * (0.00005 + 0.00003)) < 1e-9,
+        `credits ${credits}`,
+    );
 });

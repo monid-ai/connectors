@@ -1,0 +1,71 @@
+{
+    "name": "speakers",
+    "description": "recorded chain for unsavedai#transcribe, scenario 'speakers': a 63 s NASA podcast montage (US public domain) with speaker labels; 63 billed seconds at $0.003/min plus the $0.0018/min speaker add-on",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tools.unsavedai.com/v1/transcribe",
+                "body": {
+                    "url": "https://images-assets.nasa.gov/video/Explore%20our%20Home%20Planet%20and%20the%20Universe%20With%20NASA%20Podcasts/Explore%20our%20Home%20Planet%20and%20the%20Universe%20With%20NASA%20Podcasts~mobile.mp4",
+                    "max_minutes": 2,
+                    "include": [
+                        "speakers",
+                        "segments"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "3cb2a56139264810",
+                    "text": "NASA's Curious Universe. Houston, we have a podcast. On a mission. Small steps, giant leaves. The Invisible Network. Universo Curioso de la NASA. You might listen to a NASA podcast to learn more about science, exploration. To meet the people who work at NASA. How our engineers and our scientists are solving hard problems and how they're making these amazing discoveries. We're showcasing NASA topics that people may not have known about. To share the story of what it's like to work at NASA. And to",
+                    "language": "en",
+                    "language_probability": 0.996,
+                    "translated_to_english": false,
+                    "duration_seconds": 62.84,
+                    "processed_seconds": 62.84,
+                    "truncated": false,
+                    "complete": true,
+                    "model": "large-v3-turbo",
+                    "usage": {
+                        "billed_seconds": 63,
+                        "price_per_minute_usd": 0.0048,
+                        "cost_usd": 0.00504
+                    },
+                    "segments": [
+                        {
+                            "start": 0,
+                            "end": 1.48,
+                            "text": "NASA's Curious Universe.",
+                            "speaker": "S1",
+                            "confidence": 0.84
+                        },
+                        {
+                            "start": 1.6,
+                            "end": 2.94,
+                            "text": "Houston, we have a podcast.",
+                            "speaker": "S1",
+                            "confidence": 0.84
+                        }
+                    ],
+                    "speakers": 3,
+                    "turns": [
+                        {
+                            "speaker": "S1",
+                            "start": 0,
+                            "end": 14.64,
+                            "text": "NASA's Curious Universe. Houston, we have a podcast. On a mission. Small steps, giant leaves. The Invisible Network. Universo Curioso de la NASA. You might listen to a NASA podcast to learn more about science, exploration. To meet the people who work at NASA."
+                        },
+                        {
+                            "speaker": "S2",
+                            "start": 14.92,
+                            "end": 15.68,
+                            "text": "How our"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
