@@ -826,6 +826,34 @@ Deno.test("consolidate.output strip applies even with an EMPTY claim (the octen 
     assertEquals(result.output, { results: [{ id: "a" }], meta: {} });
 });
 
+Deno.test("consolidate.output preserves an explicit null payload", async () => {
+    const engine = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }],
+            vendorTotal: 0,
+        }),
+    });
+    const loaded = await engine.load(
+        await usageUnit({
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                every: 1,
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: () => ({ credits: {}, output: null }),
+        }),
+    );
+    const result = await loaded.run({ body: { q: "x" } });
+
+    assertEquals(result.output, null);
+});
+
 Deno.test("error settles: zeroUsage forced — neither evidence nor consolidate runs", async () => {
     // both settle fns would THROW on this error body if invoked; a clean
     // zero-usage settle proves the engine never ran them

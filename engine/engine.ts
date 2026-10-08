@@ -915,7 +915,9 @@ export class LoadedEndpoint implements RunnableEndpoint {
                         });
                     }
                 }
-                output = consolidated.output ?? raw;
+                output = consolidated.output !== undefined
+                    ? consolidated.output
+                    : raw;
             } else {
                 output = raw;
             }
