@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-background-enrichment",
+    "description": "Synthetic CompanyEnrich background-enrichment response following the official OpenAPI schema checked 2026-10-07; not recorded vendor traffic. Example identities only. Request placeholders allow reuse across endpoints with the same envelope.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?domain=example.com&waitForEnrichment=false"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "type": "about:blank",
+                    "title": "Not Found",
+                    "status": 404
+                }
+            }
+        }
+    ]
+}

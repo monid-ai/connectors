@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-empty-page",
+    "description": "Synthetic CompanyEnrich empty-page response following the official OpenAPI schema checked 2026-10-07; not recorded vendor traffic. Example identities only. Request placeholders allow reuse across endpoints with the same envelope.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "items": [],
+                    "page": 1,
+                    "totalItems": 0,
+                    "totalPages": 0
+                }
+            }
+        }
+    ]
+}
