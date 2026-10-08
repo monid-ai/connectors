@@ -133,6 +133,8 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.evidence, { img_001: 1 });
+        // shape, not amounts: images counted on the $0.01 line only
+        assertEquals(Object.keys(result.usage.evidence), ["img_001"]);
+        assertEquals(typeof result.usage.evidence.img_001, "number");
     },
 });

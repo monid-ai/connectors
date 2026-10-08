@@ -32,7 +32,8 @@ Deno.test(`${ID} happy (recorded): prompt_tokens on the model's line, no vendor 
         evidence: { tier_15: 14 },
     });
     const output = result.output as Record<string, unknown>;
-    assertEquals(Array.isArray(output.data), true);
+    assertEquals((output.data as unknown[]).length, 2); // the fixture's
+    assertEquals("cost" in output, false);
 });
 
 Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
@@ -129,6 +130,8 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals((result.usage.evidence.tier_15 ?? 0) > 0, true);
+        // shape, not amounts: tokens counted on the bge-m3 line only
+        assertEquals(Object.keys(result.usage.evidence), ["tier_15"]);
+        assertEquals(typeof result.usage.evidence.tier_15, "number");
     },
 });

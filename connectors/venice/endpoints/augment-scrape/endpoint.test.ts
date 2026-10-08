@@ -48,6 +48,43 @@ Deno.test(`${ID} blocked site (recorded 400): zero usage, digested error`, async
     );
 });
 
+Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { url: "https://example.com" } },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}unauthorized.json`),
+    });
+    assertEquals(result.httpStatus, 401);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "Authentication failed");
+});
+
+Deno.test(`${ID} provider error (429): no usage`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body: { url: "https://example.com" } },
+        mode: "replay",
+        fixture: {
+            name: "synthetic-augment-scrape-rate-limited",
+            description: "A Venice 429 must not bill scrape usage.",
+            calls: [{
+                req: { method: "POST", url: unit.doc.request.url },
+                res: { status: 429, body: { error: "rate limit exceeded" } },
+            }],
+        },
+    });
+    assertEquals(result.httpStatus, 429);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "rate limit exceeded");
+});
+
 Deno.test(`${ID} schema gate: a non-URL is rejected before the wire`, async () => {
     const unit = await testSealedUnit(ID);
     await assertRejects(

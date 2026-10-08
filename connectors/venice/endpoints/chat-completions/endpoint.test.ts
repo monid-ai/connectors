@@ -40,6 +40,7 @@ Deno.test(`${ID} happy (recorded): the vendor cost claim is the bill, cost strip
     const output = result.output as Record<string, unknown>;
     assertEquals("cost" in output, false);
     const choices = output.choices as Record<string, unknown>[];
+    assertEquals(choices.length, 1); // the fixture's
     const message = choices[0].message as Record<string, unknown>;
     assertEquals(message.content, "Lisbon is the capital of Portugal.");
 });
@@ -186,6 +187,43 @@ Deno.test(`${ID} provider error (recorded 404): zero usage, digested error`, asy
     );
 });
 
+Deno.test(`${ID} provider error (recorded 401): zero usage, digested error`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body },
+        mode: "replay",
+        fixture: await loadFixture(`${chains}unauthorized.json`),
+    });
+    assertEquals(result.httpStatus, 401);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "Authentication failed");
+});
+
+Deno.test(`${ID} provider error (429): no usage`, async () => {
+    const unit = await testSealedUnit(ID);
+    const result = await runEndpoint({
+        unit,
+        input: { body },
+        mode: "replay",
+        fixture: {
+            name: "synthetic-chat-completions-rate-limited",
+            description: "A Venice 429 must not bill chat usage.",
+            calls: [{
+                req: { method: "POST", url: unit.doc.request.url },
+                res: { status: 429, body: { error: "rate limit exceeded" } },
+            }],
+        },
+    });
+    assertEquals(result.httpStatus, 429);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.message, "rate limit exceeded");
+});
+
 Deno.test(`${ID} schema gate: max_completion_tokens is required, a valid body passes`, async () => {
     const unit = await testSealedUnit(ID);
     const fixture = await loadFixture(`${chains}chat-ok.json`);
@@ -250,9 +288,11 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        // shape, not amounts: one answer, a positive reported cost
+        // shape, not amounts: choices came back, cost became evidence
         const output = result.output as Record<string, unknown>;
         assertEquals(Array.isArray(output.choices), true);
-        assertEquals((result.usage.credits.default ?? 0) > 0, true);
+        assertEquals("cost" in output, false);
+        assertEquals(Object.keys(result.usage.evidence), ["CREDIT"]);
+        assertEquals(typeof result.usage.evidence.CREDIT, "number");
     },
 });

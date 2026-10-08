@@ -27,6 +27,7 @@ Deno.test(`${ID} happy (recorded): flat $0.01, structured results`, async () => 
     });
     const output = result.output as Record<string, unknown>;
     const results = output.results as Record<string, unknown>[];
+    assertEquals(results.length, 2); // the fixture's (record trims to 2)
     assertEquals(typeof results[0].url, "string");
     assertEquals(typeof results[0].title, "string");
 });
