@@ -63,10 +63,8 @@ export const zCompanyFundingRound = z.enum([
     "other",
 ]);
 
-export const zCompanyExcludeFilters = z.object({
-    domains: z.array(z.string()).nullable().describe(
-        "The domain names of companies to exclude from the results",
-    ).optional(),
+/** Identical company filters shared by search, lookalikes and exclusions. */
+export const zCompanyFilterFields = {
     regions: z.array(z.string()).nullable().describe(
         "The region IDs to filter by",
     ).optional(),
@@ -106,6 +104,13 @@ export const zCompanyExcludeFilters = z.object({
     fundingRounds: z.array(zCompanyFundingRound).nullable().describe(
         "The funding rounds to filter by",
     ).optional(),
+};
+
+export const zCompanyExcludeFilters = z.object({
+    domains: z.array(z.string()).nullable().describe(
+        "The domain names of companies to exclude from the results",
+    ).optional(),
+    ...zCompanyFilterFields,
 }).nullable().describe(
     "Exclusion filters to apply on the companies. If a company matches any of the filters here, it will be excluded from the results.",
 );

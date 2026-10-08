@@ -10,8 +10,13 @@
 
 ## Validation notes
 
-- CompanyEnrich: 29 offline tests passed; 5 live smoke tests skipped without credentials.
-- Full offline suite: 1,274 passed, 0 failed and 218 ignored.
+- CompanyEnrich: 31 offline tests passed across five endpoint-local suites;
+  5 live smoke tests skipped without credentials. Happy paths and expansion
+  cases assert the complete `{credits, evidence}` object. Validation gates
+  include passing boundary inputs (page sizes 1/100 and seed counts 1/10).
+- Full offline suite: 1,276 passed, 0 failed and 218 ignored.
+- Extracting shared filters preserves all five compiled endpoint documents
+  and hashes, and the compiled function table exactly.
 - Whole-repository type check, connector lint and formatting passed.
 - Catalog compilation exposes exactly five CompanyEnrich endpoints. A 10-result
   company search with workforce estimates 60 credits (10 base + 50 expansion).

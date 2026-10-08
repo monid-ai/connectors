@@ -26,6 +26,10 @@ Official references checked on 2026-10-07:
 - https://companyenrich.com/product/people-search-api
 
 Input schemas follow the OpenAPI definitions embedded in those reference pages.
+The people-search `CompanySimilarInput.workforceSize` definition has `items: {}`
+(rechecked 2026-10-08), unlike the typed company-search variant. Its mirror
+intentionally preserves that unconstrained item schema. Shared company-filter
+fields are composed from one provider-level definition.
 The API reports consumption in `x-credit-cost`, a response header unavailable to
 ordinary settle hooks. As with PDL, the connector therefore uses the documented
 rate-card fold and does not invent a body meter or add a lifecycle just to read it.

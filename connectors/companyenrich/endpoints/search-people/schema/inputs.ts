@@ -1,18 +1,11 @@
 import { z } from "zod";
 import {
-    zCompanyCategory,
-    zCompanyEmployees,
     zCompanyExcludeFilters,
+    zCompanyFilterFields,
     zCompanyFundingAmountRange,
-    zCompanyFundingRound,
-    zCompanyRevenue,
-    zCompanyType,
     zCompanyWorkforceGrowthInput,
     zCompanyWorkforceSizeInput,
     zFeatureRequirement,
-    zNullableOfCompanyWorkforceGrowthDepartment,
-    zNullableOfCompanyWorkforceGrowthDepartment2,
-    zNullableOfCompanyWorkforceGrowthPeriod,
     zNullableOfFilterOperator,
     zYearRange,
 } from "../../../schema/common.ts";
@@ -46,45 +39,7 @@ export const zCompanySearchInput2 = z.object({
     require: z.array(zFeatureRequirement).nullable().describe(
         "The features that must exist for the company",
     ).optional(),
-    regions: z.array(z.string()).nullable().describe(
-        "The region IDs to filter by",
-    ).optional(),
-    countries: z.array(z.string()).nullable().describe(
-        "The 2 letter country codes to filter by",
-    ).optional(),
-    states: z.array(z.number().int()).nullable().describe(
-        "The state IDs to filter by",
-    ).optional(),
-    cities: z.array(z.number().int()).nullable().describe(
-        "The city IDs to filter by",
-    ).optional(),
-    type: z.array(zCompanyType).nullable().describe(
-        "The list of company types to filter by",
-    ).optional(),
-    category: z.array(zCompanyCategory).nullable().describe(
-        "The list of company categories to filter by",
-    ).optional(),
-    employees: z.array(zCompanyEmployees).nullable().describe(
-        "The list of employee counts to filter by",
-    ).optional(),
-    reportedEmployees: z.array(zCompanyEmployees).nullable().describe(
-        "The list of externally reported employee counts to filter by",
-    ).optional(),
-    revenue: z.array(zCompanyRevenue).nullable().describe(
-        "The list of revenue ranges to filter by",
-    ).optional(),
-    naicsCode: z.array(z.number().int()).nullable().describe(
-        "The NAICS codes to filter by. Can be 2 to 6 digit codes. In case of a 2-5 digit code, all 6 digit codes under it will be included",
-    ).optional(),
-    keywords: z.array(z.string()).nullable().describe(
-        "The keywords to filter by",
-    ).optional(),
-    technologies: z.array(z.string()).nullable().describe(
-        "The technologies to filter by",
-    ).optional(),
-    fundingRounds: z.array(zCompanyFundingRound).nullable().describe(
-        "The funding rounds to filter by",
-    ).optional(),
+    ...zCompanyFilterFields,
 }).nullable().describe("The filters to be applied on the companies");
 
 export const zCompanySimilarInput = z.object({
@@ -108,51 +63,17 @@ export const zCompanySimilarInput = z.object({
     keywordsOperator: zNullableOfFilterOperator.optional(),
     technologiesOperator: zNullableOfFilterOperator.optional(),
     workforceGrowth: zCompanyWorkforceGrowthInput.optional(),
+    // The people-search OpenAPI declares CompanySimilarInput.workforceSize
+    // with items: {}, unlike CompanySearchInput2 above. Preserve that vendor
+    // mirror instead of inventing item constraints (verified 2026-10-08):
+    // https://docs.companyenrich.com/reference/post_people-search
     workforceSize: z.array(z.unknown()).nullable().describe(
         "Filter companies by absolute workforce headcount. Multiple entries can be provided to filter on different departments simultaneously.",
     ).optional(),
     require: z.array(zFeatureRequirement).nullable().describe(
         "The features that must exist for the company",
     ).optional(),
-    regions: z.array(z.string()).nullable().describe(
-        "The region IDs to filter by",
-    ).optional(),
-    countries: z.array(z.string()).nullable().describe(
-        "The 2 letter country codes to filter by",
-    ).optional(),
-    states: z.array(z.number().int()).nullable().describe(
-        "The state IDs to filter by",
-    ).optional(),
-    cities: z.array(z.number().int()).nullable().describe(
-        "The city IDs to filter by",
-    ).optional(),
-    type: z.array(zCompanyType).nullable().describe(
-        "The list of company types to filter by",
-    ).optional(),
-    category: z.array(zCompanyCategory).nullable().describe(
-        "The list of company categories to filter by",
-    ).optional(),
-    employees: z.array(zCompanyEmployees).nullable().describe(
-        "The list of employee counts to filter by",
-    ).optional(),
-    reportedEmployees: z.array(zCompanyEmployees).nullable().describe(
-        "The list of externally reported employee counts to filter by",
-    ).optional(),
-    revenue: z.array(zCompanyRevenue).nullable().describe(
-        "The list of revenue ranges to filter by",
-    ).optional(),
-    naicsCode: z.array(z.number().int()).nullable().describe(
-        "The NAICS codes to filter by. Can be 2 to 6 digit codes. In case of a 2-5 digit code, all 6 digit codes under it will be included",
-    ).optional(),
-    keywords: z.array(z.string()).nullable().describe(
-        "The keywords to filter by",
-    ).optional(),
-    technologies: z.array(z.string()).nullable().describe(
-        "The technologies to filter by",
-    ).optional(),
-    fundingRounds: z.array(zCompanyFundingRound).nullable().describe(
-        "The funding rounds to filter by",
-    ).optional(),
+    ...zCompanyFilterFields,
 }).nullable().describe("The filters used to find similar companies");
 
 export const zCompanyLookupInput = z.object({
