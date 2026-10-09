@@ -7,7 +7,7 @@ export default defineEndpoint({
         displayName: "Magic Hour AI Video Editor",
         summary: "AI Video Editor",
         description:
-            "AI Video Editor. This Monid route pins model=ltx-2.3, resolution=720p so pre-run pricing is deterministic. Monid submits once, polls the corresponding project to completion and returns project metadata with expiring download URLs. Save outputs promptly. Upload local media through /v1/files/upload-urls and use its file_path; direct asset URLs are accepted where documented.",
+            "AI Video Editor. This Monid route pins model=ltx-2.5, resolution=720p so pre-run pricing is deterministic. Monid submits once, polls the corresponding project to completion and returns project metadata with expiring download URLs. Save outputs promptly. Upload local media through /v1/files/upload-urls and use its file_path; direct asset URLs are accepted where documented.",
         docsUrl: "https://docs.magichour.ai/api-reference",
         categories: ["video-generation"],
     },
@@ -35,7 +35,7 @@ export default defineEndpoint({
                         .describe(
                             "End time of your clip in seconds. Must be greater than `start_seconds`. Minimum duration depends on model: `gemini-omni-1.1`: 3s, LTX 2.5: 0.5s. Maximum duration depends on model: `gemini-omni-1.1`: 10s, LTX 2.5: 20s.",
                         ),
-                    model: z.literal("ltx-2.3").default("ltx-2.3"),
+                    model: z.literal("ltx-2.5").default("ltx-2.5"),
                     resolution: z.literal("720p").default("720p"),
                     style: z
                         .object({
@@ -68,13 +68,12 @@ export default defineEndpoint({
         },
         estimate: ({ data }) => ({
             counts: {
-                CREDIT: Math.round(
+                CREDIT:
                     Math.ceil(
                         (data.input.body.end_seconds -
                             (data.input.body.start_seconds ?? 0)) *
                             24,
-                    ) * 1.5,
-                ),
+                    ) * 2,
             },
         }),
         evidence: ({ data, utils }) => ({

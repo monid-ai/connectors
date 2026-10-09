@@ -7,7 +7,7 @@ export default defineEndpoint({
         displayName: "Magic Hour Text-to-Video",
         summary: "Text-to-Video",
         description:
-            "Text-to-Video. This Monid route pins model=ltx-2.3, resolution=720p so pre-run pricing is deterministic. Monid submits once, polls the corresponding project to completion and returns project metadata with expiring download URLs. Save outputs promptly. Upload local media through /v1/files/upload-urls and use its file_path; direct asset URLs are accepted where documented.",
+            "Text-to-Video. This Monid route pins model=ltx-2.5, resolution=720p so pre-run pricing is deterministic. Monid submits once, polls the corresponding project to completion and returns project metadata with expiring download URLs. Save outputs promptly. Upload local media through /v1/files/upload-urls and use its file_path; direct asset URLs are accepted where documented.",
         docsUrl: "https://docs.magichour.ai/api-reference",
         categories: ["video-generation"],
     },
@@ -24,6 +24,7 @@ export default defineEndpoint({
                         .optional(),
                     end_seconds: z
                         .number()
+                        .int()
                         .min(1)
                         .max(60)
                         .describe(
@@ -36,7 +37,7 @@ export default defineEndpoint({
                         )
                         .optional(),
                     resolution: z.literal("720p").default("720p"),
-                    model: z.literal("ltx-2.3").default("ltx-2.3"),
+                    model: z.literal("ltx-2.5").default("ltx-2.5"),
                     audio: z
                         .boolean()
                         .describe(
