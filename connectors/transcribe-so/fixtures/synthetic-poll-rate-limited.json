@@ -1,0 +1,92 @@
+{
+    "name": "synthetic-poll-rate-limited",
+    "description": "SYNTHETIC: the create answers 202, then OUR status read is rate-limited — 429 rate_limited (60 requests per minute per key) with `Retry-After: 7` (seconds). The job keeps running upstream, so the poll stays RUNNING and honors the header as the next tick's pollAfterMs (7000). The following /wait answers the completed row and the markdown transcript settles the run. Envelope per utils/api-auth.ts apiError; retry-after is on the recorder's response-header allowlist (2026-09-26).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "id": 8123,
+                    "status": "processing",
+                    "stage": "queued",
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "source": "external_url",
+                    "url": "https://transcribe.so/test-90s.m4a",
+                    "duration_seconds": 90,
+                    "billed_minutes": 2,
+                    "retail_usd": 0.0333,
+                    "addons": [],
+                    "callback": null
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/8123/wait?timeout=25&include=chapters"
+            },
+            "res": {
+                "status": 429,
+                "headers": {
+                    "retry-after": "7"
+                },
+                "body": {
+                    "error": {
+                        "code": "rate_limited",
+                        "message": "Rate limit exceeded: 60 requests per minute per API key. Retry after 7 seconds. Docs: https://transcribe.so/developers/docs#rate_limited",
+                        "request_id": "req_synthetic_429",
+                        "doc_url": "https://transcribe.so/developers/docs#rate_limited"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/8123/wait?timeout=25&include=chapters"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": 8123,
+                    "status": "completed",
+                    "stage": "completed",
+                    "progress": 100,
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "detected_language": "en",
+                    "source": "external_url",
+                    "title": "transcribe.so 90-second test clip",
+                    "description": null,
+                    "external_url": "https://transcribe.so/test-90s.m4a",
+                    "youtube_url": null,
+                    "duration_seconds": 90,
+                    "charge_usd": 0.0333,
+                    "error": null,
+                    "created_at": "2026-09-26T09:00:00.000Z",
+                    "processing_started_at": "2026-09-26T09:00:01.000Z",
+                    "processing_completed_at": "2026-09-26T09:01:02.000Z",
+                    "created_via_api_key_id": "key-placeholder",
+                    "callback_url": null,
+                    "_timed_out": false,
+                    "chapters": []
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/8123/transcript?format=md&speaker_labels=true&timestamps=true"
+            },
+            "res": {
+                "status": 200,
+                "body": "# transcribe.so 90-second test clip\n\n---\n\n**[00:00 → 00:43]** Speaker 1\n\nWelcome to the transcribe dot so test clip.\n\n**[00:43 → 01:30]** Speaker 1\n\nThat is the whole clip. Thanks for listening.\n\n"
+            }
+        }
+    ]
+}

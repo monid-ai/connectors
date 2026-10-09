@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-insufficient-funds",
+    "description": "SYNTHETIC: the create is refused with 402 insufficient_funds — the connector's transcribe.so wallet (the ONE account every monid run bills) cannot hold the job. No job exists, nothing is held, so the run settles as zero-billed DATA with the vendor's status and its `{error: {code, message, request_id, doc_url}}` envelope verbatim, so the caller sees the vendor's own code. Envelope shape per utils/api-auth.ts apiError (2026-09-26).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 402,
+                "body": {
+                    "error": {
+                        "code": "insufficient_funds",
+                        "message": "Your wallet balance is too low to hold this job (needs $0.03). Top up at https://transcribe.so/billing. Docs: https://transcribe.so/developers/docs#insufficient_funds",
+                        "request_id": "req_synthetic_402",
+                        "doc_url": "https://transcribe.so/developers/docs#insufficient_funds"
+                    }
+                }
+            }
+        }
+    ]
+}

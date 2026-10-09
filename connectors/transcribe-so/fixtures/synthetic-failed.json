@@ -1,0 +1,61 @@
+{
+    "name": "synthetic-failed",
+    "description": "SYNTHETIC (a pipeline failure cannot be provoked on demand): the create answers 202, then the first /wait answers the row in terminal `failed` status with the vendor's INTERNAL error text in `error` — text that names infrastructure and the transcription id. The poll exchange itself returned 200, so the run settles with OUR synthesized 502 and providerHttpStatus 200 (design D12), zero-billed, and the output carries a FIXED `{error: {code: \"transcription_failed\", message}}` — the vendor's text is never copied (leak hygiene under a shared key).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "id": 8123,
+                    "status": "processing",
+                    "stage": "queued",
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "source": "external_url",
+                    "url": "https://transcribe.so/test-90s.m4a",
+                    "duration_seconds": 90,
+                    "billed_minutes": 2,
+                    "retail_usd": 0.0333,
+                    "addons": [],
+                    "callback": null
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/8123/wait?timeout=25&include=chapters"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": 8123,
+                    "status": "failed",
+                    "stage": "transcribing",
+                    "progress": 40,
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "detected_language": null,
+                    "source": "external_url",
+                    "title": null,
+                    "description": null,
+                    "external_url": "https://transcribe.so/test-90s.m4a",
+                    "youtube_url": null,
+                    "duration_seconds": 90,
+                    "charge_usd": 0.0333,
+                    "error": "ffmpeg exited 1 while normalizing audio for transcription 8123 (worker transcribe-chunk-7f9c)",
+                    "created_at": "2026-09-26T09:00:00.000Z",
+                    "processing_started_at": "2026-09-26T09:00:01.000Z",
+                    "processing_completed_at": null,
+                    "created_via_api_key_id": "key-placeholder",
+                    "callback_url": null,
+                    "_timed_out": false
+                }
+            }
+        }
+    ]
+}

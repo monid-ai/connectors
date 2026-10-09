@@ -629,7 +629,8 @@
         "suzanne#v1/models/download",
         "suzanne#v1/uploads",
         "tinyfish#fetch",
-        "tinyfish#search"
+        "tinyfish#search",
+        "transcribe-so#transcriptions"
     ],
     "resources": [
         "saperly/phone-number"

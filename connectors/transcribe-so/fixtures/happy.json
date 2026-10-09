@@ -1,0 +1,153 @@
+{
+    "name": "happy",
+    "description": "RECORDED 2026-09-26 against prod with the monid@ key (`deno task record transcribe-so#transcriptions happy`, source https://transcribe.so/test-90s.m4a — our own clip, duration_seconds 90, max_charge_usd 0.1, formats markdown+srt+vtt), hand-minimized: the 202 parks the run with the integer transcription id (our own row, kept); ONE of the two recorded `_timed_out` long-polls is kept (the row already carries detected_language and the probed duration 89 s while processing); the completed row inlines two LLM-curated chapters (synthesized ids -1/-2, url null, summary null — the real shape for a direct-media source); then the three artifact reads issued together — markdown (Table-of-Contents layout), SRT, VTT — trimmed to 500 chars by the recorder. Redacted by hand: created_via_api_key_id (the recorder does not scrub it). Settles 2 whole minutes × $0.016667 on the derived fold; the row's charge_usd 0.03 is not read. {{request.url}} binds the endpoint's compiled request url.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "source": "external_url",
+                    "url": "https://transcribe.so/test-90s.m4a",
+                    "duration_seconds": 90,
+                    "language": "auto",
+                    "max_charge_usd": 0.1
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "id": 14217,
+                    "status": "processing",
+                    "stage": "queued",
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "source": "external_url",
+                    "url": "https://transcribe.so/test-90s.m4a",
+                    "duration_seconds": 90,
+                    "billed_minutes": 2,
+                    "retail_usd": 0.03,
+                    "addons": [],
+                    "callback": null
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/14217/wait?timeout=25&include=chapters"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": 14217,
+                    "status": "processing",
+                    "stage": "transcribed",
+                    "progress": 75,
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "detected_language": "en",
+                    "source": "external_url",
+                    "title": "test-90s.m4a",
+                    "description": null,
+                    "external_url": "https://transcribe.so/test-90s.m4a",
+                    "youtube_url": null,
+                    "duration_seconds": 89,
+                    "charge_usd": null,
+                    "error": null,
+                    "created_at": "2026-09-26T13:02:19.956745+00:00",
+                    "processing_started_at": "2026-09-26T13:02:20.032+00:00",
+                    "processing_completed_at": null,
+                    "created_via_api_key_id": "REDACTED",
+                    "callback_url": null,
+                    "_timed_out": true
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/14217/wait?timeout=25&include=chapters"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": 14217,
+                    "status": "completed",
+                    "stage": "completed",
+                    "progress": 100,
+                    "pipeline_code": "standard",
+                    "language": "auto",
+                    "detected_language": "en",
+                    "source": "external_url",
+                    "title": "test-90s.m4a",
+                    "description": null,
+                    "external_url": "https://transcribe.so/test-90s.m4a",
+                    "youtube_url": null,
+                    "duration_seconds": 89,
+                    "charge_usd": 0.03,
+                    "error": null,
+                    "created_at": "2026-09-26T13:02:19.956745+00:00",
+                    "processing_started_at": "2026-09-26T13:02:20.032+00:00",
+                    "processing_completed_at": "2026-09-26T13:03:21.124+00:00",
+                    "created_via_api_key_id": "REDACTED",
+                    "callback_url": null,
+                    "_timed_out": false,
+                    "included": [
+                        "chapters"
+                    ],
+                    "chapters": [
+                        {
+                            "id": -1,
+                            "chapter_index": 0,
+                            "title": "Stop dismissing your partner's feelings",
+                            "summary": null,
+                            "start_seconds": 0,
+                            "end_seconds": 66.8,
+                            "url": null
+                        },
+                        {
+                            "id": -2,
+                            "chapter_index": 1,
+                            "title": "Relationships die from small cuts",
+                            "summary": null,
+                            "start_seconds": 66.8,
+                            "end_seconds": 89,
+                            "url": null
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/14217/transcript?format=md&speaker_labels=true&timestamps=true"
+            },
+            "res": {
+                "status": 200,
+                "body": "# test-90s.m4a\n\n---\n\n## Table of Contents\n\n- `0:00` **1.** Why your partner's spirit is breaking\n\n---\n\n**[0:00 → 0:07]** SPEAKER_00\n\nPlease quit dismissing and invalidating your partner, because for a long time they're going to continue to beg and fight for this relationship to work.\n\n**[0:07 → 0:14]** SPEAKER_00\n\nBut I'm telling you, you will break their spirit with all the fighting and the defensiveness and the shutting down, and treating their feelings like they're a burden.\n\n**[0:15 → 0:17]*"
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/14217/subtitles?format=srt"
+            },
+            "res": {
+                "status": 200,
+                "body": "1\n00:00:00,080 --> 00:00:01,520\nPlease quit dismissing and\n\n2\n00:00:01,600 --> 00:00:04,560\ninvalidating your partner, because\nfor a long time they're going to\n\n3\n00:00:04,640 --> 00:00:06,160\ncontinue to beg and fight for this\n\n4\n00:00:06,240 --> 00:00:09,280\nrelationship to work. But I'm telling\nyou, you will break their spirit\n\n5\n00:00:09,360 --> 00:00:12,400\nwith all the fighting and the\ndefensiveness and the shutting down,\n\n6\n00:00:12,480 --> 00:00:14,980\nand treating their feelings\nlike th"
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/14217/subtitles?format=vtt"
+            },
+            "res": {
+                "status": 200,
+                "body": "WEBVTT\n\n1\n00:00:00.080 --> 00:00:01.520\nPlease quit dismissing and\n\n2\n00:00:01.600 --> 00:00:04.560\ninvalidating your partner, because\nfor a long time they're going to\n\n3\n00:00:04.640 --> 00:00:06.160\ncontinue to beg and fight for this\n\n4\n00:00:06.240 --> 00:00:09.280\nrelationship to work. But I'm telling\nyou, you will break their spirit\n\n5\n00:00:09.360 --> 00:00:12.400\nwith all the fighting and the\ndefensiveness and the shutting down,\n\n6\n00:00:12.480 --> 00:00:14.980\nand treating their feelings"
+            }
+        }
+    ]
+}
