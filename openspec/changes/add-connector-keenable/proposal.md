@@ -13,13 +13,15 @@ engine capability. The published surface is small and stable
 - **connectors/keenable** — 2 endpoints, `X-API-Key` auth, 30 s timeouts:
   - `keenable#v1/search` (`POST /v1/search`): ranked results with title,
     URL, description, snippet, publication and index timestamps; site /
-    date / point-in-time filters; snippet length and result-count caps.
-    PER_CALL, 1 Keenable credit.
-  - `keenable#v1/fetch` (`GET /v1/fetch`): markdown for a known indexed
-    URL; optional `max_chars` and a `prompt` extraction instruction.
-    PER_CALL, 1 Keenable credit. Live fetch is not exposed (D4).
+    date / point-in-time filters; snippet length and result-count caps;
+    `pro` / `realtime` mode. 1 Keenable credit per search with results;
+    an empty result bills 0.
+  - `keenable#v1/fetch` (`GET /v1/fetch`): markdown for a URL, indexed
+    or `live`; optional `max_chars` and a `prompt` extraction
+    instruction. PER_CALL, 1 Keenable credit.
 - **One credit pool** `default` ("Keenable credits") and a provider-level
-  `PER_CALL` model inherited by both docs. No `usage.consolidate`: REST
+  `PER_CALL` model; search overrides it so an empty result bills 0
+  (v1 posture). No `usage.consolidate`: REST
   responses carry no usage receipt (MCP's `_meta["keenable/usage"]` is
   not on this surface).
 - Fixtures: search/fetch 401s are RECORDED (malformed key against the
@@ -35,12 +37,6 @@ engine capability. The published surface is small and stable
 
 - The keyless `/v1/search/public` and `/v1/fetch/public` twins
   (`X-Keenable-Title`, shared per-IP pool, unmetered) — evaluation-only.
-- Search `mode` (realtime vs pro) as a request field — Keenable decides
-  it per call; MCP `_meta["keenable/overrides"]` is not an HTTP
-  parameter.
-- Live fetch (`live=true` / `fetch.live`) — a different SKU that "draws
-  more than one" credit without a published number, and REST has no
-  receipt to settle against.
 
 ## Impact
 

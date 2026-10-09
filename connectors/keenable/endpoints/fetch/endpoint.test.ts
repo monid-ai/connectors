@@ -56,7 +56,7 @@ Deno.test("keenable#v1/fetch provider error (recorded 401): data, zero usage", a
     });
 });
 
-Deno.test("keenable#v1/fetch: url required; prompt bounded; unknown keys rejected", async () => {
+Deno.test("keenable#v1/fetch: url required; prompt bounded; live accepted; unknown keys rejected", async () => {
     const unit = await testSealedUnit("keenable#v1/fetch");
     const fixture = await loadFixture(`${fixturesDir}synthetic-fetch-ok.json`);
     const rejected: Record<string, Json>[] = [
@@ -64,7 +64,7 @@ Deno.test("keenable#v1/fetch: url required; prompt bounded; unknown keys rejecte
         { url: "not-a-url" },
         { url: "https://example.com", max_chars: 0 },
         { url: "https://example.com", prompt: "x".repeat(2001) },
-        { url: "https://example.com", live: true },
+        { url: "https://example.com", live: "yes" },
         { url: "https://example.com", bogus: 1 },
     ];
     for (const queryParams of rejected) {
@@ -119,6 +119,21 @@ Deno.test("keenable#v1/fetch: url required; prompt bounded; unknown keys rejecte
         fixture: promptFixture,
     });
     assertEquals(okPrompt.isProviderError, false);
+
+    const liveFixture = await loadFixture(
+        `${fixturesDir}synthetic-fetch-live.json`,
+    );
+    const okLive = await runEndpoint({
+        unit,
+        input: { queryParams: { url: "https://example.com", live: true } },
+        mode: "replay",
+        fixture: liveFixture,
+    });
+    assertEquals(okLive.isProviderError, false);
+    assertEquals(okLive.usage, {
+        credits: { default: 1 },
+        evidence: { CALL: 1 },
+    });
 });
 
 Deno.test({

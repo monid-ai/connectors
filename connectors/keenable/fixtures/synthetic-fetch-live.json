@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-fetch-live",
+    "description": "SYNTHETIC live fetch for keenable#v1/fetch with live=true. Response shape matches the indexed fetch (synthetic-fetch-ok); query string is the engine's URLSearchParams encoding of the boolean.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.keenable.ai/v1/fetch?url=https%3A%2F%2Fexample.com&live=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "url": "https://example.com/",
+                    "title": "Example Domain",
+                    "content": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.",
+                    "description": ""
+                }
+            }
+        }
+    ]
+}

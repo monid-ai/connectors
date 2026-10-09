@@ -11,7 +11,7 @@ import {
 
 const fixturesDir = fromFileUrl(new URL("../../fixtures/", import.meta.url));
 
-Deno.test("keenable: both docs inherit PER_CALL 1, one auth fn, synthesized quantities, no consolidate", async () => {
+Deno.test("keenable: fetch inherits PER_CALL 1, search counts RESULT, one auth fn, no consolidate", async () => {
     const bundle = await testBundle();
     const ids = Object.keys(bundle.endpoints).filter((id) =>
         id.startsWith("keenable#")
@@ -31,22 +31,26 @@ Deno.test("keenable: both docs inherit PER_CALL 1, one auth fn, synthesized quan
     assertEquals(search.input.toRequest, undefined);
     assertEquals(fetchDoc.input.toRequest, undefined);
 
-    // flat PER_CALL: compiler-synthesized empty quantities (tinyfish/pdl
-    // enrich posture); engine appends CALL at settle
-    const synthesizedKey = search.usage.evidence.$fn.key;
-    assertEquals(search.usage.estimate.$fn.key, synthesizedKey);
-    assertEquals(fetchDoc.usage.evidence.$fn.key, synthesizedKey);
+    // fetch: flat PER_CALL, compiler-synthesized empty quantities
+    // (tinyfish/pdl enrich posture); engine appends CALL at settle
+    const synthesizedKey = fetchDoc.usage.evidence.$fn.key;
     assertEquals(fetchDoc.usage.estimate.$fn.key, synthesizedKey);
     assertEquals(
         bundle.fnTable[synthesizedKey].provenance,
         "core#usage.synthesizedEmpty",
     );
+    // search: its own 0|1 evidence (empty result bills 0)
+    assert(search.usage.evidence.$fn.key !== synthesizedKey);
 
+    const kinds: Record<string, string> = {
+        "keenable#v1/fetch": "PER_CALL",
+        "keenable#v1/search": "PER_UNIT",
+    };
     for (const id of ids) {
         const doc = bundle.endpoints[id];
         assertEquals(Object.keys(doc.usage.credits), ["default"], id);
         const model = doc.usage.model;
-        assertEquals(model.kind, "PER_CALL", id);
+        assertEquals(model.kind, kinds[id], id);
         assertEquals(
             "consumes" in model ? model.consumes : undefined,
             { credit: "default", amount: 1 },
@@ -55,7 +59,7 @@ Deno.test("keenable: both docs inherit PER_CALL 1, one auth fn, synthesized quan
     }
 });
 
-Deno.test("keenable#v1/search happy (synthetic): one credit; fold settles; mode rides the payload", async () => {
+Deno.test("keenable#v1/search happy (synthetic): one credit; fold settles; mode echoed", async () => {
     const unit = await testSealedUnit("keenable#v1/search");
     const fixture = await loadFixture(`${fixturesDir}synthetic-search-ok.json`);
     const result = await runEndpoint({
@@ -69,7 +73,7 @@ Deno.test("keenable#v1/search happy (synthetic): one credit; fold settles; mode 
     // no consolidate ⇒ no claim ⇒ the DERIVED fold is the bill (D2)
     assertEquals(result.usage, {
         credits: { default: 1 },
-        evidence: { CALL: 1 },
+        evidence: { RESULT: 1 },
     });
     const output = result.output as Record<string, unknown>;
     assertEquals("usage" in output, false);
@@ -78,6 +82,23 @@ Deno.test("keenable#v1/search happy (synthetic): one credit; fold settles; mode 
     assertEquals(output.query, "typescript best practices");
     assertEquals(output.mode, "pro");
     assertEquals((output.results as unknown[]).length, 2);
+});
+
+Deno.test("keenable#v1/search empty (synthetic): results [] bills 0", async () => {
+    const unit = await testSealedUnit("keenable#v1/search");
+    const fixture = await loadFixture(
+        `${fixturesDir}synthetic-search-empty.json`,
+    );
+    const result = await runEndpoint({
+        unit,
+        input: { body: { query: "zzqxv no such page" } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    assertEquals(result.usage, { credits: {}, evidence: { RESULT: 0 } });
+    assertEquals((result.output as Record<string, unknown>).results, []);
 });
 
 Deno.test("keenable#v1/search provider error (recorded 401): data, zero usage", async () => {
@@ -98,7 +119,7 @@ Deno.test("keenable#v1/search provider error (recorded 401): data, zero usage", 
     });
 });
 
-Deno.test("keenable#v1/search: query required; bounds; mode is not a request field", async () => {
+Deno.test("keenable#v1/search: query required; bounds; mode accepted", async () => {
     const unit = await testSealedUnit("keenable#v1/search");
     const fixture = await loadFixture(`${fixturesDir}synthetic-search-ok.json`);
     const rejected: Json[] = [
@@ -108,8 +129,8 @@ Deno.test("keenable#v1/search: query required; bounds; mode is not a request fie
         { query: "x", max_results: 51 },
         { query: "x", snippet_max_length: 179 },
         { query: "x", snippet_max_length: 10001 },
-        // design D3: mode is not on the REST body; z.never() rejects it
-        { query: "x", mode: "pro" },
+        { query: "x", published_after: "" },
+        { query: "x", query_time: 1790000000 },
     ];
     for (const body of rejected) {
         await assertRejects(
@@ -129,6 +150,10 @@ Deno.test("keenable#v1/search: query required; bounds; mode is not a request fie
         { query: "x", snippet_max_length: 180 },
         { query: "x", snippet_max_length: 10000 },
         { query: "x", bogus: 1 },
+        { query: "x", mode: "pro" },
+        { query: "x", mode: "realtime" },
+        { query: "x", published_after: "2w" },
+        { query: "x", query_time: "1790000000" },
         {
             query: "typescript best practices",
             site: "arxiv.org",
@@ -167,7 +192,7 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(Object.keys(result.usage.evidence).sort(), ["CALL"]);
+        assertEquals(Object.keys(result.usage.evidence).sort(), ["RESULT"]);
         assertEquals(typeof result.usage.credits.default, "number");
         const output = result.output as Record<string, unknown>;
         assert(

@@ -12,9 +12,8 @@ import {
  * live at the binding in endpoint.ts.
  *
  * `z.looseObject`: unspecified vendor-forward keys ride through.
- * `mode` is decided per call by Keenable and is not a REST request
- * field (credits docs; design D3) — `z.never()` rejects a pasted SDK
- * payload that sends it.
+ * `mode` is not in the OpenAPI but the REST body takes it: `pro` and
+ * `realtime` each drew one credit (drill 2026-09-28; design D3).
  */
 export const zKeenableSearchBody = z.looseObject({
     query: z.string().describe(
@@ -40,12 +39,15 @@ export const zKeenableSearchBody = z.looseObject({
         "Filter to pages published at or before this instant. " +
             TIME_BOUND_FORMAT,
     ),
+    // The Unix epoch must be a string: a JSON number is a 400 upstream
+    // (drill 2026-10-01).
     query_time: zKeenableTimeBound.optional().describe(
         "Search the index as it stood at this instant: pages acquired " +
             "after it are excluded. A date resolves to 00:00:00 UTC (not " +
             "the end of the day). Relative deltas on the other date " +
-            "filters resolve against this instant instead of now. " +
-            TIME_BOUND_FORMAT,
+            "filters resolve against this instant instead of now. Also " +
+            "accepts a Unix epoch in seconds as a string (e.g. " +
+            "'1790000000'). " + TIME_BOUND_FORMAT,
     ),
     snippet_max_length: z.number().int().describe(
         "Maximum length, in characters, of the snippet returned per " +
@@ -56,8 +58,8 @@ export const zKeenableSearchBody = z.looseObject({
         "Maximum number of results to return (1–50). When omitted, up " +
             "to 10 results are returned.",
     ).optional(),
-    mode: z.never().optional().describe(
-        "Not a REST request field. Keenable decides search mode per " +
-            "call; a pasted SDK `mode` fails INVALID_INPUT.",
-    ),
+    mode: z.string().describe(
+        "Search mode: 'pro' (default) for deeper retrieval, 'realtime' " +
+            "for the fastest results. Same price.",
+    ).optional(),
 });

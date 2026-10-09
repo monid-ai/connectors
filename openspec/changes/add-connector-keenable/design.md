@@ -18,51 +18,48 @@ it. Both docs call the keyed paths. Identity is inferred from
 `request.path` (design D22): `keenable#v1/search` and
 `keenable#v1/fetch`. No authored `endpoint:` pin.
 
-## D2 — One pool, PER_CALL 1, no consolidate
+## D2 — One pool, PER_CALL 1, no consolidate; empty search bills 0
 
 Credits docs (2026-09-16): authenticated usage is metered in credits;
 "search and fetch each cost one"; 100,000 requests/month free, then
-purchased packs. REST JSON carries no usage object. MCP reports
-`_meta["keenable/usage"]` (`sku`, `amount`, `credits`, `paid`) beside
-the tool result, which this HTTP connector never sees. Response headers
-on the public twin were rate-limit only (`X-RateLimit-*`,
-`X-Request-Id`); no usage header is documented for REST.
+purchased packs. Monid's v1 drill (2026-09-28, MCP
+`_meta["keenable/usage"]` per SKU) measured every SKU a doc can select
+— `search.pro`, `search.realtime`, `fetch`, `fetch.live`, with or
+without `prompt` — at one credit for Monid's organization. REST JSON
+carries no usage object, so there is no vendor claim to pluck (no
+`usage.consolidate`) and the derived fold settles — the pdl posture.
 
-So there is no vendor claim to pluck (no `usage.consolidate`) and the
-derived fold settles — the pdl posture. One pool `default` ("Keenable
-credits"), a provider-level `PER_CALL` of 1 inherited by both docs.
-Quantities fns are compiler-synthesized. Search mode SKUs
-(`search.realtime` / `search.pro`) are not request-selectable (D3) and
-are published as one credit either way.
+One pool `default` ("Keenable credits"), a provider-level `PER_CALL` of
+1. Fetch inherits it. Search overrides it with `PER_UNIT` `RESULT` and
+its own evidence: `results: []` still draws a credit (console balance
+delta, drill 2026-09-28) but bills 0 — v1's posture (`searchActuals`),
+the same shape as litescrape's empty success. The estimate promises one.
 
-Rejected: two pools keyed on SKU (the caller cannot choose, and REST
-does not report which SKU ran); a FREE model (authenticated calls draw
-the monthly allowance).
+A fetch the target refuses (403/404/422/500) also draws a credit
+(drill 2026-09-28 / 2026-10-01); here it settles as a provider error
+with zero usage, as every non-2xx does. v1 records that credit as
+Monid's cost; the declarative model has no seam for it and the buyer
+pays nothing either way.
 
-## D3 — Search `mode` is not a request field
+Rejected: two pools keyed on SKU (every SKU is one credit); a FREE
+model (authenticated calls draw the monthly allowance).
 
-Credits: "Search mode is not a request parameter. Over MCP an
-integrator can pin it with `_meta[\"keenable/overrides\"]`; otherwise
-the mode is decided per call." OpenAPI SearchRequest has no `mode`.
-The Python SDK documents a `mode` argument; that is not the HTTP
-surface this connector speaks.
+## D3 — Search `mode` is a request field
 
-The search body is `z.looseObject` so unspecified vendor-forward keys
-ride through, plus `mode: z.never().optional()` so a payload that
-includes `mode` fails INVALID_INPUT rather than being dropped on the
-floor or sent and 400'd upstream. The response may echo `mode` (`"pro"`
-observed on the public twin 2026-09-16); it rides the payload, unused
-by billing.
+OpenAPI SearchRequest has no `mode`, but the REST body accepts it: the
+v1 drill (2026-09-28) sent `mode: "pro"` and `mode: "realtime"` to
+`POST /v1/search` and each drew one credit. So `mode` is an optional
+string — the values (`pro` default, `realtime`) live in the describe,
+not a `z.enum` (vendor enumerated strings stay `z.string`, repo
+convention). The response echoes the mode served.
 
-## D4 — `fetch.live` is not on the catalog
+## D4 — `live` fetch is on the catalog
 
-`live=true` is a documented query param and a separate SKU
-(`fetch.live`) that "draws more than one credit per call". No number is
-published; prices are "per-organization"; REST has no receipt. Exposing
-`live` under the provider PER_CALL of 1 would undercount every live
-fetch. The catalog fetch is indexed-only: `live` is not a request
-parameter. A published rate or a REST usage field is a follow-up
-(tasks 3.4).
+`live=true` is a documented query param (`fetch.live` SKU). The credits
+docs say it "draws more than one credit" without a number; the v1 drill
+(2026-09-28) measured one for Monid's organization, the same as an
+indexed fetch. So `live` is an optional boolean under the same PER_CALL
+of 1.
 
 ## D5 — Fixtures: recorded 401, synthetic happy
 
