@@ -84,8 +84,9 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalNum(data.output, "$.credits_charged") ??
-                    0,
+                    utils.json.optionalGet(data.output, "$.status") === "complete"
+                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                        : 0,
             },
         }),
     },

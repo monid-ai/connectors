@@ -95,7 +95,7 @@ export default defineProvider({
             }
             const res = await utils.http({
                 method: "GET",
-                path: `/v1/${data.lifecycle.state.data?.collection ?? "image-projects"}/${encodeURIComponent(projectId)}`,
+                path: `/v1/${utils.json.optionalGet(data.lifecycle.state.data ?? {}, "$.collection") ?? "image-projects"}/${encodeURIComponent(projectId)}`,
             });
             if (res.status < 200 || res.status >= 300) {
                 throw new Error(
@@ -151,7 +151,10 @@ export default defineProvider({
                 );
             if (
                 !hasDownload &&
-                data.lifecycle.state.data?.collection !== "face-detection"
+                utils.json.optionalGet(
+                    data.lifecycle.state.data ?? {},
+                    "$.collection",
+                ) !== "face-detection"
             ) {
                 return {
                     kind: "COMPLETED",

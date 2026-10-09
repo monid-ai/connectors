@@ -99,24 +99,29 @@ export default defineEndpoint({
         },
         estimate: ({ data }) => ({
             counts: {
-                CREDIT:
-                    Math.ceil(
-                        (data.input.body.end_seconds -
-                            (data.input.body.start_seconds ?? 0)) *
-                            24,
-                    ) *
-                    (["prompted", "standard", "expressive"].includes(
-                        data.input.body.style?.generation_mode ?? "realistic",
-                    )
-                        ? 1
-                        : 2),
+                CREDIT: Math.round(
+                    (data.input.body.end_seconds -
+                        (data.input.body.start_seconds ?? 0)) *
+                        24 *
+                        (["prompted", "standard", "expressive"].includes(
+                            data.input.body.style?.generation_mode ??
+                                "realistic",
+                        )
+                            ? 1
+                            : 2),
+                ),
             },
         }),
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalNum(data.output, "$.credits_charged") ??
-                    0,
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
+                        : 0,
             },
         }),
     },
