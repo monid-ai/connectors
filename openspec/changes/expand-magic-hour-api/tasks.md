@@ -2,5 +2,5 @@
 - [x] Add native input schemas and distinct operation identities.
 - [x] Extend async polling across media collections without rebilling utility reads.
 - [x] Pin supported variable-rate settings and declare canonical credit estimates.
-- [ ] Pass existing typecheck, replay tests and catalog compilation in remote CI.
+- [x] Pass existing typecheck, replay tests and catalog compilation in remote CI (run 37908556869, 1,245 passed, 0 failed; final copy-only follow-up reruns the same checks).
 - [ ] Monid review, merge and hosted catalog publication.

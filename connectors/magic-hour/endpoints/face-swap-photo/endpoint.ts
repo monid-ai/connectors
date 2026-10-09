@@ -35,7 +35,7 @@ export default defineEndpoint({
                                 .string()
                                 .min(1)
                                 .describe(
-                                    "This is the image from which the face is extracted. The value is required if `face_swap_mode` is `all-faces`.\n\nThis value is either\n- a direct URL to the video file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
+                                    "This is the image from which the face is extracted. The value is required if `face_swap_mode` is `all-faces`.\n\nThis value is either\n- a direct URL to the media file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
                                 )
                                 .optional(),
                             face_mappings: z
@@ -50,7 +50,7 @@ export default defineEndpoint({
                                             new_face: z
                                                 .string()
                                                 .describe(
-                                                    "The face image that will be used to replace the face in the `original_face`. This value is either\n- a direct URL to the video file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
+                                                    "The face image that will be used to replace the face in the `original_face`. This value is either\n- a direct URL to the media file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
                                                 ),
                                         })
                                         .strict(),
@@ -64,7 +64,7 @@ export default defineEndpoint({
                                 .string()
                                 .min(1)
                                 .describe(
-                                    "This is the image where the face from the source image will be placed. This value is either\n- a direct URL to the video file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
+                                    "This is the image where the face from the source image will be placed. This value is either\n- a direct URL to the media file\n- `file_path` field from the response of the [upload urls API](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls).\n\nSee the [file upload guide](https://docs.magichour.ai/api-reference/files/generate-asset-upload-urls#input-file) for details.\n",
                                 ),
                         })
                         .strict()
