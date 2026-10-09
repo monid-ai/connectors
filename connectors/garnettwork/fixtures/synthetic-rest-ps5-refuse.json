@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-rest-ps5-refuse",
+    "description": "Synthetic contract fixture only. It demonstrates explicit unknowns and refusal semantics without any live listing, receipt, timestamp, pricing, or private verification evidence.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://mcp.garnettwork.com/monid/verify",
+                "body": {
+                    "url": "https://www.ebay.com/itm/000000000000",
+                    "intent": "BUY"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "schema_version": "garnett-deal-or-disaster-v1",
+                    "shipping_evidence": {
+                        "resolved": false,
+                        "amount": null,
+                        "checkout_total_verified": false
+                    },
+                    "market": {
+                        "max_safe_buy": null
+                    },
+                    "decision": {
+                        "verdict": "REFUSE",
+                        "reason": "SYNTHETIC_INSUFFICIENT_EVIDENCE"
+                    },
+                    "receipt": {
+                        "receipt_status": "UNAVAILABLE"
+                    }
+                }
+            }
+        }
+    ]
+}

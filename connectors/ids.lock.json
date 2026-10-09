@@ -409,6 +409,7 @@
         "fundable#person",
         "fundable#person/deals",
         "fundable#person/search",
+        "garnettwork#verify-listing",
         "kling#image-to-video/kling-2.5-turbo",
         "kling#image-to-video/kling-2.6",
         "kling#image-to-video/kling-3.0",

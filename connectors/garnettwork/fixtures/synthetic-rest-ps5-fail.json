@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-rest-ps5-fail",
+    "description": "Synthetic contract fixture only. No live listing identifier, receipt identifier or hash, timestamp, private pricing, or live verification result is included.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://mcp.garnettwork.com/monid/verify",
+                "body": {
+                    "url": "https://www.ebay.com/itm/000000000000",
+                    "intent": "BUY"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "schema_version": "garnett-deal-or-disaster-v1",
+                    "item": {
+                        "title": "Synthetic PS5 Disc fixture",
+                        "condition": "Used"
+                    },
+                    "identity": {
+                        "lane": "ps5_disc",
+                        "status": "ACCEPTED_CANONICAL"
+                    },
+                    "market": {
+                        "verified_comparable_sales": null,
+                        "fair_range": null,
+                        "max_safe_buy": null
+                    },
+                    "decision": {
+                        "verdict": "FAIL",
+                        "reason": "SYNTHETIC_PROTOCOL_TEST_ONLY"
+                    },
+                    "receipt": null,
+                    "safety": {
+                        "database_write": false
+                    }
+                }
+            }
+        }
+    ]
+}
