@@ -236,6 +236,13 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Generate production 3D meshes from text prompts and photos.",
     },
     {
+        id: "text-generation",
+        displayName: "Text Generation",
+        description:
+            "Generate text with large language models, including chat, " +
+            "reasoning, tool calling, structured output, and more.",
+    },
+    {
         id: "image-generation",
         displayName: "Image Generation",
         description:

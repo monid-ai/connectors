@@ -1,0 +1,52 @@
+{
+    "name": "image-ok",
+    "description": "Venice /image/generate happy path (recorded): venice-sd35, 512x512 webp, 1 variant. The base64 image string is trimmed by record; images.length is the billable count.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "model": "venice-sd35",
+                    "prompt": "a red fox in snow, watercolor",
+                    "width": 512,
+                    "height": 512,
+                    "format": "webp",
+                    "variants": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "36hAckeGSmG2CyTnNpd2Fh_BCiIhBkmu",
+                    "images": [
+                        "UklGRrz1AABXRUJQVlA4ILD1AABQ0QKdASoAAgACPhkMhEGhBLZ7YAQAYSytObMHVExP2n698qOli1L5kq2iRSuH1YeYnfsMt4+pc9e33P/Z823kXuK9fff/8h/wv8B8x37//3dgXvP/E/aH0mvPf3//r/438vPmz/xf/N/ovd1/T/8p/4P9B+/f0F/q1/vf8T/kP2q+lf/f/bz3y/uZ+YXwL/sX+Y/+H+v/f/5jP+1+5vvC/vP/H/bz/h/IT/V/81/5PbD/+H//91v/Tf+L/8e4j+4f/69eX91f+/8q/9t/5/7nf8r5Ev2d/+H7if//5AP/x7YX8A/9PqAeb/5d/6vOf85/wP9Z+S/7sesvjw9WfvX+d/4P+C91H/J8hnZX7Y/sB7ifyn7/fsP8F/m/+j/kf3f+4X9p/0P9B+Q3rT8mv87/IfvF8Bf5J/N/83/d/3I/yn7l/V39/3sm7f7n9tvYO9zvs3/B/wP+t/7X+o/dD6IP0P/X"
+                    ],
+                    "request": {
+                        "success": true,
+                        "data": {
+                            "embed_exif_metadata": false,
+                            "format": "webp",
+                            "height": 512,
+                            "hide_watermark": false,
+                            "model": "venice-sd35",
+                            "prompt": "a red fox in snow, watercolor",
+                            "return_binary": false,
+                            "variants": 1,
+                            "safe_mode": true,
+                            "seed": 358126593,
+                            "steps": 20,
+                            "width": 512
+                        }
+                    },
+                    "timing": {
+                        "inferenceDuration": 3381,
+                        "inferencePreprocessingTime": 3403,
+                        "inferenceQueueTime": 815,
+                        "total": 4239
+                    }
+                }
+            }
+        }
+    ]
+}

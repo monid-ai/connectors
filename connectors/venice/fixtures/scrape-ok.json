@@ -1,0 +1,23 @@
+{
+    "name": "scrape-ok",
+    "description": "Venice /augment/scrape happy path (recorded): https://example.com as Markdown. No meter on the envelope — flat $0.01 per page.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "url": "https://example.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "url": "https://example.com",
+                    "content": "This domain is for use in documentation examples without needing permission. This is not a service; avoid relying on it for testing and monitoring purposes.\n\nهذا النطاق مُخصص للاستخدام في أمثلة التوثيق دون الحاجة إلى إذن. هذه ليست خدمة، يُرجى تجنب الاعتماد عليها لأغراض الاختبار والمراقبة.\n\n该域名仅用于文档示例，无需获得许可。这并非一项服务，请勿将其用于测试和监控目的。\n\nL’usage de ce domaine est réservé à des exemples de documentation, sans autorisation préalable. Il ne s’agit pas d’un service ; son utilisation à des fins de test ou d",
+                    "format": "markdown"
+                }
+            }
+        }
+    ]
+}
