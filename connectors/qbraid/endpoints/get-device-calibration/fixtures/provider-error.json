@@ -1,0 +1,41 @@
+{
+    "name": "provider-error",
+    "description": "Recorded 2026-09-22 on GET /devices with a malformed key: 401 INVALID_API_KEY_FORMAT. The auth middleware is global, so every route answers this body; the url is this endpoint's. Vendor non-2xx is DATA: zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/devices/aws%3Aaqt%3Aqpu%3Aibex-q1/calibrations"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "success": false,
+                    "message": "Invalid API key format",
+                    "error": {
+                        "message": "Invalid API key format",
+                        "code": "INVALID_API_KEY_FORMAT",
+                        "domain": "api-v2.qbraid.com",
+                        "allowedStrategies": [
+                            "jwt",
+                            "apikey",
+                            "service"
+                        ],
+                        "supportedStrategies": [
+                            "service",
+                            "jwt",
+                            "apikey",
+                            "access"
+                        ],
+                        "debugInfo": {
+                            "hasAuthorization": false,
+                            "hasApiKey": true
+                        },
+                        "timestamp": "2026-09-22T05:29:50.114Z",
+                        "requestId": "req_1790054990113_huzqiqu3m"
+                    }
+                }
+            }
+        }
+    ]
+}

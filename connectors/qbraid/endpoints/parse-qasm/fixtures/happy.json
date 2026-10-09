@@ -1,0 +1,82 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: POST /composer/parse on a Bell circuit — structured gates with columns, controls and clbits.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/composer/parse"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "circuit": {
+                            "qubits": 2,
+                            "clbits": 2,
+                            "gates": [
+                                {
+                                    "id": "g1",
+                                    "type": "h",
+                                    "targets": [
+                                        0
+                                    ],
+                                    "controls": [],
+                                    "params": {},
+                                    "column": 0,
+                                    "clbit": null,
+                                    "condition": null,
+                                    "boxId": null
+                                },
+                                {
+                                    "id": "g2",
+                                    "type": "x",
+                                    "targets": [
+                                        1
+                                    ],
+                                    "controls": [
+                                        0
+                                    ],
+                                    "params": {},
+                                    "column": 1,
+                                    "clbit": null,
+                                    "condition": null,
+                                    "boxId": null
+                                },
+                                {
+                                    "id": "g3",
+                                    "type": "measure",
+                                    "targets": [
+                                        0
+                                    ],
+                                    "controls": [],
+                                    "params": {},
+                                    "column": 2,
+                                    "clbit": 0,
+                                    "condition": null,
+                                    "boxId": null
+                                },
+                                {
+                                    "id": "g4",
+                                    "type": "measure",
+                                    "targets": [
+                                        1
+                                    ],
+                                    "controls": [],
+                                    "params": {},
+                                    "column": 3,
+                                    "clbit": 1,
+                                    "condition": null,
+                                    "boxId": null
+                                }
+                            ],
+                            "boxes": {}
+                        },
+                        "warnings": []
+                    }
+                }
+            }
+        }
+    ]
+}

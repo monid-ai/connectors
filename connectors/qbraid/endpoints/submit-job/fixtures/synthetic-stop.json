@@ -1,0 +1,52 @@
+{
+    "name": "synthetic-stop",
+    "description": "SYNTHETIC — the recorded happy 201, then the 202 shape from qbraid-api job/core/controller.ts cancelJob ({message, jobQrn, status: CANCELLING}). Stop returns nothing: STOPPED_UNSETTLED. No live recording: a free-simulator job is INITIALIZING (409) or already done before a cancel lands.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "INITIALIZING",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:22:58.867401Z"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405/cancel"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "message": "Job cancellation initiated successfully",
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "status": "CANCELLING"
+                    }
+                }
+            }
+        }
+    ]
+}

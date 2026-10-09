@@ -1,0 +1,77 @@
+{
+    "name": "failed",
+    "description": "Recorded 2026-09-28: a Bell program measuring into an undeclared register on the free qbraid:qbraid:sim:qir-sv. POST /jobs 201 → GET /jobs/{qrn} FAILED with statusMsg and cost 0. The poll synthesizes a 500 carrying the statusMsg; zero usage, matching qBraid's full refund of a FAILED job. SDK-contract ids and the bucket path scrubbed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9ddd19dd04f3afa0b8417",
+                        "name": "monid-fixture-bad",
+                        "status": "INITIALIZING",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:24:01.709150Z"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9ddd19dd04f3afa0b8417"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9ddd19dd04f3afa0b8417",
+                        "name": "monid-fixture-bad",
+                        "status": "FAILED",
+                        "statusMsg": "400 Client Error: Bad Request: QASM->QIR conversion failed: Missing register declaration for 'c' in measurement operation",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "cost": 0,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "createdAt": "2026-09-28T03:24:01.709Z",
+                        "updatedAt": "2026-09-28T03:24:02.541Z",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:24:01.709Z",
+                            "endedAt": "2026-09-28T03:24:01.709Z",
+                            "executionDuration": 0
+                        },
+                        "device": {
+                            "qrn": "qbraid:qbraid:sim:qir-sv",
+                            "name": "QIR Simulator",
+                            "deviceType": "SIMULATOR",
+                            "vendor": "qbraid",
+                            "status": "ONLINE"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        }
+    ]
+}

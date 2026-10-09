@@ -1,0 +1,23 @@
+{
+    "name": "not-found",
+    "description": "Recorded 2026-09-22: a SIMULATOR has no calibration — 404 NOT_FOUND. Data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/devices/qbraid%3Aqbraid%3Asim%3Aqir-sv/calibrations"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "success": false,
+                    "message": "Calibration data not found for this device",
+                    "error": {
+                        "message": "Calibration data not found for this device",
+                        "code": "NOT_FOUND"
+                    }
+                }
+            }
+        }
+    ]
+}

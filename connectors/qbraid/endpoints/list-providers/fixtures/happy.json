@@ -1,0 +1,53 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: GET /providers (no key needed) — 17 public providers trimmed to the first two, Mongo ids scrubbed; count kept as recorded.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/providers"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "providers": [
+                            {
+                                "provider": "AQT",
+                                "qrn": "provider:aqt",
+                                "providerDescription": "AQT develops trapped-ion quantum processors and cloud-accessible systems focused on high-fidelity gate operations.",
+                                "about": "https://www.aqt.eu/",
+                                "logo": {
+                                    "light": "https://qbraid-static.s3.us-east-1.amazonaws.com/lab-docs/logos-full/aqt.png",
+                                    "dark": "https://qbraid-static.s3.us-east-1.amazonaws.com/lab-docs/logos-full/aqt_dark.png"
+                                }
+                            },
+                            {
+                                "provider": "AWS",
+                                "qrn": "provider:aws",
+                                "providerDescription": "AWS provides a multi-vendor quantum cloud service through Amazon Braket, integrating multiple hardware backends and simulation tools.",
+                                "about": "https://aws.amazon.com/braket/",
+                                "logo": {
+                                    "light": "https://qbraid-static.s3.amazonaws.com/lab-docs/logos-full/aws.png",
+                                    "dark": "https://qbraid-static.s3.amazonaws.com/lab-docs/logos-full/aws_dark.png"
+                                },
+                                "assets": {
+                                    "documentation": "https://docs.aws.amazon.com/braket/",
+                                    "gettingStarted": "https://aws.amazon.com/braket/getting-started/",
+                                    "apiReference": "https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/braket.html",
+                                    "sdks": {
+                                        "python": "boto3",
+                                        "javascript": "aws-sdk"
+                                    },
+                                    "supportEmail": "braket-support@amazon.com"
+                                }
+                            }
+                        ],
+                        "count": 17
+                    }
+                }
+            }
+        }
+    ]
+}

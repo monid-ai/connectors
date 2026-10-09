@@ -1,0 +1,142 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-28: 10 shots of a Bell circuit on the free qbraid:qbraid:sim:qir-sv. POST /jobs 201 (INITIALIZING) → GET /jobs/{qrn} QUEUED → COMPLETED with cost 0 → GET /jobs/{qrn}/result (cost is a decimal STRING there). Two further identical QUEUED polls dropped; the SDK-contract ids (organizationUserId, deviceId, providerId) and the gcsDestination bucket path scrubbed. A zero claim prunes: credits {}.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "INITIALIZING",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:22:58.867401Z"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "QUEUED",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "createdAt": "2026-09-28T03:22:58.867Z",
+                        "updatedAt": "2026-09-28T03:23:00.945Z",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:22:59.642Z"
+                        },
+                        "device": {
+                            "qrn": "qbraid:qbraid:sim:qir-sv",
+                            "name": "QIR Simulator",
+                            "deviceType": "SIMULATOR",
+                            "vendor": "qbraid",
+                            "status": "ONLINE"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "COMPLETED",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "cost": 0,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "createdAt": "2026-09-28T03:22:58.867Z",
+                        "updatedAt": "2026-09-28T03:23:16.047Z",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:23:00.000Z",
+                            "endedAt": "2026-09-28T03:23:00.000Z",
+                            "executionDuration": 4
+                        },
+                        "device": {
+                            "qrn": "qbraid:qbraid:sim:qir-sv",
+                            "name": "QIR Simulator",
+                            "deviceType": "SIMULATOR",
+                            "vendor": "qbraid",
+                            "status": "ONLINE"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9dd929dd04f3afa0b8405/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "status": "COMPLETED",
+                        "cost": "0",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:23:00Z",
+                            "endedAt": "2026-09-28T03:23:00Z",
+                            "executionDuration": 4
+                        },
+                        "resultData": {
+                            "measurementCounts": {
+                                "11": 4,
+                                "00": 6
+                            },
+                            "seed": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

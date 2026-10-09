@@ -1,0 +1,24 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: GET /jobs/cost-estimate for 100 shots on aws:aqt:qpu:ibex-q1 — 265 qBraid credits (perTask 30 + 100 × perShot 2.35). Free.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/cost-estimate?deviceQrn=aws%3Aaqt%3Aqpu%3Aibex-q1&shots=100"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "pricingAvailable": true,
+                        "estimatedCost": 265,
+                        "deviceQrn": "aws:aqt:qpu:ibex-q1",
+                        "shots": 100
+                    }
+                }
+            }
+        }
+    ]
+}

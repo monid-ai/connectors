@@ -1,0 +1,101 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: GET /devices?deviceType=QPU&limit=2 — two QPUs (one UNAVAILABLE with nextAvailable, one queued). Mongo ids and the internal image path scrubbed. Free.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/devices?deviceType=QPU&limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": [
+                        {
+                            "vrn": "arn:aws:braket:eu-north-1::device/qpu/aqt/Ibex-Q1",
+                            "runInputTypes": [
+                                "braket",
+                                "qasm3"
+                            ],
+                            "numberQubits": 12,
+                            "noiseModels": [],
+                            "statusMsg": null,
+                            "nextAvailable": "2026-09-22T08:00:00.974Z",
+                            "avgQueueTime": null,
+                            "visibility": "public",
+                            "verified": "verified",
+                            "activeVersion": null,
+                            "qrn": "aws:aqt:qpu:ibex-q1",
+                            "createdAt": "2025-08-15T21:37:29.555Z",
+                            "modality": "trapped ion",
+                            "name": "IBEX Q1",
+                            "paradigm": "gate_model",
+                            "pricing": {
+                                "perTask": 30,
+                                "perShot": 2.35,
+                                "perMinute": 0
+                            },
+                            "status": "UNAVAILABLE",
+                            "updatedAt": "2026-09-22T05:25:27.604Z",
+                            "vendor": "aws",
+                            "description": "12 qubit universal gate-model ion-trap QPU",
+                            "deviceType": "QPU",
+                            "queueDepth": 2,
+                            "directAccess": true,
+                            "pricingModel": "fixed",
+                            "notes": null,
+                            "maxShots": 2000,
+                            "minShots": 1,
+                            "statusLocked": false,
+                            "batchJobSupport": false,
+                            "topology": {
+                                "type": "fully-connected",
+                                "qubits": 12
+                            },
+                            "statusCheckedAt": "2026-09-22T05:25:27.604Z"
+                        },
+                        {
+                            "vrn": "arn:aws:braket:us-east-1::device/qpu/quera/Aquila",
+                            "runInputTypes": [
+                                "braket_ahs"
+                            ],
+                            "numberQubits": 256,
+                            "noiseModels": [],
+                            "statusMsg": null,
+                            "nextAvailable": "2026-09-25T04:00:00.445Z",
+                            "avgQueueTime": null,
+                            "visibility": "public",
+                            "verified": "verified",
+                            "activeVersion": null,
+                            "qrn": "aws:quera:qpu:aquila",
+                            "createdAt": "2025-08-15T21:37:29.555Z",
+                            "modality": "neutral atom",
+                            "name": "Aquila",
+                            "paradigm": "analog",
+                            "pricing": {
+                                "perTask": 30,
+                                "perShot": 1,
+                                "perMinute": 0
+                            },
+                            "status": "UNAVAILABLE",
+                            "updatedAt": "2026-09-22T05:25:27.604Z",
+                            "vendor": "aws",
+                            "description": "256 qubit analog neutral atom-based QPU",
+                            "deviceType": "QPU",
+                            "queueDepth": 24,
+                            "directAccess": true,
+                            "pricingModel": "fixed",
+                            "notes": null,
+                            "maxShots": 1000,
+                            "minShots": 1,
+                            "statusLocked": false,
+                            "batchJobSupport": false,
+                            "statusCheckedAt": "2026-09-22T05:25:27.604Z"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

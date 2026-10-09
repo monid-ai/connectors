@@ -1,0 +1,96 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: GET /devices/aws:aqt:qpu:ibex-q1/calibrations — 12-qubit trapped-ion QPU, per-qubit randomized-benchmarking gate error, empty edge map. _id and physicalDeviceId scrubbed.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/devices/aws%3Aaqt%3Aqpu%3Aibex-q1/calibrations"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "deviceQRNs": [
+                            "aws:aqt:qpu:ibex-q1",
+                            "openquantum:aqt:qpu:ibex-q1",
+                            "aqt:aqt:qpu:ibex-q1"
+                        ],
+                        "edges": {
+                            "gateError": {}
+                        },
+                        "fetchedAt": "2026-09-22T05:00:15.098063+00:00",
+                        "lastCalibrated": "2026-09-15T15:05:16+00:00",
+                        "provider": "aws",
+                        "qubits": {
+                            "0": {
+                                "gateError": {
+                                    "rb": 0.0003189999999999582
+                                }
+                            },
+                            "1": {
+                                "gateError": {
+                                    "rb": 0.0003260000000000485
+                                }
+                            },
+                            "2": {
+                                "gateError": {
+                                    "rb": 0.00037999999999993594
+                                }
+                            },
+                            "3": {
+                                "gateError": {
+                                    "rb": 0.0003549999999999942
+                                }
+                            },
+                            "4": {
+                                "gateError": {
+                                    "rb": 0.00036199999999997345
+                                }
+                            },
+                            "5": {
+                                "gateError": {
+                                    "rb": 0.0003389999999999782
+                                }
+                            },
+                            "6": {
+                                "gateError": {
+                                    "rb": 0.0003660000000000885
+                                }
+                            },
+                            "7": {
+                                "gateError": {
+                                    "rb": 0.00029700000000010274
+                                }
+                            },
+                            "8": {
+                                "gateError": {
+                                    "rb": 0.00029000000000001247
+                                }
+                            },
+                            "9": {
+                                "gateError": {
+                                    "rb": 0.00041799999999991844
+                                }
+                            },
+                            "10": {
+                                "gateError": {
+                                    "rb": 0.0004450000000000287
+                                }
+                            },
+                            "11": {
+                                "gateError": {
+                                    "rb": 0.00031599999999998296
+                                }
+                            }
+                        }
+                    },
+                    "meta": {
+                        "timestamp": "2026-09-22T05:30:05.446Z"
+                    }
+                }
+            }
+        }
+    ]
+}

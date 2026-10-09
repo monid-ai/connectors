@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-rejected-201",
+    "description": "SYNTHETIC — qbraid-api job/core/controller.ts createJob answers 201 with success:false when the runtime returned no success flag. lifecycle.start must synthesize a 502 so the engine zero-bills it.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": false,
+                    "data": {}
+                }
+            }
+        }
+    ]
+}

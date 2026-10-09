@@ -1,0 +1,23 @@
+{
+    "name": "device-not-found",
+    "description": "Recorded 2026-09-22: submitting to an unknown deviceQrn — 404 NOT_FOUND. Data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "success": false,
+                    "message": "Device not found: nope:nope:sim:none",
+                    "error": {
+                        "message": "Device not found: nope:nope:sim:none",
+                        "code": "NOT_FOUND"
+                    }
+                }
+            }
+        }
+    ]
+}

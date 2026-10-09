@@ -1,0 +1,56 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: GET /devices/qbraid:qbraid:sim:qir-sv — the free QIR state-vector simulator (pricing all 0, runInputTypes qasm3/pyqir, maxShots 2000). Admin-only and internal fields scrubbed to the user projection.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/devices/qbraid%3Aqbraid%3Asim%3Aqir-sv"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "vrn": "qbraid_qir_simulator",
+                        "runInputTypes": [
+                            "qasm3",
+                            "pyqir"
+                        ],
+                        "numberQubits": 30,
+                        "noiseModels": [],
+                        "statusMsg": null,
+                        "nextAvailable": null,
+                        "avgQueueTime": null,
+                        "visibility": "public",
+                        "verified": "verified",
+                        "activeVersion": "0.3.1",
+                        "qrn": "qbraid:qbraid:sim:qir-sv",
+                        "createdAt": "2025-08-15T21:37:29.555Z",
+                        "modality": null,
+                        "name": "QIR Simulator",
+                        "paradigm": "gate_model",
+                        "pricing": {
+                            "perTask": 0,
+                            "perShot": 0,
+                            "perMinute": 0
+                        },
+                        "status": "ONLINE",
+                        "updatedAt": "2026-09-20T16:56:52.762Z",
+                        "vendor": "qbraid",
+                        "description": "Sparse state vector simulator using QIR compiler. Free of cost.",
+                        "deviceType": "SIMULATOR",
+                        "queueDepth": 0,
+                        "directAccess": true,
+                        "pricingModel": "fixed",
+                        "notes": null,
+                        "maxShots": 2000,
+                        "minShots": 1,
+                        "statusLocked": false,
+                        "batchJobSupport": false
+                    }
+                }
+            }
+        }
+    ]
+}

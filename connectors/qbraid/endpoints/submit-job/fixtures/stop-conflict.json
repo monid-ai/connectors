@@ -1,0 +1,52 @@
+{
+    "name": "stop-conflict",
+    "description": "Recorded 2026-09-28: submit to the free qbraid:qbraid:sim:qir-sv, then stop at once. POST /jobs 201 → POST /jobs/{qrn}/cancel 409 JOB_CANCEL_CONFLICT (still initializing). Stop is best effort: the 409 is logged and ignored, STOPPED_UNSETTLED.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dde69dd04f3afa0b8423",
+                        "name": "monid-fixture-stop",
+                        "status": "INITIALIZING",
+                        "shots": 10,
+                        "numCircuits": 1,
+                        "estimatedCost": 0,
+                        "experimentType": "gate_model",
+                        "vendor": "qbraid",
+                        "deviceQrn": "qbraid:qbraid:sim:qir-sv",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:24:22.463484Z"
+                        },
+                        "provider": "qbraid"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/qbraid%3Aqbraid%3Asim%3Aqir-sv-32de-qjob-6ab9dde69dd04f3afa0b8423/cancel"
+            },
+            "res": {
+                "status": 409,
+                "body": {
+                    "success": false,
+                    "message": "Job qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dde69dd04f3afa0b8423 is still initializing and cannot be cancelled yet. Please try again in a few moments.",
+                    "error": {
+                        "message": "Job qbraid:qbraid:sim:qir-sv-32de-qjob-6ab9dde69dd04f3afa0b8423 is still initializing and cannot be cancelled yet. Please try again in a few moments.",
+                        "code": "JOB_CANCEL_CONFLICT"
+                    }
+                }
+            }
+        }
+    ]
+}

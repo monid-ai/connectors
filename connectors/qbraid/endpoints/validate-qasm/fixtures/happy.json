@@ -1,0 +1,28 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: POST /composer/validate on a 2-qubit Bell circuit — valid with stats.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/composer/validate"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "valid": true,
+                        "errors": [],
+                        "stats": {
+                            "numQubits": 2,
+                            "numClbits": 2,
+                            "depth": 3,
+                            "gateCount": 2
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

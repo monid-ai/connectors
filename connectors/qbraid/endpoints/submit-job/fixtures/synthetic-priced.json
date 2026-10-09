@@ -1,0 +1,104 @@
+{
+    "name": "synthetic-priced",
+    "description": "SYNTHETIC — the recorded happy chain re-priced to the recorded QPU quote (265 credits for 100 shots on aws:aqt:qpu:ibex-q1, cost-estimate 2026-09-22): estimatedCost 265 on the 201, final cost 265 on the COMPLETED job. Pins the billing arithmetic: claim 265 wins, evidence CREDIT 265 000 000 folds to 265. The result route's string cost is stripped too.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "aws:aqt:qpu:ibex-q1-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "INITIALIZING",
+                        "shots": 100,
+                        "numCircuits": 1,
+                        "estimatedCost": 265,
+                        "experimentType": "gate_model",
+                        "vendor": "aws",
+                        "deviceQrn": "aws:aqt:qpu:ibex-q1",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:22:58.867401Z"
+                        },
+                        "provider": "aqt"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/aws%3Aaqt%3Aqpu%3Aibex-q1-32de-qjob-6ab9dd929dd04f3afa0b8405"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "jobQrn": "aws:aqt:qpu:ibex-q1-32de-qjob-6ab9dd929dd04f3afa0b8405",
+                        "name": "monid-fixture-bell",
+                        "status": "COMPLETED",
+                        "shots": 100,
+                        "numCircuits": 1,
+                        "cost": 265,
+                        "estimatedCost": 265,
+                        "experimentType": "gate_model",
+                        "vendor": "aws",
+                        "deviceQrn": "aws:aqt:qpu:ibex-q1",
+                        "tags": {},
+                        "runtimeOptions": {},
+                        "createdAt": "2026-09-28T03:22:58.867Z",
+                        "updatedAt": "2026-09-28T03:23:16.047Z",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:23:00.000Z",
+                            "endedAt": "2026-09-28T03:23:00.000Z",
+                            "executionDuration": 4
+                        },
+                        "device": {
+                            "qrn": "aws:aqt:qpu:ibex-q1",
+                            "name": "IBEX Q1",
+                            "deviceType": "QPU",
+                            "vendor": "aws",
+                            "status": "ONLINE"
+                        },
+                        "provider": "aqt"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api-v2.qbraid.com/api/v1/jobs/aws%3Aaqt%3Aqpu%3Aibex-q1-32de-qjob-6ab9dd929dd04f3afa0b8405/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "status": "COMPLETED",
+                        "cost": "265.000000",
+                        "timeStamps": {
+                            "createdAt": "2026-09-28T03:23:00Z",
+                            "endedAt": "2026-09-28T03:23:00Z",
+                            "executionDuration": 4
+                        },
+                        "resultData": {
+                            "measurementCounts": {
+                                "00": 52,
+                                "11": 48
+                            },
+                            "seed": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

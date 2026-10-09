@@ -364,4 +364,11 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Tools to pull public market data, including quotes, fundamentals, " +
             "earnings, screeners, and more.",
     },
+    {
+        id: "quantum-computing",
+        displayName: "Quantum Computing",
+        description:
+            "Tools to run quantum hardware and simulators, including device " +
+            "catalogs, calibrations, OpenQASM tooling, job submission, and more.",
+    },
 ]);

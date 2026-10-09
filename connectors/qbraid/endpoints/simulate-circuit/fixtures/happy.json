@@ -1,0 +1,37 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-09-22: POST /composer/simulate on a Bell circuit — exact 50/50 probabilities, num_qubits, per-qubit states.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api-v2.qbraid.com/api/v1/composer/simulate"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "probabilities": {
+                            "11": 0.4999999999999999,
+                            "00": 0.4999999999999999
+                        },
+                        "num_qubits": 2,
+                        "qubit_states": [
+                            {
+                                "prob": 0.4999999999999999,
+                                "phase": 0,
+                                "purity": 0.4999999999999998
+                            },
+                            {
+                                "prob": 0.4999999999999999,
+                                "phase": 0,
+                                "purity": 0.4999999999999998
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
