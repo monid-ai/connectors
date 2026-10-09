@@ -1,6 +1,8 @@
 import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
 import { z } from "zod";
 
+// Pricing source: https://docs.magichour.ai/api-reference/openapi.json (2026-10-09),
+// POST /v1/ai-image-upscaler: 2x balanced 50/preserve 25; 4x balanced 200/preserve 100.
 // Input schema: Magic Hour public OpenAPI, 2026-10-09; concrete settings pin pricing.
 export default defineEndpoint({
     meta: {
@@ -84,8 +86,12 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalGet(data.output, "$.status") === "complete"
-                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
                         : 0,
             },
         }),

@@ -9,7 +9,7 @@ export default defineEndpoint({
         description:
             "Permanently delete the rendered audio file(s). This action is not reversible, please be sure before deleting.",
         docsUrl: "https://docs.magichour.ai/api-reference",
-        categories: ["audio-generation"],
+        categories: ["speech"],
     },
     endpoint: "/v1/audio-projects/{id}/delete",
     request: { method: "DELETE", path: "/v1/audio-projects/{id}" },

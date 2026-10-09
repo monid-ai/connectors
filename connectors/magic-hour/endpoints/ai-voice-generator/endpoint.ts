@@ -9,7 +9,7 @@ export default defineEndpoint({
         description:
             "Generate speech from text. Each character costs 0.1 credits. The cost is rounded up to the nearest whole number. Monid waits for the project to finish. Download URLs expire; save the result promptly.",
         docsUrl: "https://docs.magichour.ai/api-reference",
-        categories: ["audio-generation"],
+        categories: ["speech"],
     },
     endpoint: "/v1/ai-voice-generator",
     request: { method: "POST", path: "/v1/ai-voice-generator" },
@@ -28,6 +28,7 @@ export default defineEndpoint({
                             prompt: z
                                 .string()
                                 .min(1)
+                                .max(1000)
                                 .describe(
                                     "Text used to generate speech. The character limit is 1000 characters.",
                                 ),
@@ -1324,8 +1325,12 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalGet(data.output, "$.status") === "complete"
-                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
                         : 0,
             },
         }),

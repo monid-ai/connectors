@@ -35,7 +35,12 @@ export default defineEndpoint({
                         .describe(
                             "End time of your clip (seconds). Must be greater than start_seconds.",
                         ),
-                    resolution: z.literal("720p").default("720p"),
+                    resolution: z
+                        .literal("720p")
+                        .describe(
+                            "Monid pins 720p resolution for deterministic credit estimates.",
+                        )
+                        .default("720p"),
                     assets: z
                         .object({
                             audio_file_path: z
@@ -93,8 +98,12 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalGet(data.output, "$.status") === "complete"
-                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
                         : 0,
             },
         }),

@@ -9,7 +9,7 @@ export default defineEndpoint({
         description:
             "Check the progress of a audio project. The `downloads` field is populated after a successful render.\n  \n**Statuses**\n- `queued` — waiting to start\n- `rendering` — in progress\n- `complete` — ready; see `downloads`\n- `error` — a failure occurred (see `error`)\n- `canceled` — user canceled\n- `draft` — not used",
         docsUrl: "https://docs.magichour.ai/api-reference",
-        categories: ["audio-generation"],
+        categories: ["speech"],
     },
     endpoint: "/v1/audio-projects/{id}",
     request: { method: "GET", path: "/v1/audio-projects/{id}" },

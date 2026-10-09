@@ -7,9 +7,9 @@ export default defineEndpoint({
         displayName: "Magic Hour AI Voice Cloner",
         summary: "AI Voice Cloner",
         description:
-            "Clone a voice from an audio sample and generate speech. \n* Each character costs 0.1 credits. \n* The cost is rounded up to the nearest whole number Monid waits for the project to finish. Download URLs expire; save the result promptly.",
+            "Clone a voice from an audio sample and generate speech. \n* Each character costs 0.1 credits. \n* The cost is rounded up to the nearest whole number. Monid waits for the project to finish. Download URLs expire; save the result promptly.",
         docsUrl: "https://docs.magichour.ai/api-reference",
-        categories: ["audio-generation"],
+        categories: ["speech"],
     },
     endpoint: "/v1/ai-voice-cloner",
     request: { method: "POST", path: "/v1/ai-voice-cloner" },
@@ -63,8 +63,12 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalGet(data.output, "$.status") === "complete"
-                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
                         : 0,
             },
         }),

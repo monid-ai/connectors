@@ -101,7 +101,7 @@ export default defineEndpoint({
             counts: {
                 CREDIT: Math.round(
                     (data.input.body.end_seconds -
-                        (data.input.body.start_seconds ?? 0)) *
+                        data.input.body.start_seconds) *
                         24 *
                         (["prompted", "standard", "expressive"].includes(
                             data.input.body.style?.generation_mode ??

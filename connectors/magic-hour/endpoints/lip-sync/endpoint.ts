@@ -38,9 +38,9 @@ export default defineEndpoint({
                         .number()
                         .min(1)
                         .describe(
-                            "Defines the maximum FPS (frames per second) for the output video. If the input video's FPS is lower than this limit, the output video will retain the input FPS. This is useful for reducing unnecessary frame usage in scenarios where high FPS is not required.",
+                            "Monid supplies 30 FPS when omitted so the request matches the credit estimate. Defines the maximum FPS (frames per second) for the output video. If the input video's FPS is lower than this limit, the output video will retain the input FPS. This is useful for reducing unnecessary frame usage in scenarios where high FPS is not required.",
                         )
-                        .optional(),
+                        .default(30),
                     assets: z
                         .object({
                             audio_file_path: z
@@ -97,9 +97,9 @@ export default defineEndpoint({
             counts: {
                 CREDIT:
                     Math.ceil(
-                        (data.input.body.max_fps_limit ?? 30) *
+                        data.input.body.max_fps_limit *
                             (data.input.body.end_seconds -
-                                (data.input.body.start_seconds ?? 0)),
+                                data.input.body.start_seconds),
                     ) *
                     (data.input.body.style?.generation_mode === "pro" ? 2 : 1),
             },
@@ -107,8 +107,12 @@ export default defineEndpoint({
         evidence: ({ data, utils }) => ({
             counts: {
                 CREDIT:
-                    utils.json.optionalGet(data.output, "$.status") === "complete"
-                        ? utils.json.optionalNum(data.output, "$.credits_charged") ?? 0
+                    utils.json.optionalGet(data.output, "$.status") ===
+                    "complete"
+                        ? (utils.json.optionalNum(
+                              data.output,
+                              "$.credits_charged",
+                          ) ?? 0)
                         : 0,
             },
         }),
