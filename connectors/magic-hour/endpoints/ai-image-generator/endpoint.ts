@@ -26,9 +26,9 @@ export default defineEndpoint({
                         .number()
                         .int()
                         .min(1)
-                        .max(16)
+                        .max(4)
                         .describe(
-                            "Number of images to generate. Maximum varies by model.",
+                            "Number of images to generate. This route pins Z-Image Turbo, which supports 1–4 images.",
                         ),
                     model: z.literal("z-image-turbo").default("z-image-turbo"),
                     aspect_ratio: z
