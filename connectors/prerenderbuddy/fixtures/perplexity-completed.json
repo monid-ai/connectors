@@ -1,0 +1,119 @@
+{
+    "name": "perplexity-completed",
+    "description": "Recorded live through the compiled connector on 2026-10-02. perplexity; first submit, distinct pending states and terminal answer. Repeated polls omitted.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/developer/marketplace/answers/perplexity",
+                "body": {
+                    "prompt": "What is prerendering for JavaScript websites? Give one concise paragraph with sources.",
+                    "brand": {
+                        "name": "Prerender Buddy",
+                        "domain": "prerenderbuddy.com"
+                    }
+                }
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "jobId": "b4c56f92-dc4b-4004-b68a-e4ac2e60ab01",
+                    "platform": "perplexity",
+                    "status": "queued",
+                    "createdAt": "2026-10-02T17:43:08.606Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:43:08.606Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.0058,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "replayed": false
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/b4c56f92-dc4b-4004-b68a-e4ac2e60ab01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "b4c56f92-dc4b-4004-b68a-e4ac2e60ab01",
+                    "platform": "perplexity",
+                    "status": "running",
+                    "createdAt": "2026-10-02T17:43:08.606Z",
+                    "completedAt": null,
+                    "expiresAt": "2026-10-03T16:43:08.606Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0.0058,
+                        "chargedUsd": 0,
+                        "rateVersion": "2026-10-02"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/developer/marketplace/jobs/b4c56f92-dc4b-4004-b68a-e4ac2e60ab01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jobId": "b4c56f92-dc4b-4004-b68a-e4ac2e60ab01",
+                    "platform": "perplexity",
+                    "status": "completed",
+                    "createdAt": "2026-10-02T17:43:08.606Z",
+                    "completedAt": "2026-10-02T17:43:15.271Z",
+                    "expiresAt": "2026-10-03T16:43:08.606Z",
+                    "pollAfterSeconds": 5,
+                    "billing": {
+                        "currency": "USD",
+                        "reservedUsd": 0,
+                        "chargedUsd": 0.0058,
+                        "rateVersion": "2026-10-02"
+                    },
+                    "result": {
+                        "brand": {
+                            "name": "Prerender Buddy",
+                            "mentions": [],
+                            "mentioned": false,
+                            "websiteCited": false,
+                            "recommendations": [],
+                            "recommendationDetected": false
+                        },
+                        "answer": "Prerendering for JavaScript websites is a technique that generates a **static, fully rendered HTML snapshot** of a page and serves that version to search engines, bots, and preview services instead of making them execute the site’s JavaScript.[1][4][5] This helps crawlers index content more reliably and can improve SEO for JS-heavy apps such as **React**, **Vue**, and **Angular** sites, while regular users still receive the normal JavaScript application.[2][5][7] In practice, services like **Pre",
+                        "sources": [],
+                        "citations": [
+                            {
+                                "url": "https://prerendering.com/",
+                                "title": null,
+                                "hostname": "prerendering.com",
+                                "relationship": "explicit"
+                            },
+                            {
+                                "url": "https://prerender.io/framework/",
+                                "title": null,
+                                "hostname": "prerender.io",
+                                "relationship": "explicit"
+                            }
+                        ],
+                        "competitors": [],
+                        "methodology": {
+                            "mentions": "Exact name/alias matches in this answer only.",
+                            "collection": "Provider API sample, not the consumer app or a web-wide mentions index.",
+                            "websiteCited": "Explicit returned citation URLs matched to the supplied domain. Null means no domain was supplied or an opaque citation prevents a negative determination.",
+                            "recommendations": "Conservative deterministic wording detection; review the supporting span."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
