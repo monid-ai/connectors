@@ -1,0 +1,19 @@
+{
+    "name": "unauthorized-fetch",
+    "description": "Recorded 2026-09-16 against GET https://api.keenable.ai/v1/fetch?url=https://example.com with a malformed API key. Same 401 envelope as search. Query string is the engine's URLSearchParams encoding so replay matches.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.keenable.ai/v1/fetch?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Authentication failed",
+                    "message": "Malformed API key"
+                }
+            }
+        }
+    ]
+}

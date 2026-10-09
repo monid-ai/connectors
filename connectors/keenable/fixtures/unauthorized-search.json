@@ -1,0 +1,20 @@
+{
+    "name": "unauthorized-search",
+    "description": "Recorded 2026-09-16 against POST https://api.keenable.ai/v1/search with a malformed API key. Vendor 401 `{error, message}` is DATA: zero usage. Docs table lists malformed keys as 400; the live keyed endpoint answered 401 Authentication failed / Malformed API key.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": { "query": "anything" }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "Authentication failed",
+                    "message": "Malformed API key"
+                }
+            }
+        }
+    ]
+}

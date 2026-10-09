@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-search-ok",
+    "description": "SYNTHETIC happy chain for keenable#v1/search. Shape taken from a real 2026-09-16 POST /v1/search/public response (query, mode, results[].title/url/description/snippet/published_at/acquired_at); URL rewritten to the authenticated /v1/search the doc calls. Snippets hand-truncated. Replace via `deno task record` when KEENABLE_API_KEY exists.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "typescript best practices",
+                    "max_results": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "query": "typescript best practices",
+                    "mode": "pro",
+                    "results": [
+                        {
+                            "title": "TypeScript Best Practices",
+                            "url": "https://www.w3schools.com/typescript/typescript_best_practices.php",
+                            "description": "",
+                            "snippet": "Project Configuration Enable Strict Mode Always enable strict mode in your tsconfig.json for maximum type safety.",
+                            "acquired_at": "2026-09-13T02:42:52Z"
+                        },
+                        {
+                            "title": "TypeScript Best Practices for Production Code in 2026",
+                            "url": "https://devplaybook.cc/blog/typescript-best-practices-2026",
+                            "description": "",
+                            "snippet": "15 TypeScript best practices for writing safer, more maintainable production code in 2026.",
+                            "published_at": "2026-03-24T15:39:39Z",
+                            "acquired_at": "2026-05-19T15:39:16Z"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

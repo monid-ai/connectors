@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-search-empty",
+    "description": "SYNTHETIC empty search for keenable#v1/search: a 200 with results: [] (the shape v1 drilled 2026-09-28; the vendor still deducts a credit). Envelope as synthetic-search-ok.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "zzqxv no such page"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "query": "zzqxv no such page",
+                    "mode": "pro",
+                    "results": []
+                }
+            }
+        }
+    ]
+}

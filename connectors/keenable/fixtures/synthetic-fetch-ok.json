@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-fetch-ok",
+    "description": "SYNTHETIC happy chain for keenable#v1/fetch. Shape taken from a real 2026-09-16 GET /v1/fetch/public?url=https://example.com response (url, title, content, description); URL rewritten to the authenticated /v1/fetch the doc calls, with the query string the engine emits. Replace via `deno task record` when KEENABLE_API_KEY exists.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.keenable.ai/v1/fetch?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "url": "https://example.com/",
+                    "title": "Example Domain",
+                    "content": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.",
+                    "description": ""
+                }
+            }
+        }
+    ]
+}

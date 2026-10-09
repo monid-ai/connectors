@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-fetch-max-chars",
+    "description": "SYNTHETIC bounded fetch for keenable#v1/fetch with max_chars=1 (schema-gate near-twin of max_chars: 0). Response shape matches the indexed-fetch public twin; query string is the engine's URLSearchParams encoding.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.keenable.ai/v1/fetch?url=https%3A%2F%2Fexample.com&max_chars=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "url": "https://example.com/",
+                    "title": "Example Domain",
+                    "content": "#",
+                    "description": ""
+                }
+            }
+        }
+    ]
+}
