@@ -1,4 +1,4 @@
-# PR / main CI — typecheck + tests. Publishing is a TAG (publish-catalog.yml);
+# PR / main CI - typecheck + tests. Publishing is a TAG (publish-catalog.yml);
 # this workflow never touches releases or AWS.
 name: ci
 on:
@@ -17,3 +17,17 @@ jobs:
           deno-version: v2.x
       - run: deno task check
       - run: deno task test
+  cli-paths:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo with spaces
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno test --allow-read --allow-env scripts/lib.test.ts
+        working-directory: repo with spaces
