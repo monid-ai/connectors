@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 401 envelope (error_code, key_metadata, request_id — no message); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/sic?input=stripe.com&type=latest_sec"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error_code": "UNAUTHORIZED",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 0
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

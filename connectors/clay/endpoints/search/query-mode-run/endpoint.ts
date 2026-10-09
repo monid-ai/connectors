@@ -21,9 +21,10 @@ export default defineEndpoint({
             "pass the search_id and a limit (1-500) to pull the next " +
             "page. Returns data rows (people: clay_profile_id, name, " +
             "location, matched experiences; companies: domain, industry, " +
-            "size, annual_revenue, funding, linkedin_url), has_more, " +
-            "source_type, and period_quota (the subscription's annual " +
-            "results ledger). The iterator is forward-only and " +
+            "size, annual_revenue, funding, linkedin_url), has_more, and " +
+            "source_type (the workspace's period_quota ledger is billing " +
+            "metadata and is removed from the output). The iterator is " +
+            "forward-only and " +
             "server-side — repeat while has_more is true. Suited for " +
             "pulling prospect and account lists page by page.",
         docsUrl: "https://developers.clay.com/searches/advanced",

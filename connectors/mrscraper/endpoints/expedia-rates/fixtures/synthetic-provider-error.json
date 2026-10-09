@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. A hard failure: HTTP 500 with success false (billed 0).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/expedia/detail/sync"
+            },
+            "res": {
+                "status": 500,
+                "body": {
+                    "success": false,
+                    "message": "Scraper failed"
+                }
+            }
+        }
+    ]
+}

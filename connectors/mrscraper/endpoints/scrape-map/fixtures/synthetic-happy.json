@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground map-agent body per the reference (count + urls under `data`) with token_usage 30 and the internals v1 saw; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://quotes.toscrape.com/",
+                    "data": {
+                        "count": 3,
+                        "urls": [
+                            "https://quotes.toscrape.com",
+                            "https://quotes.toscrape.com/login",
+                            "https://quotes.toscrape.com/page/2"
+                        ]
+                    },
+                    "thread_id": "THREAD1",
+                    "token_usage": 30,
+                    "residential_proxy_usage": 0.2,
+                    "data_path": "results/RES1/data.json"
+                }
+            }
+        }
+    ]
+}

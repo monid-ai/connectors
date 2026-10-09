@@ -1,0 +1,48 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (ai_overview): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/ai-overview?q=what+is+a+heat+pump"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "3a1f0c9d2b8e4f6a7c5d1e2f",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/ai-overview?q=what+is+a+heat+pump",
+                        "total_time_taken": 48.2
+                    },
+                    "search_parameters": {
+                        "q": "what is a heat pump",
+                        "google_domain": "google.com",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "ai_overview": {
+                        "text_blocks": [
+                            {
+                                "type": "paragraph",
+                                "snippet": "A heat pump moves heat between indoors and outdoors instead of generating it.",
+                                "reference_indexes": [
+                                    0
+                                ]
+                            }
+                        ],
+                        "references": [
+                            {
+                                "index": 0,
+                                "title": "How heat pumps work",
+                                "link": "https://energy.example/heat-pumps",
+                                "source": "energy.example"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

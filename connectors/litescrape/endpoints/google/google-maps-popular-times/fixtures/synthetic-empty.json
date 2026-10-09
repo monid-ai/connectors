@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 with `popular_times: null`: the vendor deducted one credit, usage here records 0 (v1 posture, owner 2026-09-20) — credits {} and RESULT 0.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/maps/popular-times?place_id=ChIJexampleplaceid000001"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "9a7d6e5f4b3c2a1d0e9f8c7c",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/maps/popular-times?place_id=ChIJexampleplaceid000001"
+                    },
+                    "search_parameters": {
+                        "place_id": "ChIJexampleplaceid000001"
+                    },
+                    "place": {
+                        "title": "Example Coffee",
+                        "address": "100 Congress Ave, Austin, TX 78701"
+                    },
+                    "popular_times": null
+                }
+            }
+        }
+    ]
+}

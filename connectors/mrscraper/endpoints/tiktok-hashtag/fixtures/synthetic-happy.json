@@ -1,0 +1,32 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the TikTok Hashtag Stats shape v1 documented, tokenUsage 10; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/tiktok/tags/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "tag": "lego",
+                        "view_count": 120000000000,
+                        "video_count": 8400000,
+                        "videos": [
+                            {
+                                "id": "7300000000000000001",
+                                "description": "Building the castle",
+                                "play_count": 2100000
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

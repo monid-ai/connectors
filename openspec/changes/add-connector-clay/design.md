@@ -303,3 +303,18 @@ tightening at the binding. Rejected alternatives: enforcing in a pure
 report a bad caller input as `FN_CONTRACT` or a provider error instead of
 `INVALID_INPUT`, and the latter pushes one endpoint's rule into the
 provider-wide start the other six share.
+
+## D14 — reconcile addenda (2026-09-16)
+
+- `company-job-openings` categories were widened from v1's `["jobs"]` to
+  `["jobs", "company-enrichment"]` — intentional discoverability, recorded
+  here because the delta was previously unflagged.
+- The 402-body relay (D7) STANDS after review, with its tension noted: the
+  body names plan limits (the same information class `period_quota` is
+  stripped for), but a quota-exhausted caller needs the vendor's own words
+  to act, and the neutral-substitution machinery was v1 runtime surface the
+  connector standard deliberately lacks. Revisit only if a hosted-side
+  policy emerges.
+- `query-mode-run`'s description previously still advertised `period_quota`
+  in the output — stale pre-reversal text, fixed (the strip is the shipped
+  behavior and its own test proves it).

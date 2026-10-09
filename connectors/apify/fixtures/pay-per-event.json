@@ -1,9 +1,12 @@
 {
     "name": "pay-per-event",
-    "description": "A PAY_PER_EVENT actor run: the terminal poll carries usageTotalUsd + the LIVE pricingPerEvent.actorChargeEvents rate card. The page rate here ($0.02) DELIBERATELY differs from the baked fallback ($0.05): usageTotalUsd $0.04 reconstructs to 2 search pages only if the LIVE rate is read (finding 5 — the fallback would yield round(0.04/0.05)=1). Provider consolidate reads cost = usageTotalUsd.",
+    "description": "A PAY_PER_EVENT actor run: the terminal poll carries usageTotalUsd + the LIVE pricingPerEvent.actorChargeEvents rate card. The page rate here ($0.02) DELIBERATELY differs from the baked fallback ($0.05): usageTotalUsd $0.04 reconstructs to 2 search pages only if the LIVE rate is read (finding 5 - the fallback would yield round(0.04/0.05)=1). The total is used ONLY for that count reconstruction - billing is the derived fold over the pinned card (no consolidate in this connector), and the run settles on its FIRST SUCCEEDED tick.",
     "calls": [
         {
-            "req": { "method": "POST", "url": "{{request.url}}" },
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
             "res": {
                 "status": 201,
                 "body": {
@@ -60,8 +63,14 @@
             "res": {
                 "status": 200,
                 "body": [
-                    { "id": "profile-1", "name": "Profile One" },
-                    { "id": "profile-2", "name": "Profile Two" }
+                    {
+                        "id": "profile-1",
+                        "name": "Profile One"
+                    },
+                    {
+                        "id": "profile-2",
+                        "name": "Profile Two"
+                    }
                 ]
             }
         }

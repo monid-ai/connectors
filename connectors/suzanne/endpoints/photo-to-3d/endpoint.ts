@@ -51,6 +51,23 @@ export default defineEndpoint({
                 .required({ images_upload_ids: true })
                 .strict(),
         },
+        /** The vendor REQUIRES `model` (live 400 on omission, verified
+         *  2026-09-17 — pydantic "Field required"), but the caller
+         *  contract keeps it optional with the sculptor default: an
+         *  omitted model is materialized HERE (fn-side injection, not a
+         *  schema `.default()` — JSON-Schema defaults never materialize;
+         *  the pdl `dataset: "all"` pattern). An explicit caller value
+         *  wins the merge. */
+        toRequest: ({ data, utils }) => {
+            const body = data.input.body ?? {};
+            const model = utils.json.optionalGet(body, "$.model");
+            return {
+                ...data.input,
+                body: model === undefined
+                    ? utils.json.merge(body, { model: "sculptor" })
+                    : body,
+            };
+        },
     },
     // ASYNC generation — see the text-to-3d note (design D9). Multi-view is
     // the slower path (1–4 min documented), so the budget matters more here.

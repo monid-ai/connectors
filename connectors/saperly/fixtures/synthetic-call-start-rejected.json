@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-call-start-rejected",
+    "description": "Upstream refuses the call (RecipientOptedOut 403) - error-as-data, zero usage, no charge.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "fromNumberId": "num-1",
+                    "to": "+14155550123"
+                }
+            },
+            "res": {
+                "status": 403,
+                "body": {
+                    "_tag": "RecipientOptedOut",
+                    "message": "recipient opted out"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-not-found",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. Google generated no overview: the upstream's non-retryable 404 not_found, which does not consume a credit — error-as-data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/ai-overview?q=what+is+a+heat+pump"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "No AI Overview is available for this search.",
+                    "error_code": "not_found",
+                    "status_code": 404,
+                    "request_id": "42d6e1337e30546218ee3030",
+                    "retryable": false
+                }
+            }
+        }
+    ]
+}

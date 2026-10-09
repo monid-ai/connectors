@@ -1,0 +1,64 @@
+{
+    "name": "job-next-passthrough",
+    "description": "A job whose results are chunked: the terminal status body carries a `next` cursor. The poll must hand the envelope back EXACTLY as the vendor sent it - `next` intact, no extra fetch - because Firecrawl chunks deliberately at 10 MB and stitching would put an unbounded payload through one run. The replay transport fails the test if the poll issues a call this chain does not list, which is what pins 'does not walk'. The caller reaches the rest via firecrawl#crawl/{id}.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "id": "JOB1",
+                    "url": "{{request.url}}/JOB1"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}/JOB1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "status": "completed",
+                    "completed": 3,
+                    "total": 3,
+                    "creditsUsed": 3,
+                    "next": "https://api.firecrawl.dev/v2/crawl/JOB1?skip=2",
+                    "expiresAt": "2026-09-17T05:46:00.000Z",
+                    "data": [
+                        {
+                            "markdown": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission.",
+                            "metadata": {
+                                "title": "Example Domain",
+                                "language": "en",
+                                "sourceURL": "https://example.com/",
+                                "url": "https://example.com/",
+                                "statusCode": 200,
+                                "contentType": "text/html",
+                                "proxyUsed": "basic"
+                            }
+                        },
+                        {
+                            "markdown": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission.",
+                            "metadata": {
+                                "title": "Example Domain",
+                                "language": "en",
+                                "sourceURL": "https://example.com/pricing",
+                                "url": "https://example.com/pricing",
+                                "statusCode": 200,
+                                "contentType": "text/html",
+                                "proxyUsed": "basic"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

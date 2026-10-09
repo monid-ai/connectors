@@ -23,6 +23,10 @@ export default defineEndpoint({
             "domains.",
         docsUrl: "https://apify.com/axesso_data/amazon-reviews-scraper",
         categories: ["amazon"],
+        notes: [
+            "There is no result-limit parameter - the number of results " +
+            "(and the bill) equals the number of input queries.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 24 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/hotels/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "hotel": "Mitsui Garden Hotel",
+                        "reviews": [
+                            {
+                                "reviewer": "A. Example",
+                                "score": 9.4,
+                                "nights": 3,
+                                "traveler_type": "Family",
+                                "positive": "Spotless and quiet.",
+                                "negative": ""
+                            }
+                        ]
+                    },
+                    "tokenUsage": 24
+                }
+            }
+        }
+    ]
+}

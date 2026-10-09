@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Scrape Fonts response schema (docs.context.dev/api-reference/brand-intelligence/fonts, 2026-09-17), one font, credits_consumed 5; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/fonts?domain=example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "ok",
+                    "domain": "example.com",
+                    "fonts": [
+                        {
+                            "font": "Inter",
+                            "uses": ["body", "h1"],
+                            "fallbacks": ["system-ui", "sans-serif"],
+                            "num_elements": 42,
+                            "num_words": 310,
+                            "percent_words": 100,
+                            "percent_elements": 100
+                        }
+                    ],
+                    "code": 200,
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 5,
+                        "credits_remaining": 9943
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

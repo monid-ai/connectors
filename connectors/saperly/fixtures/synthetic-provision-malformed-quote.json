@@ -1,0 +1,18 @@
+{
+    "name": "synthetic-provision-malformed-quote",
+    "description": "A 2xx quote MISSING the consent cents is genuinely unusable: fails closed as OUR 502 error-as-data (providerHttpStatus 200 - theirs), zero usage, nothing purchased.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/pricing/quote?country=US&numberType=local"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "country": "US"
+                }
+            }
+        }
+    ]
+}

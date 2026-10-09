@@ -1,0 +1,70 @@
+{
+    "name": "synthetic-video-succeeded",
+    "description": "SYNTHETIC (no Model Studio key was available to record): the canonical Wan video chain — submit parks RUNNING with the task id, one RUNNING tick, then the terminal poll carrying output.video_url and the usage block DashScope documents on success (duration 5 = output 5 + input 0). Shapes follow the live API reference pages (2026-09-16); the task id, timestamps and result URL are placeholders. {{request.url}} / {{request.origin}} bind per endpoint, so one chain serves all six video models — the second count is the same for each and only the RATE differs.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_status": "PENDING",
+                        "task_id": "TASK1"
+                    },
+                    "request_id": "req-TASK1-submit"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "RUNNING",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000"
+                    },
+                    "request_id": "req-TASK1-running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "SUCCEEDED",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000",
+                        "end_time": "2026-09-16 10:03:12.000",
+                        "video_url": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/TASK1.mp4",
+                        "orig_prompt": "a sea lion plays with a cat on a beach at sunset"
+                    },
+                    "request_id": "req-TASK1-succeeded",
+                    "usage": {
+                        "video_count": 1,
+                        "duration": 5,
+                        "input_video_duration": 0,
+                        "output_video_duration": 5,
+                        "fps": 30,
+                        "SR": 720,
+                        "ratio": "16:9"
+                    }
+                }
+            }
+        }
+    ]
+}

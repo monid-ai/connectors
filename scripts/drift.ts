@@ -22,7 +22,7 @@
 import { Command } from "@cliffy/command";
 import type { EndpointDoc } from "@shared/core";
 import { compileToOutput } from "./lib.ts";
-import type { DriftSuite } from "./drift/contract.ts";
+import { type DriftSuite, suiteEnvVars, suiteToken } from "./drift/contract.ts";
 import { apifySuite } from "./drift/apify.ts";
 
 const SUITES: DriftSuite[] = [apifySuite];
@@ -60,9 +60,12 @@ for (const provider of wanted) {
         );
         continue;
     }
-    if (!Deno.env.get(suite.requiresEnv)) {
+    const token = suiteToken(suite.provider);
+    if (token === undefined) {
         console.error(
-            `${provider}: ${suite.requiresEnv} is required (live checks)`,
+            `${provider}: ${
+                suiteEnvVars(suite.provider).join(" or ")
+            } is required (live checks)`,
         );
         Deno.exit(2);
     }
@@ -72,6 +75,7 @@ for (const provider of wanted) {
         docs,
         fix: options.fix ?? false,
         log: (line) => console.log(line),
+        token,
     });
     if (findings.length > 0) {
         console.error(`\n${provider} drift (${findings.length}):`);

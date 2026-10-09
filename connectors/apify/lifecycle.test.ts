@@ -2,7 +2,6 @@ import { assert, assertEquals } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
     assembleUsage,
-    creditsDisagree,
     flatLines,
     type RunInput,
     type UsageModel,
@@ -96,7 +95,7 @@ const inputFor = (id: string): RunInput => {
     return { body };
 };
 
-Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, vendor claim wins)", async () => {
+Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, derived fold settles)", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
     const bundle = await testBundle();
     for (const id of await endpointIds()) {
@@ -112,14 +111,12 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ven
         assertEquals(result.isProviderError, false, id);
         // the COMPLETE evidence vector (design D24/D26): the metered keys
         // settle the dataset item count AND every flat component bills 1
-        // (engine-appended). But usage.credits is now the VENDOR's claim
-        // (design D27): the chain's terminal run record reports
-        // usageTotalUsd $0.01, the poll threads it through state, and the
-        // provider consolidate's non-empty claim WINS on every doc. Each
-        // doc's own pinned fold (assembleUsage) becomes the cross-check —
-        // it rides out as mismatch.derived exactly where it disagrees
-        // with the flat $0.01 beyond 1e-9. Multi-metered D29 docs carry
-        // hand-computed counts (CHAIN_COUNTS); the rest stay generic.
+        // (engine-appended), and usage.credits IS the derived fold —
+        // there is no consolidate anywhere in this connector (the run
+        // record's usageTotalUsd lags completion; the declared model
+        // prices the run). The chain's $0.01 usageTotalUsd is deliberately
+        // IGNORED. Multi-metered D29 docs carry hand-computed counts
+        // (CHAIN_COUNTS); the rest stay generic.
         const model = bundle.endpoints[id].usage.model!;
         const keys = billedKeys(model);
         const derived = assembleUsage(
@@ -127,18 +124,7 @@ Deno.test("apify: every endpoint completes the run-succeeded chain (2 items, ven
             CHAIN_COUNTS[id.split("#")[1]] ??
                 (keys.length === 1 ? { [keys[0]]: 2 } : {}),
         );
-        const claim = { default: 0.01 };
-        assertEquals(
-            result.usage,
-            {
-                credits: claim,
-                evidence: derived.evidence,
-                ...(creditsDisagree(claim, derived.credits)
-                    ? { mismatch: { derived: derived.credits } }
-                    : {}),
-            },
-            id,
-        );
+        assertEquals(result.usage, derived, id);
         assertEquals((result.output as unknown[]).length, 2, id);
         // engine-stamped provider timing: one still-running poll + terminal
         assertEquals(result.timing.attempts, 2, id);
@@ -191,20 +177,93 @@ Deno.test("apify#harvestapi/linkedin-profile-search: pages reconstructed from LI
     });
     assertEquals(result.httpStatus, 200);
     // usageTotalUsd $0.04 at the LIVE $0.02 page rate ⇒ 2 pages; the baked
-    // $0.05 fallback would have yielded 1 — proves the run-record read.
-    // "Short" mode ⇒ profiles are free: only the page line is evidenced
-    // (the mode-selected profile keys stay absent — design D19). The
-    // vendor's $0.04 claim IS usage.credits (claim wins, D27); the
-    // doc's PINNED $0.05 page rate folds 2 pages to $0.10, disagreeing
-    // beyond 1e-9 — the fold rides out as mismatch.derived.
+    // $0.05 fallback would have yielded 1 — proves the run-record read
+    // (the total is used ONLY for the count reconstruction, never as a
+    // claim). "Short" mode ⇒ profiles are free: only the page line is
+    // evidenced (the mode-selected profile keys stay absent — design
+    // D19), and the derived fold over the PINNED card settles: 2 pages ×
+    // $0.05 = $0.10.
     assertEquals(result.usage, {
-        credits: { default: 0.04 },
+        credits: { default: 0.1 },
         evidence: { search_page: 2 },
-        mismatch: { derived: { default: 0.1 } },
     });
     const output = result.output as Record<string, unknown>;
     assertEquals(output.searchPages, 2);
     assertEquals(output.profileCount, 2);
+});
+
+Deno.test("apify#harvestapi/linkedin-profile-search: zero-profile success still bills one page", async () => {
+    const fixture = await loadFixture(
+        `${HERE}fixtures/pay-per-event-zero-profiles.json`,
+    );
+    const id = "apify#harvestapi/linkedin-profile-search";
+    const result = await runEndpoint({
+        unit: await testSealedUnit(id),
+        input: inputFor(id),
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    // no usage total on the record, no profiles in the dataset — the
+    // vendor still charges one search page for any successful search:
+    // floor = max(1, ceil(0/25)) = 1, folded at the pinned $0.05
+    assertEquals(result.usage, {
+        credits: { default: 0.05 },
+        evidence: { search_page: 1 },
+    });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.searchPages, 1);
+    assertEquals(output.profileCount, 0);
+});
+
+Deno.test("apify#harvestapi/linkedin-profile-search: lagging total — delivered profiles floor the page count", async () => {
+    const fixture = await loadFixture(
+        `${HERE}fixtures/pay-per-event-lagging-pages.json`,
+    );
+    const id = "apify#harvestapi/linkedin-profile-search";
+    const result = await runEndpoint({
+        unit: await testSealedUnit(id),
+        input: inputFor(id),
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    // reconstruction from the lagging $0.0001 total computes ~0 pages,
+    // but 60 delivered profiles PROVE ceil(60/25) = 3 charged pages (a
+    // page yields at most 25) — the lag-independent floor wins and the
+    // fold settles 3 × $0.05. "Short" mode ⇒ profiles are free.
+    assertEquals(result.usage, {
+        credits: { default: 0.05 * 3 },
+        evidence: { search_page: 3 },
+    });
+    const output = result.output as Record<string, unknown>;
+    assertEquals(output.searchPages, 3);
+    assertEquals(output.profileCount, 60);
+});
+
+Deno.test("apify: a lagging PAY_PER_EVENT total is ignored — the derived fold settles (no settle-wait)", async () => {
+    const fixture = await loadFixture(
+        `${HERE}fixtures/pay-per-event-lagging.json`,
+    );
+    const id = "apify#apify/facebook-events-scraper";
+    const result = await runEndpoint({
+        unit: await testSealedUnit(id),
+        input: inputFor(id),
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    // The terminal poll caught the usage aggregation mid-flight:
+    // usageTotalUsd $0.001 covers only the actor-start charge while 2
+    // items already exist. Live-measured lag (n=8): the total trails
+    // SUCCEEDED by mean 6.4s / p95 ~9.6s. It does not matter: the run
+    // record's total is never read for billing — the derived fold over
+    // the pinned card settles ($0.001 start + 2 × $0.007 = $0.015) and
+    // the run is never held back.
+    assertEquals(result.usage, {
+        credits: { default: 0.015 },
+        evidence: { actor_start: 1, event: 2 },
+    });
 });
 
 Deno.test("apify#harvestapi/linkedin-profile-search-by-name: mode-selected settle (run-succeeded chain)", async () => {
@@ -218,14 +277,13 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-name: mode-selected settl
     });
     assertEquals(result.httpStatus, 200);
     // 2 delivered profiles in "Short" mode ⇒ ceil(2/10) = 1 page +
-    // 2 main-profile results. The chain's usageTotalUsd $0.01 claim wins
-    // (D27); the pinned fold 1 × $0.003 + 2 × $0.0015 = $0.006 disagrees
-    // and rides as mismatch.derived (written as the same left-to-right
-    // arithmetic creditsOf performs — a 0.006 literal is float dust off)
+    // 2 main-profile results; the derived fold settles: 1 × $0.003 +
+    // 2 × $0.0015 (written as the same left-to-right arithmetic
+    // creditsOf performs — a 0.006 literal is float dust off). The
+    // chain's usageTotalUsd is ignored (no consolidate).
     assertEquals(result.usage, {
-        credits: { default: 0.01 },
+        credits: { default: 0.003 + 2 * 0.0015 },
         evidence: { search_page: 1, main_profile: 2 },
-        mismatch: { derived: { default: 0.003 + 2 * 0.0015 } },
     });
 });
 
@@ -240,17 +298,16 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-services: mode-selected s
     });
     assertEquals(result.httpStatus, 200);
     // no page event on this actor's card: 2 delivered profiles in
-    // "Short" mode evidence the mode-selected line only. The chain's
-    // usageTotalUsd $0.01 claim wins (D27); the pinned fold 2 × $0.001 =
-    // $0.002 disagrees and rides as mismatch.derived
+    // "Short" mode evidence the mode-selected line only, and the derived
+    // fold settles: 2 × $0.001 = $0.002. The chain's usageTotalUsd is
+    // ignored (no consolidate).
     assertEquals(result.usage, {
-        credits: { default: 0.01 },
+        credits: { default: 0.002 },
         evidence: { short_profile: 2 },
-        mismatch: { derived: { default: 0.002 } },
     });
 });
 
-Deno.test("apify: PAY_PER_EVENT chain — usageTotalUsd claim wins over the pinned fold", async () => {
+Deno.test("apify: PAY_PER_EVENT chain — the derived fold settles; usageTotalUsd is ignored", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
     const id = "apify#apify/instagram-profile-scraper";
     const result = await runEndpoint({
@@ -261,14 +318,12 @@ Deno.test("apify: PAY_PER_EVENT chain — usageTotalUsd claim wins over the pinn
     });
     // D29 remodel: the doc's own evidence keys the 2 dataset items by
     // the card's `profile` line (includeAboutSection defaults false, so
-    // the about_account add-on stays absent); the chain's usageTotalUsd
-    // $0.04 is the vendor's claim and IS usage.credits (D27). The doc's
-    // pinned $0.0016/profile fold says $0.0032 — the disagreement rides
-    // out as mismatch.derived.
+    // the about_account add-on stays absent), and the derived fold
+    // settles: 2 × $0.0016 = $0.0032. The chain's usageTotalUsd $0.04 is
+    // ignored (no consolidate).
     assertEquals(result.usage, {
-        credits: { default: 0.04 },
+        credits: { default: 0.0032 },
         evidence: { profile: 2 },
-        mismatch: { derived: { default: 0.0032 } },
     });
 });
 

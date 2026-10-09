@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/token/tokenomics?id=25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "allocations": [
+                                {
+                                    "amount": 1,
+                                    "name": "name-1"
+                                }
+                            ],
+                            "cumulative_unlocked_amount": 1,
+                            "timestamp": 1,
+                            "total_supply": 1,
+                            "unlock_amount": 1,
+                            "unlocked_percentage_of_total_supply": 1
+                        },
+                        {
+                            "allocations": [
+                                {
+                                    "amount": 2,
+                                    "name": "name-2"
+                                }
+                            ],
+                            "cumulative_unlocked_amount": 2,
+                            "timestamp": 2,
+                            "total_supply": 2,
+                            "unlock_amount": 2,
+                            "unlocked_percentage_of_total_supply": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

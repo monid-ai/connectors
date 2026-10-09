@@ -1,0 +1,41 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (local_results, place_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/bing/maps?q=coffee&cp=47.6062%7E-122.3321&count=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "b5e345a7c85b441a9b9e6170",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/bing/maps?q=coffee&cp=47.6062~-122.3321&count=1"
+                    },
+                    "search_parameters": {
+                        "q": "coffee",
+                        "cp": "47.6062~-122.3321",
+                        "count": "1"
+                    },
+                    "local_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Coffee Seattle",
+                            "rating": 4.5,
+                            "address": "100 Pike St, Seattle, WA",
+                            "phone": "+1 206 555 0100",
+                            "place_id": "YN873x1000000001",
+                            "litescrape_place_link": "https://api.litescrape.com/api/bing/maps?place_id=YN873x1000000001"
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/bing/maps?q=coffee&cp=47.6062~-122.3321&count=1&first=1"
+                    }
+                }
+            }
+        }
+    ]
+}

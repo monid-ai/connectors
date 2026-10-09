@@ -17,10 +17,17 @@ export {
     zFixture,
 } from "./fixtures.ts";
 export {
+    assertInputAccepted,
+    estimateEndpoint,
+    fixtureReader,
     liveSkip,
+    loadEndpoint,
+    loadResource,
+    type LoadResourceOptions,
     runEndpoint,
     type RunEndpointOptions,
     type RunMode,
     testBundle,
+    testResourceUnit,
     testSealedUnit,
 } from "./runner.ts";

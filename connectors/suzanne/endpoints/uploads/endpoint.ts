@@ -16,8 +16,8 @@ export default defineEndpoint({
             "Mint a 5-minute presigned S3 PUT URL for uploading one JPEG/PNG photo.",
         description:
             "Get a 5-minute presigned S3 PUT URL for uploading a JPEG/PNG " +
-            "photo (this bypasses request body limits entirely — the bytes " +
-            "never pass through Monid). Takes no parameters. Returns " +
+            "photo directly to storage (no request body limits apply). " +
+            "Takes no parameters. Returns " +
             "{ upload_id, upload_url, expires_at }. PUT the raw image bytes " +
             "to upload_url, then pass the upl_* upload_id to the Suzanne " +
             "photo-to-3d endpoint in images_upload_ids. Call once per view " +
@@ -26,15 +26,9 @@ export default defineEndpoint({
         // operational caveats a caller must know BEFORE calling — not what
         // the endpoint is for, which is `description`'s job.
         notes: [
-            "Do NOT send a Content-Type header on the PUT. The presigned URL " +
-            "is signed without one, so a client that adds it gets 403 " +
-            "SignatureDoesNotMatch from S3 — that is S3 rejecting the PUT, " +
-            "not a Suzanne error.",
-            "Per client: curl adds Content-Type by default — pass -H " +
-            '"Content-Type:" (empty value) to suppress it; with fetch, omit ' +
-            "the headers entry entirely; with requests.put, pass data= (not " +
-            'files=) and headers={"Content-Type": None}; with axios, pass ' +
-            "headers: { 'Content-Type': undefined }.",
+            "Do not send a Content-Type header on the PUT - the URL is " +
+            "signed without one, so S3 answers 403 SignatureDoesNotMatch. " +
+            'curl adds it by default; suppress with -H "Content-Type:".',
             "The PUT URL expires after 5 minutes. Uploaded objects may be up " +
             "to 20 MB and auto-expire after 7 days.",
         ],

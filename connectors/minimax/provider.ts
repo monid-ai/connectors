@@ -52,9 +52,13 @@ export default defineProvider({
     auth: { inject: presets.auth.bearer() },
     request: { baseUrl: "https://api.minimax.io" },
     // mirrors services/workflows/endpointExecution/config.yml (minimax):
-    // request 30s; the 240s run default covers the blocking endpoints, and
-    // each video endpoint states its own longer window + poll cadence.
-    timeouts: { requestMs: 30_000, runMs: 240_000 },
+    // request 180s — the blocking endpoints (image, TTS) run ONE blocking
+    // POST that takes tens of seconds; v1's config gave them the full 180 s
+    // and a 30 s cap here was a regression cliff (reconcile 2026-09-16 —
+    // the earlier comment misquoted config.yml as 30 s). The 240 s run
+    // default covers the blocking endpoints; each video endpoint states
+    // its own longer window + poll cadence, and music overrides 600 s.
+    timeouts: { requestMs: 180_000, runMs: 240_000 },
     usage: {
         /** THE credit system (design D26/D2): MiniMax meters ONE
          *  pay-as-you-go balance and publishes every rate in dollars, so

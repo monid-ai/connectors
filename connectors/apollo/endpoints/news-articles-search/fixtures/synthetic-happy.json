@@ -1,0 +1,45 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the News Articles Search reference example (docs.apollo.io/reference/news-articles-search, 2026-09-16), trimmed to two articles; ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/news_articles/search?organization_ids%5B%5D=ORG1&per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "pagination": {
+                        "page": 1,
+                        "per_page": 2,
+                        "total_entries": 10,
+                        "total_pages": 5
+                    },
+                    "news_articles": [
+                        {
+                            "id": "NEWS1",
+                            "url": "https://www.prnewswire.com/news-releases/apollo-io-appoints-new-cmo-and-cro",
+                            "domain": "prnewswire.com",
+                            "title": "Apollo.io Appoints a CMO and a CRO to Accelerate AI-Powered Go-to-Market Innovation",
+                            "snippet": "Apollo.io, a leading AI-powered go-to-market sales platform, today announced the appointments of a Chief Marketing Officer and a Chief Revenue Officer.",
+                            "organization_ids": ["ORG1"],
+                            "published_at": "2025-05-02T00:00:00.000+00:00",
+                            "event_categories": ["hires"]
+                        },
+                        {
+                            "id": "NEWS2",
+                            "url": "https://www.finsmes.com/2021/11/apollo-io-raises-32m-in-series-b-funding.html",
+                            "domain": "finsmes.com",
+                            "title": "Apollo.io Raises $32M in Series B Funding",
+                            "snippet": "In conjunction with the funding, a partner at Tribe Capital joined Apollo.io's board.",
+                            "organization_ids": ["ORG1"],
+                            "published_at": "2021-11-01T21:44:42.000+00:00",
+                            "event_categories": ["investment"]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

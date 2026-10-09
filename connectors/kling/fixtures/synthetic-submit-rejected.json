@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-submit-rejected",
+    "description": "SYNTHETIC: Kling rejects the create-task call with HTTP 400 and its own envelope — code 1201 and the rule text v1's drill recorded for 720p + native audio on 2.6. No task is created, so nothing will ever be billed and the run settles as zero-billed data with the vendor's status.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "code": 1201,
+                    "message": "model/resolution(kling-v2-6/720p) is not supported when audio is native",
+                    "request_id": "req-rejected-1"
+                }
+            }
+        }
+    ]
+}

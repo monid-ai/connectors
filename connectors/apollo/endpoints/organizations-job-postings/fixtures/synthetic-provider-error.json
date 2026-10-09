@@ -1,0 +1,18 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 422 body from the Organization Job Postings reference (an organization_id that is not a valid Apollo id).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/not-an-id/job_postings?per_page=2"
+            },
+            "res": {
+                "status": 422,
+                "body": {
+                    "error": "Parameters misconfigured. organization_id is not a valid ID"
+                }
+            }
+        }
+    ]
+}

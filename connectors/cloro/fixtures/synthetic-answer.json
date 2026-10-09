@@ -1,0 +1,34 @@
+{
+    "name": "cloro answer (synthetic)",
+    "description": "Synthetic cloro /v1/monitor 200 body for billing tests, shaped after the published OpenAPI response ({ success, result }). result.productResults carries three product clusters for the AI Mode expandProducts line. Each test supplies its own X-Credits-Charged header. No live recording is claimed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "result": {
+                        "text": "Example Corp makes project management software.",
+                        "sources": [
+                            {
+                                "position": 1,
+                                "url": "https://example.com/about",
+                                "label": "Example Corp",
+                                "description": "About Example Corp"
+                            }
+                        ],
+                        "productResults": [
+                            { "title": "Product A" },
+                            { "title": "Product B" },
+                            { "title": "Product C" }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

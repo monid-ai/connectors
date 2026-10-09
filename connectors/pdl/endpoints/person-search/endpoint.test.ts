@@ -34,7 +34,14 @@ Deno.test("pdl: usage fn provenance — one evidence + one auth fn for all 4; se
         // PDL reports its meter only in response headers — no claim fn,
         // nothing to strip
         assertEquals(doc.usage.consolidate, undefined, id);
-        assertEquals(doc.input.toRequest, undefined, id);
+        // person/search owns the ONE toRequest (v1 parity, reconcile
+        // 2026-09-16: it materializes `dataset=all` when the caller omits
+        // it — v1 always sent it; PDL's server default is `resume`)
+        if (id === "pdl#v5/person/search") {
+            assertEquals(typeof doc.input.toRequest?.$fn.key, "string", id);
+        } else {
+            assertEquals(doc.input.toRequest, undefined, id);
+        }
         assertEquals(doc.output.fromResponse, undefined, id);
     }
     // the two searches intern ONE size-reading estimate; the two flat

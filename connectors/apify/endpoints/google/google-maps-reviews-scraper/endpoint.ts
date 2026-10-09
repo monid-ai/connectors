@@ -29,6 +29,9 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/compass~google-maps-reviews-scraper/runs",
     },
+    // v1 parity (reconcile 2026-09-16): bulk review scrapes exceed the
+    // provider's 300 s run budget — v1 ran this actor at 600 s.
+    timeouts: { runMs: 600_000 },
     input: {
         schema: {
             // the actor's published maxReviews "default" is 10000000 — an

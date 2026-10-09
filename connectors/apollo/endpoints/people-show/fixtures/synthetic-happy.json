@@ -1,0 +1,63 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Get Complete Person Info reference example (docs.apollo.io/reference/get-complete-person-info, 2026-09-16): the doc's fictional person with the placeholder email; ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/people/PERSON1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "person": {
+                        "id": "PERSON1",
+                        "first_name": "Ava",
+                        "last_name": "Ruiz",
+                        "name": "Ava Ruiz",
+                        "linkedin_url": "http://www.linkedin.com/in/ava-ruiz-123456",
+                        "title": "Founder & CEO",
+                        "photo_url": null,
+                        "twitter_url": null,
+                        "github_url": null,
+                        "facebook_url": null,
+                        "extrapolated_email_confidence": null,
+                        "headline": "Founder & CEO at Sumware Software",
+                        "organization_id": "ORG1",
+                        "employment_history": [
+                            {
+                                "_id": "EMP1",
+                                "created_at": null,
+                                "current": true,
+                                "degree": null,
+                                "description": null,
+                                "emails": null,
+                                "end_date": null,
+                                "grade_level": null,
+                                "kind": null,
+                                "major": null,
+                                "organization_id": "ORG1",
+                                "organization_name": "Sumware Software",
+                                "raw_address": null,
+                                "start_date": "2015-01-01",
+                                "title": "Founder & CEO",
+                                "updated_at": null,
+                                "id": "EMP1",
+                                "key": "EMP1"
+                            }
+                        ],
+                        "street_address": "172 Bryant Street",
+                        "city": "San Francisco",
+                        "state": "California",
+                        "country": "United States",
+                        "postal_code": "94105",
+                        "formatted_address": "172 Bryant Street, San Francisco, California, United States, 94105",
+                        "time_zone": "America/Los_Angeles",
+                        "email": "email_not_unlocked@domain.com",
+                        "email_status": "verified"
+                    }
+                }
+            }
+        }
+    ]
+}

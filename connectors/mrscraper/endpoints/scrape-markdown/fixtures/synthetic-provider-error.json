@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 401 error envelope (missing or invalid x-api-token).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?markdown=true&saveResult=false"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "message": "Unauthorized access",
+                    "error": "Unauthorized"
+                }
+            }
+        }
+    ]
+}

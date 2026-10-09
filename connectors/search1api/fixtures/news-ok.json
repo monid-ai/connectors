@@ -1,0 +1,41 @@
+{
+    "name": "news-ok",
+    "description": "Search1API /news happy path: ranked news results (array trimmed by record). 1 credit per call with results.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "artificial intelligence",
+                    "max_results": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchParameters": {
+                        "query": "artificial intelligence",
+                        "max_results": 3,
+                        "crawl_results": 0,
+                        "image": false,
+                        "include_sites": [],
+                        "exclude_sites": []
+                    },
+                    "results": [
+                        {
+                            "title": "Artificial Intelligence News -- ScienceDaily",
+                            "link": "https://sciencedaily.com/news/computers_math/artificial_intelligence",
+                            "snippet": "Artificial Intelligence News. Everything on AI including futuristic robots with artificial intelligence, computer models of human intelligence and more.2 days ago"
+                        },
+                        {
+                            "title": "The Liftoff Scenario That Terrifies A.I. Doomsayers - The New York Times",
+                            "link": "https://www.nytimes.com/2026/09/16/science/ai-recursive-self-improvement.html",
+                            "snippet": "\u201cRecursive self-improvement\u201d is the idea that artificial intelligence could learn to build and train itself, creating exponential new progress \u2014 and risk.1 day ago"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

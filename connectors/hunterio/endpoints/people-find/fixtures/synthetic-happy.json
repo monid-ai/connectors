@@ -1,0 +1,71 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. A hit: 0.2 credit.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/people/find?email=jane.doe%40example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "b3ae14fb-6725-56d1-ac68-a76f8ce04dec",
+                        "name": {
+                            "fullName": "Jane Doe",
+                            "givenName": "Jane",
+                            "familyName": "Doe"
+                        },
+                        "email": "jane.doe@example.com",
+                        "location": "Framingham, Massachusetts, United States",
+                        "timeZone": "America/New_York",
+                        "utcOffset": -5,
+                        "geo": {
+                            "city": "Framingham",
+                            "state": "Massachusetts",
+                            "stateCode": "MA",
+                            "country": "United States",
+                            "countryCode": "US",
+                            "lat": 42.27926,
+                            "lng": -71.41617
+                        },
+                        "bio": null,
+                        "site": null,
+                        "avatar": null,
+                        "employment": {
+                            "domain": "hunter.io",
+                            "name": "Hunter",
+                            "title": "Chief Executive Officer",
+                            "role": "executive",
+                            "subRole": null,
+                            "seniority": "executive"
+                        },
+                        "facebook": {
+                            "handle": null
+                        },
+                        "github": {
+                            "handle": null
+                        },
+                        "twitter": {
+                            "handle": "janedoe"
+                        },
+                        "linkedin": {
+                            "handle": null
+                        },
+                        "emailProvider": "google.com",
+                        "indexedAt": "2025-08-30",
+                        "activeAt": "2025-09-03",
+                        "inactiveAt": null
+                    },
+                    "meta": {
+                        "params": {
+                            "email": "jane.doe@example.com",
+                            "linkedin_handle": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

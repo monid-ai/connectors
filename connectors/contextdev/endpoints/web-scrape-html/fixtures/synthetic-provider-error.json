@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 415 error envelope (a URL that resolved to an unsupported content type); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/html?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 415,
+                "body": {
+                    "message": "Unsupported content type",
+                    "error_code": "UNSUPPORTED_CONTENT_TYPE",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

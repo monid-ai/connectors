@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-submit-envelope-error",
+    "description": "SYNTHETIC: the call answers HTTP 200 with DashScope's error envelope (a non-empty top-level code). The intl docs never pin the HTTP status of every error class, so a 2xx is checked too: this is an upstream error dressed as success, settled as OUR synthesized 502 with providerHttpStatus 200 (design D7), zero-billed. Serves the video submit and the blocking image call alike.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": "DataInspectionFailed",
+                    "message": "Input data may contain inappropriate content.",
+                    "request_id": "req-envelope"
+                }
+            }
+        }
+    ]
+}

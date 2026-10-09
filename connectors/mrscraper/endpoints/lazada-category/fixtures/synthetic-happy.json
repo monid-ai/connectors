@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/lazada/cbc/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.lazada.sg/catalog/?q=earbuds",
+                        "products": [
+                            {
+                                "title": "Example Wireless Earbuds",
+                                "price": "S$29.90",
+                                "rating": 4.6,
+                                "url": "https://www.lazada.sg/products/pdp-i3158507329-s22328619522.html"
+                            },
+                            {
+                                "title": "Example Earbuds Pro",
+                                "price": "S$59.00",
+                                "rating": 4.8,
+                                "url": "https://www.lazada.sg/products/pdp-i3158507330-s22328619523.html"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

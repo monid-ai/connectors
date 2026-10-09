@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 with no `posts` group at all: the vendor deducted one credit, usage here records 0 (v1 posture, owner 2026-09-20) — credits {} and RESULT 0.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/maps/posts?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "a1b2c3d4e5f60718293a4b5d",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/maps/posts?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e"
+                    },
+                    "search_parameters": {
+                        "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e"
+                    }
+                }
+            }
+        }
+    ]
+}

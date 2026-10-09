@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 404 (brand not found) in the error envelope; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/naics?input=stripe.com&maxResults=2"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "message": "Brand not found",
+                    "error_code": "BRAND_NOT_FOUND",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9959
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

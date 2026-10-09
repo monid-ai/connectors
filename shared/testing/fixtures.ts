@@ -33,7 +33,13 @@ import { type Json, zJson } from "@shared/core";
  * is `scrubUrlCredentials`' job, applied by `scrubCalls` before anything is
  * written.
  */
-export const RECORDED_RES_HEADERS = ["location"] as const;
+export const RECORDED_RES_HEADERS = [
+    "location",
+    "retry-after",
+    "x-api-units-cost-total-actual",
+    "x-api-cache",
+    "x-credits-charged",
+] as const;
 
 export const zRecordedCall = z.object({
     req: z.object({

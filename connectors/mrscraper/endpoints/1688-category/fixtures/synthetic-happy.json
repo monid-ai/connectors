@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 29 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/1688/cbc/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://s.1688.com/selloffer/offer_search.htm?keywords=phone",
+                        "offers": [
+                            {
+                                "title": "Wholesale phone case",
+                                "price": "2.50",
+                                "supplier": "Shenzhen Example Tech",
+                                "url": "https://detail.1688.com/offer/123456789.html"
+                            },
+                            {
+                                "title": "USB-C cable 1m",
+                                "price": "0.80",
+                                "supplier": "Dongguan Example Cable",
+                                "url": "https://detail.1688.com/offer/987654321.html"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 29
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,98 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/prediction-market/polymarket/markets?market_slug=will-bitcoin-dip-to-45000-by-december-31-2026-674-923-755-971-998-525-926-245-316-517-544-589-965-923-986-841-815-224&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "category": "category-1",
+                            "close_time": 1,
+                            "completed_time": 1,
+                            "condition_id": "condition_id-1",
+                            "description": "description-1",
+                            "end_time": 1,
+                            "event_slug": "event_slug-1",
+                            "game_start_time": 1,
+                            "image": "image-1",
+                            "market_slug": "market_slug-1",
+                            "negative_risk_id": "negative_risk_id-1",
+                            "polymarket_link": "polymarket_link-1",
+                            "resolution_source": "resolution_source-1",
+                            "side_a": {
+                                "id": "id-1",
+                                "label": "label-1"
+                            },
+                            "side_b": {
+                                "id": "id-1",
+                                "label": "label-1"
+                            },
+                            "start_time": 1,
+                            "status": "status-1",
+                            "subcategory": "subcategory-1",
+                            "tags": [
+                                "tags-1"
+                            ],
+                            "title": "title-1",
+                            "volume_1_month": 1,
+                            "volume_1_week": 1,
+                            "volume_1_year": 1,
+                            "volume_total": 1,
+                            "winning_side": "winning_side-1"
+                        },
+                        {
+                            "category": "category-2",
+                            "close_time": 2,
+                            "completed_time": 2,
+                            "condition_id": "condition_id-2",
+                            "description": "description-2",
+                            "end_time": 2,
+                            "event_slug": "event_slug-2",
+                            "game_start_time": 2,
+                            "image": "image-2",
+                            "market_slug": "market_slug-2",
+                            "negative_risk_id": "negative_risk_id-2",
+                            "polymarket_link": "polymarket_link-2",
+                            "resolution_source": "resolution_source-2",
+                            "side_a": {
+                                "id": "id-2",
+                                "label": "label-2"
+                            },
+                            "side_b": {
+                                "id": "id-2",
+                                "label": "label-2"
+                            },
+                            "start_time": 2,
+                            "status": "status-2",
+                            "subcategory": "subcategory-2",
+                            "tags": [
+                                "tags-2"
+                            ],
+                            "title": "title-2",
+                            "volume_1_month": 2,
+                            "volume_1_week": 2,
+                            "volume_1_year": 2,
+                            "volume_total": 2,
+                            "winning_side": "winning_side-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

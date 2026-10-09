@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 400 error envelope (invalid search query); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/brand/search?query=nike&queryBy=name&queryBy=domain"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "message": "Invalid search query",
+                    "error_code": "VALIDATION_ERROR",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9990
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

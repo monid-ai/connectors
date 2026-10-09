@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (local_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/local?q=coffee+shops&location=Austin%2C+Texas"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "6d4a3b2c1e0f9d8c7b6a5f4e",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/local?q=coffee+shops&location=Austin%2C+Texas"
+                    },
+                    "search_parameters": {
+                        "q": "coffee shops",
+                        "location": "Austin, Texas",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "local_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Coffee",
+                            "rating": 4.7,
+                            "reviews": 312,
+                            "address": "100 Congress Ave, Austin, TX",
+                            "place_id": "ChIJexampleplaceid000001",
+                            "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e",
+                            "reviews_link": "https://api.litescrape.com/api/google/reviews?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e&hl=en"
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/google/local?q=coffee+shops&location=Austin%2C+Texas&start=20"
+                    }
+                }
+            }
+        }
+    ]
+}

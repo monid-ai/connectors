@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 31 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/trip/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://us.trip.com/hotels/shanghai-hotel-detail-992573/",
+                        "total_reviews": 1,
+                        "reviews": [
+                            {
+                                "reviewer": "A. Example",
+                                "room_type": "Standard King",
+                                "stay_date": "2026-08",
+                                "traveler_type": "Business",
+                                "score": 4.5,
+                                "title": "Convenient and clean"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 31
+                }
+            }
+        }
+    ]
+}

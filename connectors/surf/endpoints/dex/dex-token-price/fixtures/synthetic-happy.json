@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/dex/token/price?chain=ethereum&address=0x6982508145454ce325ddbe47a25d4ec3d2311933&interval=1h&time_range=24h"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "close": 1,
+                            "high": 1,
+                            "low": 1,
+                            "open": 1,
+                            "timestamp": 1,
+                            "volume_usd": 1
+                        },
+                        {
+                            "close": 2,
+                            "high": 2,
+                            "low": 2,
+                            "open": 2,
+                            "timestamp": 2,
+                            "volume_usd": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1
+                    }
+                }
+            }
+        }
+    ]
+}

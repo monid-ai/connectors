@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; this v2-shaped body carries no `meta` at all (design D1: four operations carry none).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/prediction-market/polymarket/volume-split/0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092?granularity=hour"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "condition_id": "condition_id-1",
+                    "data_points": [
+                        {
+                            "no_volume": 1,
+                            "timestamp": 1,
+                            "total_volume": 1,
+                            "trades_count": 1,
+                            "yes_volume": 1
+                        }
+                    ],
+                    "end_time": 1,
+                    "granularity": "granularity-1",
+                    "start_time": 1
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Scrape HTML response schema (docs.context.dev/api-reference/web-scraping/html, 2026-09-17); key_metadata carries a placeholder balance.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/html?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "url": "https://example.com",
+                    "type": "html",
+                    "metadata": { "title": "Example Domain", "language": "en" },
+                    "cache_metadata": { "status": "hit", "age_ms": 3600000 },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ1",
+                    "finalDOMState": "loaded"
+                }
+            }
+        }
+    ]
+}

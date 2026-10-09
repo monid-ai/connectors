@@ -22,6 +22,10 @@ export default defineEndpoint({
             "for e-commerce price monitoring and market analysis.",
         docsUrl: "https://apify.com/damilo/google-shopping-apify",
         categories: ["google-shopping"],
+        notes: [
+            "The actor can overshoot num x max_pages - treat the " +
+            "requested caps as advisory and the estimate as a floor.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

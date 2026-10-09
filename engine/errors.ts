@@ -29,6 +29,23 @@ export const EngineErrorCode = {
     NOT_ASYNC: "NOT_ASYNC",
     /** run() exceeded timeouts.runMs. */
     TIMEOUT: "TIMEOUT",
+    /** Doc declares a `resource` binding but EngineCtx carries no
+     *  ResourceReader — a HOST wiring gap, caught at load() (fail-closed:
+     *  a bound endpoint without its ownership window must not run). */
+    NO_RESOURCE_READER: "NO_RESOURCE_READER",
+    /** A fn touched `utils.resources` on a doc with NO `resource` binding
+     *  — capability follows declaration (design D32); undeclared access
+     *  is a doc-authoring bug, fail-closed. */
+    RESOURCES_UNDECLARED: "RESOURCES_UNDECLARED",
+    /** The seed/ensure fn produced an invalid provision record (or seed
+     *  data failed the resource doc's dataSchema) — the run SUCCEEDED
+     *  upstream but its provision cannot be persisted; distinct from
+     *  FN_CONTRACT so hosts alarm it as money-critical. */
+    PROVISION_CONSTRUCT: "PROVISION_CONSTRUCT",
+    /** A resource op (check/release/refresh/getActualCost/external read)
+     *  failed non-deterministically. RETRIABLE — the host activity
+     *  retries on its own schedule. */
+    RESOURCE_OP_FAILED: "RESOURCE_OP_FAILED",
     /** Reserved surface (relayTransport stub). */
     NOT_IMPLEMENTED: "NOT_IMPLEMENTED",
 } as const;
@@ -37,6 +54,7 @@ export type EngineErrorCode =
 
 const RETRIABLE: ReadonlySet<EngineErrorCode> = new Set([
     EngineErrorCode.EXECUTION_FAILED,
+    EngineErrorCode.RESOURCE_OP_FAILED,
 ]);
 
 export class EngineError extends Error {

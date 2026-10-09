@@ -31,6 +31,9 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/apify~instagram-post-scraper/runs",
     },
+    // v1 parity (reconcile 2026-09-16): bulk profile scrapes take 2–8 min
+    // (v1 comment was explicit) — v1 ran this actor at 1800 s.
+    timeouts: { runMs: 1_800_000 },
     input: {
         schema: {
             // resultsLimit is the PRIMARY limiting knob (the actor accepts

@@ -1,0 +1,107 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. A hit: 0.2 credit flat for both profiles.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/combined/find?email=jane.doe%40example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "person": {
+                            "id": "b3ae14fb-6725-56d1-ac68-a76f8ce04dec",
+                            "name": {
+                                "fullName": "Jane Doe",
+                                "givenName": "Jane",
+                                "familyName": "Doe"
+                            },
+                            "email": "jane.doe@example.com",
+                            "location": "Framingham, Massachusetts, United States",
+                            "timeZone": "America/New_York",
+                            "utcOffset": -5,
+                            "geo": {
+                                "city": "Framingham",
+                                "state": "Massachusetts",
+                                "stateCode": "MA",
+                                "country": "United States",
+                                "countryCode": "US",
+                                "lat": 42.27926,
+                                "lng": -71.41617
+                            },
+                            "bio": null,
+                            "site": null,
+                            "avatar": null,
+                            "employment": {
+                                "domain": "hunter.io",
+                                "name": "Hunter",
+                                "title": "Chief Executive Officer",
+                                "role": "executive",
+                                "subRole": null,
+                                "seniority": "executive"
+                            },
+                            "facebook": {
+                                "handle": null
+                            },
+                            "github": {
+                                "handle": null
+                            },
+                            "twitter": {
+                                "handle": "janedoe"
+                            },
+                            "linkedin": {
+                                "handle": null
+                            },
+                            "emailProvider": "google.com",
+                            "indexedAt": "2025-08-30",
+                            "activeAt": "2025-09-03",
+                            "inactiveAt": null
+                        },
+                        "company": {
+                            "id": "6d3b1f9a-0c4e-5b2a-9f1e-2a7c8d9e0f11",
+                            "name": "Hunter",
+                            "legalName": "Hunter Web Services",
+                            "domain": "hunter.io",
+                            "description": "Email intelligence.",
+                            "foundedYear": 2015,
+                            "category": {
+                                "sector": "Information Technology",
+                                "industry": "Internet Software & Services",
+                                "naics6Codes2022": [
+                                    "519290"
+                                ],
+                                "sicCode": "7374"
+                            },
+                            "tags": [
+                                "SaaS",
+                                "B2B"
+                            ],
+                            "geo": {
+                                "city": "Paris",
+                                "country": "France",
+                                "countryCode": "FR"
+                            },
+                            "metrics": {
+                                "employees": "11-50",
+                                "employeesCount": 40,
+                                "alexaGlobalRank": 12345
+                            },
+                            "tech": [
+                                "google_analytics",
+                                "cloudflare"
+                            ],
+                            "indexedAt": "2025-08-30"
+                        }
+                    },
+                    "meta": {
+                        "params": {
+                            "email": "jane.doe@example.com"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

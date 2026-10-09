@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-submit-envelope-error",
+    "description": "SYNTHETIC: the create-task call answers HTTP 200 with a NON-ZERO envelope code (1102, resource pack exhausted — the v1 test shape). Kling documents every error as a non-2xx, so this is an upstream error dressed as success: no task id, nothing to poll, settled as OUR synthesized 502 with providerHttpStatus 200 (design D6), zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 1102,
+                    "message": "resource pack exhausted",
+                    "request_id": "req-envelope-1"
+                }
+            }
+        }
+    ]
+}

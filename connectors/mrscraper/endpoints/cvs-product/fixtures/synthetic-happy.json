@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/cvs"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.cvs.com/shop/one-other-hand-mask-prodid-633763",
+                        "html": "<!DOCTYPE html><html><head><title>One Other Hand Mask - CVS</title></head><body>...</body></html>",
+                        "structured_data": {
+                            "@type": "Product",
+                            "name": "One Other Hand Mask",
+                            "offers": {
+                                "price": "3.49",
+                                "priceCurrency": "USD",
+                                "availability": "InStock"
+                            }
+                        }
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

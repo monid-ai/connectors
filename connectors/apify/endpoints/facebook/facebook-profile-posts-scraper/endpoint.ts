@@ -25,7 +25,13 @@ export default defineEndpoint({
             "resolved profile ID. Targets are supplied one per line " +
             "and optional start/end dates narrow the post range.",
         docsUrl: "https://apify.com/cleansyntax/facebook-profile-posts-scraper",
-        categories: [],
+        categories: ["facebook"],
+        notes: [
+            "Only public profiles return data - a private or " +
+            "unresolvable profile yields no results.",
+            "profile_posts_by_url also returns (and bills) one " +
+            "profile-ID record per target line, on top of the posts.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

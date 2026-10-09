@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/play/reviews?product_id=com.example.one&num=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "a7b8c9d0e1f2a3b4c5d6e7f8",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/play/reviews?product_id=com.example.one&num=1"
+                    },
+                    "search_parameters": {
+                        "product_id": "com.example.one",
+                        "num": "1",
+                        "store": "apps",
+                        "platform": "phone",
+                        "sort_by": "1",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "reviews": [
+                        {
+                            "id": "gp:AOqpTOExampleReviewId0001",
+                            "title": "A. Reviewer",
+                            "rating": 5,
+                            "snippet": "Does exactly what it says.",
+                            "likes": 12,
+                            "date": "2026-09-01",
+                            "app_version": "4.2.0"
+                        }
+                    ],
+                    "litescrape_pagination": {
+                        "next": "https://api.litescrape.com/api/google/play/reviews?product_id=com.example.one&num=1&next_page_token=CkEKP0NoUUlCRUVFUW9FUGQwOU1UdHBXUld4QzRmU0l4TXpDdz0",
+                        "next_page_token": "CkEKP0NoUUlCRUVFUW9FUGQwOU1UdHBXUld4QzRmU0l4TXpDdz0"
+                    }
+                }
+            }
+        }
+    ]
+}

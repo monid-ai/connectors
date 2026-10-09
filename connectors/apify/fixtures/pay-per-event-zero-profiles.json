@@ -1,0 +1,49 @@
+{
+    "name": "pay-per-event-zero-profiles",
+    "description": "A PAY_PER_EVENT run that SUCCEEDED with an empty dataset and NO usageTotalUsd on the terminal record (the usage aggregation had not landed). The vendor charges at least one search page for any successful search, so the page reconstruction floors at max(1, ceil(0/25)) = 1 and the derived fold settles one page.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/datasets/DS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": []
+            }
+        }
+    ]
+}

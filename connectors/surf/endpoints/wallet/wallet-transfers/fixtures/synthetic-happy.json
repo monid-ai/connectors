@@ -1,0 +1,52 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders; opt-in enrichment fields the request does not ask for are left out. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/wallet/transfers?address=0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045&chain=ethereum&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "activity_type": "activity_type-1",
+                            "amount": "amount-1",
+                            "amount_usd": 1,
+                            "flow": "flow-1",
+                            "from_address": "from_address-1",
+                            "timestamp": 1,
+                            "to_address": "to_address-1",
+                            "token_address": "token_address-1",
+                            "token_symbol": "token_symbol-1",
+                            "tx_hash": "tx_hash-1"
+                        },
+                        {
+                            "activity_type": "activity_type-2",
+                            "amount": "amount-2",
+                            "amount_usd": 2,
+                            "flow": "flow-2",
+                            "from_address": "from_address-2",
+                            "timestamp": 2,
+                            "to_address": "to_address-2",
+                            "token_address": "token_address-2",
+                            "token_symbol": "token_symbol-2",
+                            "tx_hash": "tx_hash-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

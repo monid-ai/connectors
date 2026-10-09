@@ -1,0 +1,36 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 12 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/tiktok/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.tiktok.com/shop/pdp/1731949430853767209",
+                        "product_id": "1731949430853767209",
+                        "category": {
+                            "id": "601925",
+                            "name": "Cases & Screen Protectors"
+                        },
+                        "routing": {
+                            "path": "/shop/pdp/1731949430853767209"
+                        },
+                        "region": "US",
+                        "waf": {
+                            "decision": "allow",
+                            "bot_detected": false
+                        }
+                    },
+                    "tokenUsage": 12
+                }
+            }
+        }
+    ]
+}

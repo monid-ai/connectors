@@ -1,0 +1,41 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (posts): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/maps/posts?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "a1b2c3d4e5f60718293a4b5c",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/maps/posts?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e"
+                    },
+                    "search_parameters": {
+                        "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "posts": [
+                        {
+                            "position": 1,
+                            "text": "New seasonal menu starts Monday.",
+                            "date": "2 weeks ago",
+                            "media": [
+                                {
+                                    "type": "image",
+                                    "link": "https://images.example/post-1.jpg"
+                                }
+                            ]
+                        }
+                    ],
+                    "next_page_token": "ls1.WyJDakVJQVJJcENnZXhhbXBsZSJd"
+                }
+            }
+        }
+    ]
+}

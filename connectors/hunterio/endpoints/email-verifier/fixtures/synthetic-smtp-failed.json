@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-smtp-failed",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. Hunter's 222: the remote SMTP server misbehaved — terminal, OURS 502 / THEIRS 222, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/email-verifier?email=john.doe%40example.com"
+            },
+            "res": {
+                "status": 222,
+                "body": {
+                    "errors": [
+                        {
+                            "id": "remote_smtp_failed",
+                            "code": 222,
+                            "details": "The verification could not be completed because the remote server failed. Retry later."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

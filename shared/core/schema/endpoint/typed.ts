@@ -18,7 +18,9 @@ import type { z } from "zod";
 import type { Json } from "../json/type.ts";
 import type { FnUtils, HookLogger } from "../hooks/ctx.ts";
 import type {
+    GatedResources,
     LifecycleRequestInfo,
+    LifecycleRunInfo,
     LifecycleUtils,
 } from "../hooks/lifecycle.ts";
 import type { RunInput } from "../run/input.ts";
@@ -93,11 +95,12 @@ export interface TypedEnvelopeCtx<
     logger: HookLogger;
 }
 
-/** The estimate ctx, body-typed (input-only — the estimate is the
- *  settle's promise, made before the vendor is touched). */
+/** The estimate ctx, body-typed. `elapsedMs` is absent at admission and
+ *  set on cadenced re-runs (design D40) — one fn, two moments. */
 export interface TypedEstimateCtx<B, Q = Record<string, Json> | undefined> {
     data: {
         input: TypedRunInput<B, Q>;
+        elapsedMs?: number;
         usage: { model: UsageModel };
     };
     utils: FnUtils;
@@ -120,6 +123,11 @@ export interface TypedLifecycleStartCtx<
     data: {
         input: TypedRunInput<B, Q>;
         request: LifecycleRequestInfo;
+        run: LifecycleRunInfo;
+        /** The GATED INSTANCES (design D43): every keyed binding's owned
+         *  resource by alias — present iff the doc declares keyed
+         *  bindings and the gate found rows. */
+        resources?: GatedResources;
     };
     utils: LifecycleUtils;
     logger: HookLogger;
@@ -133,6 +141,8 @@ export interface TypedLifecycleTickCtx<
     data: {
         input: TypedRunInput<B, Q>;
         request: LifecycleRequestInfo;
+        run: LifecycleRunInfo;
+        resources?: GatedResources;
         lifecycle: { state: TypedRunState<SD> };
     };
     utils: LifecycleUtils;
@@ -172,9 +182,23 @@ export type TypedLifecycleSlots<B, StateSchema extends z.ZodType, Seed> =
         poll?: (
             ctx: TypedLifecycleTickCtx<B, z.output<StateSchema>>,
         ) => Promise<TypedLifecycleOutcome<z.output<StateSchema>>>;
+        /** Stop with a voice (design D34): a full COMPLETED envelope
+         *  settles the metered work, UNRESOLVED flags for host
+         *  reconciliation, void keeps the classic best-effort posture. */
         stop?: (
             ctx: TypedLifecycleTickCtx<B, z.output<StateSchema>>,
-        ) => Promise<void>;
+        ) => Promise<
+            | Extract<
+                TypedLifecycleOutcome<z.output<StateSchema>>,
+                { kind: "COMPLETED" }
+            >
+            | {
+                kind: "UNRESOLVED";
+                reason?: string;
+                state?: TypedFnState<z.output<StateSchema>>;
+            }
+            | void
+        >;
     };
 
 export type TypedOutputSlots<B, SD, Seed> =

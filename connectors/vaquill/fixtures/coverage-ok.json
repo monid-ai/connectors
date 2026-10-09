@@ -1,0 +1,188 @@
+{
+    "name": "coverage-ok",
+    "description": "The free coverage matrix. The one vaquill response carrying NO `creditsConsumed` field at all, so the claim is omitted and the FREE model settles the run.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "corpusTypes": [
+                            {
+                                "token": "USC",
+                                "description": "United States Code (federal statutes)",
+                                "scope": "federal",
+                                "sourceScopeNotes": {}
+                            },
+                            {
+                                "token": "USC_ANNUAL",
+                                "description": "GPO's PUBLISHED ANNUAL EDITION of the United States Code, retired here when the live Code cut over to OLRC release points. This is the federal statutory text that was actually in force on a past date, as printed, not reconstructed. Distinct from `USC`, which is the Code as it stands at the current OLRC release point. Resolve a date with `asOf=YYYY-MM-DD` on `/section/{actId}/body` using the CURRENT act_id: the response names `asOf.source=\"stored_edition\"` when an edition answered. Every point is",
+                                "scope": "federal",
+                                "sourceScopeNotes": {}
+                            }
+                        ],
+                        "jurisdictions": [
+                            {
+                                "code": "federal",
+                                "name": "Federal (USC + CFR)",
+                                "kind": "federal",
+                                "sectionCount": 1520615,
+                                "hasData": true,
+                                "statusBreakdown": {
+                                    "AGENCY_ADJUDICATION": {
+                                        "inForce": 100655,
+                                        "superseded": 80,
+                                        "terminated": 185
+                                    },
+                                    "FEDERAL_REGISTER": {
+                                        "inForce": 119721,
+                                        "proposed": 76771
+                                    },
+                                    "CFR_ANNUAL": {
+                                        "superseded": 312132
+                                    },
+                                    "CFR": {
+                                        "inForce": 222280,
+                                        "reserved": 183,
+                                        "vacant": 1
+                                    },
+                                    "STATUTE_COMPILATION": {
+                                        "inForce": 80235,
+                                        "superseded": 8
+                                    },
+                                    "SESSION_LAW": {
+                                        "enacted": 425427
+                                    },
+                                    "USC": {
+                                        "inForce": 50980,
+                                        "omitted": 2043,
+                                        "renumbered": 367,
+                                        "repealed": 5143,
+                                        "reserved": 14,
+                                        "transferred": 1913,
+                                        "vacant": 17
+                                    },
+                                    "AGENCY_GUIDANCE": {
+                                        "inForce": 45747,
+                                        "nonPrecedential": 45366,
+                                        "repealed": 15,
+                                        "rescinded": 283,
+                                        "reserved": 112,
+                                        "superseded": 5317,
+                                        "vacated": 2,
+                                        "withdrawn": 33
+                                    },
+                                    "US_TAX_TREATY": {
+                                        "inForce": 1649
+                                    },
+                                    "FEDERAL_REGISTER_NOTICE": {
+                                        "published": 17617
+                                    },
+                                    "EXECUTIVE_ACTION": {
+                                        "inForce": 3655
+                                    },
+                                    "FEDERAL_RULES": {
+                                        "inForce": 1120,
+                                        "repealed": 9,
+                                        "transferred": 1
+                                    },
+                                    "SENTENCING_GUIDELINES": {
+                                        "deleted": 133,
+                                        "enacted": 836,
+                                        "inForce": 311,
+                                        "superseded": 1
+                                    },
+                                    "USC_ANNUAL": {
+                                        "inForce": 159,
+                                        "omitted": 6,
+                                        "renumbered": 1,
+                                        "repealed": 12,
+                                        "transferred": 1
+                                    },
+                                    "CONSTITUTION": {
+                                        "inForce": 74
+                                    }
+                                },
+                                "corpora": {
+                                    "CFR_ANNUAL": 312132,
+                                    "SESSION_LAW": 425427,
+                                    "CFR": 222464,
+                                    "FEDERAL_REGISTER": 196492,
+                                    "STATUTE_COMPILATION": 80243,
+                                    "AGENCY_ADJUDICATION": 100920,
+                                    "USC": 60477,
+                                    "AGENCY_GUIDANCE": 96875,
+                                    "FEDERAL_REGISTER_NOTICE": 17617,
+                                    "EXECUTIVE_ACTION": 3655,
+                                    "SENTENCING_GUIDELINES": 1281,
+                                    "FEDERAL_RULES": 1130,
+                                    "US_TAX_TREATY": 1649,
+                                    "USC_ANNUAL": 179,
+                                    "CONSTITUTION": 74
+                                }
+                            },
+                            {
+                                "code": "ca",
+                                "name": "California",
+                                "kind": "state",
+                                "sectionCount": 240454,
+                                "hasData": true,
+                                "statusBreakdown": {
+                                    "REGULATION": {
+                                        "expired": 1,
+                                        "inForce": 58858,
+                                        "renumbered": 3082,
+                                        "repealed": 12561,
+                                        "reserved": 261,
+                                        "transferred": 1
+                                    },
+                                    "STATE": {
+                                        "inForce": 161336,
+                                        "repealed": 46
+                                    },
+                                    "STATE_AGENCY_GUIDANCE": {
+                                        "inForce": 462,
+                                        "rescinded": 1,
+                                        "superseded": 1
+                                    },
+                                    "STATE_AG_OPINION": {
+                                        "inForce": 1961
+                                    },
+                                    "STATE_RULES": {
+                                        "inForce": 1487,
+                                        "renumbered": 1,
+                                        "repealed": 33
+                                    },
+                                    "STATE_CONSTITUTION": {
+                                        "inForce": 354,
+                                        "rejected": 8
+                                    }
+                                },
+                                "corpora": {
+                                    "STATE": 161382,
+                                    "REGULATION": 74764,
+                                    "STATE_AG_OPINION": 1961,
+                                    "STATE_RULES": 1521,
+                                    "STATE_AGENCY_GUIDANCE": 464,
+                                    "STATE_CONSTITUTION": 362
+                                }
+                            }
+                        ],
+                        "totalSections": 5132102,
+                        "totalPassages": 19434699,
+                        "stateCountWithData": 50,
+                        "measuredAt": "2026-09-17T06:03:37.374183+00:00"
+                    },
+                    "meta": {
+                        "processingTimeMs": 619.3,
+                        "creditsConsumed": 0
+                    }
+                }
+            }
+        }
+    ]
+}

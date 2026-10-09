@@ -23,6 +23,10 @@ export default defineEndpoint({
             "capture complete nested comment structures.",
         docsUrl: "https://apify.com/crawlerbros/reddit-comment-scraper",
         categories: ["reddit"],
+        notes: [
+            "The actor may bill for scraped work that never reaches the " +
+            "dataset, so its real cost can exceed this per-item card.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */
@@ -43,7 +47,13 @@ export default defineEndpoint({
     },
     usage: {
         model: {
-            // verified actor-start charge event + per-item metering (survey)
+            // verified actor-start charge event + per-item metering (survey).
+            // ACCEPTED UNDERCHARGE (owner decision 2026-09-17): live runs
+            // have measured the vendor billing past this card ($0.201 on a
+            // zero-item run — compute overhead for scraped work that never
+            // reaches the dataset). With no consolidate anywhere in this
+            // connector (usageTotalUsd lags settle), the card fold is the
+            // bill and the excess is eaten — an Apify-side pricing quirk.
             kind: UsageModelKind.COMPOSITE,
             // component ids are OUR snake_case keys (the broker card
             // row key) — the actor's charge-event names normalize

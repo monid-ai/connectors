@@ -1,0 +1,72 @@
+{
+    "name": "cited-by-empty-ok",
+    "description": "Inbound citations on a section nothing cites: 200 with an empty `citers` and `creditsConsumed: 0`. The refunded miss.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7/cited-by"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "STATE_CA_Cciv_D3_P4_T5_C2_S1950.7",
+                        "citation": "Cal. Civ. Code \u00a7 1950.7",
+                        "citationShort": "Cal. Civ. Code \u00a7 1950.7",
+                        "title": "Section 1950.7",
+                        "corpusType": "STATE",
+                        "state": "ca",
+                        "year": 2025,
+                        "excerpt": "(a) Any payment or deposit of money the primary function of which is to secure the performance of a rental agreement for other than residential property or any part of the agreement, other than a payment or deposit, including an advance payment of rent, made to secure the execution of a rental agreement, shall be governed by the provisions of this section. With respect to residential property, the provisions of Section 1950.5 shall prevail.\n\n(b) The payment or deposit of money shall be held by..",
+                        "body": null,
+                        "titleNumber": "5",
+                        "titleName": "Cal. Civ. Code",
+                        "chapter": "2",
+                        "sectionNumber": "1950.7",
+                        "sectionTitle": "Section 1950.7",
+                        "displayPath": "California Code / Code civ / Division 3 / Part 4 / Title 5 / Chapter 2 / Section 1950.7",
+                        "breadcrumb": [
+                            {
+                                "label": "Code civ",
+                                "type": "code",
+                                "num": "civ"
+                            },
+                            {
+                                "num": "3",
+                                "label": "Division 3",
+                                "type": "division"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "STATE",
+                            "state": "ca",
+                            "code": "ca_CIV",
+                            "chapter": "2"
+                        },
+                        "actStatus": "in_force",
+                        "goodLawStatus": "unknown",
+                        "amendmentYears": [
+                            2003
+                        ],
+                        "lastAmendedYear": 2003,
+                        "amendmentsCount": 1,
+                        "effectiveDate": "2004-01-01",
+                        "effectiveDateRaw": "January 1, 2004",
+                        "history": "Amended by Stats. 2003, Ch. 89, Sec. 1.   Effective January 1, 2004.",
+                        "textUrl": "https://statutes-us.vaquill.ai/state/ca/sections/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7.txt",
+                        "wordCount": 666,
+                        "displayLabel": "Cal. CIV \u00a7 1950.7",
+                        "externalUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.7."
+                    },
+                    "citers": [],
+                    "total": 0,
+                    "truncated": false,
+                    "note": "Reverse citation lookup covers USC and CFR sections. This section belongs to a corpus with no section-level cross-reference index, so no citing sections can be reported and the call was not charged.",
+                    "processingTimeMs": 1718.1,
+                    "creditsConsumed": 0
+                }
+            }
+        }
+    ]
+}

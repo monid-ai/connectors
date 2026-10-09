@@ -1,0 +1,53 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (local_results, place_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/maps?q=coffee+shops+in+Austin%2C+TX&type=search&ll=%4030.2672%2C-97.7431%2C14z"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "b8949307767ad9b0d3f02b45",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/maps?q=coffee+shops+in+Austin%2C+TX&type=search&ll=%4030.2672%2C-97.7431%2C14z",
+                        "google_maps_url": "https://www.google.com/maps/search/coffee+shops+in+Austin,+TX/@30.2672,-97.7431,14z"
+                    },
+                    "search_parameters": {
+                        "q": "coffee shops in Austin, TX",
+                        "type": "search",
+                        "ll": "@30.2672,-97.7431,14z",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "search_information": {
+                        "local_results_state": "Results for exact spelling"
+                    },
+                    "local_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Coffee",
+                            "rating": 4.8,
+                            "reviews": 312,
+                            "address": "100 Congress Ave, Austin, TX 78701",
+                            "place_id": "ChIJexampleplaceid000001",
+                            "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e",
+                            "gps_coordinates": {
+                                "latitude": 30.2672,
+                                "longitude": -97.7431
+                            },
+                            "reviews_link": "https://api.litescrape.com/api/google/reviews?data_id=0x8644b5028b2fa213%3A0xf76b50a49197c18e&hl=en",
+                            "place_id_search": "https://api.litescrape.com/api/google/maps?place_id=ChIJexampleplaceid000001&google_domain=google.com&hl=en&gl=us"
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/google/maps?q=coffee+shops+in+Austin%2C+TX&type=search&ll=%4030.2672%2C-97.7431%2C14z&start=20"
+                    }
+                }
+            }
+        }
+    ]
+}

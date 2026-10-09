@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the AI Mode shape v1 documented (search metadata, typed text blocks, references, markdown), tokenUsage 10; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/google/ai-mode/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "search": {
+                            "keyword": "best web scraping api",
+                            "country": "us"
+                        },
+                        "blocks": [
+                            {
+                                "type": "header",
+                                "text": "Top web scraping APIs"
+                            },
+                            {
+                                "type": "paragraph",
+                                "text": "Several APIs handle rendering and anti-bot bypass for you."
+                            }
+                        ],
+                        "references": [
+                            {
+                                "title": "MrScraper",
+                                "url": "https://mrscraper.com/"
+                            }
+                        ],
+                        "markdown": "## Top web scraping APIs\n\nSeveral APIs handle rendering and anti-bot bypass for you."
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

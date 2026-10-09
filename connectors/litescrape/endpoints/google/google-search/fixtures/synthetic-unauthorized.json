@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. Upstream 401 with the vendor's stable error body — data, zero usage, digested by the provider fromError.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "The API key is invalid.",
+                    "error_code": "invalid_api_key",
+                    "status_code": 401,
+                    "request_id": "f3e4670018cfc1a92a56a2db",
+                    "retryable": false
+                }
+            }
+        }
+    ]
+}

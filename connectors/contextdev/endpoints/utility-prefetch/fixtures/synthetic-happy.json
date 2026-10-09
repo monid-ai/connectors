@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Prefetch response schema (docs.context.dev/api-reference/utility/prefetch, 2026-09-17), credits_consumed 0; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/utility/prefetch"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "ok",
+                    "message": "Prefetch queued",
+                    "type": "brand",
+                    "domain": "stripe.com",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9990
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

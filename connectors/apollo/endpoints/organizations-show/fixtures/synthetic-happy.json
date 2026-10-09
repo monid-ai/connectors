@@ -1,0 +1,78 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Get Complete Organization Info reference example (docs.apollo.io/reference/get-complete-organization-info, 2026-09-16): Apollo.io's own record, keywords / funding events / technologies trimmed to two entries each; the id is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/ORG1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "organization": {
+                        "id": "ORG1",
+                        "name": "Apollo.io",
+                        "website_url": "http://www.apollo.io",
+                        "linkedin_url": "https://www.linkedin.com/company/apolloio",
+                        "twitter_url": "https://x.com/useapolloio",
+                        "facebook_url": null,
+                        "alexa_ranking": 3514,
+                        "linkedin_uid": "18511550",
+                        "founded_year": 2015,
+                        "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/ORG1/picture",
+                        "primary_domain": "apollo.io",
+                        "industry": "information technology & services",
+                        "estimated_num_employees": 910,
+                        "keywords": ["sales engagement", "lead generation"],
+                        "industries": ["information technology & services"],
+                        "secondary_industries": [],
+                        "snippets_loaded": true,
+                        "industry_tag_id": "5567cd4773696439b10b0000",
+                        "industry_tag_hash": {
+                            "information technology & services": "5567cd4773696439b10b0000"
+                        },
+                        "retail_location_count": 0,
+                        "raw_address": "535 mission street, san francisco, california, united states, 94105",
+                        "street_address": "535 Mission Street",
+                        "city": "San Francisco",
+                        "state": "California",
+                        "postal_code": "94105",
+                        "country": "United States",
+                        "owned_by_organization_id": null,
+                        "short_description": "Apollo.io is an AI sales platform that provides businesses with tools to enhance their go-to-market strategies.",
+                        "suborganizations": [],
+                        "num_suborganizations": 0,
+                        "annual_revenue_printed": "100M",
+                        "annual_revenue": 100000000,
+                        "total_funding": 251200000,
+                        "total_funding_printed": "251.2M",
+                        "latest_funding_round_date": "2023-08-01T00:00:00.000+00:00",
+                        "latest_funding_stage": "Series D",
+                        "funding_events": [
+                            {
+                                "id": "FUND1",
+                                "date": "2023-08-01T00:00:00.000+00:00",
+                                "news_url": null,
+                                "type": "Series D",
+                                "investors": "Bain Capital Ventures, Sequoia Capital, Tribe Capital, Nexus Venture Partners",
+                                "amount": "100M",
+                                "currency": "$"
+                            },
+                            {
+                                "id": "FUND2",
+                                "date": "2022-03-01T00:00:00.000+00:00",
+                                "news_url": null,
+                                "type": "Series C",
+                                "investors": "Sequoia Capital, Tribe Capital, Nexus Venture Partners, NewView Capital",
+                                "amount": "110M",
+                                "currency": "$"
+                            }
+                        ],
+                        "technology_names": ["AI", "Android"]
+                    }
+                }
+            }
+        }
+    ]
+}

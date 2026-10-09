@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 30 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/trip/rates/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "hotel": "Example Shanghai Hotel",
+                        "rates": [
+                            {
+                                "room": "Standard King",
+                                "price": 120.0,
+                                "currency": "USD",
+                                "meal": "No meals",
+                                "cancellation": "Non-refundable",
+                                "promotion": null
+                            }
+                        ]
+                    },
+                    "tokenUsage": 30
+                }
+            }
+        }
+    ]
+}

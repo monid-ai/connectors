@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. The Organization Search envelope with no match: the same keys as the happy shape, an empty organizations array and a zero pagination total.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/mixed_companies/search?q_organization_domains_list%5B%5D=nope.invalid&per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "breadcrumbs": [
+                        {
+                            "label": "Company Domains",
+                            "signal_field_name": "q_organization_domains_list",
+                            "value": "nope.invalid",
+                            "display_name": "nope.invalid"
+                        }
+                    ],
+                    "partial_results_only": false,
+                    "has_join": false,
+                    "disable_eu_prospecting": false,
+                    "partial_results_limit": 10000,
+                    "pagination": {
+                        "page": 1,
+                        "per_page": 2,
+                        "total_entries": 0,
+                        "total_pages": 0
+                    },
+                    "accounts": [],
+                    "organizations": [],
+                    "model_ids": [],
+                    "num_fetch_result": null,
+                    "derived_params": null
+                }
+            }
+        }
+    ]
+}

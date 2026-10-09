@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/yelp/reviews?place_id=ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu&rating=4%2C5&num=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "f9c789ebac9f885ed3d2a514",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/yelp/reviews?place_id=ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu&rating=4%2C5&num=1"
+                    },
+                    "search_parameters": {
+                        "place_id": "ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu",
+                        "rating": "4,5",
+                        "num": "1",
+                        "hl": "en",
+                        "sortby": "relevance_desc"
+                    },
+                    "search_information": {
+                        "total_results": 240
+                    },
+                    "review_languages": [
+                        {
+                            "code": "en",
+                            "count": 240
+                        }
+                    ],
+                    "reviews": [
+                        {
+                            "position": 1,
+                            "rating": 5,
+                            "text": "Great cortado and friendly staff.",
+                            "date": "2026-08-12",
+                            "user": {
+                                "name": "A. R.",
+                                "location": "Austin, TX",
+                                "reviews": 30
+                            }
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/yelp/reviews?place_id=ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu&rating=4%2C5&num=1&start=1"
+                    }
+                }
+            }
+        }
+    ]
+}

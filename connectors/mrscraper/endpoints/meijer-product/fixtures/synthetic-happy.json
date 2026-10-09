@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/meijer/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.meijer.com/shopping/product/highlighters-4pk/71928356637.html",
+                        "html": "<!DOCTYPE html><html><head><title>Highlighters 4pk - Meijer</title></head><body>...</body></html>"
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

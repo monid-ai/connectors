@@ -1,0 +1,36 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 26 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/expedia/search/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "destination": "Bangkok",
+                        "properties": [
+                            {
+                                "name": "Admiral Suites Bangkok",
+                                "rating": 8.8,
+                                "price": {
+                                    "lead": 98.0,
+                                    "currency": "USD"
+                                },
+                                "image": "https://images.trvl-media.com/example.jpg",
+                                "location": "Sukhumvit",
+                                "url": "https://www.expedia.com/Bangkok-Hotels-Admiral-Suites.h1234567.Hotel-Information"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 26
+                }
+            }
+        }
+    ]
+}

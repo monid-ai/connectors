@@ -1,0 +1,38 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (organic_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/duckduckgo/search?q=coffee+grinder&m=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "c6f456b8d96c552ba0af7281",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/duckduckgo/search?q=coffee+grinder&m=1"
+                    },
+                    "search_parameters": {
+                        "q": "coffee grinder",
+                        "m": "1",
+                        "safe": "-1"
+                    },
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "title": "Best coffee grinders",
+                            "link": "https://guide.example/grinders",
+                            "snippet": "Burr grinders compared."
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/duckduckgo/search?q=coffee+grinder&m=1&start=1"
+                    }
+                }
+            }
+        }
+    ]
+}

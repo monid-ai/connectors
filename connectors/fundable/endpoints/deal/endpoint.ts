@@ -15,11 +15,10 @@ export default defineEndpoint({
         docsUrl: "https://docs.tryfundable.ai/api-reference/deals/get",
         categories: ["funding-data"],
     },
-    /** PUBLIC identity (design D22): the native path carries a `{id}`
-     *  placeholder, which an endpoint identity cannot — pinned to the
-     *  singular form, matching the sibling `/company` / `/investor` /
-     *  `/person` lookups (v1 id: `/deals/{id}`). */
-    endpoint: "/deal",
+    // PUBLIC identity = request.path (design D22): `{id}` segments are
+    // legal identity since the 0.3.0 grammar, so the v1-faithful
+    // `fundable#deals/{id}` replaces the invented `/deal` pin
+    // (reconcile 2026-09-16).
     request: { method: "GET", path: "/deals/{id}" },
     input: { schema: { pathParams: zDealPathParams } },
     usage: {

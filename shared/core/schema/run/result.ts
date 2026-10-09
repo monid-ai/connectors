@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { zJson } from "../json/type.ts";
 import { zUsage } from "../usage/usage.ts";
-import { zLifecycleRunning } from "../hooks/lifecycle.ts";
+import { StopKind, zLifecycleRunning } from "../hooks/lifecycle.ts";
+import { zProvisionSeed } from "../hooks/resource-binding.ts";
+import { zResourceTarget } from "../resource/row.ts";
 import { RunKind, zRunState } from "./state.ts";
 
 /**
@@ -42,6 +44,28 @@ export const zRunTiming = z.strictObject({
 });
 export type RunTiming = z.infer<typeof zRunTiming>;
 
+/**
+ * The run's RESOURCE effects (design D32) — ENGINE-DERIVED from the doc's
+ * binding at settle, the host's persistence work-order. Emitted only on a
+ * SUCCESS settle (2xx; a failed run neither provisions nor releases):
+ *   - `provisions` (CREATES): seed-fn records to persist as owned rows.
+ *   - `releases`   (RELEASES): rows to mark released (billing stops).
+ *   - `refreshes`  (UPDATES): rows whose snapshot the host should refresh
+ *     via the resource doc's refresh op.
+ *   - `reconciles` (USES): rows whose variable meter the host should read
+ *     now (a no-op for resources without variable billing — the engine
+ *     cannot see the resource doc's billing from an endpoint sealed unit,
+ *     so the mark is unconditional and the HOST filters).
+ * `.min(1)` everywhere: absence is the only spelling of "none".
+ */
+export const zResourceEffects = z.strictObject({
+    provisions: z.array(zProvisionSeed).min(1).optional(),
+    releases: z.array(zResourceTarget).min(1).optional(),
+    refreshes: z.array(zResourceTarget).min(1).optional(),
+    reconciles: z.array(zResourceTarget).min(1).optional(),
+});
+export type ResourceEffects = z.infer<typeof zResourceEffects>;
+
 export const zRunCompleted = z.strictObject({
     kind: z.literal(RunKind.COMPLETED),
     httpStatus: z.number().int(),
@@ -63,6 +87,9 @@ export const zRunCompleted = z.strictObject({
      */
     isProviderError: z.boolean(),
     timing: zRunTiming,
+    /** Present iff the doc has a `resource` binding AND the settle is a
+     *  success with at least one effect. */
+    resources: zResourceEffects.optional(),
 });
 export type RunCompleted = z.infer<typeof zRunCompleted>;
 
@@ -95,3 +122,34 @@ export const zRunStartResult = zRunResult;
 export type RunStartResult = RunResult;
 export const zRunPollResult = zRunResult;
 export type RunPollResult = RunResult;
+
+/**
+ * `stop()` grows a voice (design D34) — the engine's stop verdict:
+ *   - a full RunCompleted (the fn drained to terminal state: metered work
+ *     SETTLES through the one pipeline — usage, timing, resource marks),
+ *   - UNRESOLVED (teardown ran but the terminal state was not observed in
+ *     budget, or the fn threw on a doc that bills metered work): the host
+ *     must reconcile out-of-band BEFORE money settles,
+ *   - STOPPED_UNSETTLED (fn returned void / doc has no stop / nothing to
+ *     stop): best-effort teardown, nothing billed, nothing owed — the
+ *     exact pre-resource posture, now stated instead of implied.
+ */
+export const zRunUnresolved = z.strictObject({
+    kind: z.literal(StopKind.UNRESOLVED),
+    reason: z.string().min(1).optional(),
+    /** The last known state — the host's reconciliation handle. */
+    state: zRunState,
+});
+export type RunUnresolved = z.infer<typeof zRunUnresolved>;
+
+export const zRunStoppedUnsettled = z.strictObject({
+    kind: z.literal(StopKind.STOPPED_UNSETTLED),
+});
+export type RunStoppedUnsettled = z.infer<typeof zRunStoppedUnsettled>;
+
+export const zRunStopResult = z.discriminatedUnion("kind", [
+    zRunCompleted,
+    zRunUnresolved,
+    zRunStoppedUnsettled,
+]);
+export type RunStopResult = z.infer<typeof zRunStopResult>;

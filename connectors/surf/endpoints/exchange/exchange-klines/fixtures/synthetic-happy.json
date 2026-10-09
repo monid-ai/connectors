@@ -1,0 +1,65 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/exchange/klines?pair=BTC%2FUSDT&type=spot&interval=1h&limit=100&exchange=binance"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "candles": [
+                                {
+                                    "close": 1,
+                                    "high": 1,
+                                    "low": 1,
+                                    "open": 1,
+                                    "timestamp": 1,
+                                    "volume": 1
+                                }
+                            ],
+                            "count": 1,
+                            "exchange": "exchange-1",
+                            "interval": "interval-1",
+                            "pair": "pair-1",
+                            "period_end": "period_end-1",
+                            "period_high": 1,
+                            "period_low": 1,
+                            "period_start": "period_start-1",
+                            "period_volume": 1
+                        },
+                        {
+                            "candles": [
+                                {
+                                    "close": 2,
+                                    "high": 2,
+                                    "low": 2,
+                                    "open": 2,
+                                    "timestamp": 2,
+                                    "volume": 2
+                                }
+                            ],
+                            "count": 2,
+                            "exchange": "exchange-2",
+                            "interval": "interval-2",
+                            "pair": "pair-2",
+                            "period_end": "period_end-2",
+                            "period_high": 2,
+                            "period_low": 2,
+                            "period_start": "period_start-2",
+                            "period_volume": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1
+                    }
+                }
+            }
+        }
+    ]
+}

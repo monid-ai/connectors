@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (user, location): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/maps/photo-meta?data_id=AF1QipExamplePhotoId_0001"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "b2c3d4e5f6a708192a3b4c5d",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/maps/photo-meta?data_id=AF1QipExamplePhotoId_0001"
+                    },
+                    "search_parameters": {
+                        "data_id": "AF1QipExamplePhotoId_0001",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "user": {
+                        "name": "Local Guide",
+                        "link": "https://www.google.com/maps/contrib/100000000000000000001"
+                    },
+                    "location": {
+                        "name": "Example Coffee",
+                        "gps_coordinates": {
+                            "latitude": 30.2672,
+                            "longitude": -97.7431
+                        }
+                    },
+                    "date": "2026-08-14"
+                }
+            }
+        }
+    ]
+}

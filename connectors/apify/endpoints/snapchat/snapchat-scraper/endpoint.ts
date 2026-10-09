@@ -27,6 +27,10 @@ export default defineEndpoint({
             "Snapchat.",
         docsUrl: "https://apify.com/automation-lab/snapchat-scraper",
         categories: ["snapchat"],
+        notes: [
+            "Private and unknown usernames still return a minimal row " +
+            "(identified by profileType) and count as a billed result.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

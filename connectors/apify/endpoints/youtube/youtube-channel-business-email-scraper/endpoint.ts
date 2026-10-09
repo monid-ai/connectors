@@ -26,6 +26,10 @@ export default defineEndpoint({
         docsUrl:
             "https://apify.com/dataovercoffee/youtube-channel-business-email-scraper",
         categories: ["youtube"],
+        notes: [
+            "Channels with no listed email return no result and are not " +
+            "billed.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

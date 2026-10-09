@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-recording-redirect",
+    "description": "The 302 redirect artifact: the anchor pair-verifies, the recording read answers 302 with the location HEADER (HttpResult.headers - hand-authored per the fixture headers rule) and the fn projects it into a 200 with the short-lived URL.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z",
+                    "durationSec": 53,
+                    "costCents": 25
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1/recording"
+            },
+            "res": {
+                "status": 302,
+                "body": {},
+                "headers": {
+                    "location": "https://cdn.saperly.example/rec/call-1.mp3?sig=abc"
+                }
+            }
+        }
+    ]
+}

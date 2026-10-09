@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the answer shape v1 documented (query + Markdown answer), tokenUsage 25; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/gpt/websearch/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "query": "What is MrScraper?",
+                        "answer": "**MrScraper** is an AI-powered web scraping platform.\n\n- Scrape any URL to HTML, Markdown, or JSON\n- Marketplace of site scrapers"
+                    },
+                    "tokenUsage": 25
+                }
+            }
+        }
+    ]
+}

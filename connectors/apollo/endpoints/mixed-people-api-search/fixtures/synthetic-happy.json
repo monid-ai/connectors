@@ -1,0 +1,66 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the People API Search reference example (docs.apollo.io/reference/people-api-search, 2026-09-16), trimmed to two previews with placeholder people; ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/mixed_people/api_search?person_titles%5B%5D=cto&per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "total_entries": 120534,
+                    "people": [
+                        {
+                            "id": "PERSON1",
+                            "first_name": "Jordan",
+                            "last_name_obfuscated": "Bl***e",
+                            "title": "CTO",
+                            "last_refreshed_at": "2026-09-01T00:00:00.000+00:00",
+                            "has_email": true,
+                            "has_city": true,
+                            "has_state": true,
+                            "has_country": true,
+                            "has_direct_phone": "Yes",
+                            "organization": {
+                                "name": "Northstar Analytics",
+                                "has_industry": true,
+                                "has_phone": true,
+                                "has_city": true,
+                                "has_state": true,
+                                "has_country": true,
+                                "has_zip_code": true,
+                                "has_revenue": true,
+                                "has_employee_count": true
+                            }
+                        },
+                        {
+                            "id": "PERSON2",
+                            "first_name": "Casey",
+                            "last_name_obfuscated": "Mo***n",
+                            "title": "Chief Technology Officer",
+                            "last_refreshed_at": "2026-09-02T00:00:00.000+00:00",
+                            "has_email": true,
+                            "has_city": false,
+                            "has_state": false,
+                            "has_country": true,
+                            "has_direct_phone": "No",
+                            "organization": {
+                                "name": "BrightForge Labs",
+                                "has_industry": true,
+                                "has_phone": false,
+                                "has_city": true,
+                                "has_state": true,
+                                "has_country": true,
+                                "has_zip_code": false,
+                                "has_revenue": false,
+                                "has_employee_count": true
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

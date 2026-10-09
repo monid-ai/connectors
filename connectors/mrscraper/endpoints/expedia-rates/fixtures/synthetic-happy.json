@@ -1,0 +1,63 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 31 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/expedia/detail/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "property_offers": [
+                            {
+                                "data": {
+                                    "propertyOffers": {
+                                        "units": [
+                                            {
+                                                "header": {
+                                                    "text": "Deluxe Suite"
+                                                },
+                                                "ratePlans": [
+                                                    {
+                                                        "priceDetails": [
+                                                            {
+                                                                "price": {
+                                                                    "total": {
+                                                                        "amount": 205.0,
+                                                                        "currency": "USD"
+                                                                    }
+                                                                }
+                                                            }
+                                                        ],
+                                                        "loyaltyMessage": null,
+                                                        "highlightedMessages": [
+                                                            "Free cancellation"
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        "navigation": {
+                            "tabs": [
+                                "Overview",
+                                "Rooms",
+                                "Reviews"
+                            ]
+                        },
+                        "html": "<!DOCTYPE html><html>...</html>"
+                    },
+                    "tokenUsage": 31
+                }
+            }
+        }
+    ]
+}

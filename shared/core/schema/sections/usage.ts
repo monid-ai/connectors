@@ -41,5 +41,12 @@ export const zUsageSection = z.strictObject({
     estimate: zUsageEstimateFn.optional(),
     evidence: zUsageEvidenceFn.optional(),
     consolidate: zUsageConsolidateFn.optional(),
+    /** The estimate RE-RUN cadence (design D40): PRESENT = this doc's
+     *  estimate varies over the run (`data.elapsedMs` set on re-runs) —
+     *  hosts re-price the hold every this-many ms while RUNNING. ABSENT
+     *  = the estimate is a static promise, evaluated once. Requires a
+     *  resolved lifecycle.poll + a metered model (compile-checked):
+     *  only a pollable, metered run has a mid-flight to price. */
+    updateEstimateEveryMs: z.number().int().positive().optional(),
 });
 export type UsageSection = z.infer<typeof zUsageSection>;

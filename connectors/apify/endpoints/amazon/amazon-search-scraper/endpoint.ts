@@ -23,6 +23,12 @@ export default defineEndpoint({
             "options.",
         docsUrl: "https://apify.com/axesso_data/amazon-search-scraper",
         categories: ["amazon"],
+        notes: [
+            "maxPages caps pages per query entry, not results - a page " +
+            "carries up to ~16 unbounded results and every returned " +
+            "result is billed, so the estimate (one per query entry) is " +
+            "a floor, not a ceiling.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

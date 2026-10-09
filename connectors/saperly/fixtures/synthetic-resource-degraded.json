@@ -1,0 +1,41 @@
+{
+    "name": "synthetic-resource-degraded",
+    "description": "The degraded reads on one loaded resource (merged resource-check-released + resource-refresh-clears-pointer): check on a vendor-released number - inactive with the attributable reason - then refresh against a body with NO connectionId: the AUTHORITATIVE pointer policy CLEARS the stored ref (a stale internal id must never survive) while scalar fields carry forward.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/numbers/num-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "num-1",
+                    "phoneNumber": "+14155559999",
+                    "connectionId": "conn-1",
+                    "country": "US",
+                    "numberType": "local",
+                    "monthlyPriceCents": 200,
+                    "currency": "USD",
+                    "nextChargeAt": "2026-10-16T00:00:00Z",
+                    "createdAt": "2026-09-16T00:00:00Z",
+                    "releasedAt": "2026-09-15T00:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/numbers/num-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "num-1",
+                    "country": "US",
+                    "numberType": "local"
+                }
+            }
+        }
+    ]
+}

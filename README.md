@@ -11,9 +11,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/monid-ai/monid/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/monid-ai/monid/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://www.npmjs.com/package/@monid-ai/cli"><img alt="npm" src="https://img.shields.io/npm/v/@monid-ai/cli?label=%40monid-ai%2Fcli&color=0016D7"></a>
-  <img alt="Deno 2.x" src="https://img.shields.io/badge/runtime-Deno%202.x-1E1E1E">
+  <a href="https://x.com/monidhq"><img alt="Follow on X" src="https://img.shields.io/badge/Follow%20on%20X-1E1E1E?logo=x&logoColor=white&style=for-the-badge"></a>
+  <a href="https://discord.gg/rQzztcgJV8"><img alt="Join our Discord" src="https://img.shields.io/badge/Join%20our%20Discord-0016D7?logo=discord&logoColor=white&style=for-the-badge"></a>
 </p>
 
 # Monid (OpenRouter for agent tools)
@@ -108,6 +107,15 @@ export default defineEndpoint({
 That is the whole contract. No client, no adaptor, no per-provider execution
 path.
 
+Providers whose product is a durable OWNED thing (saperly's phone numbers)
+additionally declare a **resource** (`resources/<slug>/resource.ts`): its
+stored-snapshot shape, platform lifecycle (verify/release/refresh), live views,
+and its usage rate card (fixed and/or estimated lines over one period clock).
+Endpoints then BIND to it (`resources: { uses: [{ id, key }] }` et al.,
+purpose-keyed) and the engine derives the rest — ownership gating, gated
+instances into fns, provision seeds, release/refresh/reconcile marks (see
+DEVELOPMENT.md "Resources").
+
 **Write `meta.description` like it is the product, because to an agent it is.**
 It is the text `discover` ranks and `inspect` returns. Say what the endpoint
 really does, what it will not do, and which endpoint to reach for instead. The
@@ -128,7 +136,7 @@ deno task check && deno task test    # types + 188 replay tests, zero network
 Run a real endpoint with your own vendor key:
 
 ```bash
-export TINYFISH_API_KEY=...
+export TINYFISH_CREDENTIALS_API_KEY=...
 deno task engine:run 'tinyfish#search' \
   --query-params '{"query":"solid-state battery suppliers","domain_type":"news"}'
 ```
@@ -141,8 +149,6 @@ deno task catalog endpoints --provider exa   # under one provider
 deno task catalog endpoints --category web-search
 deno task catalog inspect 'exa#search'       # one endpoint's full contract
 ```
-
-
 
 ```
 connectors/<name>/
@@ -163,7 +169,11 @@ connectors/<name>/
 5. Open a pull request.
 
 Tests replay from fixtures, so CI needs no vendor keys. Live tests run only when
-the matching `<PROVIDER>_API_KEY` is present, and skip otherwise.
+the provider's credentials are in the environment, and skip otherwise. Each
+credential field has its own variable, `<PROVIDER>_CREDENTIALS_<FIELD>` — so a
+one-key provider reads `EXA_CREDENTIALS_API_KEY` (the bare `EXA_API_KEY` still
+works) and a two-key provider reads `CONTACTOUT_CREDENTIALS_WORK_API_KEY` and
+`CONTACTOUT_CREDENTIALS_PERSONAL_API_KEY`.
 
 ### Let an agent write it
 
@@ -178,7 +188,7 @@ connector describes your API correctly rather than about whether it runs.
 Apify actors have a head start: `deno task apify:scaffold <actorId>` reads the
 actor's published input schema from the Apify API and generates the endpoint's
 `schema/inputs.ts` as static zod for you to review and commit. It needs
-`APIFY_API_KEY`.
+`APIFY_CREDENTIALS_API_KEY`.
 
 # How it runs
 
@@ -238,6 +248,18 @@ config.yml         schema.* and compiler.* are contract; engine and scripts are 
   behind every choice above.
 - [AGENT.md](./AGENT.md) is the brief to hand a coding agent you point at this
   repo.
+
+## Citation
+
+```bibtex
+@misc{monid2026,
+  author = {{Monid}},
+  title  = {Monid {API}},
+  url    = {https://monid.ai/},
+  year   = {2026},
+  note   = {Aggregation layer of API tools for AI agents with per-call pricing}
+}
+```
 
 ## License
 

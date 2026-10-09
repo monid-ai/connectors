@@ -1,0 +1,51 @@
+{
+    "name": "synthetic-resource-ops",
+    "description": "The happy op sequence on one loaded resource (merged resource-check-active + resource-release): check before a rent charge - alive, with the vendor's observed price + its own period end - then the idempotent release with the embedded connection delete (the persona dies with the number).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/numbers/num-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "num-1",
+                    "phoneNumber": "+14155559999",
+                    "connectionId": "conn-1",
+                    "country": "US",
+                    "numberType": "local",
+                    "monthlyPriceCents": 200,
+                    "currency": "USD",
+                    "nextChargeAt": "2026-10-16T00:00:00Z",
+                    "createdAt": "2026-09-16T00:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/numbers/num-1/release",
+                "body": {}
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": true
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "DELETE",
+                "url": "{{request.origin}}/connections/conn-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": true
+                }
+            }
+        }
+    ]
+}

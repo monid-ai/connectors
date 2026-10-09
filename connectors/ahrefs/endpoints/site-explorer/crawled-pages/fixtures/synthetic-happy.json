@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no AHREFS key held at port time, 2026-09-16): body shape from the v1 adaptor tests (`{ <collection>: [...] }` for rowed reports, `{ <name>: {...} }` for snapshots); field values are placeholders. Unverified against live traffic \u2014 replace via `deno task record`. 3 row(s) back \u2014 usage is max(50, 6 \u00d7 3) units, split into the rows line and the request-minimum top-up. Response field names/types checked against the official endpoint reference on 2026-09-16; values remain synthetic.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.ahrefs.com/v3/site-explorer/crawled-pages?target=ahrefs.com&limit=3&mode=subdomains&protocol=both&select=url%2Ctitle%2Curl_rating%2Chttp_code%2Cfirst_seen%2Clast_crawled"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "pages": [
+                        {
+                            "url": "https://example-0.test/",
+                            "title": "title 0",
+                            "url_rating": 10,
+                            "http_code": 200,
+                            "first_seen": "2026-08-13T00:00:00Z",
+                            "last_crawled": "2026-08-13T00:00:00Z"
+                        },
+                        {
+                            "url": "https://example-1.test/",
+                            "title": "title 1",
+                            "url_rating": 20,
+                            "http_code": 200,
+                            "first_seen": "2026-08-13T00:00:00Z",
+                            "last_crawled": "2026-08-13T00:00:00Z"
+                        },
+                        {
+                            "url": "https://example-2.test/",
+                            "title": "title 2",
+                            "url_rating": 30,
+                            "http_code": 200,
+                            "first_seen": "2026-08-13T00:00:00Z",
+                            "last_crawled": "2026-08-13T00:00:00Z"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (organic_results, knowledge_graph, ai_overview, local_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "25b2559a2e53ae6fa7018ddb",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true",
+                        "google_url": "https://www.google.com/search?q=coffee+shops+in+Austin&num=2"
+                    },
+                    "search_parameters": {
+                        "q": "coffee shops in Austin",
+                        "num": "2",
+                        "fast_mode": "true",
+                        "google_domain": "google.com",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "search_information": {
+                        "total_results": 12400000,
+                        "query_displayed": "coffee shops in Austin"
+                    },
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Coffee Roasters",
+                            "link": "https://example-coffee.example/",
+                            "displayed_link": "https://example-coffee.example",
+                            "snippet": "Specialty coffee in downtown Austin."
+                        },
+                        {
+                            "position": 2,
+                            "title": "The 10 best coffee shops in Austin",
+                            "link": "https://guide.example/austin-coffee",
+                            "displayed_link": "https://guide.example",
+                            "snippet": "Our picks for the best coffee in town."
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://www.google.com/search?q=coffee+shops+in+Austin&num=2&start=2"
+                    }
+                }
+            }
+        }
+    ]
+}

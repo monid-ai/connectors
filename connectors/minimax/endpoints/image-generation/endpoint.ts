@@ -32,8 +32,14 @@ export default defineEndpoint({
             "for content safety are omitted from the response and cost " +
             "nothing.",
         docsUrl:
-            "https://platform.minimax.io/docs/api-reference/image-generation",
+            "https://platform.minimax.io/docs/api-reference/image-generation-i2i",
         categories: ["image-generation"],
+        notes: [
+            "Generation takes tens of seconds.",
+            "Images come back as CDN URLs that EXPIRE after about 24 " +
+            "hours - download promptly, or request base64 inline (no " +
+            "expiry).",
+        ],
     },
     request: { method: "POST", path: "/v1/image_generation" },
     input: {

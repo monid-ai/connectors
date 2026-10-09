@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-soft-failure",
+    "description": "SYNTHETIC — not recorded. The vendor's soft failure as v1's 2026-08-31 drill measured it: HTTP 200, success true, data.status FAIL, and the full tokenUsage still reported.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/google/serp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Scrape finished with errors",
+                    "data": {
+                        "status": "FAIL",
+                        "message": "Could not resolve hotel entity"
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

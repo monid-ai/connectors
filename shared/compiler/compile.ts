@@ -10,11 +10,16 @@ import {
     type EndpointDoc,
     type FnRef,
     hasMeteredLines,
+    isEstimatedLine,
     type Json,
     type LeafCategory,
     parseSchema,
+    type ProviderDef,
     type ProviderDoc,
     pruneUndefined,
+    RESOURCE_GATE_ORDER,
+    type ResourceDef,
+    type ResourceDoc,
     stableStringify,
     ValidationError,
     zBundle,
@@ -25,6 +30,9 @@ import {
     zEndpointPath,
     zProviderDef,
     zProviderDoc,
+    zResourceDef,
+    zResourceDoc,
+    zResourceName,
 } from "@shared/core";
 import type { Logger } from "@shared/logging";
 import { FnInterner } from "./fns.ts";
@@ -187,7 +195,9 @@ export async function compileBundle(
     const interner = new FnInterner();
     const providers: Record<string, ProviderDoc> = {};
     const endpoints: Record<string, EndpointDoc> = {};
+    const resources: Record<string, ResourceDoc> = {};
     const allDocs: EndpointDoc[] = [];
+    const allResourceDocs: ResourceDoc[] = [];
 
     // intake validation — zod-first end to end even for hand-built sources
     const intake = connectors.map((connector) =>
@@ -205,6 +215,27 @@ export async function compileBundle(
         const providerName = provider.name;
         const providerFile = `connectors/${providerName}/provider.ts`;
         parseCategories(zCategories, provider.meta.categories, providerFile);
+
+        // ---- RESOURCES first (design D30): endpoint bindings resolve
+        // against this provider's compiled resource docs, so they must
+        // exist before the endpoint loop runs.
+        const providerResourceDocs: Record<string, ResourceDoc> = {};
+        const sortedResources = [...connector.resources ?? []]
+            .sort((a, b) => a.name.localeCompare(b.name)); // determinism
+        for (const { name: resourceName, def: rawDef } of sortedResources) {
+            const doc = await compileResource({
+                providerName,
+                providerFile,
+                provider,
+                resourceName,
+                rawDef,
+                interner,
+                logger,
+            });
+            providerResourceDocs[doc.id] = doc;
+            resources[doc.id] = doc;
+            allResourceDocs.push(doc);
+        }
 
         const providerEndpointDocs: EndpointDoc[] = [];
         // D6b: a PROVIDER-declared pool is a provider-wide fact — it must
@@ -227,6 +258,9 @@ export async function compileBundle(
             // ?? request.path (trailing slashes stripped) — folder names
             // are ORGANIZATIONAL only, never identity. id = provider# +
             // the path minus its leading slash ("apify#apidojo/tweet-scraper").
+            // Ids are guarded by connectors/ids.lock.json (`ids:check`),
+            // so a derived identity drifting with a vendor route move
+            // fails CI instead of renaming silently.
             const endpointPath = parseDoc(
                 zEndpointPath,
                 def.endpoint ?? def.request.path.replace(/\/+$/, ""),
@@ -672,6 +706,238 @@ export async function compileBundle(
                 const resolved = endpointSchema ?? providerSchema;
                 return resolved ? toJsonSchema(resolved, label) : undefined;
             };
+            const inputSchemas = {
+                body: schemaLeaf(
+                    def.input?.schema?.body,
+                    provider.input?.schema?.body,
+                    `${where}: input.schema.body`,
+                ),
+                queryParams: schemaLeaf(
+                    def.input?.schema?.queryParams,
+                    provider.input?.schema?.queryParams,
+                    `${where}: input.schema.queryParams`,
+                ),
+                pathParams: schemaLeaf(
+                    def.input?.schema?.pathParams,
+                    provider.input?.schema?.pathParams,
+                    `${where}: input.schema.pathParams`,
+                ),
+            };
+
+            // ---- usage.updateEstimateEveryMs (design D40) -----------------
+            // Resolved endpoint ?? provider like every other usage leaf
+            // (a provider whose every endpoint is a metered live stream
+            // declares the cadence ONCE). Coherence: only a POLLABLE run
+            // has a mid-flight to re-price, and only METERED lines give
+            // the estimate anything to vary.
+            const updateEstimateEveryMs = def.usage?.updateEstimateEveryMs ??
+                provider.usage?.updateEstimateEveryMs;
+            if (updateEstimateEveryMs !== undefined) {
+                if (!lifecyclePoll) {
+                    throw new CompileError(
+                        CompileErrorCode.DOC_MALFORMED,
+                        `${where}: usage.updateEstimateEveryMs is dead ` +
+                            `config — no resolved lifecycle.poll (only a ` +
+                            `pollable run has a mid-flight to re-price)`,
+                    );
+                }
+                if (!metered) {
+                    throw new CompileError(
+                        CompileErrorCode.DOC_MALFORMED,
+                        `${where}: usage.updateEstimateEveryMs on a model ` +
+                            `with no metered lines — a flat/free estimate ` +
+                            `cannot vary`,
+                    );
+                }
+            }
+
+            // ---- resource bindings (design D32/D43) -----------------------
+            const bindingsSection = def.resources;
+            const bindingRefs: FnRef[] = [];
+            // shared per-binding lints; returns the interned {seed,ensure}
+            const compileBinding = async (
+                binding: {
+                    id: string;
+                    key?: string;
+                    seed?: unknown;
+                    ensure?: unknown;
+                },
+                label: string,
+                slotName: "create" | "update" | "release" | undefined,
+            ): Promise<{ seed?: FnRef; ensure?: FnRef }> => {
+                // same-provider by construction: the binding is the
+                // endpoint's contract with ITS OWN provider's resource
+                if (!binding.id.startsWith(`${providerName}/`)) {
+                    throw new CompileError(
+                        CompileErrorCode.DOC_MALFORMED,
+                        `${where}: ${label} binds ${binding.id} — a ` +
+                            `foreign provider; bindings are same-provider ` +
+                            `(cross-provider reuse goes through ensure)`,
+                    );
+                }
+                const resourceDoc = providerResourceDocs[binding.id];
+                if (!resourceDoc) {
+                    throw new CompileError(
+                        CompileErrorCode.DOC_MALFORMED,
+                        `${where}: ${label} binds ${binding.id} — matches ` +
+                            `no resources/<name>/resource.ts of this ` +
+                            `provider (compiled: ${
+                                Object.keys(providerResourceDocs).sort()
+                                    .join(", ") || "none"
+                            })`,
+                    );
+                }
+                // dead-binding lint: the ownership key must point INTO the
+                // declared input surface — a key no input can carry gates
+                // every run into the uniform 404.
+                if (binding.key !== undefined) {
+                    const match = binding.key.match(
+                        /^\$\.(body|queryParams|pathParams)\.([A-Za-z_][A-Za-z0-9_-]*)/,
+                    );
+                    if (!match) {
+                        throw new CompileError(
+                            CompileErrorCode.DOC_MALFORMED,
+                            `${where}: ${label} key ${binding.key} must be ` +
+                                `rooted at $.body / $.queryParams / $.pathParams`,
+                        );
+                    }
+                    const section = inputSchemas[
+                        match[1] as keyof typeof inputSchemas
+                    ];
+                    const properties = (section?.properties ?? {}) as Record<
+                        string,
+                        Json
+                    >;
+                    if (!(match[2] in properties)) {
+                        throw new CompileError(
+                            CompileErrorCode.DOC_MALFORMED,
+                            `${where}: ${label} key ${binding.key} is a DEAD ` +
+                                `binding — "${
+                                    match[2]
+                                }" is not a property of ` +
+                                `the declared input.schema.${match[1]}`,
+                        );
+                    }
+                }
+                // input ⊇ inputs contract (design D30): the purpose's slot
+                // on the resource def is the CATALOG shape; the endpoint
+                // must be able to CARRY it.
+                const slot = slotName
+                    ? resourceDoc.inputs?.[
+                        slotName as keyof typeof resourceDoc.inputs
+                    ]
+                    : undefined;
+                if (slot !== undefined) {
+                    // the slot's REQUIRED properties are the contract an
+                    // endpoint must be able to CARRY; optional slot keys
+                    // are per-endpoint (two updates endpoints may take
+                    // different optional surfaces — saperly's persona
+                    // edit vs its webhook re-sync)
+                    const slotRequired = Array.isArray(slot.required)
+                        ? slot.required.filter((key): key is string =>
+                            typeof key === "string"
+                        )
+                        : [];
+                    const bodyProps = new Set(Object.keys(
+                        (inputSchemas.body?.properties ?? {}) as Record<
+                            string,
+                            Json
+                        >,
+                    ));
+                    const missing = slotRequired.filter((key) =>
+                        !bodyProps.has(key)
+                    );
+                    if (missing.length > 0) {
+                        throw new CompileError(
+                            CompileErrorCode.DOC_MALFORMED,
+                            `${where}: input.schema.body is not a superset ` +
+                                `of ${binding.id} inputs.${slotName} — ` +
+                                `missing required: ${missing.join(", ")}`,
+                        );
+                    }
+                    // names alone are not a contract — required
+                    // properties must also be SHAPE-compatible
+                    lintSlotShapes(
+                        slot as Record<string, Json>,
+                        (inputSchemas.body ?? {}) as Record<string, Json>,
+                        `${binding.id} inputs.${slotName}`,
+                        where,
+                    );
+                }
+                const seed = binding.seed
+                    ? await interner.intern(
+                        binding.seed,
+                        `${endpointFile}#${label}.seed`,
+                        SC.resourcesSince,
+                    )
+                    : undefined;
+                const ensure = binding.ensure
+                    ? await interner.intern(
+                        binding.ensure,
+                        `${endpointFile}#${label}.ensure`,
+                        SC.resourcesSince,
+                    )
+                    : undefined;
+                if (seed) bindingRefs.push(seed);
+                if (ensure) bindingRefs.push(ensure);
+                return { seed, ensure };
+            };
+            type CompiledBindings = {
+                provisions?: Json[];
+                uses?: Json[];
+                updates?: Json[];
+                releases?: Json[];
+                reads?: Json[];
+            };
+            let compiledBindings: CompiledBindings | undefined;
+            if (bindingsSection) {
+                compiledBindings = {};
+                for (
+                    const [index, binding] of (bindingsSection.provisions ?? [])
+                        .entries()
+                ) {
+                    const { seed } = await compileBinding(
+                        binding,
+                        `resources.provisions[${index}]`,
+                        "create",
+                    );
+                    (compiledBindings.provisions ??= []).push({
+                        id: binding.id,
+                        seed: seed as unknown as Json,
+                    });
+                }
+                const slotOf = {
+                    uses: undefined,
+                    updates: "update",
+                    releases: "release",
+                    reads: undefined,
+                } as const;
+                for (const purpose of RESOURCE_GATE_ORDER) {
+                    const declared: Array<
+                        {
+                            id: string;
+                            key?: string;
+                            as?: string;
+                            ensure?: unknown;
+                        }
+                    > = bindingsSection[purpose] ?? [];
+                    for (const [index, binding] of declared.entries()) {
+                        const { ensure } = await compileBinding(
+                            binding,
+                            `resources.${purpose}[${index}]`,
+                            slotOf[purpose],
+                        );
+                        (compiledBindings[purpose] ??= []).push(
+                            pruneUndefined({
+                                id: binding.id,
+                                key: binding.key,
+                                as: binding.as,
+                                ensure: ensure as unknown as Json,
+                            }) as Json,
+                        );
+                    }
+                }
+            }
 
             // ---- minEngineVersion: AUTO-ONLY ------------------------------
             const refs = [
@@ -684,11 +950,18 @@ export async function compileBundle(
                 lifecycleStartRef,
                 lifecyclePollRef,
                 lifecycleStopRef,
+                ...bindingRefs,
             ]
                 .filter((ref): ref is FnRef => ref !== undefined);
-            const minEngineVersion = semverMax(
-                refs.map((ref) => interner.table[ref.$fn.key].api),
-            );
+            const minEngineVersion = semverMax([
+                ...refs.map((ref) => interner.table[ref.$fn.key].api),
+                // a binding/cadence with no NEW fn (e.g. uses with neither
+                // key nor ensure) still floors the doc: an older engine's
+                // strictObject rejects the new keys outright.
+                ...(bindingsSection || updateEstimateEveryMs !== undefined
+                    ? [SC.resourcesSince]
+                    : []),
+            ]);
 
             // ---- assemble + validate --------------------------------------
             const docWithoutHash = pruneUndefined({
@@ -711,21 +984,9 @@ export async function compileBundle(
                 },
                 input: {
                     schema: {
-                        body: schemaLeaf(
-                            def.input?.schema?.body,
-                            provider.input?.schema?.body,
-                            `${where}: input.schema.body`,
-                        ),
-                        queryParams: schemaLeaf(
-                            def.input?.schema?.queryParams,
-                            provider.input?.schema?.queryParams,
-                            `${where}: input.schema.queryParams`,
-                        ),
-                        pathParams: schemaLeaf(
-                            def.input?.schema?.pathParams,
-                            provider.input?.schema?.pathParams,
-                            `${where}: input.schema.pathParams`,
-                        ),
+                        body: inputSchemas.body,
+                        queryParams: inputSchemas.queryParams,
+                        pathParams: inputSchemas.pathParams,
                     },
                     toRequest: toRequestRef as unknown as Json,
                 },
@@ -744,6 +1005,7 @@ export async function compileBundle(
                     estimate: estimateRef as unknown as Json,
                     evidence: evidenceRef as unknown as Json,
                     consolidate: consolidateRef as unknown as Json,
+                    updateEstimateEveryMs,
                 },
                 lifecycle: lifecycleStartRef
                     ? {
@@ -752,6 +1014,11 @@ export async function compileBundle(
                         stop: lifecycleStopRef as unknown as Json,
                         stateSchema: stateSchema as unknown as Json,
                     }
+                    : undefined,
+                resources: compiledBindings
+                    ? pruneUndefined(
+                        compiledBindings as Record<string, Json | undefined>,
+                    )
                     : undefined,
                 timeouts,
             }) as Record<string, Json>;
@@ -797,14 +1064,56 @@ export async function compileBundle(
             }
         }
 
-        // ---- ProviderDoc: identity + display only (nothing derivable) -----
+        // ---- provider webhooks (design D36/D44): scope is positional —
+        // a hook on the provider def IS the account stream
+        let webhooksDoc: Record<string, Json> | undefined;
+        if (provider.webhooks) {
+            webhooksDoc = {};
+            for (
+                const [slug, hook] of Object.entries(provider.webhooks)
+                    .sort(([a], [b]) => a.localeCompare(b))
+            ) {
+                const label = `${providerFile}#webhooks.${slug}`;
+                webhooksDoc[slug] = pruneUndefined({
+                    verify: hook.verify as unknown as Json,
+                    route: await interner.intern(
+                        hook.route,
+                        `${label}.route`,
+                        SC.resourcesSince,
+                    ) as unknown as Json,
+                    subscribe: hook.subscribe
+                        ? await interner.intern(
+                            hook.subscribe,
+                            `${label}.subscribe`,
+                            SC.resourcesSince,
+                        ) as unknown as Json
+                        : undefined,
+                    unsubscribe: hook.unsubscribe
+                        ? await interner.intern(
+                            hook.unsubscribe,
+                            `${label}.unsubscribe`,
+                            SC.resourcesSince,
+                        ) as unknown as Json
+                        : undefined,
+                }) as Record<string, Json>;
+            }
+        }
+
+        // ---- ProviderDoc: identity + display (+ webhooks, the one
+        // fn-bearing section) — minEngineVersion is the max over the
+        // provider's WHOLE family: endpoints, resources, webhook fns.
         const providerWithoutHash = pruneUndefined({
             specVersion: SC.specVersion,
             name: providerName,
-            minEngineVersion: semverMax(
-                providerEndpointDocs.map((doc) => doc.minEngineVersion),
-            ),
+            minEngineVersion: semverMax([
+                ...providerEndpointDocs.map((doc) => doc.minEngineVersion),
+                ...Object.values(providerResourceDocs).map((doc) =>
+                    doc.minEngineVersion
+                ),
+                ...(provider.webhooks ? [SC.resourcesSince] : []),
+            ]),
             meta: provider.meta as unknown as Json,
+            webhooks: webhooksDoc as unknown as Json,
         }) as Record<string, Json>;
         providers[providerName] = parseDoc(zProviderDoc, {
             ...providerWithoutHash,
@@ -824,13 +1133,19 @@ export async function compileBundle(
     const bundle = parseDoc(zBundle, {
         catalogVersion: opts.catalogVersion,
         generatedAt: opts.generatedAt,
-        minEngineVersion: semverMax(allDocs.map((doc) => doc.minEngineVersion)),
+        minEngineVersion: semverMax([
+            ...allDocs.map((doc) => doc.minEngineVersion),
+            ...allResourceDocs.map((doc) => doc.minEngineVersion),
+        ]),
         toolchain: {
             compilerVersion: opts.compilerVersion,
             builtWithEngineVersion: opts.builtWithEngineVersion,
         },
         providers,
         endpoints,
+        // ABSENT (not {}) when no provider declares one — the
+        // pre-resource bundle stays byte-identical.
+        ...(allResourceDocs.length > 0 ? { resources } : {}),
         taxonomy: {
             leaves: [...opts.leafCategories],
             membership: Object.fromEntries(
@@ -843,6 +1158,314 @@ export async function compileBundle(
     }, "compiled bundle");
     assertPureJson(bundle, "bundle");
     return bundle;
+}
+
+/**
+ * Compile ONE resource def → zResourceDoc (design D30). Resources fuse
+ * their PROVIDER's execution identity (auth inject + credential shape,
+ * request origin, request timeout) — a resource def declares none of it,
+ * so a provider hosting resources MUST resolve auth.inject and
+ * request.baseUrl at the provider level. Every fn stamps
+ * `schema.resources_since` (the resource family IS the surface).
+ */
+/**
+ * SHAPE lint for the inputs ⊇ slot contract (round-2): the name-only
+ * check let `id: number` satisfy a slot requiring `id: string` — callers
+ * following the CATALOG contract then get rejected by the endpoint's own
+ * gate at run time. This is a bounded LINT, not JSON-Schema subsumption:
+ * (a) when BOTH sides declare a scalar `type` for a slot-required
+ * property, a mismatch fails compilation; (b) object-typed properties
+ * recurse ONE level into their own `required` lists. Anything either
+ * side leaves untyped passes (author freedom beats false positives).
+ */
+function lintSlotShapes(
+    slot: Record<string, Json>,
+    body: Record<string, Json>,
+    label: string,
+    where: string,
+    depth = 0,
+): void {
+    const slotRequired = Array.isArray(slot.required)
+        ? slot.required.filter((key): key is string => typeof key === "string")
+        : [];
+    const slotProps = (slot.properties ?? {}) as Record<string, Json>;
+    const bodyProps = (body.properties ?? {}) as Record<string, Json>;
+    for (const key of slotRequired) {
+        const slotProp = slotProps[key];
+        const bodyProp = bodyProps[key];
+        if (
+            typeof slotProp !== "object" || slotProp === null ||
+            typeof bodyProp !== "object" || bodyProp === null
+        ) continue;
+        const slotType = (slotProp as Record<string, Json>).type;
+        const bodyType = (bodyProp as Record<string, Json>).type;
+        if (
+            typeof slotType === "string" && typeof bodyType === "string" &&
+            slotType !== bodyType
+        ) {
+            throw new CompileError(
+                CompileErrorCode.DOC_MALFORMED,
+                `${where}: input.schema.body.${key} is "${bodyType}" but ` +
+                    `${label} requires "${slotType}" — the endpoint would ` +
+                    `reject values the catalog contract accepts`,
+            );
+        }
+        if (slotType === "object" && bodyType === "object" && depth < 1) {
+            lintSlotShapes(
+                slotProp as Record<string, Json>,
+                bodyProp as Record<string, Json>,
+                `${label}.${key}`,
+                where,
+                depth + 1,
+            );
+        }
+    }
+}
+
+async function compileResource(args: {
+    providerName: string;
+    providerFile: string;
+    provider: ProviderDef;
+    resourceName: string;
+    rawDef: unknown;
+    interner: FnInterner;
+    logger?: Logger;
+}): Promise<ResourceDoc> {
+    const { providerName, providerFile, provider, resourceName, interner } =
+        args;
+    parseDoc(
+        zResourceName,
+        resourceName,
+        `connectors/${providerName}/resources/${resourceName} (folder name)`,
+    );
+    const where = `connectors/${providerName}/resources/${resourceName}`;
+    const resourceFile = `${where}/resource.ts`;
+    const def = parseDoc(zResourceDef, args.rawDef, resourceFile);
+    // declared identity (design D46) — the loader asserts folder==slug on
+    // disk; the compiler re-asserts for hand-built sources (tests)
+    if (def.slug !== resourceName) {
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
+            `${where}: resource slug "${def.slug}" must equal the folder ` +
+                `name "${resourceName}"`,
+        );
+    }
+    const id = `${providerName}/${resourceName}`;
+
+    // ---- fused provider identity (no resource-level overrides) ----------
+    const inject = provider.auth?.inject;
+    if (!inject) {
+        throw new CompileError(
+            CompileErrorCode.HOOK_UNRESOLVED,
+            `${where}: provider auth.inject must resolve — resources run ` +
+                `under the provider's identity (declare it in ${providerFile})`,
+        );
+    }
+    const injectRef = await interner.intern(
+        inject,
+        `${providerFile}#auth.inject`,
+        SC.fnAbiSince,
+    );
+    const credentialsSchema = toJsonSchema(
+        provider.auth?.credentials ?? zDefaultCredentials,
+        `${where}: auth.credentials`,
+    );
+    const baseUrl = provider.request?.baseUrl;
+    if (baseUrl === undefined) {
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
+            `${where}: provider request.baseUrl must resolve — resource ops ` +
+                `target the provider origin (declare it in ${providerFile})`,
+        );
+    }
+    const parsedBase = new URL(baseUrl);
+    if (parsedBase.search !== "" || parsedBase.hash !== "") {
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
+            `${where}: baseUrl must not contain a query string or fragment`,
+        );
+    }
+    const url = new URL(baseUrl.replace(/[?#]*$/, "").replace(/\/+$/, ""))
+        .toString().replace(/\/+$/, "");
+
+    // ---- meta: same leaf rules as endpoints (docsUrl fallback, notes
+    // provider-then-resource concatenation) ------------------------------
+    const notes = [
+        ...provider.meta.notes ?? [],
+        ...def.meta.notes ?? [],
+    ];
+    const meta = pruneUndefined({
+        ...def.meta,
+        docsUrl: def.meta.docsUrl ?? provider.meta.docsUrl,
+        notes: notes.length > 0 ? notes : undefined,
+    } as unknown as Json);
+
+    // ---- schemas ---------------------------------------------------------
+    const dataSchema = toJsonSchema(def.data, `${where}: data`);
+    const inputs = def.inputs
+        ? pruneUndefined({
+            create: def.inputs.create
+                ? toJsonSchema(def.inputs.create, `${where}: inputs.create`)
+                : undefined,
+            update: def.inputs.update
+                ? toJsonSchema(def.inputs.update, `${where}: inputs.update`)
+                : undefined,
+            release: def.inputs.release
+                ? toJsonSchema(def.inputs.release, `${where}: inputs.release`)
+                : undefined,
+        }) as Record<string, Json>
+        : undefined;
+
+    // ---- fns: lifecycle + reconcile meters + views + webhooks -----------
+    const verifyRef = await interner.intern(
+        def.lifecycle.verify,
+        `${resourceFile}#lifecycle.verify`,
+        SC.resourcesSince,
+    );
+    const releaseRef = await interner.intern(
+        def.lifecycle.release,
+        `${resourceFile}#lifecycle.release`,
+        SC.resourcesSince,
+    );
+    const refreshRef = def.lifecycle.refresh
+        ? await interner.intern(
+            def.lifecycle.refresh,
+            `${resourceFile}#lifecycle.refresh`,
+            SC.resourcesSince,
+        )
+        : undefined;
+
+    // ---- reconcileUsage coherence (design D39): the sync defs cover
+    // EXACTLY the estimated lines — a fixed line cannot reconcile, an
+    // estimated line must.
+    const estimatedLines = new Set(
+        Object.entries(def.usage.lines)
+            .filter(([, line]) => isEstimatedLine(line))
+            .map(([name]) => name),
+    );
+    for (const line of Object.keys(def.reconcileUsage ?? {})) {
+        if (!estimatedLines.has(line)) {
+            throw new CompileError(
+                CompileErrorCode.DOC_MALFORMED,
+                `${where}: reconcileUsage.${line} names a line that is ` +
+                    `not ESTIMATED (only estimated lines reconcile)`,
+            );
+        }
+    }
+    for (const line of estimatedLines) {
+        if (def.reconcileUsage?.[line] === undefined) {
+            throw new CompileError(
+                CompileErrorCode.DOC_MALFORMED,
+                `${where}: estimated line "${line}" has no ` +
+                    `reconcileUsage entry — an estimation must sync`,
+            );
+        }
+    }
+    const reconcileUsage: Record<string, Json> = {};
+    for (
+        const [line, entry] of Object.entries(def.reconcileUsage ?? {})
+            .sort(([a], [b]) => a.localeCompare(b))
+    ) {
+        reconcileUsage[line] = {
+            everyMs: entry.everyMs,
+            get: await interner.intern(
+                entry.get,
+                `${resourceFile}#reconcileUsage.${line}`,
+                SC.resourcesSince,
+            ) as unknown as Json,
+        };
+    }
+    const views: Record<string, Json> = {};
+    for (
+        const [kind, view] of Object.entries(def.views ?? {})
+            .sort(([a], [b]) => a.localeCompare(b))
+    ) {
+        views[kind] = pruneUndefined({
+            label: view.label,
+            read: await interner.intern(
+                view.read,
+                `${resourceFile}#views.${kind}`,
+                SC.resourcesSince,
+            ) as unknown as Json,
+        }) as Record<string, Json>;
+    }
+    const webhooks: Record<string, Json> = {};
+    for (
+        const [slug, hook] of Object.entries(def.webhooks ?? {})
+            .sort(([a], [b]) => a.localeCompare(b))
+    ) {
+        const label = `${resourceFile}#webhooks.${slug}`;
+        webhooks[slug] = pruneUndefined({
+            verify: hook.verify as unknown as Json,
+            route: await interner.intern(
+                hook.route,
+                `${label}.route`,
+                SC.resourcesSince,
+            ) as unknown as Json,
+            subscribe: await interner.intern(
+                hook.subscribe,
+                `${label}.subscribe`,
+                SC.resourcesSince,
+            ) as unknown as Json,
+            unsubscribe: hook.unsubscribe
+                ? await interner.intern(
+                    hook.unsubscribe,
+                    `${label}.unsubscribe`,
+                    SC.resourcesSince,
+                ) as unknown as Json
+                : undefined,
+        }) as Record<string, Json>;
+    }
+
+    // ---- assemble --------------------------------------------------------
+    const docWithoutHash = pruneUndefined({
+        specVersion: SC.specVersion,
+        id,
+        provider: providerName,
+        // the family floor rides in explicitly: a minimal resource doc
+        // (default-credential provider) might otherwise carry only
+        // fnAbiSince-stamped inject
+        minEngineVersion: semverMax([SC.resourcesSince]),
+        meta,
+        data: { schema: dataSchema },
+        inputs: inputs && Object.keys(inputs).length > 0 ? inputs : undefined,
+        usage: def.usage as unknown as Json,
+        reconcileUsage: Object.keys(reconcileUsage).length > 0
+            ? reconcileUsage
+            : undefined,
+        lifecycle: {
+            verify: verifyRef as unknown as Json,
+            release: releaseRef as unknown as Json,
+            refresh: refreshRef as unknown as Json,
+        },
+        views: Object.keys(views).length > 0 ? views : undefined,
+        webhooks: Object.keys(webhooks).length > 0 ? webhooks : undefined,
+        auth: {
+            inject: injectRef as unknown as Json,
+            credentials: credentialsSchema,
+        },
+        request: { url },
+        timeouts: {
+            requestMs: provider.timeouts?.requestMs ??
+                CC.defaultTimeouts.requestMs,
+        },
+    }) as Record<string, Json>;
+
+    const hash = await docHash(docWithoutHash);
+    const doc = parseDoc(zResourceDoc, { ...docWithoutHash, hash }, where);
+
+    const size = stableStringify(docWithoutHash).length;
+    if (size > CC.docSizeFailBytes) {
+        throw new CompileError(
+            CompileErrorCode.DOC_MALFORMED,
+            `${where}: doc size ${size} > ${CC.docSizeFailBytes}`,
+        );
+    }
+    if (size > CC.docSizeWarnBytes) {
+        args.logger?.warn(`doc size over warn threshold`, { where, size });
+    }
+    assertPureJson(doc, `${where} compiled doc`);
+    return doc;
 }
 
 function parseCategories(

@@ -33,9 +33,10 @@ export default defineEndpoint({
         docsUrl: "https://console.suzanne3d.com/documentation/download-model",
         categories: ["3d-generation"],
     },
-    /** PUBLIC identity: `zEndpointPath` admits no braces, so the placeholder
-     *  path cannot be its own id — pinned brace-free (design D5). */
-    endpoint: "/v1/models/download",
+    // PUBLIC identity = request.path (v1-faithful
+    // `suzanne#v1/models/{job_id}/download`): `{param}` segments are legal
+    // identity since the 0.3.0 grammar — the brace-free D5 pin is retired
+    // (reconcile 2026-09-16).
     request: { method: "GET", path: "/v1/models/{job_id}/download" },
     input: {
         schema: {

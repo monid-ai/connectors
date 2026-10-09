@@ -1,0 +1,47 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (organic_results, knowledge_graph): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/bing/search?q=pizza+shops+in+New+York&mkt=en-US"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "a4d234f6b74a330f8a8d5069",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/bing/search?q=pizza+shops+in+New+York&mkt=en-US",
+                        "bing_url": "https://www.bing.com/search?q=pizza+shops+in+New+York"
+                    },
+                    "search_parameters": {
+                        "engine": "bing",
+                        "q": "pizza shops in New York",
+                        "mkt": "en-US",
+                        "device": "desktop"
+                    },
+                    "knowledge_graph": {
+                        "title": "Pizza",
+                        "description": "A baked flatbread dish with toppings."
+                    },
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Pizza",
+                            "link": "https://example.com/pizza",
+                            "snippet": "Wood-fired pies since 1999."
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://www.bing.com/search?q=pizza+shops+in+New+York&first=11"
+                    },
+                    "litescrape_pagination": {
+                        "next": "https://api.litescrape.com/api/bing/search?q=pizza+shops+in+New+York&mkt=en-US&first=11"
+                    }
+                }
+            }
+        }
+    ]
+}

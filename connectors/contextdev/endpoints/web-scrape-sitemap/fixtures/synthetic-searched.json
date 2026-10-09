@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-searched",
+    "description": "SYNTHETIC — not recorded. The same envelope for a searched crawl, which the reference prices at 2 credits: credits_consumed is 2; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/sitemap?domain=example.com&search=pricing"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "domain": "example.com",
+                    "urls": ["https://example.com/pricing"],
+                    "meta": {
+                        "sitemapsDiscovered": 1,
+                        "sitemapsFetched": 1,
+                        "sitemapsSkipped": 0,
+                        "errors": 0
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 2,
+                        "credits_remaining": 9997
+                    },
+                    "request_id": "REQ3"
+                }
+            }
+        }
+    ]
+}

@@ -17,7 +17,9 @@ export default defineEndpoint({
             "comment text, timestamps, user metadata, engagement " +
             "metrics, and nested reply threads for comment-level " +
             "analysis and sentiment tracking.",
-        docsUrl: "https://apify.com/scraptik/tiktok-api",
+        // the actor's OWN page (v1 pointed at the sibling tiktok-api actor —
+        // fixed in the 2026-09-16 reconcile; URL verified live)
+        docsUrl: "https://apify.com/scraptik/tiktok-comments-scraper-api",
         categories: ["tiktok"],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —

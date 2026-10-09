@@ -1,0 +1,205 @@
+{
+    "google/search": {
+        "queryParams": {
+            "q": "coffee shops in Austin",
+            "num": 2,
+            "fast_mode": true
+        }
+    },
+    "google/ai-overview": {
+        "queryParams": {
+            "q": "what is a heat pump"
+        }
+    },
+    "google/ai-mode": {
+        "queryParams": {
+            "q": "what is the best espresso machine for a small kitchen"
+        }
+    },
+    "google/ads": {
+        "queryParams": {
+            "q": "coffee maker",
+            "location": "Austin, Texas, United States"
+        }
+    },
+    "google/local": {
+        "queryParams": {
+            "q": "coffee shops",
+            "location": "Austin, Texas"
+        }
+    },
+    "google/shopping": {
+        "queryParams": {
+            "q": "coffee maker",
+            "num": 1
+        }
+    },
+    "google/shopping/product": {
+        "queryParams": {
+            "q": "coffee maker",
+            "gpcid": "12345678901234567890",
+            "headline_offer_docid": "98765432109876543210",
+            "image_docid": "11223344556677889900"
+        }
+    },
+    "google/maps": {
+        "queryParams": {
+            "q": "coffee shops in Austin, TX",
+            "type": "search",
+            "ll": "@30.2672,-97.7431,14z"
+        }
+    },
+    "google/maps/popular-times": {
+        "queryParams": {
+            "place_id": "ChIJexampleplaceid000001"
+        }
+    },
+    "google/maps/posts": {
+        "queryParams": {
+            "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e"
+        }
+    },
+    "google/maps/photo-meta": {
+        "queryParams": {
+            "data_id": "AF1QipExamplePhotoId_0001"
+        }
+    },
+    "google/reviews": {
+        "queryParams": {
+            "place_id": "ChIJexampleplaceid000001",
+            "num": 2
+        }
+    },
+    "google/contributor-reviews": {
+        "queryParams": {
+            "contributor_id": "100000000000000000001",
+            "limit": 1
+        }
+    },
+    "google/play/apps": {
+        "queryParams": {
+            "q": "coffee"
+        }
+    },
+    "google/play/games": {
+        "queryParams": {
+            "chart": "topselling_free"
+        }
+    },
+    "google/play/books": {
+        "queryParams": {
+            "q": "Dune"
+        }
+    },
+    "google/play/movies": {
+        "queryParams": {
+            "q": "Dune"
+        }
+    },
+    "google/play/product": {
+        "queryParams": {
+            "product_id": "com.example.one"
+        }
+    },
+    "google/play/reviews": {
+        "queryParams": {
+            "product_id": "com.example.one",
+            "num": 1
+        }
+    },
+    "apple/app-store/search": {
+        "queryParams": {
+            "term": "coffee",
+            "num": 1
+        }
+    },
+    "apple/app-store/product": {
+        "queryParams": {
+            "product_id": "570060128"
+        }
+    },
+    "apple/app-store/reviews": {
+        "queryParams": {
+            "product_id": "570060128",
+            "page": 1
+        }
+    },
+    "apple/maps/places": {
+        "queryParams": {
+            "muid": [
+                "4372355869446211302",
+                "4560078147072908047"
+            ],
+            "locale": "en-US"
+        }
+    },
+    "apple/maps/reviews": {
+        "queryParams": {
+            "muid": "4372355869446211302"
+        }
+    },
+    "bing/search": {
+        "queryParams": {
+            "q": "pizza shops in New York",
+            "mkt": "en-US"
+        }
+    },
+    "bing/maps": {
+        "queryParams": {
+            "q": "coffee",
+            "cp": "47.6062~-122.3321",
+            "count": 1
+        }
+    },
+    "duckduckgo/search": {
+        "queryParams": {
+            "q": "coffee grinder",
+            "m": 1
+        }
+    },
+    "duckduckgo/maps": {
+        "queryParams": {
+            "q": "coffee",
+            "bbox": "30.30,-97.78,30.24,-97.71"
+        }
+    },
+    "yelp/search": {
+        "queryParams": {
+            "find_loc": "Austin, TX",
+            "find_desc": "coffee",
+            "attrs": [
+                "open_now",
+                "price.1"
+            ]
+        }
+    },
+    "yelp/reviews": {
+        "queryParams": {
+            "place_id": "ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu",
+            "rating": [
+                4,
+                5
+            ],
+            "num": 1
+        }
+    },
+    "tripadvisor/search": {
+        "queryParams": {
+            "q": "hotels in Lisbon",
+            "place_type": "accommodation",
+            "num": 1
+        }
+    },
+    "tripadvisor/place": {
+        "queryParams": {
+            "place_id": "1234567",
+            "currency": "EUR"
+        }
+    },
+    "tripadvisor/reviews": {
+        "queryParams": {
+            "place_id": "1234567",
+            "num": 1
+        }
+    }
+}

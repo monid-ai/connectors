@@ -1,0 +1,160 @@
+{
+    "name": "happy",
+    "description": "raw recording (opoint#search-headlines, scenario happy) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.opoint.com/search/",
+                "body": {
+                    "searchterm": "tesla",
+                    "params": {
+                        "requestedarticles": 1,
+                        "main": {
+                            "header": 1
+                        },
+                        "allsubject": "0",
+                        "readership": true
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchresult": {
+                        "documents": 1,
+                        "response_code": 200,
+                        "first_timestamp": 1789619399,
+                        "last_timestamp": 1789619399,
+                        "generated_timestamp": 1789619476,
+                        "cache": false,
+                        "search_start": 2147483647,
+                        "context": "357864248:1:0;TOTDOC=1",
+                        "count": 1,
+                        "range_count": 1600,
+                        "range_start": 1789596000,
+                        "range_end": 0,
+                        "range_id": "D",
+                        "cacheage": -1,
+                        "cputime": 86,
+                        "host": "abel1.opoint.com",
+                        "compiledate": "Sep 10 2026 00:00:00",
+                        "branch": "NOT ACTIVE",
+                        "notimeout": true,
+                        "currency": "NOK",
+                        "netsprintindextimer": 73,
+                        "document": [
+                            {
+                                "id_site": 82182,
+                                "id_article": 7052904,
+                                "hidden": false,
+                                "position": 1,
+                                "timezone": "Europe/Vienna",
+                                "countrycode": "AT",
+                                "countryname": "Austria",
+                                "similarweb": {
+                                    "domain": "finanzen.at",
+                                    "readership": {
+                                        "P": 0.070822,
+                                        "value": 18448
+                                    },
+                                    "article_readership": {
+                                        "P": 0.000006,
+                                        "DeltaP": 0.000221,
+                                        "DeltaPValue": 58,
+                                        "ExpectedP": 0.000228,
+                                        "ExpectedPValue": 59,
+                                        "StdExpectedP": 0.0124,
+                                        "StdExpectedPValue": 3230,
+                                        "value": 2
+                                    }
+                                },
+                                "site_rank": {
+                                    "rank_global": 4993,
+                                    "rank_country": 29
+                                },
+                                "unix_timestamp": 1789619399,
+                                "mediatype": {
+                                    "timemap": false,
+                                    "clip": false,
+                                    "hastext": true,
+                                    "haslogo": false,
+                                    "paywall": false,
+                                    "fulltext": true,
+                                    "text": "WEB"
+                                },
+                                "internal_search_reply": {
+                                    "id_site": 82182,
+                                    "id_article": 7052904,
+                                    "text": ""
+                                },
+                                "stimestamp": 357864248,
+                                "local_time": {
+                                    "GMT": 1,
+                                    "text": "20260917T06:29:59+0200"
+                                },
+                                "local_rcf822_time": {
+                                    "text": "Thu, 17 Sep 2026 06:29:59 +0200"
+                                },
+                                "distribute_conditions": "",
+                                "language": {
+                                    "encoding": "iso-639",
+                                    "text": "de"
+                                },
+                                "word_count": 405,
+                                "first_source": {
+                                    "id": 911150,
+                                    "name": "Finanzen",
+                                    "sitename": "Finanzen",
+                                    "url": "https://www.finanzen.at",
+                                    "siteurl": "https://www.finanzen.at"
+                                },
+                                "header": {
+                                    "matches": false,
+                                    "text": "US-Behörde nimmt sich Teslas Robotaxi vor"
+                                },
+                                "articleimages": {
+                                    "count": 2,
+                                    "articleimage": [
+                                        {
+                                            "url": "https://www.finanzen.at/Images/FacebookIcon.jpg"
+                                        },
+                                        {
+                                            "url": "https://images.finanzen.at/images/unsortiert/wertpapierdepot-absichern-aktienchart-boerse-750493204-260.jpg"
+                                        }
+                                    ]
+                                },
+                                "caption": {
+                                    "text": " "
+                                },
+                                "quotes": [],
+                                "url": "https://www.finanzen.at/nachrichten/aktien/us-behoerde-nimmt-sich-teslas-robotaxi-vor-1036552292",
+                                "orig_url": "https://www.finanzen.at/nachrichten/aktien/us-behoerde-nimmt-sich-teslas-robotaxi-vor-1036552292",
+                                "url_common": "finanzen.at",
+                                "topics": [
+                                    {
+                                        "id": 13,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 2,
+                                        "metacat_level": 0,
+                                        "text": "Rank 3"
+                                    },
+                                    {
+                                        "id": 20,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 3,
+                                        "metacat_level": 0,
+                                        "text": "Open"
+                                    }
+                                ],
+                                "screenshots": []
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,59 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (organic_results, ads_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/yelp/search?find_loc=Austin%2C+TX&find_desc=coffee&attrs=open_now%2Cprice.1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "e8b678dafb8e774dc2c19403",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/yelp/search?find_loc=Austin%2C+TX&find_desc=coffee&attrs=open_now%2Cprice.1"
+                    },
+                    "search_parameters": {
+                        "find_loc": "Austin, TX",
+                        "find_desc": "coffee",
+                        "attrs": "open_now,price.1",
+                        "yelp_domain": "www.yelp.com",
+                        "sortby": "recommended"
+                    },
+                    "search_information": {
+                        "total_results": 480
+                    },
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "name": "Example Coffee",
+                            "place_id": "ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu",
+                            "rating": 4.5,
+                            "reviews": 312,
+                            "categories": [
+                                "Coffee & Tea"
+                            ],
+                            "price": "$",
+                            "address": "100 Congress Ave, Austin, TX 78701",
+                            "phone": "(512) 555-0100",
+                            "litescrape_reviews_link": "https://api.litescrape.com/api/yelp/reviews?place_id=ZXhhbXBsZS1jb2ZmZWUtYXVzdGlu&yelp_domain=www.yelp.com"
+                        }
+                    ],
+                    "ads_results": [
+                        {
+                            "position": 1,
+                            "name": "Example Sponsored Cafe",
+                            "rating": 4.0,
+                            "reviews": 88
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/yelp/search?find_loc=Austin%2C+TX&find_desc=coffee&attrs=open_now%2Cprice.1&start=10"
+                    }
+                }
+            }
+        }
+    ]
+}

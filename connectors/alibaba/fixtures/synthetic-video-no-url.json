@@ -1,0 +1,68 @@
+{
+    "name": "synthetic-video-no-url",
+    "description": "SYNTHETIC: the task reports SUCCEEDED but output carries no video_url. A success with nothing to hand back is a vendor contract violation, settled as OUR synthesized 502 with providerHttpStatus 200, zero-billed — the usage block on the body never reaches billing because a fn cannot bill an error.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_status": "PENDING",
+                        "task_id": "TASK1"
+                    },
+                    "request_id": "req-TASK1-submit"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "RUNNING",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000"
+                    },
+                    "request_id": "req-TASK1-running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "SUCCEEDED",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000",
+                        "end_time": "2026-09-16 10:03:12.000",
+                        "orig_prompt": "a cat"
+                    },
+                    "request_id": "req-TASK1-succeeded",
+                    "usage": {
+                        "video_count": 1,
+                        "duration": 5,
+                        "input_video_duration": 0,
+                        "output_video_duration": 5,
+                        "SR": 720,
+                        "ratio": "16:9"
+                    }
+                }
+            }
+        }
+    ]
+}

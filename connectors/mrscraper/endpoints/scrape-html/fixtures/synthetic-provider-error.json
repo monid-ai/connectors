@@ -1,0 +1,16 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented error envelope (docs.mrscraper.com/docs/api/error-handling): message + error type on a 400.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false"
+            },
+            "res": {
+                "status": 400,
+                "body": { "message": "url is required", "error": "Bad Request" }
+            }
+        }
+    ]
+}

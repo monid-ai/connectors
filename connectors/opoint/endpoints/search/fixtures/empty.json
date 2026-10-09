@@ -1,0 +1,54 @@
+{
+    "name": "empty",
+    "description": "raw recording (opoint#search, scenario empty) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.opoint.com/search/",
+                "body": {
+                    "searchterm": "header:zzzzqqqquuuu2026nonexistent",
+                    "params": {
+                        "requestedarticles": 1,
+                        "main": {
+                            "header": 1,
+                            "text": 1
+                        },
+                        "max_article_length": 256,
+                        "allsubject": "0",
+                        "readership": true
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchresult": {
+                        "documents": 0,
+                        "response_code": 200,
+                        "first_timestamp": 0,
+                        "last_timestamp": 0,
+                        "generated_timestamp": 1789619456,
+                        "cache": false,
+                        "search_start": 2147483647,
+                        "context": "",
+                        "count": 0,
+                        "range_count": 0,
+                        "range_start": 1780979400,
+                        "range_end": 1789619456,
+                        "range_id": "d-1",
+                        "cacheage": -1,
+                        "cputime": 144,
+                        "host": "abel3.opoint.com",
+                        "compiledate": "Sep 10 2026 00:00:00",
+                        "branch": "NOT ACTIVE",
+                        "notimeout": true,
+                        "currency": "NOK",
+                        "netsprintindextimer": 22,
+                        "document": []
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. The news envelope with no article and credits_consumed 0; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/news/search"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [],
+                    "has_more": false,
+                    "next_cursor": null,
+                    "meta": { "count": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9969
+                    },
+                    "request_id": "REQ3"
+                }
+            }
+        }
+    ]
+}

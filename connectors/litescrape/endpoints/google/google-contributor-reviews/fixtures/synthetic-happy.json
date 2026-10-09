@@ -1,0 +1,49 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/contributor-reviews?contributor_id=100000000000000000001&limit=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "d4e5f6a7b8c90a1b2c3d4e5f",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/contributor-reviews?contributor_id=100000000000000000001&limit=1"
+                    },
+                    "search_parameters": {
+                        "contributor_id": "100000000000000000001",
+                        "limit": "1",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "contributor": {
+                        "name": "Local Guide",
+                        "points": 1240,
+                        "level": 5
+                    },
+                    "search_information": {
+                        "reviews_count": 1
+                    },
+                    "reviews": [
+                        {
+                            "position": 1,
+                            "place_info": {
+                                "title": "Example Coffee",
+                                "address": "100 Congress Ave, Austin, TX 78701",
+                                "data_id": "0x8644b5028b2fa213:0xf76b50a49197c18e"
+                            },
+                            "rating": 5,
+                            "snippet": "Best flat white in town.",
+                            "date": "a month ago"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

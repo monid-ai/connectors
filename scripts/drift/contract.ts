@@ -1,4 +1,8 @@
 import type { EndpointDoc } from "@shared/core";
+import {
+    credentialEnvVarsFor,
+    resolveCredentialEnv,
+} from "@monid/connector-engine";
 
 /**
  * The drift-suite contract (design D28). DRIFT answers "has the WORLD
@@ -33,12 +37,28 @@ export interface DriftCtx {
      *  repricing the guard exists to catch. */
     fix: boolean;
     log: (line: string) => void;
+    /** The suite's vendor key, already resolved by the runner — a suite
+     *  never reads the environment itself. */
+    token: string;
 }
 
 export interface DriftSuite {
     provider: string;
-    /** Env var the suite needs (exit 2 when missing, like the old
-     *  survey). */
-    requiresEnv: string;
     run(ctx: DriftCtx): Promise<DriftFinding[]>;
+}
+
+/** The variables that can supply a suite's key, in precedence order —
+ *  `<PROVIDER>_CREDENTIALS_API_KEY`, then the bare `<PROVIDER>_API_KEY`
+ *  alias. Named for error messages as well as for the read. */
+export function suiteEnvVars(provider: string): string[] {
+    return credentialEnvVarsFor(provider, "apiKey");
+}
+
+/** Read a suite's key through the engine's OWN precedence rule, so drift and
+ *  the engine can never disagree about which variable supplies a key: the
+ *  first DEFINED variable wins, and a blank one is a configuration error, not
+ *  a fall-through to the alias. Undefined when unset or blank. */
+export function suiteToken(provider: string): string | undefined {
+    const value = resolveCredentialEnv(provider, "apiKey");
+    return value === undefined || value === "" ? undefined : value;
 }

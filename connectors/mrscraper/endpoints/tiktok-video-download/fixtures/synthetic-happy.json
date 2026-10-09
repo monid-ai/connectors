@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the TikTok Video Download Link shape v1 documented, tokenUsage 10; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/video/tiktok/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "video_id": "7636779258941066504",
+                        "download_url": "https://cdn.example/7636779258941066504.mp4",
+                        "width": 1080,
+                        "height": 1920,
+                        "thumbnail_url": "https://cdn.example/thumb.jpg",
+                        "duration": 34,
+                        "caption": "Weekend in Singapore",
+                        "music_url": "https://cdn.example/music.mp3",
+                        "music": {
+                            "title": "original sound",
+                            "author": "sgweekender"
+                        }
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

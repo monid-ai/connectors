@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-poll-failed",
+    "description": "SYNTHETIC: the submit succeeds, then OUR task query answers 503. The task is very likely still generating and still billing upstream, so the poll THROWS (retriable) rather than settling a provider error and abandoning a video we are paying for (design D7, the bytedance posture).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-1",
+                    "data": {
+                        "id": "926151964131065926",
+                        "status": "submitted",
+                        "create_time": 1789540454000,
+                        "update_time": 1789540454000
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "code": 5000,
+                    "message": "service unavailable",
+                    "request_id": "req-503-1"
+                }
+            }
+        }
+    ]
+}

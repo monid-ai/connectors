@@ -15,6 +15,11 @@ export default defineEndpoint({
         docsUrl:
             "https://docs.akta.pro/api-reference/alternative-data/product-reviews",
         categories: ["company-reviews"],
+        notes: [
+            "Per-product reviews bill in whole 50-review increments " +
+            "(1.5 credits per started block of 50) regardless of " +
+            "'limit'; the list-only mode is a flat 0.5 credits.",
+        ],
     },
     request: { method: "GET", path: "/v1/company/product-reviews/" },
     input: { schema: { queryParams: zProductReviewsQueryParams } },

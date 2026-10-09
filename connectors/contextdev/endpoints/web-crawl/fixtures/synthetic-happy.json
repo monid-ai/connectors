@@ -1,0 +1,60 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Crawl Website response schema (docs.context.dev/api-reference/web-scraping/crawl, 2026-09-17): three pages succeeded, one failed, credits_consumed 3; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/web/crawl"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "markdown": "# Example Domain",
+                            "metadata": {
+                                "url": "https://example.com/",
+                                "title": "Example Domain"
+                            }
+                        },
+                        {
+                            "markdown": "# About",
+                            "metadata": {
+                                "url": "https://example.com/about",
+                                "title": "About"
+                            }
+                        },
+                        {
+                            "markdown": "# Contact",
+                            "metadata": {
+                                "url": "https://example.com/contact",
+                                "title": "Contact"
+                            }
+                        },
+                        {
+                            "markdown": "",
+                            "metadata": {
+                                "url": "https://example.com/broken",
+                                "error": "WEBSITE_ACCESS_ERROR"
+                            }
+                        }
+                    ],
+                    "metadata": {
+                        "numUrls": 4,
+                        "maxCrawlDepth": 1,
+                        "numSucceeded": 3,
+                        "numFailed": 1,
+                        "numSkipped": 0
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 3,
+                        "credits_remaining": 9997
+                    },
+                    "request_id": "REQ1",
+                    "cache_metadata": { "status": "miss", "age_ms": 0 }
+                }
+            }
+        }
+    ]
+}

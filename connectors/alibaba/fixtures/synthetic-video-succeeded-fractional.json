@@ -1,0 +1,68 @@
+{
+    "name": "synthetic-video-succeeded-fractional",
+    "description": "SYNTHETIC: the succeeded chain with the FRACTIONAL usage the wan2.7-videoedit reference page shows verbatim (duration 10.04 = input 5.02 + output 5.02). The evidence reports 10.04 seconds as DashScope does; the engine's fold rounds it UP to 11 whole seconds (owner decision 2026-09-16, design D4).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_status": "PENDING",
+                        "task_id": "TASK1"
+                    },
+                    "request_id": "req-TASK1-submit"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "RUNNING",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000"
+                    },
+                    "request_id": "req-TASK1-running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "SUCCEEDED",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000",
+                        "end_time": "2026-09-16 10:03:12.000",
+                        "video_url": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/TASK1.mp4",
+                        "orig_prompt": "a sea lion plays with a cat on a beach at sunset"
+                    },
+                    "request_id": "req-TASK1-succeeded",
+                    "usage": {
+                        "video_count": 1,
+                        "duration": 10.04,
+                        "input_video_duration": 5.02,
+                        "output_video_duration": 5.02,
+                        "SR": 720
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+{
+    "name": "news-deep-ok",
+    "description": "Search1API /news Deep Search happy path: crawl_results=2, results carry content fields (array trimmed by record). Composite: 1 credit call + 1 credit per crawled page.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.search1api.com/news",
+                "body": {
+                    "query": "artificial intelligence",
+                    "max_results": 3,
+                    "crawl_results": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchParameters": {
+                        "query": "artificial intelligence",
+                        "max_results": 3,
+                        "crawl_results": 2,
+                        "image": false,
+                        "include_sites": [],
+                        "exclude_sites": []
+                    },
+                    "results": [
+                        {
+                            "title": "Artificial Intelligence News -- ScienceDaily",
+                            "link": "https://sciencedaily.com/news/computers_math/artificial_intelligence",
+                            "snippet": "Artificial Intelligence News. Everything on AI including futuristic robots with artificial intelligence, computer models of human intelligence and more.2 days ago",
+                            "content": "## Top Headlines\n\n---\n\n[The Shape Behind the Einstein Problem Just Revealed Strange New Physics](https://sciencedaily.com/releases/2026/09/260914102432.htm)\n\nA mathematical shape famous for covering a surface without ever repeating has revealed an unexpected ability to twist light into unusual chiral patterns. The discovery could lead to new ways of controlling light, polarization, and advanced optical...\n\n---\n\n[AI Uncovers Hidden Ozempic Side Effects Across 400,000 Reddit Posts](https://science"
+                        },
+                        {
+                            "title": "The Liftoff Scenario That Terrifies A.I. Doomsayers - The New York Times",
+                            "link": "https://www.nytimes.com/2026/09/16/science/ai-recursive-self-improvement.html",
+                            "snippet": "\u201cRecursive self-improvement\u201d is the idea that artificial intelligence could learn to build and train itself, creating exponential new progress \u2014 and risk.1 day ago",
+                            "content": "Jeff Clune in his office, posing next to a stack of books topped by a mannequin of a human head wearing several wires.\n\nJeff Clune, a computer scientist and co-founder of Recursive Superintelligence, one of the start-ups chasing \u201crecursive self-improvement.\u201d Credit... Alana Paterson for The New York Times\n\n\u201cRecursive self-improvement\u201d is the idea that artificial intelligence could learn to build and train itself, creating exponential new progress \u2014 and risk.\n\nIn December, Edward Hughes and Louis"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

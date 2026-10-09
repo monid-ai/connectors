@@ -1,0 +1,88 @@
+{
+    "text-to-video/kling-3.0": {
+        "prompt": "a sea lion plays with a cat on a beach at sunset",
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "text-to-video/kling-3.0-turbo": {
+        "prompt": "a sea lion plays with a cat on a beach at sunset",
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "text-to-video/kling-2.6": {
+        "prompt": "a sea lion plays with a cat on a beach at sunset",
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "text-to-video/kling-2.5-turbo": {
+        "prompt": "a sea lion plays with a cat on a beach at sunset",
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "image-to-video/kling-3.0": {
+        "contents": [
+            { "type": "prompt", "text": "the cat stretches and yawns" },
+            { "type": "first_frame", "url": "https://example.test/cat.png" }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "image-to-video/kling-3.0-turbo": {
+        "contents": [
+            { "type": "prompt", "text": "the cat stretches and yawns" },
+            { "type": "first_frame", "url": "https://example.test/cat.png" }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "image-to-video/kling-2.6": {
+        "contents": [
+            { "type": "prompt", "text": "the cat stretches and yawns" },
+            { "type": "first_frame", "url": "https://example.test/cat.png" }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "image-to-video/kling-2.5-turbo": {
+        "contents": [
+            { "type": "prompt", "text": "the cat stretches and yawns" },
+            { "type": "first_frame", "url": "https://example.test/cat.png" }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "omni-video/kling-3.0-omni": {
+        "contents": [
+            {
+                "type": "prompt",
+                "text": "@image_1 walks along the beach at sunset"
+            },
+            {
+                "type": "refer_image",
+                "url": "https://example.test/cat.png",
+                "id": "image_1"
+            }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "omni-video/kling-o1": {
+        "contents": [
+            {
+                "type": "prompt",
+                "text": "@image_1 walks along the beach at sunset"
+            },
+            {
+                "type": "refer_image",
+                "url": "https://example.test/cat.png",
+                "id": "image_1"
+            }
+        ],
+        "settings": { "resolution": "720p", "duration": 5 }
+    },
+    "motion-control/kling-3.0": {
+        "contents": [
+            { "type": "image", "url": "https://example.test/dancer.png" },
+            { "type": "video", "url": "https://example.test/dance.mp4" }
+        ],
+        "settings": { "character_orientation": "video", "resolution": "720p" }
+    },
+    "motion-control/kling-2.6": {
+        "contents": [
+            { "type": "image", "url": "https://example.test/dancer.png" },
+            { "type": "video", "url": "https://example.test/dance.mp4" }
+        ],
+        "settings": { "character_orientation": "video", "resolution": "720p" }
+    }
+}

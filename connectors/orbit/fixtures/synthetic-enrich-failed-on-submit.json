@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-enrich-failed-on-submit",
+    "description": "A build that fails inside the submit window: 200 with a terminal `failed` status and the reason at `failure`. The start phase lifts it into Orbit's own error envelope so one mapper reads it, and the engine zero-bills the run. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.orbitsearch.com/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "ENRICH4",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "failed",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 1,
+                    "failure": {
+                        "code": "sources_unavailable",
+                        "message": "No readable sources for this person",
+                        "retryable": true,
+                        "reason": "upstream_empty"
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH4"
+                    },
+                    "billing": {
+                        "id": "op-enrich-4",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 10,
+                        "consumedCredits": 0,
+                        "releasedCredits": 10,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

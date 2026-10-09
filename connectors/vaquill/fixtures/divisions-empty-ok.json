@@ -1,0 +1,25 @@
+{
+    "name": "divisions-empty-ok",
+    "description": "Browsing a title that does not exist: an empty `divisions` and `creditsConsumed: 0`. The refunded miss.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?corpusType=USC&titleNumber=99"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "corpusType": "USC",
+                    "level": "chapters",
+                    "parentLabel": "Title 99",
+                    "divisions": [],
+                    "count": 0,
+                    "truncated": false,
+                    "processingTimeMs": 1935.6,
+                    "creditsConsumed": 0
+                }
+            }
+        }
+    ]
+}

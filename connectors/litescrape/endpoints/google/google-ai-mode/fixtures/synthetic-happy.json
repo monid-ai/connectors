@@ -1,0 +1,55 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (text_blocks): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/ai-mode?q=what+is+the+best+espresso+machine+for+a+small+kitchen"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "4b2e1d0c9a8f7e6d5c4b3a2f",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/ai-mode?q=what+is+the+best+espresso+machine+for+a+small+kitchen",
+                        "total_time_taken": 41.7
+                    },
+                    "search_parameters": {
+                        "q": "what is the best espresso machine for a small kitchen",
+                        "google_domain": "google.com",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "text_blocks": [
+                        {
+                            "type": "paragraph",
+                            "snippet": "For a small kitchen, a compact single-boiler machine is usually the best fit.",
+                            "reference_indexes": [
+                                0
+                            ]
+                        },
+                        {
+                            "type": "list",
+                            "list": [
+                                {
+                                    "title": "Compact footprint",
+                                    "snippet": "Under 30 cm wide."
+                                }
+                            ]
+                        }
+                    ],
+                    "references": [
+                        {
+                            "index": 0,
+                            "source": "reviews.example",
+                            "link": "https://reviews.example/espresso",
+                            "title": "Best compact espresso machines"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. A definitive verdict inline: 200 valid — 0.5 credit.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/email-verifier?email=john.doe%40example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "status": "valid",
+                        "result": "deliverable",
+                        "score": 100,
+                        "email": "john.doe@example.com",
+                        "regexp": true,
+                        "gibberish": false,
+                        "disposable": false,
+                        "webmail": false,
+                        "mx_records": true,
+                        "smtp_server": true,
+                        "smtp_check": true,
+                        "accept_all": false,
+                        "block": false,
+                        "sources": [
+                            {
+                                "domain": "beta.paganresearch.io",
+                                "uri": "http://beta.paganresearch.io/details/stripe",
+                                "extracted_on": "2020-06-17",
+                                "last_seen_on": "2020-06-17",
+                                "still_on_page": true
+                            }
+                        ]
+                    },
+                    "meta": {
+                        "params": {
+                            "email": "john.doe@example.com"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

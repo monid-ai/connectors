@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews, rating_summary, ratings): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/apple/maps/reviews?muid=4372355869446211302"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "f2a3b4c5d6e7f8a9b0c1d2e3",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/apple/maps/reviews?muid=4372355869446211302"
+                    },
+                    "search_parameters": {
+                        "muid": "4372355869446211302",
+                        "locale": "en-US"
+                    },
+                    "place_info": {
+                        "title": "Example Coffee",
+                        "address": "100 Congress Ave, Austin, TX 78701"
+                    },
+                    "rating_summary": {
+                        "rating": 4.6,
+                        "rating_count": 210
+                    },
+                    "ratings": [
+                        {
+                            "category": "Coffee",
+                            "score": 92
+                        },
+                        {
+                            "category": "Service",
+                            "score": 88
+                        }
+                    ],
+                    "search_information": {
+                        "reviews_count": 1
+                    },
+                    "reviews": [
+                        {
+                            "rating": 5,
+                            "description": "Consistently great espresso.",
+                            "date": "2026-08-30"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -25,6 +25,10 @@ export default defineEndpoint({
             "in /search-advanced.",
         docsUrl: "https://api-docs.opoint.com/references/suggestion-server",
         categories: ["news-search"],
+        notes: [
+            "Resolves public sites only - sources on restricted " +
+            "access groups do not appear.",
+        ],
     },
     /** PUBLIC identity (design D22): the native path carries derived
      *  {placeholders}, which the identity grammar forbids. */

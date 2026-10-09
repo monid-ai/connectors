@@ -1,0 +1,199 @@
+{
+    "name": "definitions-ok",
+    "description": "Defined terms parsed out of the chapter's definitions section: flat 4 credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/definitions"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "USC_T42_C21_S1983",
+                        "citation": "42 U.S.C. \u00a7 1983 (2026)",
+                        "citationShort": "42 U.S.C. \u00a7 1983",
+                        "title": "Civil action for deprivation of rights",
+                        "corpusType": "USC",
+                        "state": "federal",
+                        "year": 2026,
+                        "excerpt": "Every person who, under color of any statute, ordinance, regulation, custom, or usage, of any State or Territory or the District of Columbia, subjects, or causes to be subjected, any citizen of the United States or other person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Constitution and laws, shall be liable to the party injured in an action at law, suit in equity, or other proper proceeding for redress, except that in any action...",
+                        "body": null,
+                        "titleNumber": "42",
+                        "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                        "chapter": "21",
+                        "chapterName": "CIVIL RIGHTS",
+                        "sectionNumber": "1983",
+                        "sectionTitle": "Civil action for deprivation of rights",
+                        "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1983: Civil action for deprivation of rights",
+                        "breadcrumb": [
+                            {
+                                "type": "title",
+                                "num": "42",
+                                "label": "Title 42",
+                                "name": "THE PUBLIC HEALTH AND WELFARE"
+                            },
+                            {
+                                "type": "chapter",
+                                "num": "21",
+                                "label": "Chapter 21",
+                                "name": "CIVIL RIGHTS"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "USC",
+                            "titleNumber": 42,
+                            "chapter": "21"
+                        },
+                        "subchapter": "I",
+                        "subchapterName": "GENERALLY",
+                        "popularName": "Public Health and Welfare",
+                        "actStatus": "in_force",
+                        "goodLawStatus": "good_law",
+                        "crossReferencesUsc": [
+                            "28:1343",
+                            "8:43"
+                        ],
+                        "sourceCredit": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)",
+                        "amendmentYears": [
+                            1996,
+                            1979
+                        ],
+                        "lastAmendedYear": 1996,
+                        "amendmentsCount": 2,
+                        "currentThrough": "2026-09-11",
+                        "effectiveDate": "1979-12-29",
+                        "history": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)\n\nCodification\n\nR.S. \u00a7 1979 derived from act Apr. 20, 1871, ch. 22, \u00a7 1, 17 Stat. 13.\n\nSection was formerly classified to section 43 of Title 8, Aliens and Nationality.\n\nAmendments\n\n1996\u2014Pub. L. 104\u2013317 inserted before period at end of first sentence \u201c,\u2000except that in any action brought against a judicial officer for an act or omission taken in such officer\u2019s judi",
+                        "publicLaws": [
+                            "Pub. L. 104-317",
+                            "Pub. L. 96-170"
+                        ],
+                        "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1983.txt",
+                        "wordCount": 339,
+                        "originalEnactmentDate": "1979-12-29",
+                        "originalEnactmentDateRaw": "Dec. 29, 1979",
+                        "publisherKey": "420000000198300000000000000000000",
+                        "displayLabel": "42 U.S.C. \u00a7 1983",
+                        "publicLawCites": [
+                            {
+                                "type": "revised_statutes",
+                                "section": "1979",
+                                "display": "R.S. \u00a71979"
+                            },
+                            {
+                                "type": "public_law",
+                                "congress": 96,
+                                "law": 170,
+                                "displayId": "Pub. L. 96-170",
+                                "date": "1979-12-29",
+                                "statVolume": 93,
+                                "statPage": 1284,
+                                "statAtLarge": "93 Stat. 1284",
+                                "section": "1",
+                                "display": "Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284"
+                            }
+                        ],
+                        "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1983&num=0&edition=prelim"
+                    },
+                    "definitionsSection": {
+                        "actId": "USC_T42_C21_S1997",
+                        "citation": "42 U.S.C. \u00a7 1997 (2026)",
+                        "citationShort": "42 U.S.C. \u00a7 1997",
+                        "title": "Definitions",
+                        "corpusType": "USC",
+                        "state": "federal",
+                        "year": 2026,
+                        "excerpt": "As used in this subchapter\u2014\n\n(1) The term \u201cinstitution\u201d means any facility or institution\u2014\n\n(A) which is owned, operated, or managed by, or provides services on behalf of any State or political subdivision of a State; and\n\n(B) which is\u2014\n\n(i) for persons who are mentally ill, disabled, or retarded, or chronically ill or handicapped;\n\n(ii) a jail, prison, or other correctional facility;\n\n(iii) a pretrial detention facility;\n\n(iv) for juveniles\u2014\n\n(I) held awaiting trial;\n\n(II) residing in such...",
+                        "body": null,
+                        "titleNumber": "42",
+                        "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                        "chapter": "21",
+                        "chapterName": "CIVIL RIGHTS",
+                        "sectionNumber": "1997",
+                        "sectionTitle": "Definitions",
+                        "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I\u2013A: INSTITUTIONALIZED PERSONS / Section 1997: Definitions",
+                        "breadcrumb": [
+                            {
+                                "type": "title",
+                                "num": "42",
+                                "label": "Title 42",
+                                "name": "THE PUBLIC HEALTH AND WELFARE"
+                            },
+                            {
+                                "type": "chapter",
+                                "num": "21",
+                                "label": "Chapter 21",
+                                "name": "CIVIL RIGHTS"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "USC",
+                            "titleNumber": 42,
+                            "chapter": "21"
+                        },
+                        "subchapter": "I\u2013A",
+                        "subchapterName": "INSTITUTIONALIZED PERSONS",
+                        "popularName": "Public Health and Welfare",
+                        "actStatus": "in_force",
+                        "goodLawStatus": "good_law",
+                        "crossReferencesUsc": [
+                            "42:1305",
+                            "42:1381"
+                        ],
+                        "sourceCredit": "(Pub. L. 96\u2013247, \u00a7 2, May 23, 1980, 94 Stat. 349.)",
+                        "amendmentYears": [
+                            1980
+                        ],
+                        "lastAmendedYear": 1980,
+                        "amendmentsCount": 1,
+                        "currentThrough": "2026-09-11",
+                        "history": "(Pub. L. 96\u2013247, \u00a7 2, May 23, 1980, 94 Stat. 349.)",
+                        "publicLaws": [
+                            "Pub. L. 96-247"
+                        ],
+                        "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1997.txt",
+                        "wordCount": 510,
+                        "originalEnactmentDate": "1980-05-23",
+                        "originalEnactmentDateRaw": "May 23, 1980",
+                        "publisherKey": "420000000199700000000000000000000",
+                        "referencedShortTitles": [
+                            "Civil Rights of Institutionalized Persons Act"
+                        ],
+                        "displayLabel": "42 U.S.C. \u00a7 1997",
+                        "publicLawCites": [
+                            {
+                                "type": "public_law",
+                                "congress": 96,
+                                "law": 247,
+                                "displayId": "Pub. L. 96-247",
+                                "date": "1980-05-23",
+                                "statVolume": 94,
+                                "statPage": 349,
+                                "statAtLarge": "94 Stat. 349",
+                                "section": "2",
+                                "display": "(Pub. L. 96\u2013247, \u00a7 2, May 23, 1980, 94 Stat. 349.)"
+                            }
+                        ],
+                        "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1997&num=0&edition=prelim"
+                    },
+                    "terms": [
+                        {
+                            "term": "institution",
+                            "definition": "any facility or institution\u2014\n\n(A) which is owned, operated, or managed by, or provides services on behalf of any State or political subdivision of a State; and\n\n(B) which is\u2014\n\n(i) for persons who are mentally ill, disabled, or retarded, or chronically ill or handicapped;\n\n(ii) a jail, prison, or other correctional facility;\n\n(iii) a pretrial detention facility;\n\n(iv) for juveniles\u2014\n\n(I) held awaiting trial;\n\n(II) residing in such facility or institution for purposes of receiving care or treatmen",
+                            "marker": "1"
+                        },
+                        {
+                            "term": "person",
+                            "definition": "an individual, a trust or estate, a partnership, an association, or a corporation",
+                            "marker": "3"
+                        }
+                    ],
+                    "total": 4,
+                    "processingTimeMs": 1578.5,
+                    "creditsConsumed": 4
+                }
+            }
+        }
+    ]
+}

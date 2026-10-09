@@ -18,8 +18,9 @@ import { zLinkedinProfileSearchBody } from "./schema/inputs.ts";
  *     $0.0032 / $0.008) remain as FALLBACK only.
  *   - Pages scraped is not reported, but IS reconstructible from the exact
  *     PAY_PER_EVENT total: pages = round((usageTotalUsd − profiles ×
- *     perProfileRate) / pageRate), clamped so a run that returned profiles is
- *     never attributed zero pages (v1 `reconstructSearchPages`).
+ *     perProfileRate) / pageRate), floored at max(1, ceil(profiles/25)) —
+ *     delivered-profile evidence, lag-independent (v1
+ *     `reconstructSearchPages` hardened for the lagging total).
  *   - The poll override stamps the reconstruction ONTO the output
  *     (`{searchPages, profileCount, profiles}`) — the counts users are
  *     billed on are the counts they can see.
@@ -54,6 +55,14 @@ export default defineEndpoint({
             "and profile counts ride the output. Runs asynchronously.",
         docsUrl: "https://apify.com/harvestapi/linkedin-profile-search",
         categories: ["linkedin", "people-enrichment"],
+        notes: [
+            "Sparse result pages are still charged - searchPages can " +
+            "exceed ceil(profiles / 25) when the query returns thin " +
+            "pages.",
+            "Segmented queries (multi-location, multi-company) each " +
+            "charge at least one search page even when a segment " +
+            "returns zero profiles.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */
@@ -105,6 +114,12 @@ export default defineEndpoint({
             }
             const status = utils.json.optionalGet(res.body, "$.data.status");
             if (exitCode === 0 && status === "SUCCEEDED") {
+                // The run settles IMMEDIATELY (no settle-wait — see the
+                // provider poll): billing is the derived fold over this
+                // doc's own evidence counts. `usageTotalUsd` is read below
+                // ONLY to reconstruct the page count; when it lags the
+                // reconstruction floors to ≥1 page with profiles present
+                // (money follows evidence).
                 const datasetId = utils.json.optionalGet(
                     res.body,
                     "$.data.defaultDatasetId",
@@ -158,10 +173,16 @@ export default defineEndpoint({
                     ) ?? 0.008)
                     : 0;
                 // v1 reconstructSearchPages: exact PAY_PER_EVENT total minus
-                // the profile charges, divided by the LIVE page rate;
-                // clamped ≥1 when profiles came back, degraded to 0/1 on a
-                // missing usage total (money follows evidence)
-                const floor = profiles.length > 0 ? 1 : 0;
+                // the profile charges, divided by the LIVE page rate. The
+                // total LAGS completion (~3-10 s), so the count is floored
+                // by evidence that never lags: a page yields at most 25
+                // profiles (the estimate's own constant) — N delivered
+                // profiles prove ceil(N/25) pages — and a successful run
+                // always charges ≥1 page. Both are lower bounds of the true
+                // count, so the max never over-bills; a lagging total plus
+                // SPARSE pages still under-bills the sparse part (accepted:
+                // closing it needs a settle-wait).
+                const floor = Math.max(1, Math.ceil(profiles.length / 25));
                 const searchPages = typeof totalUsd === "number" && totalUsd > 0
                     ? Math.max(
                         Math.round(
@@ -171,33 +192,21 @@ export default defineEndpoint({
                         floor,
                     )
                     : floor;
-                const model = utils.json.optionalGet(
-                    res.body,
-                    "$.data.pricingInfo.pricingModel",
-                );
                 // merge widens the literal to Json (fn bodies are executable
                 // JS — no TS annotations allowed in closed terms)
                 const output = utils.json.merge(
                     { searchPages, profileCount: profiles.length },
                     { profiles },
                 );
+                // const-inferred literal discriminant (closed term)
+                const phase = "settled";
                 return {
                     kind: "COMPLETED",
                     httpStatus: 200,
                     output,
                     state: {
                         externalRunId: runId,
-                        data: {
-                            datasetId,
-                            searchPages,
-                            profileCount: profiles.length,
-                            ...(typeof model === "string"
-                                ? { pricingModel: model }
-                                : {}),
-                            ...(totalUsd !== undefined
-                                ? { usageTotalUsd: totalUsd }
-                                : {}),
-                        },
+                        data: { phase, datasetId },
                     },
                 };
             }
@@ -298,8 +307,8 @@ export default defineEndpoint({
                 : mode === "Full + email search"
                 ? "full_profile_with_email"
                 : undefined;
-            // quantities only (D27) — the vendor's usageTotalUsd claim is
-            // the provider consolidate's job
+            // quantities only (D27) — the engine folds them through the
+            // pinned card; there is no vendor claim (no consolidate)
             return {
                 counts: {
                     "search_page": pages,

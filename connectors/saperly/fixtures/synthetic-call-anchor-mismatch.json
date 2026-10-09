@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-call-anchor-mismatch",
+    "description": "A foreign/guessed callId under your own numberId: the anchor fetch answers 200 but the pair check fails -> uniform 404 as data (indistinguishable from missing); the artifact is never fetched.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-9",
+                    "numberId": "num-FOREIGN",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z",
+                    "durationSec": 53,
+                    "costCents": 25
+                }
+            }
+        }
+    ]
+}

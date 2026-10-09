@@ -1,0 +1,18 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 403 body from the Organization Search reference (free plans cannot call it).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/mixed_companies/search?q_organization_domains_list%5B%5D=apollo.io&per_page=2"
+            },
+            "res": {
+                "status": 403,
+                "body": {
+                    "message": "This endpoint is only available to Apollo users on paid plans."
+                }
+            }
+        }
+    ]
+}

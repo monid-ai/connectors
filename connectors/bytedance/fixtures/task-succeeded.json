@@ -1,6 +1,6 @@
 {
     "name": "task-succeeded",
-    "description": "The canonical happy Seedance run, recorded live on bytedance#seedance-2.0-mini (480p, 4s): submit parks RUNNING, one still-running poll tick, then the terminal poll carrying content.video_url and the vendor's token meter. Settles 200 with 40594 completion tokens on the no-reference-video rate line. The two identical running ticks the recording captured are trimmed to one (minimal shared chain), and the signed result URL is redacted (it expires in 24h and carries a signature). {{request.url}} / {{request.origin}} bind per endpoint, so one chain serves all four models.",
+    "description": "The canonical happy Seedance run, recorded live on bytedance#v1/video/seedance-2.0-mini (480p, 4s): submit parks RUNNING, one still-running poll tick, then the terminal poll carrying content.video_url and the vendor's token meter. Settles 200 with 40594 completion tokens on the no-reference-video rate line. The two identical running ticks the recording captured are trimmed to one (minimal shared chain), and the signed result URL is redacted (it expires in 24h and carries a signature). {{request.url}} / {{request.origin}} bind per endpoint, so one chain serves all four models.",
     "calls": [
         {
             "req": {

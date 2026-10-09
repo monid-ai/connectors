@@ -9,6 +9,7 @@ import {
     zRequestDefaults,
     zTimeoutsSection,
     zUsageSection,
+    zWebhooksSection,
 } from "../sections/mod.ts";
 
 /**
@@ -37,6 +38,10 @@ export const zProviderDef = z.strictObject({
     /** Provider-defaulted lifecycle (the actorRunLifecycle-attached-to-
      *  every-def equivalent) — endpoints inherit each phase leaf-wise. */
     lifecycle: zLifecycleSection.optional(),
+    /** Account-scope webhooks (design D36) — NOT a defaults section:
+     *  nothing falls back into endpoints; the provider IS the owner of
+     *  its vendor-account event stream. */
+    webhooks: zWebhooksSection.optional(),
 });
 
 export type ProviderDefSeed = z.input<typeof zProviderDef>;

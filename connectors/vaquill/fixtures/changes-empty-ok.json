@@ -1,0 +1,110 @@
+{
+    "name": "changes-empty-ok",
+    "description": "Change history page that found nothing observed: 200 with `changes: []` and `creditsConsumed: 1`. The vendor charges the poll; the broker absorbs it, so this settles at nothing.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/changes?limit=3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "actId": "USC_T42_C21_S1983",
+                    "section": {
+                        "actId": "USC_T42_C21_S1983",
+                        "citation": "42 U.S.C. § 1983 (2026)",
+                        "citationShort": "42 U.S.C. § 1983",
+                        "title": "Civil action for deprivation of rights",
+                        "corpusType": "USC",
+                        "state": "federal",
+                        "year": 2026,
+                        "excerpt": "Every person who, under color of any statute, ordinance, regulation, custom, or usage, of any State or Territory or the District of Columbia, subjects, or causes to be subjected, any citizen of the United States or other person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Constitution and laws, shall be liable to the party injured in an action at law, suit in equity, or other proper proceeding for redress, except that in any action...",
+                        "body": null,
+                        "titleNumber": "42",
+                        "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                        "chapter": "21",
+                        "chapterName": "CIVIL RIGHTS",
+                        "sectionNumber": "1983",
+                        "sectionTitle": "Civil action for deprivation of rights",
+                        "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1983: Civil action for deprivation of rights",
+                        "breadcrumb": [
+                            {
+                                "type": "title",
+                                "num": "42",
+                                "label": "Title 42",
+                                "name": "THE PUBLIC HEALTH AND WELFARE"
+                            },
+                            {
+                                "type": "chapter",
+                                "num": "21",
+                                "label": "Chapter 21",
+                                "name": "CIVIL RIGHTS"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "USC",
+                            "titleNumber": 42,
+                            "chapter": "21"
+                        },
+                        "subchapter": "I",
+                        "subchapterName": "GENERALLY",
+                        "popularName": "Public Health and Welfare",
+                        "actStatus": "in_force",
+                        "goodLawStatus": "good_law",
+                        "crossReferencesUsc": [
+                            "28:1343",
+                            "8:43"
+                        ],
+                        "sourceCredit": "(R.S. § 1979; Pub. L. 96–170, § 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104–317, title III, § 309(c), Oct. 19, 1996, 110 Stat. 3853.)",
+                        "amendmentYears": [
+                            1996,
+                            1979
+                        ],
+                        "lastAmendedYear": 1996,
+                        "amendmentsCount": 2,
+                        "currentThrough": "2026-09-11",
+                        "effectiveDate": "1979-12-29",
+                        "history": "(R.S. § 1979; Pub. L. 96–170, § 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104–317, title III, § 309(c), Oct. 19, 1996, 110 Stat. 3853.)\n\nCodification\n\nR.S. § 1979 derived from act Apr. 20, 1871, ch. 22, § 1, 17 Stat. 13.\n\nSection was formerly classified to section 43 of Title 8, Aliens and Nationality.\n\nAmendments\n\n1996—Pub. L. 104–317 inserted before period at end of first sentence “, except that in any action brought against a judicial officer for an act or omission taken in such officer’s judi",
+                        "publicLaws": [
+                            "Pub. L. 104-317",
+                            "Pub. L. 96-170"
+                        ],
+                        "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1983.txt",
+                        "wordCount": 339,
+                        "originalEnactmentDate": "1979-12-29",
+                        "originalEnactmentDateRaw": "Dec. 29, 1979",
+                        "publisherKey": "420000000198300000000000000000000",
+                        "displayLabel": "42 U.S.C. § 1983",
+                        "publicLawCites": [
+                            {
+                                "type": "revised_statutes",
+                                "section": "1979",
+                                "display": "R.S. §1979"
+                            },
+                            {
+                                "type": "public_law",
+                                "congress": 96,
+                                "law": 170,
+                                "displayId": "Pub. L. 96-170",
+                                "date": "1979-12-29",
+                                "statVolume": 93,
+                                "statPage": 1284,
+                                "statAtLarge": "93 Stat. 1284",
+                                "section": "1",
+                                "display": "Pub. L. 96–170, § 1, Dec. 29, 1979, 93 Stat. 1284"
+                            }
+                        ],
+                        "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1983&num=0&edition=prelim"
+                    },
+                    "changes": [],
+                    "total": 0,
+                    "hasMore": false,
+                    "coverage": "Observed changes only: what a refresh of this source detected, from when change capture began for it through today, retained 5 years. This is not the section's legislative history, and an empty list means no captured change rather than never amended.",
+                    "processingTimeMs": 1374.8,
+                    "creditsConsumed": 1
+                }
+            }
+        }
+    ]
+}

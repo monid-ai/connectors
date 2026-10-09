@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Scrape Markdown response schema (docs.context.dev/api-reference/web-scraping/markdown, 2026-09-17); key_metadata carries a placeholder balance.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/markdown?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "markdown": "# Example Domain\n\nThis domain is for use in illustrative examples in documents.",
+                    "contentLength": 84,
+                    "url": "https://example.com",
+                    "metadata": {
+                        "title": "Example Domain",
+                        "language": "en",
+                        "canonicalUrl": "https://example.com/"
+                    },
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ1",
+                    "finalDOMState": "loaded"
+                }
+            }
+        }
+    ]
+}

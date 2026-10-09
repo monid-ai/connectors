@@ -54,9 +54,11 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "content tokens",
-                    // 1 credit per 1k tokens — v1 makePerUnitPrice(1cr, 1000)
-                    every: 1000,
-                    consumes: { credit: "default", amount: 1 },
+                    // $0.001 per 1k tokens, LINEAR (reconcile 2026-09-16):
+                    // v1 billed fractionally (amount x units / per) — the
+                    // every:1000 block fold overcharged short pages by up
+                    // to one whole block
+                    consumes: { credit: "default", amount: 0.001 },
                     description:
                         "full-content extraction tokens (only charged " +
                         "when search_options.full_content.enable is set)",

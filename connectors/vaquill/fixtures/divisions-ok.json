@@ -1,0 +1,40 @@
+{
+    "name": "divisions-ok",
+    "description": "One level of the hierarchy under 42 U.S.C. chapter 21: flat 1 credit, each division carrying its own section count.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?corpusType=USC&titleNumber=42&chapter=21"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "corpusType": "USC",
+                    "level": "sections",
+                    "parentLabel": "Title 42, Chapter 21",
+                    "divisions": [
+                        {
+                            "identifier": "1981",
+                            "name": "Equal rights under the law",
+                            "kind": "section",
+                            "isLeaf": true,
+                            "actId": "USC_T42_C21_S1981"
+                        },
+                        {
+                            "identifier": "1981a",
+                            "name": "Damages in cases of intentional discrimination in employment",
+                            "kind": "section",
+                            "isLeaf": true,
+                            "actId": "USC_T42_C21_S1981a"
+                        }
+                    ],
+                    "count": 94,
+                    "truncated": false,
+                    "processingTimeMs": 1259.8,
+                    "creditsConsumed": 1
+                }
+            }
+        }
+    ]
+}

@@ -26,6 +26,9 @@ export default defineEndpoint({
             "query string.",
         docsUrl: "https://api-docs.opoint.com/references/search-request",
         categories: ["news-search"],
+        notes: [
+            "Zero-hit searches still bill one call.",
+        ],
     },
     /** PUBLIC identity (design D22): shares the upstream `POST /search/`. */
     endpoint: "/search-advanced",

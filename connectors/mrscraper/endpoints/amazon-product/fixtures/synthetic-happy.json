@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 50 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/amazon/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "asin": "B0CP9YB3Q4",
+                        "parent_asin": "B0CP9YB3Q4",
+                        "brand": "Example",
+                        "title": "Example Wireless Earbuds",
+                        "price": {
+                            "current": 49.99,
+                            "currency": "USD"
+                        },
+                        "availability": "In Stock",
+                        "rating": 4.4,
+                        "review_count": 1287,
+                        "images": [
+                            "https://m.media-amazon.com/images/I/example.jpg"
+                        ],
+                        "categories": [
+                            "Electronics",
+                            "Headphones"
+                        ]
+                    },
+                    "tokenUsage": 50
+                }
+            }
+        }
+    ]
+}

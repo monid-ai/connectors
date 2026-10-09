@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 408 error envelope (a truncated extraction under an explicit deadline is not billed); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/brand/ai/products"
+            },
+            "res": {
+                "status": 408,
+                "body": {
+                    "message": "Request timed out",
+                    "error_code": "REQUEST_TIMEOUT",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9913
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

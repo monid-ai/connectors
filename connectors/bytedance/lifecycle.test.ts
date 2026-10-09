@@ -145,7 +145,8 @@ Deno.test("bytedance: modelling ONE rate column would have overcharged the recor
     // billed every run at the no-video column; on this real recording that is
     // a ~67% overcharge against what BytePlus actually charges.
     const bundle = await testBundle();
-    const model = bundle.endpoints["bytedance#seedance-2.0-mini"].usage.model!;
+    const model = bundle.endpoints["bytedance#v1/video/seedance-2.0-mini"].usage
+        .model!;
     assert(model.kind === "COMPOSITE");
     const actual = REF_VIDEO_TOKENS *
         model.components["480p_with_video"].consumes.amount;
@@ -159,7 +160,7 @@ Deno.test("bytedance: task failure → synthesized 500, zero usage, digested err
     const fixture = await loadFixture(
         `${HERE}fixtures/synthetic-task-failed.json`,
     );
-    const id = "bytedance#seedance-2.0";
+    const id = "bytedance#v1/video/seedance-2.0";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -180,7 +181,7 @@ Deno.test("bytedance: success with no video_url → synthesized 502, zero usage"
     const fixture = await loadFixture(
         `${HERE}fixtures/synthetic-task-no-video-url.json`,
     );
-    const id = "bytedance#seedance-2.5";
+    const id = "bytedance#v1/video/seedance-2.5";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -198,7 +199,7 @@ Deno.test("bytedance: success with no video_url → synthesized 502, zero usage"
 
 Deno.test("bytedance: rejected submit is DATA — vendor status, zero usage, unwrapped envelope", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/submit-rejected.json`);
-    const id = "bytedance#seedance-2.0-mini";
+    const id = "bytedance#v1/video/seedance-2.0-mini";
     const result = await runEndpoint({
         unit: await testSealedUnit(id),
         input: inputFor(id),
@@ -221,7 +222,7 @@ Deno.test("bytedance: a failing poll THROWS rather than abandoning a paid genera
     const fixture = await loadFixture(
         `${HERE}fixtures/synthetic-poll-failed.json`,
     );
-    const id = "bytedance#seedance-2.0-mini";
+    const id = "bytedance#v1/video/seedance-2.0-mini";
     const unit = await testSealedUnit(id);
     // Design D7: retriable infrastructure failure, NOT a settled provider
     // error — the task is still running and still billing upstream.
@@ -250,12 +251,12 @@ Deno.test("bytedance: estimates are deduced from the vendor's token formula", as
     // 720p 16:9 × 5s = 1280×720×24×5/1024 = 108,000 tokens (the published
     // BytePlus worked example), at 2.0's $7.00/1M = $0.756.
     assertEquals(
-        await estimateFor("bytedance#seedance-2.0", { content: text }),
+        await estimateFor("bytedance#v1/video/seedance-2.0", { content: text }),
         { credits: { default: 0.756 }, evidence: { "720p": 108000 } },
     );
 
     // 4K 21:9 × 10s — the ratio table is consulted, not assumed 16:9.
-    const uhd = await estimateFor("bytedance#seedance-2.0", {
+    const uhd = await estimateFor("bytedance#v1/video/seedance-2.0", {
         content: text,
         resolution: "4k",
         ratio: "21:9",
@@ -265,7 +266,7 @@ Deno.test("bytedance: estimates are deduced from the vendor's token formula", as
 
     // A reference video moves the estimate to the cheaper column BEFORE the
     // run, so the hold matches what the vendor will actually charge.
-    const ref = await estimateFor("bytedance#seedance-2.0", {
+    const ref = await estimateFor("bytedance#v1/video/seedance-2.0", {
         content: [...text, {
             type: "video_url",
             video_url: { url: "https://example.test/clip.mp4" },
@@ -277,7 +278,7 @@ Deno.test("bytedance: estimates are deduced from the vendor's token formula", as
     // "auto" defers the LENGTH to the model, so the estimate must reserve the
     // worst case it may pick (30s), not collapse to the 5s default. v1 shipped
     // `Number("auto")` here — NaN — and under-held a 30s run by ~6×.
-    const auto = await estimateFor("bytedance#seedance-2.5", {
+    const auto = await estimateFor("bytedance#v1/video/seedance-2.5", {
         content: text,
         duration: "auto",
     });
@@ -288,7 +289,7 @@ Deno.test("bytedance: the input schema rejects before the wire", async () => {
     const text = [{ type: "text", text: "a cat" }];
     const rejects = async (body: Json, why: string) => {
         await assertRejects(
-            () => estimateFor("bytedance#seedance-2.5", body),
+            () => estimateFor("bytedance#v1/video/seedance-2.5", body),
             Error,
             "INVALID_INPUT",
             why,
@@ -316,18 +317,21 @@ Deno.test("bytedance: the input schema rejects before the wire", async () => {
         withUrl("data:image/png;base64,iVBOR"),
         "inline base64 data: URL",
     );
-    await rejects(withUrl("asset://abc123"), "asset:// reference");
     await rejects(withUrl("http://example.test/a.png"), "plain http://");
     await rejects(withUrl("not-a-url"), "malformed reference URL");
+    // asset://<id> is REJECTED (owner decision 2026-09-17): only public
+    // https:// media — provider-private Asset Center references are not
+    // part of the caller contract
+    await rejects(withUrl("asset://abc123"), "Ark asset:// reference");
 });
 
 Deno.test({
     name:
-        "bytedance#seedance-2.0-mini live: generates a real video and bills actual tokens",
+        "bytedance#v1/video/seedance-2.0-mini live: generates a real video and bills actual tokens",
     ignore: liveSkip("bytedance"),
     fn: async () => {
         const result = await runEndpoint({
-            unit: await testSealedUnit("bytedance#seedance-2.0-mini"),
+            unit: await testSealedUnit("bytedance#v1/video/seedance-2.0-mini"),
             input: {
                 body: {
                     content: [{ type: "text", text: "a cat on a beach" }],

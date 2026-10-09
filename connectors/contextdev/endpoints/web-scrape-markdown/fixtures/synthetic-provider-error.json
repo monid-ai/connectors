@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 400 error envelope (message, error_code, key_metadata, request_id) for a page Context.dev could not access; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/markdown?url=https%3A%2F%2Fexample.com"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "message": "Failed to access website",
+                    "error_code": "WEBSITE_ACCESS_ERROR",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

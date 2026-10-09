@@ -1,0 +1,45 @@
+{
+    "name": "search-deep-ok",
+    "description": "Search1API /search Deep Search happy path: crawl_results=2, results carry content fields (array trimmed by record). Composite: 1 credit call + 1 credit per crawled page.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.search1api.com/search",
+                "body": {
+                    "query": "deno 2 release notes",
+                    "max_results": 3,
+                    "crawl_results": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchParameters": {
+                        "query": "deno 2 release notes",
+                        "max_results": 3,
+                        "page": 1,
+                        "crawl_results": 2,
+                        "image": false,
+                        "include_sites": [],
+                        "exclude_sites": []
+                    },
+                    "results": [
+                        {
+                            "title": "Releases \u00b7 denoland/deno - GitHub",
+                            "link": "https://github.com/denoland/deno/releases",
+                            "snippet": "A modern runtime for JavaScript and TypeScript. Contribute to denoland/deno development by creating an account on GitHub.",
+                            "content": "Releases \u00b7 denoland/deno \u00b7 GitHub\n\nSkip to content\n\n## Navigation Menu\n\n[](/)\n\n[Sign in](/login?return_to=https%3A%2F%2Fgithub.com%2Fdenoland%2Fdeno%2Freleases)\n\nAppearance settings\n\n- Platform\n\n  - AI CODE CREATION\n\n    - [GitHub CopilotWrite better code with AI](https://github.com/features/copilot)\n    - [GitHub Copilot appDirect agents from issue to merge](https://github.com/features/ai/github-app)\n    - [MCP RegistryIntegrate external tools](https://github.com/mcp)\n\n  - DEVELOPER WORKFLOWS\n\n"
+                        },
+                        {
+                            "title": "Deno 2.8 | Deno",
+                            "link": "https://deno.com/blog/v2.8",
+                            "snippet": "May 22, 2026 \u00b7 Deno 2.8 is here. This is our biggest minor release to date and we\u2019re excited to share it with you. To upgrade to Deno 2.8, run the following in your terminal: If Deno is not yet installed, run one of the following commands to install or learn how to install it here.",
+                            "content": "Deno 2.8 is here. This is our biggest minor release to date and we\u2019re excited to share it with you.\n\nTo upgrade to Deno 2.8, run the following in your terminal:\n\n```\ndeno upgrade\n```\n\nIf Deno is not yet installed, run one of the following commands to install or [learn how to install it here](https://docs.deno.com/runtime/manual/getting_started/installation).\n\n```\n# Using Shell (macOS and Linux):\ncurl -fsSL https://deno.land/install.sh | sh\n\n# Using PowerShell (Windows):\niwr https://deno.land/ins"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

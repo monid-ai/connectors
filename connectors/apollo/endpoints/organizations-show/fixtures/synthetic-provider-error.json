@@ -1,0 +1,18 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 422 body from the Get Complete Organization Info reference (an id that is not a valid Apollo id).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/not-an-id"
+            },
+            "res": {
+                "status": 422,
+                "body": {
+                    "error": "Parameters misconfigured. id is not a valid ID"
+                }
+            }
+        }
+    ]
+}

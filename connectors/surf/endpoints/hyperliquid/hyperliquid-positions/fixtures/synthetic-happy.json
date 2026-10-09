@@ -1,0 +1,55 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/hyperliquid/positions?address=test"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "account_value": 1,
+                        "address": "address-1",
+                        "cross_maintenance_margin_used": 1,
+                        "margin_ratio": 1,
+                        "positions": [
+                            {
+                                "cum_funding": {
+                                    "all_time": 1,
+                                    "since_change": 1,
+                                    "since_open": 1
+                                },
+                                "distance_to_liquidation": 1,
+                                "entry_price": 1,
+                                "leverage_type": "leverage_type-1",
+                                "leverage_value": 1,
+                                "liquidation_price": 1,
+                                "margin_used": 1,
+                                "mark_price": 1,
+                                "max_leverage": 1,
+                                "position_value": 1,
+                                "return_on_equity": 1,
+                                "side": "side-1",
+                                "size": 1,
+                                "symbol": "symbol-1",
+                                "unrealized_pnl": 1
+                            }
+                        ],
+                        "timestamp": 1,
+                        "total_margin_used": 1,
+                        "total_notional_pos": 1,
+                        "total_raw_usd": 1,
+                        "withdrawable": 1
+                    },
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4
+                    }
+                }
+            }
+        }
+    ]
+}

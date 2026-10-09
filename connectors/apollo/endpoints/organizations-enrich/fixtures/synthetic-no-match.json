@@ -1,0 +1,16 @@
+{
+    "name": "synthetic-no-match",
+    "description": "SYNTHETIC — not recorded. A 200 whose organization is null — the no-match shape v1's extractResultCount handled from its drills; not shown in the current reference.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/enrich?domain=nope.invalid"
+            },
+            "res": {
+                "status": 200,
+                "body": { "organization": null }
+            }
+        }
+    ]
+}

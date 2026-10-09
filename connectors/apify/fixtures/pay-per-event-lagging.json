@@ -1,0 +1,74 @@
+{
+    "name": "pay-per-event-lagging",
+    "description": "A PAY_PER_EVENT run whose terminal poll catches the usage aggregation MID-FLIGHT: usageTotalUsd $0.001 covers only the actor-start charge, but 2 dataset items already exist. Measured live (n=8 runs): the run-record total lags SUCCEEDED by mean 6.4s / p95 ~9.6s. Irrelevant by design: the total is never read for billing - the derived fold over the pinned card settles ($0.001 start + 2 x $0.007 = $0.015) with zero added latency (no settle-wait, no consolidate).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "DS1",
+                        "usageTotalUsd": 0.001,
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "actor-start": {
+                                        "eventTitle": "Actor start",
+                                        "eventPriceUsd": 0.001
+                                    },
+                                    "event": {
+                                        "eventTitle": "Event scraped",
+                                        "eventPriceUsd": 0.007
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/datasets/DS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "event-1",
+                        "name": "Event One"
+                    },
+                    {
+                        "id": "event-2",
+                        "name": "Event Two"
+                    }
+                ]
+            }
+        }
+    ]
+}

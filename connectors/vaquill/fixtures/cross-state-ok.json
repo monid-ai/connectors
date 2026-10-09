@@ -1,0 +1,171 @@
+{
+    "name": "cross-state-ok",
+    "description": "Cross-state comparison that FOUND equivalents: 5 states back, billed 6 \u2014 flat, not per state. The paired half of cross-state-empty-ok, and together they pin the refund rule.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7/cross-state?limit=3"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "STATE_CA_Cciv_D3_P4_T5_C2_S1950.7",
+                        "citation": "Cal. Civ. Code \u00a7 1950.7",
+                        "citationShort": "Cal. Civ. Code \u00a7 1950.7",
+                        "title": "Section 1950.7",
+                        "corpusType": "STATE",
+                        "state": "ca",
+                        "year": 2025,
+                        "excerpt": "(a) Any payment or deposit of money the primary function of which is to secure the performance of a rental agreement for other than residential property or any part of the agreement, other than a payment or deposit, including an advance payment of rent, made to secure the execution of a rental agreement, shall be governed by the provisions of this section. With respect to residential property, the provisions of Section 1950.5 shall prevail.\n\n(b) The payment or deposit of money shall be held by..",
+                        "body": null,
+                        "titleNumber": "5",
+                        "titleName": "Cal. Civ. Code",
+                        "chapter": "2",
+                        "sectionNumber": "1950.7",
+                        "sectionTitle": "Section 1950.7",
+                        "displayPath": "California Code / Code civ / Division 3 / Part 4 / Title 5 / Chapter 2 / Section 1950.7",
+                        "breadcrumb": [
+                            {
+                                "label": "Code civ",
+                                "type": "code",
+                                "num": "civ"
+                            },
+                            {
+                                "num": "3",
+                                "label": "Division 3",
+                                "type": "division"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "STATE",
+                            "state": "ca",
+                            "code": "ca_CIV",
+                            "chapter": "2"
+                        },
+                        "actStatus": "in_force",
+                        "goodLawStatus": "unknown",
+                        "amendmentYears": [
+                            2003
+                        ],
+                        "lastAmendedYear": 2003,
+                        "amendmentsCount": 1,
+                        "effectiveDate": "2004-01-01",
+                        "effectiveDateRaw": "January 1, 2004",
+                        "history": "Amended by Stats. 2003, Ch. 89, Sec. 1.   Effective January 1, 2004.",
+                        "textUrl": "https://statutes-us.vaquill.ai/state/ca/sections/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7.txt",
+                        "wordCount": 666,
+                        "displayLabel": "Cal. CIV \u00a7 1950.7",
+                        "externalUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.7."
+                    },
+                    "neighbors": [
+                        {
+                            "section": {
+                                "actId": "STATE_MS_T89_C8_S89-8-21",
+                                "citation": "Miss. Code Ann. \u00a7 89-8-21",
+                                "citationShort": "Miss. Code Ann. \u00a7 89-8-21",
+                                "title": "\u00a7 89-8-21. Tenant\u2019s security deposit.",
+                                "corpusType": "STATE",
+                                "state": "ms",
+                                "year": 2026,
+                                "excerpt": "Any payment or deposit of money, the primary function of which is to secure the performance of a rental agreement or any part of such an agreement, other than a payment or deposit, including an advance payment of rent, made to secure the execution of a rental agreement shall be governed by the provisions of this section.\n(2)\nAny such payment or deposit of money shall be held by the landlord for the tenant who is a party to such agreement. The claim of a tenant to such payment or deposit shall...",
+                                "body": null,
+                                "titleNumber": "89",
+                                "chapter": "8",
+                                "sectionNumber": "89-8-21",
+                                "sectionTitle": "\u00a7 89-8-21. Tenant\u2019s security deposit.",
+                                "displayPath": "Mississippi Code / Title 89 / Chapter 8 / Section 89-8-21",
+                                "breadcrumb": [
+                                    {
+                                        "type": "title",
+                                        "num": "89",
+                                        "label": "Title 89"
+                                    },
+                                    {
+                                        "type": "chapter",
+                                        "num": "8",
+                                        "label": "Chapter 8"
+                                    }
+                                ],
+                                "parent": {
+                                    "corpusType": "STATE",
+                                    "state": "ms",
+                                    "code": "ms_89",
+                                    "chapter": "8"
+                                },
+                                "actStatus": "in_force",
+                                "goodLawStatus": "good_law",
+                                "amendmentYears": [
+                                    1991
+                                ],
+                                "lastAmendedYear": 1991,
+                                "amendmentsCount": 1,
+                                "history": "Laws, 1991, ch. 478, \u00a7 11, eff from and after July 1, 1991.",
+                                "textUrl": "https://statutes-us.vaquill.ai/state/ms/sections/STATE_MS_T89_C8_S89-8-21.txt",
+                                "wordCount": 322,
+                                "displayLabel": "Miss. Code Ann. \u00a7 89-8-21"
+                            },
+                            "state": "ms",
+                            "similarity": 0.7539
+                        },
+                        {
+                            "section": {
+                                "actId": "STATE_WA_T59_C20_S170",
+                                "citation": "RCW 59.20.170",
+                                "citationShort": "RCW 59.20.170",
+                                "title": "RCW 59.20.170: Moneys paid as deposit or security for performance by tenant\u2014Deposit by landlord in trust account\u2014Receipt\u2014Claims.",
+                                "corpusType": "STATE",
+                                "state": "wa",
+                                "year": 2026,
+                                "excerpt": "(1) For leases or rental agreements entered into on or after May 7, 2025, if a landlord charges a tenant any move-in fees or security deposits, the move-in fees and security deposits combined may not exceed one month's rent, unless the tenant brings any pets into the tenancy, in which case the move-in fees and security deposits combined may not exceed two months' rent. This subsection (1) does not apply to leases or rental agreements entered into before May 7, 2025, even if such leases or...",
+                                "body": null,
+                                "titleNumber": "59",
+                                "chapter": "20",
+                                "sectionNumber": "170",
+                                "sectionTitle": "RCW 59.20.170: Moneys paid as deposit or security for performance by tenant\u2014Deposit by landlord in trust account\u2014Receipt\u2014Claims.",
+                                "displayPath": "Washington Code / Title 59 / Chapter 20 / Section 170",
+                                "breadcrumb": [
+                                    {
+                                        "type": "title",
+                                        "num": "59",
+                                        "label": "Title 59"
+                                    },
+                                    {
+                                        "type": "chapter",
+                                        "num": "20",
+                                        "label": "Chapter 20"
+                                    }
+                                ],
+                                "parent": {
+                                    "corpusType": "STATE",
+                                    "state": "wa",
+                                    "code": "wa_59",
+                                    "chapter": "20"
+                                },
+                                "actStatus": "in_force",
+                                "goodLawStatus": "good_law",
+                                "amendmentYears": [
+                                    2025,
+                                    2004
+                                ],
+                                "lastAmendedYear": 2025,
+                                "amendmentsCount": 4,
+                                "history": "[ 2025 c 209 s 204; 2004 c 136 s 2; 1999 c 359 s 15; 1979 ex.s. c 186 s 12.] NOTES: Effective date \u2014 2025 c 209: See note following RCW 59.18.700. Severability \u2014 1979 ex.s. c 186: See note following RCW 59.20.030.",
+                                "textUrl": "https://statutes-us.vaquill.ai/state/wa/sections/STATE_WA_T59_C20_S170.txt",
+                                "wordCount": 311,
+                                "displayLabel": "RCW 59.20.170",
+                                "externalUrl": "https://apps.leg.wa.gov/rcw/default.aspx?cite=59.20.170"
+                            },
+                            "state": "wa",
+                            "similarity": 0.6133
+                        }
+                    ],
+                    "statesCovered": 3,
+                    "processingTimeMs": 2823.5,
+                    "creditsConsumed": 6
+                }
+            }
+        }
+    ]
+}

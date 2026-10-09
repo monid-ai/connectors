@@ -1,0 +1,51 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 2 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/china-south/flight/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "itineraries": [
+                            {
+                                "departure": [
+                                    {
+                                        "flight": "CZ0361",
+                                        "from": "BKK",
+                                        "to": "CAN",
+                                        "depart": "2026-11-05T08:30",
+                                        "arrive": "2026-11-05T12:20"
+                                    },
+                                    {
+                                        "flight": "CZ0387",
+                                        "from": "CAN",
+                                        "to": "CGK",
+                                        "depart": "2026-11-05T15:00",
+                                        "arrive": "2026-11-05T19:10"
+                                    }
+                                ],
+                                "return": [],
+                                "fares": [
+                                    {
+                                        "class": "economy",
+                                        "brand": "Basic",
+                                        "price": 312.0,
+                                        "currency": "USD"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "tokenUsage": 2
+                }
+            }
+        }
+    ]
+}

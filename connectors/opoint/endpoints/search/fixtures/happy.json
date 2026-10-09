@@ -1,0 +1,165 @@
+{
+    "name": "happy",
+    "description": "raw recording (opoint#search, scenario happy) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.opoint.com/search/",
+                "body": {
+                    "searchterm": "header:spotify AND lang:en",
+                    "params": {
+                        "requestedarticles": 1,
+                        "main": {
+                            "header": 1,
+                            "text": 1
+                        },
+                        "max_article_length": 256,
+                        "allsubject": "0",
+                        "readership": true
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchresult": {
+                        "documents": 1,
+                        "response_code": 200,
+                        "first_timestamp": 1789619187,
+                        "last_timestamp": 1789619187,
+                        "generated_timestamp": 1789619446,
+                        "cache": false,
+                        "search_start": 2147483647,
+                        "context": "357864460:1:0;TOTDOC=1",
+                        "count": 1,
+                        "range_count": 930,
+                        "range_start": 1789014646,
+                        "range_end": 0,
+                        "range_id": "d-7",
+                        "cacheage": -1,
+                        "cputime": 52,
+                        "host": "abel2.opoint.com",
+                        "compiledate": "Sep 10 2026 00:00:00",
+                        "branch": "NOT ACTIVE",
+                        "notimeout": true,
+                        "currency": "NOK",
+                        "netsprintindextimer": 40,
+                        "document": [
+                            {
+                                "id_site": 28405,
+                                "id_article": 52529,
+                                "hidden": false,
+                                "position": 1,
+                                "timezone": "America/Los_Angeles",
+                                "countrycode": "US",
+                                "countryname": "United States",
+                                "similarweb": {
+                                    "domain": "ecoustics.com",
+                                    "readership": {
+                                        "P": 0.480197,
+                                        "value": 47264
+                                    },
+                                    "article_readership": {
+                                        "P": 0.00001,
+                                        "DeltaP": 0.00257,
+                                        "DeltaPValue": 253,
+                                        "ExpectedP": 0.003308,
+                                        "ExpectedPValue": 326,
+                                        "StdExpectedP": 0.003822,
+                                        "StdExpectedPValue": 376,
+                                        "value": 1
+                                    }
+                                },
+                                "site_rank": {
+                                    "rank_global": 16629,
+                                    "rank_country": 2845
+                                },
+                                "unix_timestamp": 1789619187,
+                                "mediatype": {
+                                    "timemap": false,
+                                    "clip": false,
+                                    "hastext": true,
+                                    "haslogo": false,
+                                    "paywall": false,
+                                    "fulltext": true,
+                                    "text": "WEB"
+                                },
+                                "internal_search_reply": {
+                                    "id_site": 28405,
+                                    "id_article": 52529,
+                                    "text": ""
+                                },
+                                "stimestamp": 357864460,
+                                "local_time": {
+                                    "GMT": 1,
+                                    "text": "20260917T06:26:27+0200"
+                                },
+                                "local_rcf822_time": {
+                                    "text": "Thu, 17 Sep 2026 06:26:27 +0200"
+                                },
+                                "distribute_conditions": "",
+                                "language": {
+                                    "encoding": "iso-639",
+                                    "text": "en"
+                                },
+                                "word_count": 1327,
+                                "first_source": {
+                                    "id": 1238033,
+                                    "name": "Ecoustics - Panasonic Reviews & News",
+                                    "sitename": "Ecoustics",
+                                    "url": "https://www.ecoustics.com/brands/panasonic/",
+                                    "siteurl": "https://www.ecoustics.com"
+                                },
+                                "header": {
+                                    "matches": false,
+                                    "text": "Spotify Adds All 58 Taylor Swift Music Videos as Its YouTube Ambitions Get Harder to Ignore"
+                                },
+                                "body": {
+                                    "matches": false,
+                                    "truncated": true,
+                                    "text": "<p> Spotify spent most of its existence convincing listeners that music did not really require a screen. After building the largest paid audio-streaming service in the world, the company now appears rather interested in your eyeballs as well.</p> <p> All...</p>"
+                                },
+                                "articleimages": {
+                                    "count": 1,
+                                    "articleimage": [
+                                        {
+                                            "url": "https://www.ecoustics.com/wp-content/uploads/taylor-swift-videos-spotify-2026-1024x576.png"
+                                        }
+                                    ]
+                                },
+                                "caption": {
+                                    "text": " "
+                                },
+                                "quotes": [],
+                                "url": "https://www.ecoustics.com/news/spotify-taylor-swift-music-videos/",
+                                "orig_url": "https://www.ecoustics.com/news/spotify-taylor-swift-music-videos/",
+                                "url_common": "ecoustics.com",
+                                "topics": [
+                                    {
+                                        "id": 13,
+                                        "linktype_max": 6,
+                                        "linktype_now": 6,
+                                        "metacat": 2,
+                                        "metacat_level": 0,
+                                        "text": "Rank 3"
+                                    },
+                                    {
+                                        "id": 20,
+                                        "linktype_max": 6,
+                                        "linktype_now": 6,
+                                        "metacat": 3,
+                                        "metacat_level": 0,
+                                        "text": "Open"
+                                    }
+                                ],
+                                "screenshots": [],
+                                "author": "Jane Doe"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

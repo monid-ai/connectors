@@ -1,0 +1,209 @@
+{
+    "name": "cited-by-ok",
+    "description": "Inbound citations: flat 2 credits whatever the citer count.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/cited-by?limit=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "USC_T42_C21_S1983",
+                        "citation": "42 U.S.C. \u00a7 1983 (2026)",
+                        "citationShort": "42 U.S.C. \u00a7 1983",
+                        "title": "Civil action for deprivation of rights",
+                        "corpusType": "USC",
+                        "state": "federal",
+                        "year": 2026,
+                        "excerpt": "Every person who, under color of any statute, ordinance, regulation, custom, or usage, of any State or Territory or the District of Columbia, subjects, or causes to be subjected, any citizen of the United States or other person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Constitution and laws, shall be liable to the party injured in an action at law, suit in equity, or other proper proceeding for redress, except that in any action...",
+                        "body": null,
+                        "titleNumber": "42",
+                        "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                        "chapter": "21",
+                        "chapterName": "CIVIL RIGHTS",
+                        "sectionNumber": "1983",
+                        "sectionTitle": "Civil action for deprivation of rights",
+                        "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1983: Civil action for deprivation of rights",
+                        "breadcrumb": [
+                            {
+                                "type": "title",
+                                "num": "42",
+                                "label": "Title 42",
+                                "name": "THE PUBLIC HEALTH AND WELFARE"
+                            },
+                            {
+                                "type": "chapter",
+                                "num": "21",
+                                "label": "Chapter 21",
+                                "name": "CIVIL RIGHTS"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "USC",
+                            "titleNumber": 42,
+                            "chapter": "21"
+                        },
+                        "subchapter": "I",
+                        "subchapterName": "GENERALLY",
+                        "popularName": "Public Health and Welfare",
+                        "actStatus": "in_force",
+                        "goodLawStatus": "good_law",
+                        "crossReferencesUsc": [
+                            "28:1343",
+                            "8:43"
+                        ],
+                        "sourceCredit": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)",
+                        "amendmentYears": [
+                            1996,
+                            1979
+                        ],
+                        "lastAmendedYear": 1996,
+                        "amendmentsCount": 2,
+                        "currentThrough": "2026-09-11",
+                        "effectiveDate": "1979-12-29",
+                        "history": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)\n\nCodification\n\nR.S. \u00a7 1979 derived from act Apr. 20, 1871, ch. 22, \u00a7 1, 17 Stat. 13.\n\nSection was formerly classified to section 43 of Title 8, Aliens and Nationality.\n\nAmendments\n\n1996\u2014Pub. L. 104\u2013317 inserted before period at end of first sentence \u201c,\u2000except that in any action brought against a judicial officer for an act or omission taken in such officer\u2019s judi",
+                        "publicLaws": [
+                            "Pub. L. 104-317",
+                            "Pub. L. 96-170"
+                        ],
+                        "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1983.txt",
+                        "wordCount": 339,
+                        "originalEnactmentDate": "1979-12-29",
+                        "originalEnactmentDateRaw": "Dec. 29, 1979",
+                        "publisherKey": "420000000198300000000000000000000",
+                        "displayLabel": "42 U.S.C. \u00a7 1983",
+                        "publicLawCites": [
+                            {
+                                "type": "revised_statutes",
+                                "section": "1979",
+                                "display": "R.S. \u00a71979"
+                            },
+                            {
+                                "type": "public_law",
+                                "congress": 96,
+                                "law": 170,
+                                "displayId": "Pub. L. 96-170",
+                                "date": "1979-12-29",
+                                "statVolume": 93,
+                                "statPage": 1284,
+                                "statAtLarge": "93 Stat. 1284",
+                                "section": "1",
+                                "display": "Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284"
+                            }
+                        ],
+                        "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1983&num=0&edition=prelim"
+                    },
+                    "citers": [
+                        {
+                            "actId": "STATE_NE_C15_S15-840",
+                            "citation": "Neb. Rev. Stat. \u00a7 15-840",
+                            "citationShort": "Neb. Rev. Stat. \u00a7 15-840",
+                            "title": "View Statute 15-840",
+                            "corpusType": "STATE",
+                            "state": "ne",
+                            "year": 2026,
+                            "excerpt": "All liquidated and unliquidated claims and accounts payable against a city of the primary class shall: (1) Be presented in writing; (2) state the name of the claimant and the amount of the claim; and (3) fully and accurately identify the items or services for which payment is claimed or the time, place, nature, and circumstances giving rise to the claim. The city finance director shall be responsible for the preauditing and approval of all claims and accounts payable, and no warrant in payment..",
+                            "body": null,
+                            "chapter": "15",
+                            "sectionNumber": "15-840",
+                            "sectionTitle": "View Statute 15-840",
+                            "displayPath": "NE Code / Chapter 15 / Section 15-840",
+                            "breadcrumb": [
+                                {
+                                    "label": "Chapter 15",
+                                    "num": "15",
+                                    "type": "chapter"
+                                },
+                                {
+                                    "type": "section",
+                                    "num": "15-840",
+                                    "label": "Section 15-840"
+                                }
+                            ],
+                            "parent": {
+                                "corpusType": "STATE",
+                                "state": "ne",
+                                "code": "ne_15",
+                                "chapter": "15"
+                            },
+                            "actStatus": "in_force",
+                            "goodLawStatus": "good_law",
+                            "crossReferencesUsc": [
+                                "42:1983."
+                            ],
+                            "amendmentYears": [
+                                2020,
+                                1983
+                            ],
+                            "lastAmendedYear": 2020,
+                            "amendmentsCount": 5,
+                            "history": "Laws 1901, c. 16, \u00a7 126, p. 124; R.S.1913, \u00a7 4580; C.S.1922, \u00a7 3967; C.S.1929, \u00a7 15-839; R.S.1943, \u00a7 15-840; Laws 1967, c. 59, \u00a7 1, p. 196; Laws 1979, LB 145, \u00a7 1; Laws 1983, LB 52, \u00a7 1; Laws 2020, LB1003, \u00a7 148.",
+                            "htmlUrl": "https://statutes-us.vaquill.ai/state/ne/source/nebraskalegislature.gov/laws/statutes.php",
+                            "textUrl": "https://statutes-us.vaquill.ai/state/ne/sections/STATE_NE_C15_S15-840.txt",
+                            "stateHtmlUrl": "https://statutes-us.vaquill.ai/state/ne/source/nebraskalegislature.gov/laws/statutes.php",
+                            "wordCount": 642,
+                            "displayLabel": "Neb. Rev. Stat. \u00a7 15-840",
+                            "externalUrl": "https://nebraskalegislature.gov/laws/statutes.php?statute=15-840"
+                        },
+                        {
+                            "actId": "STATE_AR_T16_C123_S16-123-105",
+                            "citation": "Ark. Code Ann. \u00a7 16-123-105",
+                            "citationShort": "Ark. Code Ann. \u00a7 16-123-105",
+                            "title": "16-123-105. Civil rights offenses.",
+                            "corpusType": "STATE",
+                            "state": "ar",
+                            "year": 2026,
+                            "excerpt": "Every person who, under color of any statute, ordinance, regulation, custom, or usage of this state or any of its political subdivisions subjects, or causes to be subjected, any person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Arkansas Constitution shall be liable to the party injured in an action in circuit court for legal and equitable relief or other proper redress.\n\nIn the discretion of the court, a party held liable under...",
+                            "body": null,
+                            "titleNumber": "16",
+                            "chapter": "123",
+                            "sectionNumber": "16-123-105",
+                            "sectionTitle": "16-123-105. Civil rights offenses.",
+                            "displayPath": "Arkansas Code / Title 16 / Chapter 123 / Section 16-123-105",
+                            "breadcrumb": [
+                                {
+                                    "type": "title",
+                                    "num": "16",
+                                    "label": "Title 16"
+                                },
+                                {
+                                    "type": "chapter",
+                                    "num": "123",
+                                    "label": "Chapter 123"
+                                }
+                            ],
+                            "parent": {
+                                "corpusType": "STATE",
+                                "state": "ar",
+                                "code": "ar_16",
+                                "chapter": "123"
+                            },
+                            "actStatus": "in_force",
+                            "goodLawStatus": "good_law",
+                            "crossReferencesUsc": [
+                                "42:1983"
+                            ],
+                            "amendmentYears": [
+                                2003,
+                                1995
+                            ],
+                            "lastAmendedYear": 2003,
+                            "amendmentsCount": 3,
+                            "currentThrough": "Current through the First Extraordinary Session, 2026, including revisions made by the Bureau of Legislative Research under the direction of the Arkansas Code Revision Commission.",
+                            "history": "Acts 1993, No. 962, \u00a7 2; 1995, No. 480, \u00a7 2; 2003, No. 1185, \u00a7 251.",
+                            "wordCount": 157,
+                            "displayLabel": "Ark. Code Ann. \u00a7 16-123-105"
+                        }
+                    ],
+                    "total": 2,
+                    "truncated": true,
+                    "processingTimeMs": 1347.9,
+                    "creditsConsumed": 2
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "name": "search-pdf-ok",
+    "description": "/search with scrapeOptions where the single result is a 4-page PDF. RECORDED LIVE: Firecrawl bills 6 \u2014 2 search block + 1 page + 3 pages beyond the first. Pins that search bills PDF pages like /scrape does; without a pdf_page line the endpoint derived 3 and reported a false mismatch.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "web": [
+                            {
+                                "url": "https://css4.pub/2015/textbook/somatosensory.pdf",
+                                "title": "[PDF] Anatomy of the Somatosensory System - css4.pub",
+                                "description": "Anatomy of the Somatosensory System",
+                                "position": 1,
+                                "category": "pdf",
+                                "markdown": "Anatomy of the Somatosensory System\n\n1\nFROM WIKIBOOKS\n\nOur somatosensory system consists of sensors in the skin\nand sensors in our muscles, tendons, and joints. The receptors in the skin, the so called cutaneous receptors, tell\nus about temperature (thermoreceptors), pressure and surface texture (mechano receptors), and pain (nociceptors).\nThe receptors in muscles and joints provide information\nabout muscle length, muscle tension, and joint angles.\n\nOur somatosensory system consists of sensors i",
+                                "metadata": {
+                                    "scrapeId": "01a0ac58-e5aa-726f-b73c-44783bdcaf49",
+                                    "sourceURL": "https://css4.pub/2015/textbook/somatosensory.pdf",
+                                    "url": "https://css4.pub/2015/textbook/somatosensory.pdf",
+                                    "statusCode": 200,
+                                    "numPages": 4,
+                                    "totalPages": 4,
+                                    "title": "Anatomy of the Somatosensory System",
+                                    "contentType": "application/pdf",
+                                    "proxyUsed": "basic",
+                                    "cacheState": "hit",
+                                    "cachedAt": "2026-09-16T22:22:46.559Z",
+                                    "creditsUsed": 4
+                                }
+                            }
+                        ]
+                    },
+                    "creditsUsed": 6,
+                    "id": "01a0ac58-e5a5-710a-b3ef-15e748577390"
+                }
+            }
+        }
+    ]
+}

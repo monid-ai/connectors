@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Web Search response schema (docs.context.dev/api-reference/web-scraping/search, 2026-09-17), two results, credits_consumed 1; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/web/search"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "url": "https://docs.context.dev/introduction",
+                            "title": "The go-to web data API",
+                            "description": "Scrape websites into Markdown, crawl linked pages, and extract JSON.",
+                            "relevance": "high",
+                            "markdown": { "status": "skipped" }
+                        },
+                        {
+                            "url": "https://context.dev/pricing",
+                            "title": "Pricing",
+                            "description": "Simple, transparent pricing for the web data API.",
+                            "relevance": "medium",
+                            "markdown": { "status": "skipped" }
+                        }
+                    ],
+                    "query": "context dev api",
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ1",
+                    "cache_metadata": { "status": "miss", "age_ms": 0 }
+                }
+            }
+        }
+    ]
+}

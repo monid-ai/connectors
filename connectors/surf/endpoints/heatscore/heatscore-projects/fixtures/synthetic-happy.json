@@ -1,0 +1,142 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/heatscore/projects?time_range=24h&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "ai_summary": {},
+                            "baseline": 1,
+                            "change_percent": 1,
+                            "change_vs_previous_percent": 1,
+                            "computed_hour": 1,
+                            "core_state": {
+                                "driver": "driver-1",
+                                "priority": 1,
+                                "reason": "reason-1",
+                                "state": "state-1",
+                                "state_type": "state_type-1",
+                                "strength": "strength-1"
+                            },
+                            "driver": "driver-1",
+                            "evidence_score": 1,
+                            "heat_dimensions": {
+                                "derivative": 1,
+                                "derivative_components": [],
+                                "flow": 1,
+                                "movement": 1,
+                                "social": 1
+                            },
+                            "heat_score": 1,
+                            "heat_score_by_range": {},
+                            "heat_score_change_vs_previous_percent_by_range": {},
+                            "heat_score_previous_by_range": {},
+                            "liquidation_long_24h": 1,
+                            "liquidation_long_short_ratio_24h": 1,
+                            "liquidation_short_24h": 1,
+                            "logo": "logo-1",
+                            "market_relevance": 1,
+                            "metric": "metric-1",
+                            "name": "name-1",
+                            "open_interest": 1,
+                            "points_used": 1,
+                            "previous_value": 1,
+                            "price": 1,
+                            "price_change_percent": {
+                                "1h": 1,
+                                "24h": 1,
+                                "7d": 1
+                            },
+                            "project_id": "project_id-1",
+                            "project_slug": "project_slug-1",
+                            "rank": 1,
+                            "score": 1,
+                            "signed_z": 1,
+                            "symbol": "symbol-1",
+                            "time_range": "time_range-1",
+                            "token_id": "token_id-1",
+                            "token_signals": {},
+                            "updated_at": 1,
+                            "value": 1,
+                            "volume_24h": 1,
+                            "volume_24h_change_percent": 1
+                        },
+                        {
+                            "ai_summary": {},
+                            "baseline": 2,
+                            "change_percent": 2,
+                            "change_vs_previous_percent": 2,
+                            "computed_hour": 2,
+                            "core_state": {
+                                "driver": "driver-2",
+                                "priority": 2,
+                                "reason": "reason-2",
+                                "state": "state-2",
+                                "state_type": "state_type-2",
+                                "strength": "strength-2"
+                            },
+                            "driver": "driver-2",
+                            "evidence_score": 2,
+                            "heat_dimensions": {
+                                "derivative": 2,
+                                "derivative_components": [],
+                                "flow": 2,
+                                "movement": 2,
+                                "social": 2
+                            },
+                            "heat_score": 2,
+                            "heat_score_by_range": {},
+                            "heat_score_change_vs_previous_percent_by_range": {},
+                            "heat_score_previous_by_range": {},
+                            "liquidation_long_24h": 2,
+                            "liquidation_long_short_ratio_24h": 2,
+                            "liquidation_short_24h": 2,
+                            "logo": "logo-2",
+                            "market_relevance": 2,
+                            "metric": "metric-2",
+                            "name": "name-2",
+                            "open_interest": 2,
+                            "points_used": 2,
+                            "previous_value": 2,
+                            "price": 2,
+                            "price_change_percent": {
+                                "1h": 2,
+                                "24h": 2,
+                                "7d": 2
+                            },
+                            "project_id": "project_id-2",
+                            "project_slug": "project_slug-2",
+                            "rank": 2,
+                            "score": 2,
+                            "signed_z": 2,
+                            "symbol": "symbol-2",
+                            "time_range": "time_range-2",
+                            "token_id": "token_id-2",
+                            "token_signals": {},
+                            "updated_at": 2,
+                            "value": 2,
+                            "volume_24h": 2,
+                            "volume_24h_change_percent": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

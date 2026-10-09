@@ -16,7 +16,8 @@ export default defineEndpoint({
             "fundraising history, funding rounds, amounts raised, " +
             "investors, and valuation (funding_detail), plus mergers, " +
             "acquisitions, and investment activity (mna_and_investment) — " +
-            "are Enterprise-tier sections. List the sections you want in " +
+            "are available at premium per-section rates. List the sections " +
+            "you want in " +
             "the 'sections' filter (required — billing is per section). " +
             "The response data is keyed by section.",
         docsUrl: "https://docs.akta.pro/api-reference/company-data",
@@ -37,7 +38,11 @@ export default defineEndpoint({
         /** COMPOSITE, one component PER SECTION (design D25 addendum):
          *  akta prices each section DIFFERENTLY (vendor pricing table,
          *  verified on both the CLI and MCP surfaces — firmographic 2cr,
-         *  trust_signal 0.5cr, … mna_and_investment 5cr), so a uniform
+         *  trust_signal 0.5cr, … mna_and_investment 5cr; this table
+         *  DELIBERATELY replaces v1's uniform 2.5cr/section, which was a
+         *  representative price only — the live 2026-09-16 reconcile run
+         *  settled a 1-section firmographic call at exactly the table's
+         *  2cr claim), so a uniform
          *  "sections" count cannot price the run. Component ids are the
          *  VENDOR'S OWN section names verbatim — the counts vector maps
          *  1:1 onto akta's pricing-table rows and the per-section credit
@@ -119,13 +124,13 @@ export default defineEndpoint({
                 funding_detail: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
-                    description: "Enterprise-tier section",
+                    description: "Premium-rate section (3 credits)",
                     consumes: { credit: "default", amount: 3 },
                 },
                 mna_and_investment: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.RESULT,
-                    description: "Enterprise-tier section",
+                    description: "Premium-rate section (5 credits)",
                     consumes: { credit: "default", amount: 5 },
                 },
             },

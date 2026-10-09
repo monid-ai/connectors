@@ -1,0 +1,59 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. Free; meta.total_emails is the aggregate across every match.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/discover/people",
+                "body": {
+                    "industry": {
+                        "include": [
+                            "Financial Services"
+                        ]
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "domain": "stripe.com",
+                            "organization": "Stripe",
+                            "emails_count": {
+                                "personal": 32,
+                                "generic": 8,
+                                "total": 40
+                            }
+                        }
+                    ],
+                    "meta": {
+                        "results": 1247,
+                        "total_emails": {
+                            "personal": 50000,
+                            "generic": 8000,
+                            "total": 58000
+                        },
+                        "limit": 100,
+                        "offset": 0,
+                        "params": {
+                            "industry": {
+                                "include": [
+                                    "Financial Services"
+                                ]
+                            }
+                        },
+                        "filters": {
+                            "industry": {
+                                "include": [
+                                    "Financial Services"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-qwen-succeeded",
+    "description": "SYNTHETIC: the blocking Qwen-Image 3.0 call answers the finished image in one 200 — output.choices[0].message.content[{image}] plus the six usage counters the reference page documents (one input image, one output image, both in the 1K tier). The shapes follow the live API reference (2026-09-16); the URL is a placeholder. Serves both Qwen endpoints; the output tier is keyed from the REQUEST's size, the counts from usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "rewrite_status": "success",
+                        "choices": [
+                            {
+                                "finish_reason": "stop",
+                                "message": {
+                                    "role": "assistant",
+                                    "content": [
+                                        {
+                                            "image": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/qwen-1.png"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "usage": {
+                        "output_height": 1024,
+                        "output_width": 1024,
+                        "input_image_count": 1,
+                        "input_image_type": "qima_input_1k",
+                        "output_image_count": 1,
+                        "output_image_type": "qima_output_1k"
+                    },
+                    "request_id": "req-qwen"
+                }
+            }
+        }
+    ]
+}

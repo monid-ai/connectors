@@ -1,0 +1,92 @@
+{
+    "name": "synthetic-task-succeeded-cash",
+    "description": "SYNTHETIC: the happy chain with a charge_type cash receipt — the shape Kling documents when a task is paid from the account balance instead of a resource package (amount in currency, list_price beside it). Dollars are not this doc's pool, so consolidate claims NOTHING and the derived fold settles (design D4); the receipt is still stripped.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-1",
+                    "data": {
+                        "id": "926151964131065926",
+                        "status": "submitted",
+                        "create_time": 1789540454000,
+                        "update_time": 1789540454000
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-2",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "processing",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540470000,
+                            "outputs": [],
+                            "billing": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-3",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "succeeded",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540575000,
+                            "outputs": [
+                                {
+                                    "type": "video",
+                                    "id": "v-926151964131065926",
+                                    "url": "https://cdn.klingai.com/redacted/926151964131065926.mp4",
+                                    "watermark_url": "",
+                                    "duration": "5.041"
+                                }
+                            ],
+                            "billing": [
+                                {
+                                    "charge_type": "cash",
+                                    "cash_type": "balance",
+                                    "amount": "0.42",
+                                    "currency": "USD",
+                                    "list_price": "0.42"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

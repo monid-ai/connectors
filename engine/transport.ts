@@ -1,5 +1,5 @@
 import type { Json } from "@shared/core";
-import { applyAuth, envVarFor } from "./auth.ts";
+import { applyAuth, credentialEnvVarsFor, credentialFieldsOf } from "./auth.ts";
 import { EngineError, EngineErrorCode } from "./errors.ts";
 import type {
     ParamsResolver,
@@ -24,13 +24,68 @@ export function sniffDecode(response: TransportResponse): Json {
     }
 }
 
-/** Default resolver: env `<NAME>_API_KEY` → { apiKey } (v1 convention). */
-export const envParamsResolver: ParamsResolver = (provider) => {
-    const value = Deno.env.get(envVarFor(provider));
+/**
+ * The default resolver, ONE convention: read `<NAME>_CREDENTIALS_<FIELD>`
+ * for every field the doc's credential shape declares (plus the single
+ * `<NAME>_API_KEY` alias for a field named `apiKey`). `fields` comes from
+ * the doc — a caller that omits it gets the `{apiKey}` default shape.
+ *
+ * A variable that is SET BUT EMPTY is reported as the empty string, not
+ * skipped: the credential schema's own `.min(1)` then rejects it as
+ * MISSING_CREDENTIAL naming the variable. Blanking the canonical name is a
+ * configuration error, never a silent fall-through to the alias.
+ *
+ * The resolver only READS; the injector validates the result against the
+ * doc's credentials schema.
+ */
+export const envParamsResolver: ParamsResolver = (provider, fields) => {
     const params: Record<string, string> = {};
-    if (value) params.apiKey = value;
+    for (const field of fields ?? ["apiKey"]) {
+        const value = resolveCredentialEnv(provider, field);
+        if (value !== undefined) params[field] = value;
+    }
     return Promise.resolve(params);
 };
+
+/**
+ * THE precedence rule, in ONE place: the first variable that is DEFINED wins,
+ * whatever its value. A set-but-EMPTY canonical name therefore SHADOWS the
+ * alias and is returned as `""` rather than skipped — blanking it is a
+ * configuration error, and the credential schema's own `.min(1)` rejects it
+ * by name. Falling through to the alias would hide a broken deployment.
+ *
+ * Every reader of the convention resolves through here — the params resolver,
+ * the live-test gate, and the drift suites — so the three can never disagree
+ * about which variable supplies a field. They did once: the gate treated an
+ * empty canonical as absent and opened onto a run that was then guaranteed to
+ * fail MISSING_CREDENTIAL, so a live test ran and failed instead of skipping.
+ */
+export function resolveCredentialEnv(
+    provider: string,
+    field: string,
+): string | undefined {
+    for (const name of credentialEnvVarsFor(provider, field)) {
+        const value = Deno.env.get(name);
+        if (value !== undefined) return value;
+    }
+    return undefined;
+}
+
+/** Live-test gate: does every declared credential field resolve to a
+ *  NON-EMPTY value? Same precedence as the resolver (above), so the gate
+ *  never opens onto a run the resolver would reject. `fields` defaults to
+ *  the `{apiKey}` shape. */
+export function envCredentialsPresent(
+    provider: string,
+    fields?: readonly string[],
+): boolean {
+    const wanted = fields ?? ["apiKey"];
+    return wanted.length > 0 &&
+        wanted.every((field) => {
+            const value = resolveCredentialEnv(provider, field);
+            return value !== undefined && value !== "";
+        });
+}
 
 /**
  * OSS / local / tests: inject credentials HERE, then fetch.
@@ -50,7 +105,12 @@ export function directTransport(opts: {
             const authed = req.auth
                 ? await applyAuth(
                     { ...req, auth: req.auth },
-                    await resolveParams(req.provider),
+                    // the DOC states which credential fields exist; the
+                    // resolver reads exactly those variables and no others
+                    await resolveParams(
+                        req.provider,
+                        credentialFieldsOf(req.auth.credentials),
+                    ),
                 )
                 : {
                     url: req.url,
@@ -94,7 +154,8 @@ export function directTransport(opts: {
                     // `redirect: "manual"` above means a 3xx arrives WITH its
                     // Location intact and an empty body — the header IS the
                     // payload for presigned-URL endpoints. Header keys are
-                    // lowercased by the Fetch spec's Headers iterator.
+                    // lowercased (multi-values comma-joined) by the Fetch
+                    // spec's Headers iterator.
                     headers: Object.fromEntries(response.headers),
                     contentType: response.headers.get("content-type") ??
                         undefined,

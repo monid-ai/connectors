@@ -1,0 +1,36 @@
+{
+    "name": "happy",
+    "description": "raw recording (tinyfish#search, scenario happy) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.search.tinyfish.ai/?query=anthropic+claude"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "query": "anthropic claude",
+                    "results": [
+                        {
+                            "position": 1,
+                            "site_name": "play.google.com",
+                            "snippet": "Upload any photo, PDF, or screenshot for instant analysis. Claude extracts text, interprets charts and graphs , evaluates UI layouts and technical diagrams, and ...",
+                            "title": "Claude by Anthropic - Apps on Google Play",
+                            "url": "https://play.google.com/store/apps/details?id=com.anthropic.claude"
+                        },
+                        {
+                            "position": 2,
+                            "site_name": "docs.cloud.google.com",
+                            "snippet": "The Anthropic Claude models on Google Cloud offer fully managed and serverless models as APIs. To use a Claude model on Agent Platform, send a request directly ...",
+                            "title": "Anthropic's Claude on Google Cloud models",
+                            "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude"
+                        }
+                    ],
+                    "total_results": 5,
+                    "page": 0
+                }
+            }
+        }
+    ]
+}

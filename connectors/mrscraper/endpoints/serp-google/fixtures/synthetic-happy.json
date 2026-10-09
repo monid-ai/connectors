@@ -1,0 +1,38 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the SERP JSON shape v1's drills saw (organic results), tokenUsage 1; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/google/serp/v2/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "query": "mrscraper",
+                        "result_count": "About 12,300 results",
+                        "organic": [
+                            {
+                                "position": 1,
+                                "title": "MrScraper - AI Web Scraper",
+                                "url": "https://mrscraper.com/",
+                                "description": "Scrape any website with AI."
+                            },
+                            {
+                                "position": 2,
+                                "title": "MrScraper Documentation",
+                                "url": "https://docs.mrscraper.com/",
+                                "description": "Your all-in-one guide."
+                            }
+                        ]
+                    },
+                    "tokenUsage": 1
+                }
+            }
+        }
+    ]
+}

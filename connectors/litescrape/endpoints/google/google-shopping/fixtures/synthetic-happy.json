@@ -1,0 +1,58 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (shopping_results, categorized_shopping_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/shopping?q=coffee+maker&num=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "7e5b4c3d2f1a0e9d8c7b6a5f",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/shopping?q=coffee+maker&num=1"
+                    },
+                    "search_parameters": {
+                        "q": "coffee maker",
+                        "num": "1",
+                        "google_domain": "google.com",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "shopping_results": [
+                        {
+                            "position": 1,
+                            "title": "Example 12-Cup Programmable Coffee Maker",
+                            "price": "$49.99",
+                            "extracted_price": 49.99,
+                            "source": "shop.example",
+                            "rating": 4.5,
+                            "reviews": 1280,
+                            "gpcid": "12345678901234567890",
+                            "headline_offer_docid": "98765432109876543210",
+                            "image_docid": "11223344556677889900",
+                            "litescrape_product_link": "https://api.litescrape.com/api/google/shopping/product?q=coffee+maker&gpcid=12345678901234567890&headline_offer_docid=98765432109876543210&image_docid=11223344556677889900"
+                        }
+                    ],
+                    "filters": [
+                        {
+                            "type": "Brand",
+                            "options": [
+                                {
+                                    "text": "Example Brand",
+                                    "shoprs": "CAEQAhoLZXhhbXBsZS1icmFuZA"
+                                }
+                            ]
+                        }
+                    ],
+                    "search_information": {
+                        "shopping_results_state": "Results for coffee maker"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-invalid-request",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. An unknown parameter that slipped past a stale schema: the upstream's 400 invalid_request (the docs say 403) — error-as-data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "error": "API does not recognize parameters: bogus",
+                    "error_code": "invalid_request",
+                    "status_code": 400,
+                    "request_id": "6cebd506b0b4c1a820da15a3",
+                    "retryable": false,
+                    "search_parameters": {
+                        "q": "coffee shops in Austin"
+                    }
+                }
+            }
+        }
+    ]
+}

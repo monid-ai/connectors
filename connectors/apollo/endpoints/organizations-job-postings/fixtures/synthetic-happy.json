@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Organization Job Postings reference example (docs.apollo.io/reference/organization-jobs-postings, 2026-09-16), trimmed to two postings; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/ORG1/job_postings?per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "organization_job_postings": [
+                        {
+                            "id": "JOB1",
+                            "title": "IT Support Analyst - L2",
+                            "url": "https://www.linkedin.com/jobs/view/JOB1",
+                            "city": null,
+                            "state": null,
+                            "country": "Canada",
+                            "last_seen_at": "2026-08-30T14:19:10.200+00:00",
+                            "posted_at": "2026-08-29T19:19:10.200+00:00"
+                        },
+                        {
+                            "id": "JOB2",
+                            "title": "Vice President of Customer Support",
+                            "url": "https://www.linkedin.com/jobs/view/JOB2",
+                            "city": null,
+                            "state": null,
+                            "country": "United States",
+                            "last_seen_at": "2026-09-10T11:36:36.635+00:00",
+                            "posted_at": "2026-09-10T05:36:36.635+00:00"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

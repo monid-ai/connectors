@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground POST body as v1's 2026-08-31 drill saw it (html, token_usage, the proxy meter and the vendor-storage paths); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "token_usage": 2,
+                    "residential_proxy_usage": 0.12,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

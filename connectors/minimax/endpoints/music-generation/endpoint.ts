@@ -36,6 +36,11 @@ export default defineEndpoint({
         docsUrl:
             "https://platform.minimax.io/docs/api-reference/music-generation",
         categories: ["music-generation"],
+        notes: [
+            "Generation takes tens of seconds.",
+            "The song comes back as a CDN URL that EXPIRES after about " +
+            "24 hours - download promptly.",
+        ],
     },
     request: { method: "POST", path: "/v1/music_generation" },
     input: {

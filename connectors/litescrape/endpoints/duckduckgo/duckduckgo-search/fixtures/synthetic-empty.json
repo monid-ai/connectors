@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 with an empty result group: the vendor deducted one credit, usage here records 0 (v1 posture, owner 2026-09-20) — credits {} and RESULT 0.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/duckduckgo/search?q=coffee+grinder&m=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "c6f456b8d96c552ba0af7282",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/duckduckgo/search?q=coffee+grinder&m=1"
+                    },
+                    "search_parameters": {
+                        "q": "coffee grinder",
+                        "m": "1"
+                    },
+                    "organic_results": []
+                }
+            }
+        }
+    ]
+}

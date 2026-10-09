@@ -1,0 +1,36 @@
+{
+    "name": "crawl-ok",
+    "description": "Search1API /crawl happy path: one URL in, {title, link, content} Markdown out. Flat 1 credit.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "url": "https://example.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "crawlParameters": {
+                        "url": "https://example.com"
+                    },
+                    "results": {
+                        "title": "Example Domain",
+                        "link": "https://example.com",
+                        "content": "This domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)",
+                        "metadata": {
+                            "sourceUrl": "https://example.com/",
+                            "availability": "partial",
+                            "unavailableFields": [
+                                "author",
+                                "publishedTime"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

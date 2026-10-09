@@ -1,0 +1,70 @@
+{
+    "name": "synthetic-call-stop-settled",
+    "description": "STOP settles the metered work (design D34): start parks RUNNING; the hangup's own response is unsettled; one 3 s sleep + re-read finds the settled record -> the stop returns a FULL COMPLETED envelope and the run bills at stop.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "fromNumberId": "num-1",
+                    "to": "+14155550123"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "in-progress",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/calls/call-1/end",
+                "body": {}
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z",
+                    "durationSec": 53,
+                    "costCents": 25
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground screenshot body per the reference (html + a base64 JPEG in `screenshot`, v1 drill-verified `/9j/` prefix; the image here is a 1×1 JPEG), token_usage 3; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&browserRendering=true&screenshot=full&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "screenshot": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==",
+                    "token_usage": 3,
+                    "residential_proxy_usage": 0.4,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

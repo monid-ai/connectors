@@ -14,10 +14,12 @@
         "test": "deno test --allow-read --allow-env --allow-write",
         "test:live": "deno test --allow-read --allow-env --allow-write --allow-net",
         "compiler:compile": "deno run --allow-read --allow-write --allow-env --allow-run=git scripts/compile.ts",
-        "engine:run": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run=git scripts/run.ts",
+        "engine:run": "deno run --unstable-kv --allow-read --allow-write --allow-env --allow-net --allow-run=git scripts/run.ts",
         "catalog": "deno run --allow-read --allow-write --allow-env --allow-run=git scripts/catalog.ts",
         "record": "deno run --allow-read --allow-write --allow-env --allow-net --allow-run=git scripts/record.ts",
         "version:check": "deno run --allow-read --allow-run=git scripts/version-check.ts",
+        "ids:check": "deno run --allow-read --allow-write --allow-env --allow-run=git scripts/ids-check.ts",
+        "webhook": "deno run --unstable-kv --allow-read --allow-write --allow-env --allow-net --allow-run=git,cloudflared,tailscale scripts/webhook.ts",
         "apify:scaffold": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com scripts/apify-scaffold.ts",
         "engine:estimate": "deno run --allow-read --allow-write --allow-env scripts/estimate.ts",
         "drift": "deno run --allow-read --allow-write --allow-env --allow-net=api.apify.com --allow-run=deno,git scripts/drift.ts"

@@ -63,12 +63,10 @@ const zMediaUrl = z
     .min(1)
     .regex(/^https?:\/\//, "must be a public http(s) URL")
     .describe(
-        "Public http(s) URL. Nothing else is accepted: data: URIs are " +
-            "rejected (they inline the whole asset into the request), and " +
-            "so are MiniMax mm_file:// references (they name a file " +
-            "uploaded under Monid's own credentials). Size limits still " +
-            "apply at the far end: image <=30MB, reference video <=50MB, " +
-            "reference audio <=15MB, whole request body <=64MB.",
+        "Public http(s) URL only - data: URIs and MiniMax mm_file:// " +
+            "references are rejected. Upstream size limits: image <=30MB, " +
+            "reference video <=50MB, reference audio <=15MB, whole " +
+            "request body <=64MB.",
     );
 
 const zTextItem = z.strictObject({

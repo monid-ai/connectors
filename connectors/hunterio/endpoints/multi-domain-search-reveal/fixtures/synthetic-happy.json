@@ -1,0 +1,64 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. Two handles, one fresh reveal and one already revealed: meta.credits_charged 1 (the claim) and one `revealed` row (the fold agree).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/multi-domain-search/reveal",
+                "body": {
+                    "handles": [
+                        "Qk1hQ2c9PS0tZW5jcnlwdGVkLW9wYXF1ZS1oYW5kbGU",
+                        "QWJjMTIzLS1hbHJlYWR5LXJldmVhbGVkLWhhbmRsZQ"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "id": 12345,
+                            "reveal_handle": "Qk1hQ2c9PS0tZW5jcnlwdGVkLW9wYXF1ZS1oYW5kbGU",
+                            "email": "john@example.com",
+                            "first_name": "John",
+                            "last_name": "Doe",
+                            "position": "Chief Technology Officer",
+                            "phone_number": null,
+                            "linkedin_url": "https://example.com/in/johndoe",
+                            "type": "personal",
+                            "domain": "stripe.com",
+                            "outcome": "revealed"
+                        },
+                        {
+                            "id": 12346,
+                            "reveal_handle": "QWJjMTIzLS1hbHJlYWR5LXJldmVhbGVkLWhhbmRsZQ",
+                            "email": "jane@example.com",
+                            "first_name": "Jane",
+                            "last_name": "Roe",
+                            "position": "CFO",
+                            "phone_number": null,
+                            "linkedin_url": null,
+                            "type": "personal",
+                            "domain": "stripe.com",
+                            "outcome": "already_revealed"
+                        }
+                    ],
+                    "meta": {
+                        "credits_charged": 1,
+                        "handles": [
+                            {
+                                "handle": "Qk1hQ2c9PS0tZW5jcnlwdGVkLW9wYXF1ZS1oYW5kbGU",
+                                "outcome": "revealed"
+                            },
+                            {
+                                "handle": "QWJjMTIzLS1hbHJlYWR5LXJldmVhbGVkLWhhbmRsZQ",
+                                "outcome": "already_revealed"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

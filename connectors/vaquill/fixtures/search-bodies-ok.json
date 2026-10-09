@@ -1,0 +1,53 @@
+{
+    "name": "search-bodies-ok",
+    "description": "Search with `includeBody`: both hits return text, so the vendor bills 16 = the flat 4 search plus 2 x 6 body. The fixture that pins the composite's second line.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "insider trading penalties",
+                    "limit": 2,
+                    "includeBody": true,
+                    "fields": [
+                        "actId",
+                        "citation",
+                        "title",
+                        "body"
+                    ],
+                    "excludeRepealed": false,
+                    "offset": 0,
+                    "excerptChars": 500,
+                    "matchType": "any"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "actId": "COMPS_PL73-404_TI_S21A",
+                            "citation": "Act of June 6, 1934, tit. I, sec. 21A (as amended)",
+                            "title": "Act of June 6, 1934, tit. I, sec. 21A (as amended): civil penalties for insider trading",
+                            "body": "civil penalties for insider trading\nSec. 21A. (a) Authority To Impose Civil Penalties.\u2014\n(1) Judicial actions by commission authorized.\u2014Whenever it shall appear to the Commission that any person has violated any provision of this title or the rules or regulations thereunder by purchasing or selling a security or security-based swap agreement while in possession of material, nonpublic information in, or has violated any such provision by communicating such information in connection with, a transac"
+                        },
+                        {
+                            "actId": "SAL_PL102-546_TIII_S214",
+                            "citation": "Pub. L. 102-546, tit. II, sec. 214",
+                            "title": "Pub. L. 102-546, tit. II, sec. 214: PROHIBITION AGAINST INSIDER TRADING.",
+                            "body": "SEC. 214. PROHIBITION AGAINST INSIDER TRADING. (a) In General.\u2014 Section 9 (7 U.S.C. 13) is amended by adding at the end the following: \u201c(f) It shall be a felony for any person\u2014 \u201c(1) who is an employee, member of the governing board, or member of any committee of a board of trade, contract market, or registered futures association, in violation of a regulation issued by the Commission, willfully and knowingly to trade for such person\u2019s own account, or for or on behalf of any other account, in con"
+                        }
+                    ],
+                    "count": 2,
+                    "total": 2,
+                    "offset": 0,
+                    "hasMore": true,
+                    "query": "insider trading penalties",
+                    "processingTimeMs": 1547.9,
+                    "creditsConsumed": 16
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,80 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/search/prediction-market?status=active&sort_by=volume_7d&order=desc&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "category": "category-1",
+                            "condition_id": "condition_id-1",
+                            "days_to_resolution": 1,
+                            "event_group_slug": "event_group_slug-1",
+                            "event_slug": "event_slug-1",
+                            "event_ticker": "event_ticker-1",
+                            "event_title": "event_title-1",
+                            "latest_price": 1,
+                            "market_link": "market_link-1",
+                            "market_slug": "market_slug-1",
+                            "market_ticker": "market_ticker-1",
+                            "matched_counterpart": "matched_counterpart-1",
+                            "open_interest_usd": 1,
+                            "outcome_label": "outcome_label-1",
+                            "platform": "platform-1",
+                            "question": "question-1",
+                            "smart_money_direction": "smart_money_direction-1",
+                            "status": "status-1",
+                            "subcategory": "subcategory-1",
+                            "token_id": "token_id-1",
+                            "trade_count_7d": 1,
+                            "volume_1d": 1,
+                            "volume_30d": 1,
+                            "volume_7d": 1
+                        },
+                        {
+                            "category": "category-2",
+                            "condition_id": "condition_id-2",
+                            "days_to_resolution": 2,
+                            "event_group_slug": "event_group_slug-2",
+                            "event_slug": "event_slug-2",
+                            "event_ticker": "event_ticker-2",
+                            "event_title": "event_title-2",
+                            "latest_price": 2,
+                            "market_link": "market_link-2",
+                            "market_slug": "market_slug-2",
+                            "market_ticker": "market_ticker-2",
+                            "matched_counterpart": "matched_counterpart-2",
+                            "open_interest_usd": 2,
+                            "outcome_label": "outcome_label-2",
+                            "platform": "platform-2",
+                            "question": "question-2",
+                            "smart_money_direction": "smart_money_direction-2",
+                            "status": "status-2",
+                            "subcategory": "subcategory-2",
+                            "token_id": "token_id-2",
+                            "trade_count_7d": 2,
+                            "volume_1d": 2,
+                            "volume_30d": 2,
+                            "volume_7d": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

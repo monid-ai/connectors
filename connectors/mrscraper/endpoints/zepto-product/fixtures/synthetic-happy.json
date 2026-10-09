@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 9 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/zepto/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.zepto.com/pn/lizol-floor-cleaner/pvid/de4cf5f8-e81e-41d3-aebc-44d019fa5f35",
+                        "product": {
+                            "name": "Lizol Disinfectant Floor Cleaner 1 L",
+                            "price": 199,
+                            "mrp": 230,
+                            "currency": "INR",
+                            "rating": 4.5,
+                            "available": true,
+                            "highlights": [
+                                "Kills 99.9% germs"
+                            ],
+                            "seller": {
+                                "name": "Example Retail Pvt Ltd"
+                            }
+                        }
+                    },
+                    "tokenUsage": 9
+                }
+            }
+        }
+    ]
+}

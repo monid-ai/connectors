@@ -29,6 +29,14 @@ export default defineEndpoint({
             "person's current role before outreach.",
         docsUrl: "https://ploid.com/documentation/api/enrichment",
         categories: ["people-enrichment"],
+        notes: [
+            "Each component bills only when actually FOUND - a full " +
+            "miss costs nothing.",
+            "Email is priced at the work-email rate (1 ACU); when only " +
+            "a personal email resolves, the vendor's fallback rate of 3 " +
+            "ACU is billed instead - the estimate holds the 1-ACU rate, " +
+            "so a fallback settles above the hold.",
+        ],
     },
     request: { method: "POST", path: "/v1/enrich" },
     // `enrichments` carries the VENDOR default (["profile"], OpenAPI 2.0.0)

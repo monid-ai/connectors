@@ -22,11 +22,12 @@ Deno.test("octen#embedding happy (recorded): tokens land under the MODE-selected
     });
     assertEquals(result.httpStatus, 200);
     // mode-selected composite (D19/D26): the receipt's input tokens are
-    // keyed by the SELECTED model's line; the 0.6b line bills 10 credits
-    // per 1M tokens, so 3 tokens fold to one whole increment = 10. The
-    // vendor's meta.usage receipt stays in the RAW run record.
+    // keyed by the SELECTED model's line; the 0.6b line bills LINEARLY at
+    // $0.01 per 1M tokens (reconcile 2026-09-16 — v1 billed fractionally;
+    // the old every:1M block fold charged 3 tokens a whole 10-credit
+    // block). The vendor's meta.usage receipt stays in the RAW run record.
     assertEquals(result.usage, {
-        credits: { default: 10 },
+        credits: { default: 3 * 0.00001 },
         evidence: { embedding_0_6b: 3 },
     });
     const output = result.output as Record<string, Record<string, unknown>>;

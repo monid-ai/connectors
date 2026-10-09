@@ -35,10 +35,10 @@ export default defineEndpoint({
             "run, and is the most expensive one here.",
         ],
     },
-    /** PUBLIC identity: the friendly model name. Pinned because all four
+    /** PUBLIC identity: the v1-faithful `/v1/video/<model>` catalog path (reconcile 2026-09-16). Pinned because all four
      *  Seedance endpoints share one create-task path, so the derived
      *  `?? request.path` default would collide (design D1). */
-    endpoint: "/seedance-2.0",
+    endpoint: "/v1/video/seedance-2.0",
     request: { method: "POST", path: "/api/v3/contents/generations/tasks" },
     input: {
         schema: {

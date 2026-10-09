@@ -1,0 +1,80 @@
+{
+    "name": "synthetic-task-failed",
+    "description": "SYNTHETIC (a Kling task failure cannot be provoked on demand): the task reaches the terminal failed status with Kling's rule text in message, empty outputs and the zero-amount billing row v1's drill recorded on failed tasks. The poll GET itself returned 200, so the run settles with OUR synthesized 500 and providerHttpStatus 200 (design D12), zero-billed — a fn can never bill an error.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-1",
+                    "data": {
+                        "id": "926151964131065926",
+                        "status": "submitted",
+                        "create_time": 1789540454000,
+                        "update_time": 1789540454000
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-2",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "processing",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540470000,
+                            "outputs": [],
+                            "billing": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-3",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "failed",
+                            "message": "The uploaded video does not contain a complete upper body",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540575000,
+                            "outputs": [],
+                            "billing": [
+                                {
+                                    "amount": "0"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

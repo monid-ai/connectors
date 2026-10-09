@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 429 error envelope (rate limited); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/web/search"
+            },
+            "res": {
+                "status": 429,
+                "body": {
+                    "message": "Rate limit exceeded",
+                    "error_code": "RATE_LIMITED",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,65 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Retrieve Brand Data response schema (docs.context.dev/api-reference/brand-intelligence/brand, 2026-09-17), brand fields trimmed to a representative subset; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/brand/retrieve"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "ok",
+                    "brand": {
+                        "domain": "stripe.com",
+                        "title": "Stripe",
+                        "description": "Financial infrastructure to grow your revenue.",
+                        "slogan": "Financial infrastructure for the internet",
+                        "colors": [{ "hex": "#635BFF", "name": "primary" }],
+                        "logos": [
+                            {
+                                "url": "https://cdn.example/stripe-logo.svg",
+                                "mode": "light",
+                                "type": "logo"
+                            }
+                        ],
+                        "backdrops": [],
+                        "socials": [
+                            {
+                                "type": "linkedin",
+                                "url": "https://www.linkedin.com/company/stripe"
+                            }
+                        ],
+                        "address": {
+                            "city": "South San Francisco",
+                            "country": "United States"
+                        },
+                        "stock": null,
+                        "employees": {
+                            "range": "5001 to 10000",
+                            "exact": null
+                        },
+                        "is_nsfw": false,
+                        "industries": {
+                            "eic": [
+                                {
+                                    "industry": "Financial Services",
+                                    "subindustry": "Payments"
+                                }
+                            ]
+                        },
+                        "links": { "careers": "https://stripe.com/jobs" }
+                    },
+                    "code": 200,
+                    "cache_metadata": { "status": "hit", "age_ms": 86400000 },
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9990
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

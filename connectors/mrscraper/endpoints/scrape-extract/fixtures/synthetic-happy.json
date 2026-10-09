@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground general-agent body per the reference (extracted `data`, the page html, thread_id) with token_usage 12 (v1's measured AI extraction) and the internals v1 saw; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "data": { "title": "Example Domain" },
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "thread_id": "THREAD1",
+                    "token_usage": 12,
+                    "residential_proxy_usage": 0.1,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

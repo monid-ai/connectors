@@ -31,7 +31,27 @@ export default defineEndpoint({
         categories: ["3d-generation"],
     },
     request: { method: "POST", path: "/v1/generations/text-to-3d" },
-    input: { schema: { body: zTextTo3dBody } },
+    input: {
+        schema: { body: zTextTo3dBody },
+        /** Vendor drift 2026-09-16: TextCreateJobRequest now REQUIRES
+         *  `model` (live 400 on omission — pydantic "Field required"),
+         *  but the caller contract keeps it optional with the sculptor
+         *  default (owner decision 2026-09-17): the wire always carries
+         *  a model because an omitted one is materialized HERE. Fn-side
+         *  injection, not a schema `.default()` — JSON-Schema defaults
+         *  never materialize (the pdl `dataset: "all"` pattern). An
+         *  explicit caller value wins the merge. */
+        toRequest: ({ data, utils }) => {
+            const body = data.input.body ?? {};
+            const model = utils.json.optionalGet(body, "$.model");
+            return {
+                ...data.input,
+                body: model === undefined
+                    ? utils.json.merge(body, { model: "sculptor" })
+                    : body,
+            };
+        },
+    },
     // ASYNC generation: a durable poll loop needs a large WHOLE-RUN budget
     // while the submit itself stays a quick kickoff. The vendor documents
     // 30 s–2 min single-image, 1–4 min multi-view and a 20-min practical

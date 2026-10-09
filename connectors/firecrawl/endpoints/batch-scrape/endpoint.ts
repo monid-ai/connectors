@@ -1,0 +1,430 @@
+import { defineEndpoint, Unit, UsageModelKind } from "@shared/core";
+import { zBatchScrapeBody } from "./schema/inputs.ts";
+
+/**
+ * `POST /v2/batch/scrape` — scrape a known list of URLs as one durable job.
+ *
+ * Same job protocol as `/crawl` and `/agent` (submit -> poll -> cancel, the
+ * status URL being the submit URL plus the id), so the lifecycle fns here are
+ * BYTE-IDENTICAL to theirs and intern to one shared fnTable entry per phase.
+ *
+ * BILLING: the multiplier is the CALLER'S OWN LIST, so `urls` needs no
+ * tightening — a multiplier array is never tightened (D25), and its length is
+ * the estimate. `x_routing` is counted PER URL rather than as a flag, because
+ * a batch can mix x.com entries with ordinary ones and each x.com URL carries
+ * the full +29 Grok charge; counting `urls.length × 29` for a single x.com
+ * entry would over-hold by 30x, and a flag would under-hold the same amount.
+ */
+export default defineEndpoint({
+    meta: {
+        displayName: "Firecrawl Batch Scrape",
+        summary: "Scrape up to hundreds of known URLs as one durable job.",
+        description: "Scrape a list of URLs you already have as one job — " +
+            "submitted once, processed in parallel, polled to completion, " +
+            "and stoppable mid-run. The full scrape option set applies to " +
+            "every page: anti-bot proxy modes, caching, and the LLM " +
+            "formats, which multiply the cost of every URL in the list. " +
+            "`ignoreInvalidURLs` skips malformed entries instead of failing " +
+            "the batch, returning them in `invalidURLs`. Each processed page " +
+            "is billed whether or not its server answered 200. A large batch " +
+            "comes back paginated: the result holds the first chunk plus a " +
+            "`next` cursor, and the remaining pages are read with " +
+            "`firecrawl#batch/scrape/{id}` using the job `id` in the result, " +
+            "which costs nothing. For URL discovery first, run a map or " +
+            "crawl instead.",
+        docsUrl:
+            "https://docs.firecrawl.dev/api-reference/endpoint/batch-scrape",
+        categories: ["web-scraping"],
+    },
+    request: { method: "POST", path: "/batch/scrape" },
+    input: { schema: { body: zBatchScrapeBody } },
+    timeouts: { requestMs: 30_000, runMs: 1_800_000, pollMs: 10_000 },
+    lifecycle: {
+        start: async ({ data, utils, logger }) => {
+            logger.info("submitting firecrawl job", { url: data.request.url });
+            const res = await utils.request();
+            if (res.status < 200 || res.status >= 300) {
+                // Firecrawl API error (402 payment required, 429 rate limit,
+                // 400 bad input) — DATA, zero-billed by the engine.
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: res.status,
+                    output: res.body,
+                };
+            }
+            const jobId = utils.json.optionalGet(res.body, "$.id");
+            if (typeof jobId !== "string" || jobId === "") {
+                // 2xx without a job id: the vendor promised a job we cannot
+                // manage — infrastructure failure, not data.
+                throw new Error("Firecrawl did not return a job id");
+            }
+            return { kind: "RUNNING", state: { externalRunId: jobId } };
+        },
+        poll: async ({ data, utils, logger }) => {
+            const jobId = data.lifecycle.state.externalRunId;
+            if (jobId === undefined) {
+                throw Object.assign(
+                    new Error("firecrawl poll without externalRunId in state"),
+                    { retriable: false },
+                );
+            }
+            const statusUrl = data.request.url + "/" +
+                encodeURIComponent(jobId);
+            const res = await utils.http({ method: "GET", url: statusUrl });
+            if (
+                res.status === 408 || res.status === 429 ||
+                res.status === 500 || res.status === 502 ||
+                res.status === 503 || res.status === 504
+            ) {
+                // The status LOOKUP failed, not the job. Firecrawl documents
+                // exactly these six as retryable, and the job keeps running —
+                // and keeps charging, since crawl and batch pages bill as they
+                // complete — so declaring the RUN terminal here would abandon
+                // a live job whose cost we would then absorb. RUNNING is also
+                // the honest answer: we could not determine the job state.
+                // `utils.http` exposes no headers, so `Retry-After` cannot be
+                // honored; back the cadence off instead. Bounded by runMs.
+                logger.warn("firecrawl status lookup transient", {
+                    jobId,
+                    status: res.status,
+                });
+                return { kind: "RUNNING", pollAfterMs: 30_000 };
+            }
+            if (res.status < 200 || res.status >= 300) {
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: res.status,
+                    output: res.body,
+                };
+            }
+            const status = utils.json.optionalGet(res.body, "$.status");
+            if (
+                status === undefined || status === "scraping" ||
+                status === "processing"
+            ) {
+                // still working — absent state carries the previous one
+                // forward (design D21)
+                return { kind: "RUNNING" };
+            }
+            if (status !== "completed") {
+                // vendor-side job failure (failed / cancelled) surfaces as an
+                // OURS-synthesized error status while providerHttpStatus keeps
+                // the real 200 the status API answered with (design D12)
+                const message = utils.json.optionalGet(res.body, "$.error");
+                logger.warn("firecrawl job did not complete", {
+                    jobId,
+                    status: String(status),
+                });
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: 500,
+                    providerHttpStatus: 200,
+                    output: {
+                        status,
+                        // `error`, NOT `message`: the provider's fromError
+                        // reads $.error, so renaming the key here strands the
+                        // reason in `raw` and publishes the generic fallback
+                        // "Firecrawl API error". Shaping the synthesized
+                        // envelope like Firecrawl's own {success,error} keeps
+                        // one mapper correct for both.
+                        error: typeof message === "string" && message !== ""
+                            ? message
+                            : "Firecrawl job " + String(status),
+                    },
+                };
+            }
+            // COMPLETED: hand the vendor's envelope back as it came, `next`
+            // intact. We do NOT walk the chain. Firecrawl caps a response at
+            // 10 MB and chunks a large job's results deliberately; stitching
+            // them would put an unbounded payload through a single run, and a
+            // failure mid-walk would ship a PARTIAL set as a success while
+            // `completed` still billed the whole job. The caller pages with
+            // firecrawl#crawl/{id} / firecrawl#batch/scrape/{id}, which are
+            // FREE (reading a job consumes no credits).
+            //
+            // `id` is the ONE addition to the vendor's shape, and it is what
+            // makes those endpoints callable: the status body does not carry
+            // the job id (only the submit response does) and `next` needs a
+            // credential the caller never holds. Same spelling the submit
+            // response uses, so a future vendor `id` field is a no-op merge.
+            return {
+                kind: "COMPLETED",
+                httpStatus: 200,
+                output: utils.json.merge(res.body, { id: jobId }),
+            };
+        },
+        stop: async ({ data, utils, logger }) => {
+            const jobId = data.lifecycle.state.externalRunId;
+            if (jobId === undefined) {
+                throw Object.assign(
+                    new Error("firecrawl stop without externalRunId in state"),
+                    { retriable: false },
+                );
+            }
+            const res = await utils.http({
+                method: "DELETE",
+                url: data.request.url + "/" + encodeURIComponent(jobId),
+            });
+            if (res.status < 200 || res.status >= 300) {
+                // best-effort teardown: an already-finished job answers
+                // non-2xx and there is nothing left to stop
+                logger.warn("firecrawl job cancel failed (ignored)", {
+                    jobId,
+                    status: res.status,
+                });
+            }
+        },
+    },
+    usage: {
+        model: {
+            kind: UsageModelKind.COMPOSITE,
+            components: {
+                page: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "pages scraped",
+                    description: "every URL Firecrawl returns a document " +
+                        "for, including pages that answered 403 or 404",
+                    consumes: { credit: "default", amount: 1 },
+                },
+                json: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "JSON extraction",
+                    description: "LLM extraction on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                question: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "question answering",
+                    description: "LLM answer on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                highlights: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "highlights",
+                    description: "LLM passage selection on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                audio: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "audio extraction",
+                    description: "MP3 extraction on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                video: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "video extraction",
+                    description: "video extraction on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                redact_pii: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "PII redaction",
+                    description: "redaction on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                prompt_injection_check: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "prompt-injection check",
+                    description: "the `checkPromptInjection` guard on every " +
+                        "scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                lockdown: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "lockdown cache read",
+                    description: "cache-only serving on every scraped page",
+                    consumes: { credit: "default", amount: 4 },
+                },
+                zero_data_retention: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "zero data retention",
+                    description: "no page content persisted beyond the batch",
+                    consumes: { credit: "default", amount: 1 },
+                },
+                threat_protection_scan: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "threat-protection scan",
+                    description: "URL risk scan requested via " +
+                        "`threatProtection.mode: normal`",
+                    consumes: { credit: "default", amount: 2 },
+                },
+                x_routing: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "X (Grok) routing",
+                    description: "x.com / twitter.com URLs in the list are " +
+                        "served through the Grok API instead of a browser",
+                    consumes: { credit: "default", amount: 29 },
+                },
+                pdf_page: {
+                    kind: UsageModelKind.PER_UNIT,
+                    unit: Unit.PAGE,
+                    label: "PDF pages beyond the first",
+                    description: "PDF parsing bills per page; the first of " +
+                        "each document is covered by its page fee",
+                    consumes: { credit: "default", amount: 1 },
+                },
+            },
+        },
+        /** The caller's own list is the promise. `x_routing` is counted per
+         *  URL — a list holding one x.com entry among ninety-nine ordinary
+         *  ones owes 29 extra credits, not 29 × 100. */
+        estimate: ({ data }) => {
+            const body = data.input.body;
+            const urls = body.urls;
+            const count = urls.length;
+            const formats = body.formats ?? [];
+            const names = formats.map((format) =>
+                typeof format === "string" ? format : format.type
+            );
+            let injection = false;
+            for (const format of formats) {
+                if (
+                    typeof format !== "string" && format.type === "json" &&
+                    format.checkPromptInjection === true
+                ) injection = true;
+            }
+            let xUrls = 0;
+            for (const url of urls) {
+                const host = url.toLowerCase()
+                    .replace(/^[a-z][a-z0-9+.-]*:\/\//, "")
+                    .split("/")[0].split("?")[0].split("#")[0]
+                    .split("@").reverse()[0]
+                    .split(":")[0].replace(/^www\./, "");
+                if (
+                    host === "x.com" || host === "twitter.com" ||
+                    host === "mobile.twitter.com"
+                ) xUrls += 1;
+            }
+            return {
+                counts: {
+                    "page": count,
+                    ...(names.includes("json") ? { json: count } : {}),
+                    ...(names.includes("question") ? { question: count } : {}),
+                    ...(names.includes("highlights")
+                        ? { highlights: count }
+                        : {}),
+                    ...(names.includes("audio") ? { audio: count } : {}),
+                    ...(names.includes("video") ? { video: count } : {}),
+                    ...(body.redactPII ? { redact_pii: count } : {}),
+                    ...(injection ? { prompt_injection_check: count } : {}),
+                    ...(body.lockdown === true ? { lockdown: count } : {}),
+                    ...(body.zeroDataRetention === true
+                        ? { zero_data_retention: count }
+                        : {}),
+                    ...(body.threatProtection?.mode === "normal"
+                        ? { threat_protection_scan: count }
+                        : {}),
+                    ...(xUrls > 0 ? { x_routing: xUrls } : {}),
+                },
+            };
+        },
+        /** Settle on `completed` — the vendor's own count of pages processed,
+         *  which excludes entries `ignoreInvalidURLs` dropped.
+         *
+         *  SCOPE is deliberately mixed, and worth stating: `page` and the flag
+         *  lines derive from `completed` (the WHOLE job), while `x_routing`
+         *  and `pdf_page` are counted off the rows in `$.data` — which is the
+         *  FIRST CHUNK only when the envelope carries `next`. A chunked job
+         *  whose later chunks hold x.com URLs or multi-page PDFs therefore
+         *  derives less than the vendor claims and reports a
+         *  `usage.mismatch.derived`. That is EXPECTED. Billing is unaffected:
+         *  `creditsUsed` is the vendor's claim and the claim is what bills
+         *  (D27). Scaling the observed count up by `completed / delivered`
+         *  would invent a number for rows never seen, and D27 is explicit
+         *  that unobserved entries are omitted rather than guessed — a true
+         *  lower bound reads better on a receipt than a plausible fiction. */
+        evidence: ({ data, utils }) => {
+            const body = data.input.body;
+            const rows = utils.json.optionalGet(data.output, "$.data");
+            const delivered = Array.isArray(rows) ? rows.length : 0;
+            const pages = utils.json.optionalNum(data.output, "$.completed") ??
+                delivered;
+            const formats = body.formats ?? [];
+            const names = formats.map((format) =>
+                typeof format === "string" ? format : format.type
+            );
+            let injection = false;
+            for (const format of formats) {
+                if (
+                    typeof format !== "string" && format.type === "json" &&
+                    format.checkPromptInjection === true
+                ) injection = true;
+            }
+            let extraPdfPages = 0;
+            if (Array.isArray(rows) && body.parsers?.length !== 0) {
+                for (const row of rows) {
+                    const parsed = utils.json.optionalNum(
+                        row,
+                        "$.metadata.numPages",
+                    ) ?? 0;
+                    extraPdfPages += Math.max(0, parsed - 1);
+                }
+            }
+            // X routing is counted from the DELIVERED rows, not the request
+            // list: `ignoreInvalidURLs` drops entries and a batch can settle
+            // partially, so an x.com URL that was never fetched must not carry
+            // its 29-credit line. `metadata.sourceURL` is the URL as
+            // requested (a redirect must not move the charge).
+            let xUrls = 0;
+            if (Array.isArray(rows)) {
+                for (const row of rows) {
+                    const source = utils.json.optionalGet(
+                        row,
+                        "$.metadata.sourceURL",
+                    );
+                    if (typeof source !== "string") continue;
+                    const host = source.toLowerCase()
+                        .replace(/^[a-z][a-z0-9+.-]*:\/\//, "")
+                        .split("/")[0].split("?")[0].split("#")[0]
+                        .split("@").reverse()[0]
+                        .split(":")[0].replace(/^www\./, "");
+                    if (
+                        host === "x.com" || host === "twitter.com" ||
+                        host === "mobile.twitter.com"
+                    ) xUrls += 1;
+                }
+            }
+            return {
+                counts: {
+                    "page": pages,
+                    ...(names.includes("json") ? { json: pages } : {}),
+                    ...(names.includes("question") ? { question: pages } : {}),
+                    ...(names.includes("highlights")
+                        ? { highlights: pages }
+                        : {}),
+                    ...(names.includes("audio") ? { audio: pages } : {}),
+                    ...(names.includes("video") ? { video: pages } : {}),
+                    // redaction is billed on EVERY parsed page, so a batch
+                    // holding PDFs redacts more pages than it had URLs
+                    // (verified live on /scrape: a 4-page PDF bills 4x4, not
+                    // 1x4). `parsers: []` zeroes extraPdfPages.
+                    ...(body.redactPII
+                        ? { redact_pii: pages + extraPdfPages }
+                        : {}),
+                    ...(injection ? { prompt_injection_check: pages } : {}),
+                    ...(body.lockdown === true ? { lockdown: pages } : {}),
+                    ...(body.zeroDataRetention === true
+                        ? { zero_data_retention: pages }
+                        : {}),
+                    ...(body.threatProtection?.mode === "normal"
+                        ? { threat_protection_scan: pages }
+                        : {}),
+                    ...(xUrls > 0 ? { x_routing: xUrls } : {}),
+                    ...(extraPdfPages > 0 ? { pdf_page: extraPdfPages } : {}),
+                },
+            };
+        },
+    },
+});

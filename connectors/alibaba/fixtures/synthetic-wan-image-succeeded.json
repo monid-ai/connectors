@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-wan-image-succeeded",
+    "description": "SYNTHETIC: the blocking Wan 2.7 Image call answers TWO finished images in one 200 — output.choices[0].message.content[{type: image, image}] ×2, output.finished, and the usage block the reference page documents: image_count 2 (the billed basis), size, and the three token counters DashScope marks 'not billed', which output.fromResponse strips. Serves both Wan Image endpoints.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "choices": [
+                            {
+                                "finish_reason": "stop",
+                                "message": {
+                                    "role": "assistant",
+                                    "content": [
+                                        {
+                                            "type": "image",
+                                            "image": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/wan-image-1.png"
+                                        },
+                                        {
+                                            "type": "image",
+                                            "image": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/wan-image-2.png"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "finished": true
+                    },
+                    "usage": {
+                        "image_count": 2,
+                        "input_tokens": 10867,
+                        "output_tokens": 4,
+                        "size": "1488*704",
+                        "total_tokens": 10871
+                    },
+                    "request_id": "req-wan-image"
+                }
+            }
+        }
+    ]
+}

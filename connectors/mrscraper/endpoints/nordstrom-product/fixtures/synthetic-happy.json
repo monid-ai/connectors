@@ -1,0 +1,47 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 93 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/nordstrom/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "product": {
+                            "id": "8036333",
+                            "name": "Ultra Soft Zip Jacket",
+                            "brand": "Example",
+                            "price": {
+                                "current": 89.0,
+                                "currency": "USD"
+                            },
+                            "description": "A soft full-zip jacket.",
+                            "images": [
+                                "https://n.nordstrommedia.com/example.jpg"
+                            ],
+                            "skus": [
+                                {
+                                    "id": "1",
+                                    "size": "M",
+                                    "color": "Black",
+                                    "available": true
+                                }
+                            ]
+                        },
+                        "page_state": {
+                            "region": "US",
+                            "store": null
+                        }
+                    },
+                    "tokenUsage": 93
+                }
+            }
+        }
+    ]
+}

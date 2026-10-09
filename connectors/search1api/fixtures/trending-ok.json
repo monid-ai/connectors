@@ -1,0 +1,37 @@
+{
+    "name": "trending-ok",
+    "description": "Search1API /trending happy path: trending GitHub repos. 1 credit (non-empty results).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "search_service": "github",
+                    "max_results": 3
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "trendingParameters": {
+                        "search_service": "github",
+                        "max_results": 3
+                    },
+                    "results": [
+                        {
+                            "title": "alibaba/open-code-review",
+                            "url": "https://github.com/alibaba/open-code-review",
+                            "description": "Fast, efficient, battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible."
+                        },
+                        {
+                            "title": "cloudflare/security-audit-skill",
+                            "url": "https://github.com/cloudflare/security-audit-skill",
+                            "description": "A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

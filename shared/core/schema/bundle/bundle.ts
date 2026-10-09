@@ -6,7 +6,9 @@ import {
     zSemverString,
 } from "../common/ids.ts";
 import { fnKeysOf, zEndpointDoc } from "../endpoint/doc.ts";
-import { zProviderDoc } from "../provider/doc.ts";
+import { providerFnKeysOf, zProviderDoc } from "../provider/doc.ts";
+import { resourceFnKeysOf, zResourceDoc } from "../resource/doc.ts";
+import { zResourceId } from "../resource/ids.ts";
 import { zFnEntry } from "../fn-table/entry.ts";
 import { zTaxonomy } from "../taxonomy/leaf.ts";
 
@@ -42,6 +44,9 @@ export const zBundle = z.strictObject({
     }),
     providers: z.record(zProviderName, zProviderDoc),
     endpoints: z.record(zEndpointId, zEndpointDoc),
+    /** Resource docs (design D30), keyed by "<provider>/<name>". Absent
+     *  ⇒ the pre-resource bundle shape byte-for-byte (never `{}`). */
+    resources: z.record(zResourceId, zResourceDoc).optional(),
     /** Leaf registry + endpoint membership (closed vocabulary; hosted side shelves). */
     taxonomy: zTaxonomy,
     fnTable: z.record(zFnId, zFnEntry),
@@ -64,9 +69,64 @@ export const zBundle = z.strictObject({
             });
         }
     }
-    // fnTable closure — both directions
+    for (const [id, doc] of Object.entries(bundle.resources ?? {})) {
+        if (doc.id !== id) {
+            ctx.addIssue({
+                code: "custom",
+                message: `resources["${id}"] holds doc with id "${doc.id}"`,
+            });
+        }
+        if (!bundle.providers[doc.provider]) {
+            ctx.addIssue({
+                code: "custom",
+                message:
+                    `resources["${id}"] references unknown provider: ${doc.provider}`,
+            });
+        }
+        // the id's <provider>/ prefix and the doc's own provider field
+        // must AGREE: execution fuses doc.provider's auth + origin while
+        // hosts select by id — a mismatch runs one vendor's resource
+        // under another vendor's identity
+        if (!doc.id.startsWith(`${doc.provider}/`)) {
+            ctx.addIssue({
+                code: "custom",
+                message: `resources["${id}"] id names provider "${
+                    doc.id.split("/")[0]
+                }" but the doc carries provider "${doc.provider}"`,
+            });
+        }
+    }
+    // every endpoint binding resolves to a bundled resource doc
+    for (const [id, doc] of Object.entries(bundle.endpoints)) {
+        const boundIds = doc.resources
+            ? [
+                ...doc.resources.provisions ?? [],
+                ...doc.resources.uses ?? [],
+                ...doc.resources.updates ?? [],
+                ...doc.resources.releases ?? [],
+                ...doc.resources.reads ?? [],
+            ].map((binding) => binding.id)
+            : [];
+        const unknown = boundIds.find(
+            (bound) => !(bundle.resources ?? {})[bound],
+        );
+        if (unknown !== undefined) {
+            ctx.addIssue({
+                code: "custom",
+                message:
+                    `endpoints["${id}"] binds unknown resource: ${unknown}`,
+            });
+        }
+    }
+    // fnTable closure — both directions, across all three doc families
     const docs = Object.values(bundle.endpoints);
     const referenced = new Set(docs.flatMap((doc) => fnKeysOf(doc)));
+    for (const doc of Object.values(bundle.resources ?? {})) {
+        for (const key of resourceFnKeysOf(doc)) referenced.add(key);
+    }
+    for (const doc of Object.values(bundle.providers)) {
+        for (const key of providerFnKeysOf(doc)) referenced.add(key);
+    }
     for (const key of referenced) {
         if (!bundle.fnTable[key]) {
             ctx.addIssue({

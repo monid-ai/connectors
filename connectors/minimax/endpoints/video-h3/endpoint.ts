@@ -46,8 +46,17 @@ export default defineEndpoint({
             "first 5 input images are free, then $0.04 each; reference " +
             "audio is free. A failed or cancelled task costs nothing.",
         docsUrl:
-            "https://platform.minimax.io/docs/api-reference/video-generation",
+            "https://platform.minimax.io/docs/api-reference/video-generation-v2-create",
         categories: ["video-generation"],
+        notes: [
+            "Generation takes seconds to minutes depending on the model " +
+            "- this is an asynchronous run; poll it rather than " +
+            "blocking.",
+            "The completed task's content URL (task.content.url) " +
+            "EXPIRES - download the video promptly.",
+            "Media inputs must be public https:// URLs - data: URIs and " +
+            "MiniMax mm_file:// references are rejected.",
+        ],
     },
     /** PUBLIC identity (design D22): four H3 models share ONE wire path,
      *  so each pins its own model-named identity. */

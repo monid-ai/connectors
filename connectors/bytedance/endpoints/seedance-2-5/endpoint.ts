@@ -35,35 +35,30 @@ export default defineEndpoint({
          *  does not error, it silently returns a plausible but WRONG video
          *  and bills in full. */
         notes: [
-            "The model infers what you want from the content[] roles and " +
-            "your prompt wording. Editing and extension REQUIRE ratio " +
-            '"adaptive", which is the default — leave it alone when in ' +
-            'doubt. Editing ALSO requires duration "auto"; the default is ' +
-            '5 seconds, so pass duration "auto" explicitly for an edit.',
+            'Editing and extension require ratio "adaptive" (the ' +
+            'default) AND duration "auto" (not the default — pass it ' +
+            "explicitly for an edit).",
 
-            'To edit or extend a video, say so explicitly: "Video edit: ' +
-            'remove everyone in @Video1 except the protagonist", or "Extend ' +
-            '@Video1: after the window opens, move into @Video2". Without ' +
-            "that wording the model reads it as a plain reference-to-video " +
-            "request and generates a NEW video from your clips — which " +
-            "succeeds and is billed in full, with no error to catch.",
+            'Say edits explicitly ("Video edit: remove everyone in ' +
+            '@Video1 except the protagonist"; "Extend @Video1: ..."). ' +
+            "Without that wording the model generates a NEW video from " +
+            "your clips — billed in full, no error.",
 
             "Refer to your inputs in the prompt by ordinal, numbered per " +
             "type in content[] order: @Image1, @Image2, @Video1, @Audio1. " +
             "Mark sounds with () music, <> effects, {} dialogue, 【】 " +
             "subtitles.",
 
-            'Because duration "auto" lets the MODEL pick the length, the ' +
-            "cost estimate is an UPPER BOUND — it reserves a full 30-second " +
-            "video and releases the unused portion when the run settles on " +
-            "actual usage. Pass an explicit duration for a tight estimate.",
+            'With duration "auto" the cost estimate is an upper bound ' +
+            "(a full 30 s reserved, unused portion released at settle). " +
+            "Pass an explicit duration for a tight estimate.",
 
             "Unlike the 2.0 family, 2.5 accepts a reference audio clip as " +
             "the ONLY input, with no image or video alongside it.",
         ],
     },
     /** PUBLIC identity: the friendly model name (design D1). */
-    endpoint: "/seedance-2.5",
+    endpoint: "/v1/video/seedance-2.5",
     request: { method: "POST", path: "/api/v3/contents/generations/tasks" },
     input: {
         schema: {

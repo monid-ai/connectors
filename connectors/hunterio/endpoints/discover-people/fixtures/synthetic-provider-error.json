@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. A hard failure: 401 with Hunter's {errors[]} envelope, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/discover/people",
+                "body": {
+                    "industry": {
+                        "include": [
+                            "Financial Services"
+                        ]
+                    }
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "errors": [
+                        {
+                            "id": "invalid_api_key",
+                            "code": 401,
+                            "details": "The API key is invalid."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

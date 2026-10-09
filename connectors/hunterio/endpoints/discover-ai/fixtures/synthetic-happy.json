@@ -1,0 +1,53 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. The AI leg: meta.filters carries the translated filter set. 8.36 credits (the quota gate).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/discover",
+                "body": {
+                    "query": "Companies in Europe that specialize in software development"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "domain": "example.dev",
+                            "organization": "Example Software",
+                            "emails_count": {
+                                "personal": 40,
+                                "generic": 6,
+                                "total": 46
+                            }
+                        }
+                    ],
+                    "meta": {
+                        "results": 1247,
+                        "limit": 100,
+                        "offset": 0,
+                        "params": {
+                            "query": "Companies in Europe that specialize in software development"
+                        },
+                        "filters": {
+                            "headquarters_location": {
+                                "include": [
+                                    {
+                                        "continent": "Europe"
+                                    }
+                                ]
+                            },
+                            "industry": {
+                                "include": [
+                                    "Software Development"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

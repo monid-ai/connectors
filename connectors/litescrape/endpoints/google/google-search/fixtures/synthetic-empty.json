@@ -1,0 +1,32 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 with an empty result group: the vendor deducted one credit, usage here records 0 (v1 posture, owner 2026-09-20) — credits {} and RESULT 0.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "25b2559a2e53ae6fa7018ddc",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/search?q=coffee+shops+in+Austin&num=2&fast_mode=true"
+                    },
+                    "search_parameters": {
+                        "q": "coffee shops in Austin",
+                        "num": "2",
+                        "fast_mode": "true"
+                    },
+                    "search_information": {
+                        "total_results": 0,
+                        "query_displayed": "coffee shops in Austin"
+                    },
+                    "organic_results": []
+                }
+            }
+        }
+    ]
+}

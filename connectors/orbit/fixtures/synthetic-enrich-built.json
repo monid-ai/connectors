@@ -1,0 +1,111 @@
+{
+    "name": "synthetic-enrich-built",
+    "description": "A full build Orbit had to do: 202 running with 10 reserved, one tick still running, then completed at level 3 with the receipt settled at 10 — a full build includes its partial, so it is 10 and never 5 + 10. The poll follows links.status. Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.orbitsearch.com/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "request_id": "ENRICH1",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "running",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 2,
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH1"
+                    },
+                    "billing": {
+                        "id": "op-enrich-1",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 10,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 10,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/ENRICH1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "ENRICH1",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "running",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 2,
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH1"
+                    },
+                    "billing": {
+                        "id": "op-enrich-1",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 10,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 10,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/enrich/requests/ENRICH1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "ENRICH1",
+                    "profile_id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                    "status": "completed",
+                    "operation": "full",
+                    "include_profile": true,
+                    "generation_level": 3,
+                    "profile": {
+                        "id": "a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "name": "Ada Fielding",
+                        "headline": "Founder at Northwind Instruments",
+                        "location": "Brooklyn, New York",
+                        "sections": [
+                            {
+                                "kind": "background",
+                                "text": "Ada builds measurement hardware for field ecologists.",
+                                "sources": [
+                                    "https://northwind-instruments.example/about"
+                                ]
+                            }
+                        ]
+                    },
+                    "links": {
+                        "profile": "/v3/enrich/a23ff3b7-b6cc-4ac6-8d4f-0c909cd956f5",
+                        "status": "/v3/enrich/requests/ENRICH1"
+                    },
+                    "billing": {
+                        "id": "op-enrich-1",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 10,
+                        "consumedCredits": 10,
+                        "releasedCredits": 0,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

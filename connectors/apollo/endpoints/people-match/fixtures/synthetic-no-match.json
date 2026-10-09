@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-no-match",
+    "description": "SYNTHETIC — not recorded. A 200 with no record enriched, as the People Enrichment reference describes it: the person echoes the submitted identifier with match_confidence none and no email. The exact set of echoed fields is assumed (v1's 2026-09-03 drill saw such shells).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/people/match?email=nobody%40example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "person": {
+                        "id": null,
+                        "first_name": null,
+                        "last_name": null,
+                        "name": null,
+                        "linkedin_url": null,
+                        "title": null,
+                        "email_status": null,
+                        "email": null,
+                        "organization_id": null,
+                        "match_confidence": "none",
+                        "employment_history": [],
+                        "phone_numbers": null
+                    }
+                }
+            }
+        }
+    ]
+}

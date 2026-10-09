@@ -1,0 +1,71 @@
+{
+    "name": "synthetic-partial",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the happy fixture with the position blanked. Hunter charges the enrichment only when every core data point is returned (help.hunter.io/en/articles/1970956-hunter-api), so this 200 is free.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/people/find?email=jane.doe%40example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "b3ae14fb-6725-56d1-ac68-a76f8ce04dec",
+                        "name": {
+                            "fullName": "Jane Doe",
+                            "givenName": "Jane",
+                            "familyName": "Doe"
+                        },
+                        "email": "jane.doe@example.com",
+                        "location": "Framingham, Massachusetts, United States",
+                        "timeZone": "America/New_York",
+                        "utcOffset": -5,
+                        "geo": {
+                            "city": "Framingham",
+                            "state": "Massachusetts",
+                            "stateCode": "MA",
+                            "country": "United States",
+                            "countryCode": "US",
+                            "lat": 42.27926,
+                            "lng": -71.41617
+                        },
+                        "bio": null,
+                        "site": null,
+                        "avatar": null,
+                        "employment": {
+                            "domain": "hunter.io",
+                            "name": "Hunter",
+                            "title": null,
+                            "role": "executive",
+                            "subRole": null,
+                            "seniority": "executive"
+                        },
+                        "facebook": {
+                            "handle": null
+                        },
+                        "github": {
+                            "handle": null
+                        },
+                        "twitter": {
+                            "handle": "janedoe"
+                        },
+                        "linkedin": {
+                            "handle": null
+                        },
+                        "emailProvider": "google.com",
+                        "indexedAt": "2025-08-30",
+                        "activeAt": "2025-09-03",
+                        "inactiveAt": null
+                    },
+                    "meta": {
+                        "params": {
+                            "email": "jane.doe@example.com",
+                            "linkedin_handle": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

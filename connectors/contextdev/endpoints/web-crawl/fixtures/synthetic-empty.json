@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. A 200 crawl whose only URL failed: numSucceeded 0, credits_consumed 0 (failed pages are free); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/web/crawl"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "markdown": "",
+                            "metadata": {
+                                "url": "https://example.com/",
+                                "error": "WEBSITE_ACCESS_ERROR"
+                            }
+                        }
+                    ],
+                    "metadata": {
+                        "numUrls": 1,
+                        "maxCrawlDepth": 0,
+                        "numSucceeded": 0,
+                        "numFailed": 1,
+                        "numSkipped": 0
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9997
+                    },
+                    "request_id": "REQ3",
+                    "cache_metadata": { "status": "miss", "age_ms": 0 }
+                }
+            }
+        }
+    ]
+}

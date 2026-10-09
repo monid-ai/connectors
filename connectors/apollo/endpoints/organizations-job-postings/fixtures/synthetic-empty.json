@@ -1,0 +1,16 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. The job-postings envelope for a company with nothing open: an empty organization_job_postings array (v1 provider.test.ts stubbed the same shape).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/ORG2/job_postings?per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": { "organization_job_postings": [] }
+            }
+        }
+    ]
+}

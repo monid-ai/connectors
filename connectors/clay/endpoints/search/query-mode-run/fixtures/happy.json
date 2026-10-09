@@ -1,6 +1,6 @@
 {
     "name": "happy",
-    "description": "A search page returning 2 rows: 2 draws on the annual results quota (Clay's own meter counts rows RETURNED, not the requested limit), and period_quota rides the output untouched — it is Clay's own field, not a billing input. Recorded live 2026-09-16; the two profiles and the quota watermark are replaced with structural stand-ins (real people, and our account's consumption, do not belong in a public repo) — every field, type and nesting is the recording's.",
+    "description": "A search page returning 2 rows: 2 draws on the annual results quota (Clay's own meter counts rows RETURNED, not the requested limit). The recorded body carries period_quota so the provider strip is PROVABLE - fromResponse removes it before the caller sees the output (D7 reversal: v1 was right to strip the workspace's quota watermark). Recorded live 2026-09-16; the two profiles and the quota watermark are replaced with structural stand-ins (real people, and our account's consumption, do not belong in a public repo) - every field, type and nesting is the recording's.",
     "calls": [
         {
             "req": {

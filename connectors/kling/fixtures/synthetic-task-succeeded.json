@@ -1,0 +1,84 @@
+{
+    "name": "synthetic-task-succeeded",
+    "description": "SYNTHETIC (no Kling key was available to record): the canonical happy chain — submit parks RUNNING with the task id, one processing tick, then the terminal poll carrying outputs[].url of type video and duration \"5.041\" (a decimal string), which the evidence rounds to 5 billed seconds. Body shapes are the ones v1's 2026-09-08 drill observed (see monid-services adaptors/kling/provider.test.ts); ids, timestamps and the result URL are placeholders. billing[] is EMPTY here so that the derived fold settles — this one chain serves all twelve endpoints, whose rates differ, and a receipt can only match one of them; the claim path is exercised by synthetic-task-succeeded-billed.json. {{request.url}} / {{request.origin}} bind per endpoint.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-1",
+                    "data": {
+                        "id": "926151964131065926",
+                        "status": "submitted",
+                        "create_time": 1789540454000,
+                        "update_time": 1789540454000
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-2",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "processing",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540470000,
+                            "outputs": [],
+                            "billing": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-3",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "succeeded",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540575000,
+                            "outputs": [
+                                {
+                                    "type": "video",
+                                    "id": "v-926151964131065926",
+                                    "url": "https://cdn.klingai.com/redacted/926151964131065926.mp4",
+                                    "watermark_url": "",
+                                    "duration": "5.041"
+                                }
+                            ],
+                            "billing": []
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Search Brands response schema (docs.context.dev/api-reference/brand-intelligence/search, 2026-09-17): two matches with per-organization logo links; credits_consumed 0 on the Pro plan; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/brand/search?query=nike&queryBy=name&queryBy=domain"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "domain": "nike.com",
+                            "name": "Nike",
+                            "logo": "https://logos.context.dev/?domain=nike.com&publicClientId=ORG"
+                        },
+                        {
+                            "domain": "nikeshoes.example",
+                            "name": "",
+                            "logo": "https://logos.context.dev/?domain=nikeshoes.example&publicClientId=ORG"
+                        }
+                    ],
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9990
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

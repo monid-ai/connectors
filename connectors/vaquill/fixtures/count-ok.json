@@ -1,0 +1,29 @@
+{
+    "name": "count-ok",
+    "description": "Scope count: flat 1 credit, the scope echoed back.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "corpusType": "USC",
+                    "titleNumber": 42
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "count": 8481,
+                    "isExact": true,
+                    "scope": {
+                        "corpusType": "USC",
+                        "titleNumber": 42
+                    },
+                    "processingTimeMs": 1152.2,
+                    "creditsConsumed": 1
+                }
+            }
+        }
+    ]
+}

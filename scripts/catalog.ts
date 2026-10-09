@@ -8,9 +8,11 @@
 import { Command } from "@cliffy/command";
 import {
     inspectEndpoint,
+    inspectResource,
     listCategories,
     listEndpoints,
     listProviders,
+    listResources,
 } from "@shared/core";
 import { compileToOutput } from "./lib.ts";
 
@@ -64,5 +66,25 @@ await new Command()
     .action(async (_options, endpoint) => {
         const { bundle } = await compileToOutput();
         console.log(JSON.stringify(inspectEndpoint(bundle, endpoint), null, 2));
+    })
+    .command("resources", "List resource docs, optionally filtered.")
+    .option("--provider <name:string>", "Only resources of this provider.")
+    .action(async ({ provider }) => {
+        const { bundle } = await compileToOutput();
+        for (const resource of listResources(bundle, { provider })) {
+            console.log(
+                `${resource.id} — ${resource.displayName}: ` +
+                    `${resource.summary}` +
+                    (resource.billed ? " [billed]" : " [free]"),
+            );
+        }
+    })
+    .command(
+        "inspect-resource <resource:string>",
+        "Print one resource's full contract (its doc).",
+    )
+    .action(async (_options, resource) => {
+        const { bundle } = await compileToOutput();
+        console.log(JSON.stringify(inspectResource(bundle, resource), null, 2));
     })
     .parse(Deno.args);

@@ -1,6 +1,6 @@
 {
     "name": "synthetic-happy",
-    "description": "SYNTHETIC chain for fundable#deal/investors (shape from the v1 adaptor tests; replace via `deno task record`): GET /deals/{id}/investors — the {id} path param substituted into the url — returns one firm and four angels; the vendor bills the flat 1 credit regardless of lineup size.",
+    "description": "SYNTHETIC chain for fundable#deals/{id}/investors (shape from the v1 adaptor tests; replace via `deno task record`): GET /deals/{id}/investors — the {id} path param substituted into the url — returns one firm and four angels; the vendor bills the flat 1 credit regardless of lineup size.",
     "calls": [
         {
             "req": {

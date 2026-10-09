@@ -1,0 +1,30 @@
+{
+    "name": "happy",
+    "description": "RECORDED LIVE 2026-09-17. The free sizing probe: total_results plus the per-kind contact-coverage estimates. The request is a filter set, so it names no person. FREE: no credit is drawn.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.contactout.com/v1/people/count",
+                "body": {
+                    "job_title": [
+                        "CTO"
+                    ],
+                    "company": [
+                        "Stripe"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status_code": 200,
+                    "total_results": 3,
+                    "estimated_personal_emails": 2,
+                    "estimated_work_emails": 3,
+                    "estimated_phones": 2
+                }
+            }
+        }
+    ]
+}

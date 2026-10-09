@@ -1,0 +1,104 @@
+{
+    "v1/video/wan3.0": {
+        "input": {
+            "prompt": "a sea lion plays with a cat on a beach at sunset"
+        },
+        "parameters": { "resolution": "720P", "duration": 5 }
+    },
+    "v1/video/wan3.0-prime": {
+        "input": {
+            "prompt": "a sea lion plays with a cat on a beach at sunset"
+        },
+        "parameters": { "resolution": "720P", "duration": 5 }
+    },
+    "v1/video/wan2.7-t2v": {
+        "input": {
+            "prompt": "a sea lion plays with a cat on a beach at sunset"
+        },
+        "parameters": { "resolution": "720P", "duration": 5 }
+    },
+    "v1/video/wan2.7-i2v": {
+        "input": {
+            "prompt": "the cat stretches and yawns",
+            "media": [
+                { "type": "first_frame", "url": "https://example.test/cat.png" }
+            ]
+        },
+        "parameters": { "resolution": "720P", "duration": 5 }
+    },
+    "v1/video/wan2.7-r2v": {
+        "input": {
+            "prompt": "Image 1 walks along the beach at sunset",
+            "media": [
+                {
+                    "type": "reference_image",
+                    "url": "https://example.test/cat.png"
+                }
+            ]
+        },
+        "parameters": { "resolution": "720P", "duration": 5 }
+    },
+    "v1/video/wan2.7-videoedit": {
+        "input": {
+            "prompt": "Convert the entire scene to a claymation style",
+            "media": [
+                { "type": "video", "url": "https://example.test/clip.mp4" }
+            ]
+        },
+        "parameters": { "resolution": "720P" }
+    },
+    "v1/image/qwen-image-3.0-pro": {
+        "input": {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        { "image": "https://example.test/cat.png" },
+                        { "text": "put the cat on a beach at sunset" }
+                    ]
+                }
+            ]
+        },
+        "parameters": { "size": "1024*1024", "n": 1 }
+    },
+    "v1/image/qwen-image-3.0": {
+        "input": {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        { "image": "https://example.test/cat.png" },
+                        { "text": "put the cat on a beach at sunset" }
+                    ]
+                }
+            ]
+        },
+        "parameters": { "size": "1024*1024", "n": 1 }
+    },
+    "v1/image/wan2.7-image-pro": {
+        "input": {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        { "text": "a sea lion and a cat on a beach at sunset" }
+                    ]
+                }
+            ]
+        },
+        "parameters": { "n": 2 }
+    },
+    "v1/image/wan2.7-image": {
+        "input": {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        { "text": "a sea lion and a cat on a beach at sunset" }
+                    ]
+                }
+            ]
+        },
+        "parameters": { "n": 2 }
+    }
+}

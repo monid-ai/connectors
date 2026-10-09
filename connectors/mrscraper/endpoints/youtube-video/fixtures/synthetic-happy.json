@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the YouTube Video Media Info shape v1 documented, tokenUsage 10; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/video/youtube/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "video_id": "HeyIXwZyR8Y",
+                        "title": "MrScraper MCP is now Live",
+                        "author": "MrScraper",
+                        "author_url": "https://www.youtube.com/channel/UCYCwUmYcwIgCEUE9spiSV6A",
+                        "thumbnail": "https://i.ytimg.com/vi/HeyIXwZyR8Y/maxresdefault.jpg",
+                        "duration": 95,
+                        "download_url": "https://cdn.example/HeyIXwZyR8Y_480p.mp4",
+                        "formats": [
+                            {
+                                "type": "video",
+                                "format": "360p"
+                            },
+                            {
+                                "type": "audio",
+                                "format": "128k"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "name": "synthetic-video-succeeded-r2v-input",
+    "description": "SYNTHETIC: a reference-to-video success whose usage reports an 8-second reference clip UNCAPPED (duration 18 = input 8 + output 10). DashScope documents a 5-second cap on the billed input side, so wan2.7-r2v settles output + min(input, 5) = 15 from the component fields rather than trusting the sum (v1 `wanBilledSeconds` fuse; drill T3 2026-09-01 saw the vendor cap its echo, so this shape is hypothetical). Other video endpoints read usage.duration as-is.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_status": "PENDING",
+                        "task_id": "TASK1"
+                    },
+                    "request_id": "req-TASK1-submit"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "RUNNING",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000"
+                    },
+                    "request_id": "req-TASK1-running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "SUCCEEDED",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000",
+                        "end_time": "2026-09-16 10:03:12.000",
+                        "video_url": "https://dashscope-result-sgp.oss-ap-southeast-1.aliyuncs.com/redacted/TASK1.mp4",
+                        "orig_prompt": "a sea lion plays with a cat on a beach at sunset"
+                    },
+                    "request_id": "req-TASK1-succeeded",
+                    "usage": {
+                        "video_count": 1,
+                        "duration": 18,
+                        "input_video_duration": 8,
+                        "output_video_duration": 10,
+                        "SR": 720,
+                        "ratio": "16:9"
+                    }
+                }
+            }
+        }
+    ]
+}

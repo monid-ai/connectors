@@ -21,8 +21,11 @@ export default defineEndpoint({
     request: { method: "GET", path: "/company/search" },
     input: { schema: { queryParams: zCompanySearchQueryParams } },
     usage: {
-        /** 0.1 credit per call, charged on zero results — v1 drill
-         *  (2026-09-01). */
+        /** 0.1 credit per call, charged on zero results — the vendor's
+         *  published rate card ("0.1 credit/call" on the search
+         *  resolvers; everything bills the ONE Fundable credit system).
+         *  The provider consolidate claims the response's own 0.1 stamp,
+         *  which matches this fold exactly. */
         model: {
             kind: UsageModelKind.PER_CALL,
             label: "search",

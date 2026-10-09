@@ -2,6 +2,7 @@ import type { Bundle } from "./schema/bundle/bundle.ts";
 import type { EndpointDoc } from "./schema/endpoint/doc.ts";
 import type { LeafCategory } from "./schema/taxonomy/leaf.ts";
 import type { ProviderMeta } from "./schema/meta/provider.ts";
+import type { ResourceDoc } from "./schema/resource/doc.ts";
 
 /**
  * Bundle read API — pure functions over the Bundle shape core defines (no
@@ -73,5 +74,40 @@ export function inspectEndpoint(
 ): EndpointDoc {
     const doc = bundle.endpoints[endpointId];
     if (!doc) throw new Error(`endpoint not in bundle: ${endpointId}`);
+    return doc;
+}
+
+export function listResources(
+    bundle: Bundle,
+    filter: { provider?: string } = {},
+): {
+    id: string;
+    provider: string;
+    displayName: string;
+    summary: string;
+    billed: boolean;
+}[] {
+    return Object.keys(bundle.resources ?? {}).sort()
+        .map((id) => (bundle.resources ?? {})[id])
+        .filter((doc) =>
+            filter.provider === undefined || doc.provider === filter.provider
+        )
+        .map((doc) => ({
+            id: doc.id,
+            provider: doc.provider,
+            displayName: doc.meta.displayName,
+            summary: doc.meta.summary,
+            billed: Object.values(doc.usage.lines).some((line) =>
+                "price" in line || line.consumes.amount > 0
+            ),
+        }));
+}
+
+export function inspectResource(
+    bundle: Bundle,
+    resourceId: string,
+): ResourceDoc {
+    const doc = (bundle.resources ?? {})[resourceId];
+    if (!doc) throw new Error(`resource not in bundle: ${resourceId}`);
     return doc;
 }

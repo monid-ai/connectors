@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 20 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tvlk.mrscraper.com/api/hotels/tripadv/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.tripadvisor.com/Hotel_Review-g293916-d308699",
+                        "total_reviews": 1,
+                        "reviews": [
+                            {
+                                "reviewer": "A. Example",
+                                "rating": 5,
+                                "title": "Wonderful",
+                                "text": "Would stay again.",
+                                "date": "2026-08-20"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 20
+                }
+            }
+        }
+    ]
+}

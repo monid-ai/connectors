@@ -1,0 +1,102 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/project/detail?id=25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "contracts": {
+                            "contracts": []
+                        },
+                        "funding": {
+                            "rounds": [],
+                            "total_raise": 1
+                        },
+                        "overview": {
+                            "chains": [],
+                            "description": "description-1",
+                            "exchanges": [],
+                            "id": "id-1",
+                            "logo_url": "logo_url-1",
+                            "name": "name-1",
+                            "slug": "slug-1",
+                            "tags": [],
+                            "tge_status": "tge_status-1",
+                            "token_symbol": "token_symbol-1",
+                            "website": "website-1",
+                            "x_followers": 1,
+                            "x_handle": "x_handle-1",
+                            "x_id": "x_id-1"
+                        },
+                        "social": {
+                            "discord": {
+                                "followers_count": 1,
+                                "handle": "handle-1",
+                                "url": "url-1"
+                            },
+                            "github": {
+                                "followers_count": 1,
+                                "handle": "handle-1",
+                                "url": "url-1"
+                            },
+                            "telegram": {
+                                "followers_count": 1,
+                                "handle": "handle-1",
+                                "url": "url-1"
+                            },
+                            "twitter": {
+                                "followers_count": 1,
+                                "handle": "handle-1",
+                                "url": "url-1"
+                            }
+                        },
+                        "team": {
+                            "members": []
+                        },
+                        "tge_status": {
+                            "current_status": "current_status-1",
+                            "exchanges": [],
+                            "last_event_time": 1
+                        },
+                        "token_info": {
+                            "all_time_high": 1,
+                            "all_time_high_date": 1,
+                            "all_time_low": 1,
+                            "all_time_low_date": 1,
+                            "circulating_supply": 1,
+                            "fdv": 1,
+                            "high_24h": 1,
+                            "image": "image-1",
+                            "low_24h": 1,
+                            "market_cap_usd": 1,
+                            "name": "name-1",
+                            "price_change_24h": 1,
+                            "price_change_30d": 1,
+                            "price_change_7d": 1,
+                            "price_usd": 1,
+                            "symbol": "symbol-1",
+                            "total_supply": 1,
+                            "volume_24h": 1
+                        },
+                        "tokenomics": {
+                            "circulating_supply": 1,
+                            "fdv": 1,
+                            "market_cap_usd": 1,
+                            "total_supply": 1
+                        }
+                    },
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2
+                    }
+                }
+            }
+        }
+    ]
+}

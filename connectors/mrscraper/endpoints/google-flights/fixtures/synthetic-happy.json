@@ -1,0 +1,51 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the Google Flights shape v1 documented (search params, itineraries), tokenUsage 10; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/google-flight/cbc/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "search": {
+                            "origin": "JFK",
+                            "destination": "SIN",
+                            "type": "OW",
+                            "date": "2026-11-20",
+                            "country": "us"
+                        },
+                        "passengers": { "adults": 1 },
+                        "cabin": "economy",
+                        "total_found": 2,
+                        "itineraries": [
+                            {
+                                "airline": "Singapore Airlines",
+                                "departure": "2026-11-20T21:30",
+                                "arrival": "2026-11-22T05:30",
+                                "duration": "18h 0m",
+                                "stops": 0,
+                                "price": "$1,120"
+                            },
+                            {
+                                "airline": "Cathay Pacific",
+                                "departure": "2026-11-20T13:00",
+                                "arrival": "2026-11-22T00:45",
+                                "duration": "22h 45m",
+                                "stops": 1,
+                                "price": "$890"
+                            }
+                        ],
+                        "source_url": "https://www.google.com/travel/flights?q=JFK+SIN"
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

@@ -24,11 +24,13 @@ export default defineEndpoint({
             "Finds pages by meaning rather than keyword overlap — phrase the " +
             "query as a description of the page you are looking for. Supports " +
             "search types ('auto', 'instant', 'fast', 'neural', 'deep-lite', " +
-            "'deep', 'deep-reasoning'), categories ('company', 'research " +
-            "paper', 'news', 'personal site', 'financial report'), domain " +
-            "filters, published-date ranges, and inline contents extraction " +
-            "(text/highlights/summary). Returns a list of result URLs with " +
-            "optional content.",
+            "'deep', 'deep-reasoning'), categories ('company', 'people', " +
+            "'research paper', 'news', 'personal site', 'financial " +
+            "report'), domain filters, published-date ranges, and inline " +
+            "contents extraction (text/highlights/summary). Optionally use " +
+            "'outputSchema' to synthesize structured JSON output across " +
+            "multiple sources. Returns a list of result URLs with optional " +
+            "content.",
         docsUrl: "https://exa.ai/docs/reference/search",
         categories: ["web-search"],
     },

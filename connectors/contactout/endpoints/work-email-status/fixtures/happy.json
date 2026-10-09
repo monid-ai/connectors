@@ -1,0 +1,22 @@
+{
+    "name": "happy",
+    "description": "Response body RECORDED LIVE 2026-09-17 (work key); the request profile URL is substituted with the connector's standard example-person so no real person is committed \u2014 the body is the vendor's, unmodified. This recording is where the work_email \u2192 email correction came from: the checker answers the flag under a bare `email` key with an `email_status` verdict, and the synthetic fixture this replaced invented a `work_email` field the vendor does not send. FREE: no credit is drawn.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.contactout.com/v1/people/linkedin/work_email_status?profile=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fexample-person"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status_code": 200,
+                    "profile": {
+                        "email": true,
+                        "email_status": "Verified"
+                    }
+                }
+            }
+        }
+    ]
+}

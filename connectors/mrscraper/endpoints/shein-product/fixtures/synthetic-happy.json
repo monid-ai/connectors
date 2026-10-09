@@ -1,0 +1,48 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 30 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/commerce/shein/v4/detail/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "product": {
+                            "goods_id": "98911792",
+                            "title": "Example Ribbed Knit Top",
+                            "price": {
+                                "current": 8.49,
+                                "original": 11.99,
+                                "currency": "USD"
+                            },
+                            "attributes": [
+                                {
+                                    "name": "Material",
+                                    "value": "Polyester"
+                                }
+                            ],
+                            "variants": [
+                                {
+                                    "size": "S",
+                                    "color": "Black",
+                                    "in_stock": true
+                                }
+                            ],
+                            "media": [
+                                "https://img.ltwebstatic.com/example.jpg"
+                            ]
+                        },
+                        "html": "<!DOCTYPE html><html>...</html>"
+                    },
+                    "tokenUsage": 30
+                }
+            }
+        }
+    ]
+}

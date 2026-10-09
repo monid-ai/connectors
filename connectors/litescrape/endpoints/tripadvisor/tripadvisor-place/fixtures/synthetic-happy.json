@@ -1,0 +1,44 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (place_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/tripadvisor/place?place_id=1234567&currency=EUR"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "1be9abfdcebba07af5f4c736",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/tripadvisor/place?place_id=1234567&currency=EUR"
+                    },
+                    "search_parameters": {
+                        "place_id": "1234567",
+                        "currency": "EUR",
+                        "locale": "en-US",
+                        "tripadvisor_domain": "www.tripadvisor.com"
+                    },
+                    "place_results": {
+                        "name": "Example Hotel Lisboa",
+                        "place_type": "accommodation",
+                        "rating": 4.5,
+                        "reviews": 2310,
+                        "ranking": "#12 of 300 hotels in Lisbon",
+                        "address": "Rua Exemplo 1, Lisbon, Portugal",
+                        "phone": "+351 21 555 0100",
+                        "website": "https://example-hotel.example",
+                        "amenities": [
+                            "Free Wi-Fi",
+                            "Breakfast"
+                        ],
+                        "price_range": "€120 - €210",
+                        "litescrape_reviews_link": "https://api.litescrape.com/api/tripadvisor/reviews?place_id=1234567&locale=en-US"
+                    }
+                }
+            }
+        }
+    ]
+}

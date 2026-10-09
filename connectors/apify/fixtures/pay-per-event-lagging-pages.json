@@ -1,0 +1,250 @@
+{
+    "name": "pay-per-event-lagging-pages",
+    "description": "A PAY_PER_EVENT run whose terminal record carries a LAGGING usageTotalUsd ($0.0001 - the aggregation had not landed) while the dataset already holds 60 profiles. Reconstruction from the total computes ~0 pages, but the delivered profiles themselves prove ceil(60/25) = 3 charged pages (a page yields at most 25 profiles) - the lag-independent floor wins and the derived fold settles 3 pages.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "RUNNING",
+                        "defaultDatasetId": "DS1"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/actor-runs/RUN1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "RUN1",
+                        "status": "SUCCEEDED",
+                        "exitCode": 0,
+                        "defaultDatasetId": "DS1",
+                        "usageTotalUsd": 0.0001,
+                        "pricingInfo": {
+                            "pricingModel": "PAY_PER_EVENT",
+                            "pricingPerEvent": {
+                                "actorChargeEvents": {
+                                    "search-page": {
+                                        "eventTitle": "Search page results",
+                                        "eventPriceUsd": 0.05
+                                    },
+                                    "full-profile": {
+                                        "eventTitle": "Full profile",
+                                        "eventPriceUsd": 0.0032
+                                    },
+                                    "full-profile-with-email": {
+                                        "eventTitle": "Full profile + email search",
+                                        "eventPriceUsd": 0.008
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v2/datasets/DS1/items"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "p1"
+                    },
+                    {
+                        "id": "p2"
+                    },
+                    {
+                        "id": "p3"
+                    },
+                    {
+                        "id": "p4"
+                    },
+                    {
+                        "id": "p5"
+                    },
+                    {
+                        "id": "p6"
+                    },
+                    {
+                        "id": "p7"
+                    },
+                    {
+                        "id": "p8"
+                    },
+                    {
+                        "id": "p9"
+                    },
+                    {
+                        "id": "p10"
+                    },
+                    {
+                        "id": "p11"
+                    },
+                    {
+                        "id": "p12"
+                    },
+                    {
+                        "id": "p13"
+                    },
+                    {
+                        "id": "p14"
+                    },
+                    {
+                        "id": "p15"
+                    },
+                    {
+                        "id": "p16"
+                    },
+                    {
+                        "id": "p17"
+                    },
+                    {
+                        "id": "p18"
+                    },
+                    {
+                        "id": "p19"
+                    },
+                    {
+                        "id": "p20"
+                    },
+                    {
+                        "id": "p21"
+                    },
+                    {
+                        "id": "p22"
+                    },
+                    {
+                        "id": "p23"
+                    },
+                    {
+                        "id": "p24"
+                    },
+                    {
+                        "id": "p25"
+                    },
+                    {
+                        "id": "p26"
+                    },
+                    {
+                        "id": "p27"
+                    },
+                    {
+                        "id": "p28"
+                    },
+                    {
+                        "id": "p29"
+                    },
+                    {
+                        "id": "p30"
+                    },
+                    {
+                        "id": "p31"
+                    },
+                    {
+                        "id": "p32"
+                    },
+                    {
+                        "id": "p33"
+                    },
+                    {
+                        "id": "p34"
+                    },
+                    {
+                        "id": "p35"
+                    },
+                    {
+                        "id": "p36"
+                    },
+                    {
+                        "id": "p37"
+                    },
+                    {
+                        "id": "p38"
+                    },
+                    {
+                        "id": "p39"
+                    },
+                    {
+                        "id": "p40"
+                    },
+                    {
+                        "id": "p41"
+                    },
+                    {
+                        "id": "p42"
+                    },
+                    {
+                        "id": "p43"
+                    },
+                    {
+                        "id": "p44"
+                    },
+                    {
+                        "id": "p45"
+                    },
+                    {
+                        "id": "p46"
+                    },
+                    {
+                        "id": "p47"
+                    },
+                    {
+                        "id": "p48"
+                    },
+                    {
+                        "id": "p49"
+                    },
+                    {
+                        "id": "p50"
+                    },
+                    {
+                        "id": "p51"
+                    },
+                    {
+                        "id": "p52"
+                    },
+                    {
+                        "id": "p53"
+                    },
+                    {
+                        "id": "p54"
+                    },
+                    {
+                        "id": "p55"
+                    },
+                    {
+                        "id": "p56"
+                    },
+                    {
+                        "id": "p57"
+                    },
+                    {
+                        "id": "p58"
+                    },
+                    {
+                        "id": "p59"
+                    },
+                    {
+                        "id": "p60"
+                    }
+                ]
+            }
+        }
+    ]
+}

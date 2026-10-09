@@ -1,0 +1,44 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (local_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/duckduckgo/maps?q=coffee&bbox=30.30%2C-97.78%2C30.24%2C-97.71"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "d7a567c9ea7d663cb1b08392",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/duckduckgo/maps?q=coffee&bbox=30.30%2C-97.78%2C30.24%2C-97.71"
+                    },
+                    "search_parameters": {
+                        "q": "coffee",
+                        "bbox": "30.30,-97.78,30.24,-97.71",
+                        "strict_bbox": "true"
+                    },
+                    "local_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Coffee",
+                            "address": "100 Congress Ave, Austin, TX 78701",
+                            "gps_coordinates": {
+                                "latitude": 30.2672,
+                                "longitude": -97.7431
+                            },
+                            "phone": "+1 512 555 0100",
+                            "website": "https://example-coffee.example",
+                            "rating": 4.6,
+                            "apple_maps_muid": "4372355869446211302",
+                            "yelp_id": "example-coffee-austin",
+                            "litescrape_apple_link": "https://api.litescrape.com/api/apple/maps/places?muid=4372355869446211302"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

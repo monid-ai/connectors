@@ -1,0 +1,75 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/hyperliquid/trades?address=test&limit=20"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "close_time": 1,
+                            "direction": "direction-1",
+                            "entry_px": 1,
+                            "episode_id": "episode_id-1",
+                            "exit_px": 1,
+                            "fees": 1,
+                            "funding_pnl": 1,
+                            "funding_status": "complete",
+                            "gross_pnl": 1,
+                            "hold_seconds": 1,
+                            "is_win": false,
+                            "leverage": 1,
+                            "leverage_semantics": "completed_trade_reported",
+                            "leverage_type": "cross",
+                            "net_pnl": 1,
+                            "notional_usd": 1,
+                            "open_time": 1,
+                            "opened_sz": 1,
+                            "reported_leverage": 1,
+                            "reported_leverage_type": "cross",
+                            "source": "source-1",
+                            "symbol": "symbol-1"
+                        },
+                        {
+                            "close_time": 2,
+                            "direction": "direction-2",
+                            "entry_px": 2,
+                            "episode_id": "episode_id-2",
+                            "exit_px": 2,
+                            "fees": 2,
+                            "funding_pnl": 2,
+                            "funding_status": "complete",
+                            "gross_pnl": 2,
+                            "hold_seconds": 2,
+                            "is_win": false,
+                            "leverage": 2,
+                            "leverage_semantics": "completed_trade_reported",
+                            "leverage_type": "cross",
+                            "net_pnl": 2,
+                            "notional_usd": 2,
+                            "open_time": 2,
+                            "opened_sz": 2,
+                            "reported_leverage": 2,
+                            "reported_leverage_type": "cross",
+                            "source": "source-2",
+                            "symbol": "symbol-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "next_cursor": "next_cursor-1",
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

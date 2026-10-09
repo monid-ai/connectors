@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-submit-rejected",
+    "description": "SYNTHETIC: DashScope rejects the call with HTTP 400 and its error envelope ({code, message, request_id} — the shape the reference pages document). No task is created and no image is generated, so nothing will ever be billed; the run settles as zero-billed data with the vendor's status. Serves the video submit and the blocking image call alike (same envelope on both paths).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "code": "InvalidParameter",
+                    "message": "num_images_per_prompt must be 1",
+                    "request_id": "req-rejected"
+                }
+            }
+        }
+    ]
+}

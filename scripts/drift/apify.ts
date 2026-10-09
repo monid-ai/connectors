@@ -40,6 +40,14 @@ import type { DriftCtx, DriftFinding, DriftSuite } from "./contract.ts";
 
 const FLAT_EVENT = /(^|[-_])start($|[-_])|^request$/;
 
+/** Events billed PER GIGABYTE of actor run memory (`actor-start-gb`):
+ *  the published eventPriceUsd is a $/GB rate, and the actor bills it
+ *  × its default run memory — live-confirmed 2026-09-16 on
+ *  trudax/reddit-scraper-lite (2 GB default: claim $0.0468 = 2 × $0.02
+ *  start + items). The pinned amount is the expected CHARGE, so the
+ *  join scales the live rate by the actor's defaultRunOptions memory. */
+const GB_EVENT = /(^|[-_])gb$/;
+
 /** COVERAGE exclusions (D29): published events we deliberately do NOT
  *  model, each with its reviewed reason. Anything published, unmodeled
  *  and not listed here is a `coverage` finding. */
@@ -191,8 +199,19 @@ export function checkPricing(
     log: (line: string) => void,
 ): { findings: DriftFinding[]; summary: string } {
     const findings: DriftFinding[] = [];
-    const body = actorBody as { data?: { pricingInfos?: PricingInfo[] } };
+    const body = actorBody as {
+        data?: {
+            pricingInfos?: PricingInfo[];
+            defaultRunOptions?: { memoryMbytes?: number };
+        };
+    };
     const infos = body.data?.pricingInfos ?? [];
+    // per-GB start events scale by the actor's default run memory (the
+    // memory a default-options run — ours — actually starts with)
+    const memoryMb = body.data?.defaultRunOptions?.memoryMbytes;
+    const memoryGb = typeof memoryMb === "number" && memoryMb > 0
+        ? memoryMb / 1024
+        : 1;
     const { effective, upcoming } = selectPricing(infos, now);
     const regime = effective?.pricingModel ?? "(none)";
     if (regime !== "PAY_PER_EVENT") {
@@ -292,10 +311,18 @@ export function checkPricing(
             });
             continue;
         }
-        const live = livePrice(events[eventName]);
-        if (live === line.amount) continue;
+        // per-GB start events: the published price is $/GB — the expected
+        // pinned CHARGE is rate × the actor's default run memory
+        const scale = GB_EVENT.test(eventName) ? memoryGb : 1;
+        const rawLive = livePrice(events[eventName]);
+        const live = rawLive === undefined ? undefined : rawLive * scale;
+        if (live !== undefined && Math.abs(live - line.amount) < 1e-12) {
+            continue;
+        }
         const ahead = (scheduled.get(eventName) ?? [])
-            .find((entry) => entry.price === line.amount);
+            .find((entry) =>
+                Math.abs(entry.price * scale - line.amount) < 1e-12
+            );
         if (ahead !== undefined) {
             log(
                 `  UPCOMING ${doc.id}: ${line.id} ("${eventName}") pinned ` +
@@ -315,8 +342,11 @@ export function checkPricing(
             docId: doc.id,
             check: "rate",
             message: `line ${line.id} ("${eventName}"): pinned ` +
-                `${line.amount}, live Business ${live ?? "(none)"} — ` +
-                `re-pin consumes.amount`,
+                `${line.amount}, live Business ${live ?? "(none)"}` +
+                (scale !== 1
+                    ? ` (= ${rawLive}/GB × ${memoryGb} GB default memory)`
+                    : "") +
+                ` — re-pin consumes.amount`,
         });
         repins.push({
             docId: doc.id,
@@ -483,9 +513,8 @@ async function rescaffold(
 
 export const apifySuite: DriftSuite = {
     provider: "apify",
-    requiresEnv: "APIFY_API_KEY",
     async run(ctx: DriftCtx): Promise<DriftFinding[]> {
-        const token = Deno.env.get(this.requiresEnv)!;
+        const token = ctx.token;
         const now = new Date().toISOString();
         const findings: DriftFinding[] = [];
         const repins: Repin[] = [];

@@ -1,0 +1,36 @@
+{
+    "name": "scrape-pdf-redacted-ok",
+    "description": "Sync /scrape of a 4-page PDF with redactPII. RECORDED LIVE: Firecrawl bills 20 credits \u2014 1 base + 3 pages beyond the first + FOUR redaction charges at 4 each. Pins the rule that redaction is billed per PARSED PAGE, not per document; counting it per document derived 8 and reported a false mismatch.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "data": {
+                        "markdown": "Anatomy of the Somatosensory System\n\n1\nFROM WIKIBOOKS\n\nOur somatosensory system consists of sensors in the skin\nand sensors in our muscles, tendons, and joints. The receptors in the skin, the so called cutaneous receptors, tell\nus about temperature (thermoreceptors), pressure and surface texture (mechano receptors), and pain (nociceptors).\nThe receptors in muscles and joints provide information\nabout muscle length, muscle tension, and joint angles.\n\nOur somatosensory system consists of sensors i",
+                        "metadata": {
+                            "scrapeId": "01a0ac58-e367-7028-a617-fd7f2785fae5",
+                            "sourceURL": "https://css4.pub/2015/textbook/somatosensory.pdf",
+                            "url": "https://css4.pub/2015/textbook/somatosensory.pdf",
+                            "statusCode": 200,
+                            "numPages": 4,
+                            "totalPages": 4,
+                            "title": "Anatomy of the Somatosensory System",
+                            "contentType": "application/pdf",
+                            "proxyUsed": "basic",
+                            "cacheState": "hit",
+                            "cachedAt": "2026-09-16T22:22:46.559Z",
+                            "creditsUsed": 20,
+                            "concurrencyLimited": false
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

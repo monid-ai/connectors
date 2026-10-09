@@ -23,6 +23,7 @@ migrated here change-by-change.
 
 ```
 connectors/<name>/            # provider.ts + endpoints/<e>/{endpoint.ts, schema/, endpoint.test.ts, fixtures/}
+                              #   + resources/<r>/resource.ts for OWNED billable things (saperly/phone-number)
 engine/                       # load -> link -> execute; transports; host ABI (ctx.utils)
 shared/core                   # THE contract: def/doc/hook/bundle zod schemas, presets
 shared/compiler               # pure Def -> Doc mapping, fn normalization + interning
@@ -37,7 +38,7 @@ config.yml                    # schema.*/compiler.* = CONTRACT (no env overrides
 
 ```bash
 deno task check && deno task test    # types + replay tests (zero network)
-deno task test:live                  # live tests; auto-skip without <PROVIDER>_API_KEY
+deno task test:live                  # live tests; auto-skip without <PROVIDER>_CREDENTIALS_<FIELD>
 deno task engine:run 'exa#search' --body '{...}'   # JIT-compile + execute one endpoint
 deno task catalog providers|endpoints|inspect <id>
 deno task record <id> ...            # record real fixtures (headers dropped)
@@ -164,18 +165,19 @@ deno task apify:scaffold <actorId>   # authoring-time actor input-schema scaffol
 - **Billing before presentation**: `usage.consolidate` is OPTIONAL (D27 — not
   every vendor reports a meter; clay, pdl and tinyfish ship without one) and,
   when present, runs on the RAW response envelope BEFORE `fromResponse` —
-  presentation changes can never change a bill. Vendor non-2xx is DATA (zero usage), not an exception;
-  lifecycle fns synthesize error statuses for in-body failures and the engine
-  zero-bills every non-2xx envelope (a fn cannot bill an error).
+  presentation changes can never change a bill. Vendor non-2xx is DATA (zero
+  usage), not an exception; lifecycle fns synthesize error statuses for in-body
+  failures and the engine zero-bills every non-2xx envelope (a fn cannot bill an
+  error).
 - **Versioning**: every doc carries compiler-derived `minEngineVersion`.
   Connector-only changes never bump the engine. Any hook-ABI or doc-format
   change requires an `ENGINE_VERSION` minor bump + `doc_format_since`/
   `fn_abi_since` facts in `config.yml`, guarded by `deno task version:check`.
 - **Tests run the artifact**: `testSealedUnit(id)` compiles the whole repo and
   tests the sealed unit (doc + its fn entries), replaying `fixtures/*.json`.
-  Live tests gate on `<PROVIDER>_API_KEY`; synthetic fixtures carry a
-  `synthetic-` filename prefix until real recordings exist. Fixtures are MINIMAL
-  SHARED CHAINS (fixture strategy v2): provider-level
+  Live tests gate on the credential env convention (below); synthetic fixtures
+  carry a `synthetic-` filename prefix until real recordings exist. Fixtures are
+  MINIMAL SHARED CHAINS (fixture strategy v2): provider-level
   `connectors/<provider>/fixtures/<shape>.json` with a required `description`
   and `{{request.url}}`/`{{request.origin}}` bindings — one chain serves every
   endpoint. `record` trims (arrays/strings capped) and ALWAYS scrubs PII; the
@@ -191,17 +193,86 @@ The decision record (D-numbered) lives in `design.md` — read
 extending the schema or engine. `openspec/specs/` is populated on archive.
 
 The async run protocol (D10/D29's reserved surface) is IMPLEMENTED — see
-`openspec/changes/add-async-run-protocol/design.md`. Still reserved: resources
-(removed in D19), metered/accruing endpoints, declarative poll/stop phase arms,
-`stop` result reporting — "return with a concrete need, as their own change".
+`openspec/changes/add-async-run-protocol/design.md`. The RESOURCE LIFECYCLE
+(resources, endpoint bindings, mid-run estimates, stop outcomes, webhooks) is
+IMPLEMENTED too — see
+`openspec/changes/add-resource-lifecycle-saperly/design.md` (D30–D37) refined by
+`openspec/changes/refine-resource-model/design.md` (D38–D47; saperly is the
+proving connector: 17 endpoints + the `phone-number` resource; DEVELOPMENT.md
+"Resources" is the primer). Still reserved: declarative poll/stop phase arms,
+SUSPEND, catalog visibility.
+
+A connector port that needs no schema/engine change carries no `design.md`: the
+proposal plus `specs/<capability>/spec.md` and `tasks.md` are the record (see
+`openspec/changes/add-connector-firecrawl/`). Reach for a `design.md` only when
+the contract itself moves.
 
 ## Conventions
 
 - Deno 2 workspace; fmt `indentWidth: 4`; import aliases `@shared/<name>`.
-- Endpoint ids are `<provider>#<endpoint>`, inferred from folder names — never
-  authored.
+- Endpoint ids are `<provider>#<path minus its leading slash>`, where the path
+  is the def's `endpoint` ?? `request.path` (design D22). Folder names are
+  ORGANIZATIONAL only — they must be unique per provider, but they are never
+  identity. Declare `endpoint` when the native path is transport plumbing
+  (apify's actor slug), empty (tinyfish), or SHARED by two defs (contactout's
+  work/personal twins, where omitting it collides).
+- **Credentials, one convention**: each field of a doc's `auth.credentials`
+  reads from `<PROVIDER>_CREDENTIALS_<FIELD>` — dashes and camelCase humps
+  become underscores (`contactout` + `workApiKey` ⇒
+  `CONTACTOUT_CREDENTIALS_WORK_API_KEY`). One alias, for the near-universal
+  `apiKey` field alone: the bare `<PROVIDER>_API_KEY` still answers, and the
+  canonical name wins when both are set. A variable set but EMPTY is a config
+  error surfaced as `MISSING_CREDENTIAL` naming it, never a silent fallback.
+  Same spelling as monid-services' `AppConfig` path→env derivation, so local env
+  and hosted config agree.
 - New hook = contract file in `shared/core/schema/hooks/` + section carrier +
   doc `zFnRef` slot + `fnKeysOf` entry + `linkFns` branch + engine phase +
   version bump. Follow the existing pattern end-to-end.
 - Commit style: `<type>(<scope>): <subject>` (e.g. `feat(engine): ...`,
   `feat(connectors): ...`, `docs(openspec): ...`).
+
+## Gotchas worth knowing before you write a fn
+
+Hard-won, each one costs an hour if you meet it cold:
+
+- **Fn bodies are executable JS, not TS.** The engine reinstantiates the source
+  in an empty scope, so a type annotation is a syntax error at run time. That
+  collides with `noImplicitAny`: a standalone helper lambda
+  (`const has = (name) => …`) has no contextual type and fails `deno check`,
+  while the SAME logic inline in a `.map()` / `.some()` / `for…of` infers fine.
+  Write the inference-friendly form —
+  `const names = xs.map((x) =>
+  typeof x === "string" ? x : x.type)` then
+  `names.includes(…)` — rather than reaching for a cast.
+- **Closed-term globals are a whitelist** (`shared/compiler/lint.ts`): `JSON`,
+  `Math`, `Object`, `Array`, `String`, `Number`, `Boolean`, `Error`, `Promise`,
+  `encodeURIComponent`. Notably **`URL` is not on it** — parse a host with
+  string ops, not `new URL()`.
+- **`utils.json.omit` is DEEP, `pluck` is EXACT.** To lift one receipt field out
+  of a payload use `pluck(output, "$.field")` — `omit` walks the whole tree and
+  will also strip an identically-named key nested inside the data.
+- **Identical fn sources intern to ONE fnTable entry.** Closed terms cannot
+  import a shared helper, but duplication is free when the sources are
+  byte-identical after normalization — so derive per-endpoint differences from
+  ctx (`data.request.url + "/" + id`) instead of hardcoding a path, and the
+  three copies collapse to one entry. Assert it in a test; `deno task fmt` will
+  not break it (normalization strips formatting).
+- **Provider-level hooks fall through to EVERY endpoint.** A provider
+  `lifecycle.start` replaces declarative execution on the provider's synchronous
+  endpoints too. Mixed sync/async providers must author the lifecycle on the
+  async endpoints.
+- **Fixture `{{request.url}}` bindings substitute in recorded REQUEST urls
+  only** (`replayFetch`), never in response bodies. An opaque cursor a fn reads
+  back out of a body (a pagination `next`) must be a literal absolute url in the
+  fixture.
+- **A vendor cursor is not a caller-usable url.** If following it needs the
+  credential the engine holds, handing it back hands the caller a URL they
+  cannot fetch. Two ways out, and it is a real trade. The fn FOLLOWS the cursor
+  — one complete result set, at the price of stitching an unbounded payload into
+  a single output and hiding the vendor's paging. Or the connector PASSES it
+  through and exposes the vendor's own reader as its own endpoint — bounded
+  outputs and honest paging, at the price of a second call. If you pass it
+  through, the output must also carry whatever that reader needs as a path param
+  (usually the job id), or the unusable cursor is the caller's only handle.
+  Firecrawl takes the second route: `#crawl` returns `next` untouched beside the
+  job `id`, and `#crawl/{id}` reads the rest for free.

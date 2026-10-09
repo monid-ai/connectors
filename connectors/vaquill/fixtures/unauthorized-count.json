@@ -1,0 +1,19 @@
+{
+    "name": "unauthorized-count",
+    "description": "401 on a bad key (POST with a body). The vendor's non-2xx is DATA: the run completes, usage is empty, and the `{detail}` body passes through untouched.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {}
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "detail": "Invalid or expired API key"
+                }
+            }
+        }
+    ]
+}

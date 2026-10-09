@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Enrich Person response schema (docs.context.dev/api-reference/people/enrich, 2026-09-17): a candidate match with a trimmed person record (a public figure at a public company); credits_consumed 20; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/people/enrich"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "match": {
+                        "status": "candidate",
+                        "score": 97,
+                        "person": {
+                            "name": { "first": "Patrick", "last": "Collison" },
+                            "current_role": {
+                                "title": "CEO",
+                                "organization": {
+                                    "name": "Stripe",
+                                    "domain": "stripe.com"
+                                }
+                            },
+                            "location": {
+                                "city": "San Francisco",
+                                "country": "United States"
+                            },
+                            "social_urls": [
+                                "https://www.linkedin.com/in/patrickcollison"
+                            ]
+                        }
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 20,
+                        "credits_remaining": 9970
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

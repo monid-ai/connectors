@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-top",
+    "description": "SYNTHETIC — not recorded. The same body for a top-viewport capture (token_usage 2); the URL pins that the caller's screenshot=top replaced the preset's full.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&browserRendering=true&screenshot=top&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "screenshot": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==",
+                    "token_usage": 2,
+                    "residential_proxy_usage": 0.2,
+                    "data_path": "results/RES2/data.json",
+                    "html_path": "results/RES2/index.html"
+                }
+            }
+        }
+    ]
+}

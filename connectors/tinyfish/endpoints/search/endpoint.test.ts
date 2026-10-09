@@ -97,3 +97,21 @@ Deno.test({
         );
     },
 });
+
+Deno.test("tinyfish#search happy (recorded 2026-09-16): real traffic, FREE settle", async () => {
+    const unit = await testSealedUnit("tinyfish#search");
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
+    const result = await runEndpoint({
+        unit,
+        input: { queryParams: { query: "anthropic claude" } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 200);
+    assertEquals(result.isProviderError, false);
+    // provider-level FREE model: nothing billed, nothing evidenced
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    // no output projection on this doc: the recorded body IS the contract
+    // (PR review) — a dropped results list or an injected field must fail
+    assertEquals(result.output, fixture.calls[0].res.body);
+});

@@ -33,6 +33,10 @@ export const zSection = z.enum([
     "customer_profile",
     "industry",
     "technology",
-    "funding_detail", // Enterprise-tier
-    "mna_and_investment", // Enterprise-tier
+    // Akta's public docs mark the next two "Enterprise tier only", but our
+    // account HAS them (v1 decision carried forward; verified live
+    // 2026-09-16) — do not re-add tier caveats, they simply bill premium
+    // per-section rates (3 / 5 credits).
+    "funding_detail",
+    "mna_and_investment",
 ]);

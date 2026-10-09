@@ -22,6 +22,10 @@ export default defineEndpoint({
             "One result per account. Runs asynchronously.",
         docsUrl: "https://apify.com/apify/instagram-profile-scraper",
         categories: ["instagram"],
+        notes: [
+            "There is no result-limit parameter - the number of results " +
+            "(and the bill) equals the number of input queries.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

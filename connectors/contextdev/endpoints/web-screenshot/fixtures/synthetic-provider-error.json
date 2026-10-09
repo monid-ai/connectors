@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 400 error envelope; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/screenshot?domain=example.com&colorScheme=dark"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "message": "Failed to access website",
+                    "error_code": "WEBSITE_ACCESS_ERROR",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9948
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

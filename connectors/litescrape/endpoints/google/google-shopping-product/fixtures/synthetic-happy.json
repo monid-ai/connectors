@@ -1,0 +1,60 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (product_result, offers): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/shopping/product?q=coffee+maker&gpcid=12345678901234567890&headline_offer_docid=98765432109876543210&image_docid=11223344556677889900"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "8f6c5d4e3a2b1f0e9d8c7b6a",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/shopping/product?q=coffee+maker&gpcid=12345678901234567890&headline_offer_docid=98765432109876543210&image_docid=11223344556677889900"
+                    },
+                    "search_parameters": {
+                        "q": "coffee maker",
+                        "gpcid": "12345678901234567890",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "product_result": {
+                        "title": "Example 12-Cup Programmable Coffee Maker",
+                        "description": "Brews up to 12 cups with a 24-hour timer.",
+                        "specifications": [
+                            {
+                                "category": "General",
+                                "items": [
+                                    {
+                                        "name": "Capacity",
+                                        "value": "12 cups"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "offers": [
+                        {
+                            "position": 1,
+                            "merchant": "shop.example",
+                            "price": "$49.99",
+                            "extracted_price": 49.99,
+                            "delivery": "Free delivery",
+                            "link": "https://shop.example/p/coffee-maker"
+                        }
+                    ],
+                    "related_products": [
+                        {
+                            "title": "Example 5-Cup Coffee Maker",
+                            "price": "$29.99",
+                            "gpcid": "22345678901234567890"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

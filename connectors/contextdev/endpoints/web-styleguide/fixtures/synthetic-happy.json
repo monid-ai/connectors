@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Styleguide response schema (docs.context.dev/api-reference/brand-intelligence/styleguide, 2026-09-17), styleguide sections trimmed to one entry each, credits_consumed 10; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/styleguide?domain=example.com&colorScheme=light"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "finalDOMState": "loaded",
+                    "status": "ok",
+                    "domain": "example.com",
+                    "styleguide": {
+                        "mode": "light",
+                        "colors": {
+                            "primary": "#0055FF",
+                            "background": "#FFFFFF"
+                        },
+                        "typography": {
+                            "fontFamily": "Inter",
+                            "baseSize": "16px"
+                        },
+                        "elementSpacing": { "base": "8px" },
+                        "shadows": { "small": "0 1px 2px rgba(0,0,0,0.1)" },
+                        "fontLinks": {},
+                        "components": { "button": { "borderRadius": "6px" } }
+                    },
+                    "code": 200,
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9933
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

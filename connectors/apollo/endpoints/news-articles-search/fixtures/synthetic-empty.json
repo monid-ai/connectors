@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. The news envelope with no article: the same keys as the happy shape, an empty news_articles array and a zero pagination total.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/news_articles/search?organization_ids%5B%5D=ORG2&per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "pagination": {
+                        "page": 1,
+                        "per_page": 2,
+                        "total_entries": 0,
+                        "total_pages": 0
+                    },
+                    "news_articles": []
+                }
+            }
+        }
+    ]
+}

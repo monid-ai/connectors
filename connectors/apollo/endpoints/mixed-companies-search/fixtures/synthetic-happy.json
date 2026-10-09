@@ -1,0 +1,93 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Organization Search reference example (docs.apollo.io/reference/organization-search, 2026-09-16), trimmed to two organizations; ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/mixed_companies/search?q_organization_domains_list%5B%5D=apollo.io&per_page=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "breadcrumbs": [
+                        {
+                            "label": "Company Domains",
+                            "signal_field_name": "q_organization_domains_list",
+                            "value": "apollo.io",
+                            "display_name": "apollo.io"
+                        }
+                    ],
+                    "partial_results_only": false,
+                    "has_join": false,
+                    "disable_eu_prospecting": false,
+                    "partial_results_limit": 10000,
+                    "pagination": {
+                        "page": 1,
+                        "per_page": 2,
+                        "total_entries": 2,
+                        "total_pages": 1
+                    },
+                    "accounts": [],
+                    "organizations": [
+                        {
+                            "id": "ORG1",
+                            "name": "Apollo.io",
+                            "website_url": "http://www.apollo.io",
+                            "blog_url": null,
+                            "angellist_url": null,
+                            "linkedin_url": "http://www.linkedin.com/company/apolloio",
+                            "twitter_url": "https://x.com/useapolloio",
+                            "facebook_url": null,
+                            "primary_phone": {},
+                            "languages": [],
+                            "alexa_ranking": 3514,
+                            "phone": null,
+                            "linkedin_uid": "18511550",
+                            "founded_year": 2015,
+                            "publicly_traded_symbol": null,
+                            "publicly_traded_exchange": null,
+                            "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/ORG1/picture",
+                            "crunchbase_url": null,
+                            "primary_domain": "apollo.io",
+                            "sanitized_phone": null,
+                            "owned_by_organization_id": null,
+                            "show_intent": true,
+                            "has_intent_signal_account": false,
+                            "intent_signal_account": null
+                        },
+                        {
+                            "id": "ORG2",
+                            "name": "Apollo Analytics",
+                            "website_url": "http://www.apollo-analytics.example",
+                            "blog_url": null,
+                            "angellist_url": null,
+                            "linkedin_url": null,
+                            "twitter_url": null,
+                            "facebook_url": null,
+                            "primary_phone": {},
+                            "languages": [],
+                            "alexa_ranking": null,
+                            "phone": null,
+                            "linkedin_uid": null,
+                            "founded_year": 2019,
+                            "publicly_traded_symbol": null,
+                            "publicly_traded_exchange": null,
+                            "logo_url": null,
+                            "crunchbase_url": null,
+                            "primary_domain": "apollo-analytics.example",
+                            "sanitized_phone": null,
+                            "owned_by_organization_id": null,
+                            "show_intent": false,
+                            "has_intent_signal_account": false,
+                            "intent_signal_account": null
+                        }
+                    ],
+                    "model_ids": ["ORG1", "ORG2"],
+                    "num_fetch_result": null,
+                    "derived_params": null
+                }
+            }
+        }
+    ]
+}

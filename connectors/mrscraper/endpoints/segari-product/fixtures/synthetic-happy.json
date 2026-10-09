@@ -1,0 +1,35 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 24 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/segari/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "product": {
+                            "name": "Telur Ayam Kampung Curah",
+                            "price": 32500,
+                            "original_price": 35000,
+                            "discount": 7,
+                            "currency": "IDR",
+                            "rating": 4.9,
+                            "review_count": 1204,
+                            "available_quantity": 48,
+                            "in_stock": true,
+                            "daily_limit_per_user": 5,
+                            "status": "ACTIVE"
+                        }
+                    },
+                    "tokenUsage": 24
+                }
+            }
+        }
+    ]
+}

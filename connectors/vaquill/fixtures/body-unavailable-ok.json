@@ -1,0 +1,45 @@
+{
+    "name": "body-unavailable-ok",
+    "description": "Full text `asOf` a date before the earliest held edition: 200 with `available: false`, every text field null and `creditsConsumed: 6`. The vendor charges the reconstruction attempt; the broker absorbs it.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T28_C85_S1343/body?asOf=1901-01-01"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "actId": "USC_T28_C85_S1343",
+                    "html": null,
+                    "plain": null,
+                    "source": "stored_edition",
+                    "sourceUrl": null,
+                    "content": null,
+                    "sourceCredit": null,
+                    "notes": null,
+                    "available": false,
+                    "note": "We hold no published edition governing 1901-01-01, so the text in force on that date is not served. The earliest edition we hold is dated 2025-01-06, which is after your date.",
+                    "markdown": null,
+                    "subsections": null,
+                    "asOf": {
+                        "requested": "1901-01-01",
+                        "engine": "stored_edition",
+                        "source": "unavailable",
+                        "existed": false,
+                        "basisChangeId": null,
+                        "observedFrom": null,
+                        "resolvedEditionYear": null,
+                        "scheduledEditionYear": null,
+                        "editionsObserved": null,
+                        "outOfCoverageReason": "We hold no published edition governing 1901-01-01, so the text in force on that date is not served. The earliest edition we hold is dated 2025-01-06, which is after your date.",
+                        "isBounded": false,
+                        "coverage": "Published editions we hold, served verbatim. The editions are enumerated, not interpolated: a date that falls between two of them, or before the earliest, is reported out of coverage rather than answered from a neighbouring edition, because the text may have changed in the gap."
+                    },
+                    "processingTimeMs": 1406,
+                    "creditsConsumed": 6
+                }
+            }
+        }
+    ]
+}

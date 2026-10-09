@@ -1,6 +1,7 @@
 import { join, toFileUrl } from "@std/path";
 import type { EndpointDef } from "../schema/endpoint/def.ts";
 import type { ProviderDef } from "../schema/provider/def.ts";
+import type { ResourceDef } from "../schema/resource/def.ts";
 
 /**
  * load/ is @shared/core's IO corner: dynamic imports of AUTHORING modules
@@ -20,6 +21,11 @@ import type { ProviderDef } from "../schema/provider/def.ts";
 export interface ConnectorSource {
     provider: ProviderDef;
     endpoints: { name: string; def: EndpointDef }[];
+    /** Resource defs from `resources/<name>/resource.ts` (design D30) —
+     *  the FOLDER name is the resource identity (`<provider>/<name>`),
+     *  exactly the endpoint-leaf rule. Optional so hand-built sources
+     *  (tests) stay terse; the loader always supplies it (possibly []). */
+    resources?: { name: string; def: ResourceDef }[];
 }
 
 /** Is this directory an endpoint LEAF (carries an endpoint.ts)? */
@@ -103,6 +109,10 @@ export async function loadConnectorDefs(
             join(connectorsDir, folder, "endpoints"),
             `connectors/${folder}/endpoints`,
         );
+        const resources = await collectResources(
+            join(connectorsDir, folder, "resources"),
+            `connectors/${folder}/resources`,
+        );
         // LEAF names are the identity — a name duplicated across groups
         // would silently collide to one doc id; fail loudly here (the one
         // place that still sees the filesystem).
@@ -117,7 +127,45 @@ export async function loadConnectorDefs(
             }
             seen.add(endpoint.name);
         }
-        sources.push({ provider, endpoints });
+        sources.push({ provider, endpoints, resources });
     }
     return sources;
+}
+
+/** Collect resource defs — FLAT (`resources/<name>/resource.ts`, no
+ *  groups: a provider owns few resource KINDS by nature). A missing
+ *  resources/ directory is the norm, not an error. */
+async function collectResources(
+    dir: string,
+    where: string,
+): Promise<{ name: string; def: ResourceDef }[]> {
+    try {
+        const stat = await Deno.stat(dir);
+        if (!stat.isDirectory) return [];
+    } catch {
+        return [];
+    }
+    const resources: { name: string; def: ResourceDef }[] = [];
+    for await (const entry of Deno.readDir(dir)) {
+        if (!entry.isDirectory || entry.name.startsWith(".")) continue;
+        const resourceModule = await import(
+            toFileUrl(join(dir, entry.name, "resource.ts")).href
+        );
+        const def = resourceModule.default as ResourceDef;
+        if (!def) {
+            throw new Error(
+                `${where}/${entry.name}/resource.ts has no default export`,
+            );
+        }
+        // identity is DECLARED (design D46): the def names itself and the
+        // loader — the one place that sees both — asserts the folder
+        if (def.slug !== entry.name) {
+            throw new Error(
+                `${where}/${entry.name}: resource slug "${def.slug}" must ` +
+                    `equal the folder name`,
+            );
+        }
+        resources.push({ name: entry.name, def });
+    }
+    return resources;
 }

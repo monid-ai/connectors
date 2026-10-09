@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 404 a company the vendor cannot resolve answers with (v1 drill 2026-08-21), in the documented error envelope; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/news/search"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "message": "Company not found",
+                    "error_code": "ENTITY_NOT_FOUND",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9969
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

@@ -28,6 +28,9 @@ export default defineEndpoint({
             "re-read known articles with /search-by-ids.",
         docsUrl: "https://api-docs.opoint.com/references/search-request",
         categories: ["news-search"],
+        notes: [
+            "Zero-hit searches still bill one call.",
+        ],
     },
     /** PUBLIC identity (design D22): all four searches relay to the ONE
      *  upstream `POST /search/`, so the vendor path is transport plumbing

@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-empty-reviews",
+    "description": "SYNTHETIC — not recorded. A page with no reviews as v1's 2026-09-08 Agoda drill measured it: HTTP 200, success true, reviews [], and the full tokenUsage still reported.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tvlk.mrscraper.com/api/hotels/tripadv/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.tripadvisor.com/Hotel_Review-g293916-d308699",
+                        "total_reviews": 0,
+                        "reviews": []
+                    },
+                    "tokenUsage": 20
+                }
+            }
+        }
+    ]
+}

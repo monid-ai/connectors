@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the NAICS response schema (docs.context.dev/api-reference/web-extraction/naics, 2026-09-17), two codes, credits_consumed 10; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/naics?input=stripe.com&maxResults=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "ok",
+                    "domain": "stripe.com",
+                    "type": "naics",
+                    "codes": [
+                        {
+                            "code": "522320",
+                            "name": "Financial Transactions Processing, Reserve, and Clearinghouse Activities",
+                            "confidence": "high"
+                        },
+                        {
+                            "code": "541511",
+                            "name": "Custom Computer Programming Services",
+                            "confidence": "medium"
+                        }
+                    ],
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9959
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

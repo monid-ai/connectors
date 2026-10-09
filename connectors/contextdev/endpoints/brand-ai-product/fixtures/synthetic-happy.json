@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Extract Product response schema (docs.context.dev/api-reference/web-extraction/product, 2026-09-17), a generic product page, credits_consumed 10; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/brand/ai/product"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "is_product_page": true,
+                    "platform": "generic",
+                    "product": {
+                        "name": "Widget Pro",
+                        "description": "A professional widget.",
+                        "price": 49,
+                        "regular_price": 59,
+                        "currency": "USD",
+                        "billing_frequency": "one_time",
+                        "pricing_model": "flat",
+                        "url": "https://shop.example.com/products/widget",
+                        "category": "Tools",
+                        "availability": "in_stock",
+                        "dimensions": [],
+                        "features": ["Durable", "Lightweight"],
+                        "target_audience": ["Professionals"],
+                        "tags": ["widget"],
+                        "image_url": "https://shop.example.com/images/widget.png",
+                        "images": [
+                            "https://shop.example.com/images/widget.png"
+                        ],
+                        "sku": "WID-PRO-1"
+                    },
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9923
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

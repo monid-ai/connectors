@@ -1,0 +1,53 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. An address found: 1 credit.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/email-finder?domain=example.com&first_name=Jane&last_name=Doe"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "first_name": "Jane",
+                        "last_name": "Doe",
+                        "email": "jane.doe@example.com",
+                        "score": 97,
+                        "domain": "example.com",
+                        "accept_all": false,
+                        "position": "Cofounder",
+                        "twitter": null,
+                        "linkedin_url": null,
+                        "phone_number": null,
+                        "company": "Reddit",
+                        "sources": [
+                            {
+                                "domain": "example.com",
+                                "uri": "https://example.com/blog",
+                                "extracted_on": "2018-10-19",
+                                "last_seen_on": "2021-05-18",
+                                "still_on_page": true
+                            }
+                        ],
+                        "verification": {
+                            "date": "2021-06-14",
+                            "status": "valid"
+                        }
+                    },
+                    "meta": {
+                        "params": {
+                            "first_name": "Jane",
+                            "last_name": "Doe",
+                            "full_name": null,
+                            "domain": "example.com",
+                            "company": null,
+                            "max_duration": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

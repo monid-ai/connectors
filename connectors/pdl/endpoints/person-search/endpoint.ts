@@ -39,6 +39,26 @@ export default defineEndpoint({
                 zSqlVariant.required({ size: true }),
             ]),
         },
+        /** v1 parity (reconcile 2026-09-16): v1 always materialized and
+         *  sent `dataset=all`; PDL's server default is the narrower
+         *  `resume`, so an omitting caller would silently search less
+         *  than under v1. The default lives HERE, not on the union arms —
+         *  JSON-Schema defaults never materialize inside `anyOf` — and an
+         *  explicit caller value wins the merge. */
+        toRequest: ({ data, utils }) => {
+            // body IS schema-required on this doc, but the closed-term
+            // envelope types `data.input.body` as `Json | undefined`
+            // regardless — the ?? {} is a type guard, not dead code
+            // (removing it fails `deno check`, TS2345; PR review)
+            const body = data.input.body ?? {};
+            const dataset = utils.json.optionalGet(body, "$.dataset");
+            return {
+                ...data.input,
+                body: dataset === undefined
+                    ? utils.json.merge(body, { dataset: "all" })
+                    : body,
+            };
+        },
     },
     usage: {
         /** "Each person record in the data array of the response counts

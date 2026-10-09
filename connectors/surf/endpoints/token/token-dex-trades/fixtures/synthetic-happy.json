@@ -1,0 +1,58 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders; opt-in enrichment fields the request does not ask for are left out. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/token/dex-trades?address=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&chain=ethereum&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "amount_usd": 1,
+                            "block_time": 1,
+                            "project": "project-1",
+                            "taker": "taker-1",
+                            "token_bought_address": "token_bought_address-1",
+                            "token_bought_amount": 1,
+                            "token_bought_symbol": "token_bought_symbol-1",
+                            "token_pair": "token_pair-1",
+                            "token_sold_address": "token_sold_address-1",
+                            "token_sold_amount": 1,
+                            "token_sold_symbol": "token_sold_symbol-1",
+                            "tx_hash": "tx_hash-1",
+                            "version": "version-1"
+                        },
+                        {
+                            "amount_usd": 2,
+                            "block_time": 2,
+                            "project": "project-2",
+                            "taker": "taker-2",
+                            "token_bought_address": "token_bought_address-2",
+                            "token_bought_amount": 2,
+                            "token_bought_symbol": "token_bought_symbol-2",
+                            "token_pair": "token_pair-2",
+                            "token_sold_address": "token_sold_address-2",
+                            "token_sold_amount": 2,
+                            "token_sold_symbol": "token_sold_symbol-2",
+                            "tx_hash": "tx_hash-2",
+                            "version": "version-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

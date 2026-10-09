@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. No addresses for the domain: emails [] — zero credits (v1: zero results charge nothing).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/domain-search",
+                "body": {
+                    "domain": "intercom.com",
+                    "limit": 25
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "domain": "intercom.com",
+                        "disposable": false,
+                        "webmail": false,
+                        "accept_all": false,
+                        "pattern": null,
+                        "organization": null,
+                        "linked_domains": [],
+                        "emails": []
+                    },
+                    "meta": {
+                        "results": 0,
+                        "limit": 25,
+                        "offset": 0,
+                        "params": {
+                            "domain": "intercom.com"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

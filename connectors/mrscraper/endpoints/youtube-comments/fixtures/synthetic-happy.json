@@ -1,0 +1,36 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the YouTube Video Comments shape v1 documented, tokenUsage 10; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/youtube/comments/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "video_id": "HeyIXwZyR8Y",
+                        "comments": [
+                            {
+                                "author": "@viewer1",
+                                "text": "Great launch!",
+                                "likes": 12,
+                                "published_at": "2026-09-01T10:00:00Z",
+                                "replies": []
+                            }
+                        ],
+                        "stats": {
+                            "pages": 1,
+                            "total": 1
+                        }
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

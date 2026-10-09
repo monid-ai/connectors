@@ -27,6 +27,10 @@ export default defineEndpoint({
         categories: ["people-enrichment"],
     },
     request: { method: "POST", path: "/v1/search" },
+    // type "auto"/"deep" searches exceeded the provider's 60 s request
+    // budget live (2026-09-16 transport abort; "instant" returned in
+    // seconds) — the vendor docs put deep searches at up to ~2 minutes.
+    timeouts: { requestMs: 120_000, runMs: 120_000 },
     // `num_results` REQUIRED at the binding (design D25 — the mirror stays
     // the faithful vendor contract, optional there): it is the estimate's
     // whole basis, so the caller states it.

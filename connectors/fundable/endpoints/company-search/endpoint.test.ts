@@ -15,8 +15,10 @@ Deno.test("fundable#company/search empty (synthetic): zero candidates still bill
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // the vendor's 0.1 claim IS the credits; the pinned 0.1 flat draw
-    // agrees, so no mismatch settles
+    // the ONE credit system (rate card: searches 0.1 credit/call,
+    // charged on zero results): the provider consolidate claims the
+    // response's own 0.1 stamp, which matches the doc's 0.1 fold — no
+    // mismatch
     assertEquals(result.usage, {
         credits: { default: 0.1 },
         evidence: { CALL: 1 },

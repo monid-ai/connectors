@@ -1,0 +1,56 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/market/public-sale?id=25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "allocation_of_supply": 1,
+                            "ath_roi": 1,
+                            "crowdsale_end_date": 1,
+                            "crowdsale_price": 1,
+                            "crowdsale_raise": 1,
+                            "crowdsale_start_date": 1,
+                            "crowdsale_status": "crowdsale_status-1",
+                            "crowdsale_type": "crowdsale_type-1",
+                            "launchpad_name": "launchpad_name-1",
+                            "name": "name-1",
+                            "project_id": "project_id-1",
+                            "symbol": "symbol-1"
+                        },
+                        {
+                            "allocation_of_supply": 2,
+                            "ath_roi": 2,
+                            "crowdsale_end_date": 2,
+                            "crowdsale_price": 2,
+                            "crowdsale_raise": 2,
+                            "crowdsale_start_date": 2,
+                            "crowdsale_status": "crowdsale_status-2",
+                            "crowdsale_type": "crowdsale_type-2",
+                            "launchpad_name": "launchpad_name-2",
+                            "name": "name-2",
+                            "project_id": "project_id-2",
+                            "symbol": "symbol-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

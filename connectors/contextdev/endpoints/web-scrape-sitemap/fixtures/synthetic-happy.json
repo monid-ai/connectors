@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Crawl Sitemap response schema (docs.context.dev/api-reference/web-scraping/sitemap, 2026-09-17), two URLs; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/sitemap?domain=example.com&maxLinks=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "domain": "example.com",
+                    "urls": [
+                        "https://example.com/",
+                        "https://example.com/about"
+                    ],
+                    "meta": {
+                        "sitemapsDiscovered": 1,
+                        "sitemapsFetched": 1,
+                        "sitemapsSkipped": 0,
+                        "errors": 0
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

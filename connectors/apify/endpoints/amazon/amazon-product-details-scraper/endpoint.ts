@@ -20,8 +20,15 @@ export default defineEndpoint({
             "descriptions, bullet features, specifications, and " +
             "image gallery URLs. Suited for market analysis, " +
             "competitor tracking, and data-driven decision-making.",
-        docsUrl: "https://apify.com/junglee/free-amazon-product-scraper",
+        // the actor's OWN page (v1 pointed at the unrelated junglee actor —
+        // fixed in the 2026-09-16 reconcile; both URLs verified live)
+        docsUrl:
+            "https://apify.com/delicious_zebu/amazon-product-details-scraper",
         categories: ["amazon"],
+        notes: [
+            "There is no result-limit parameter - the number of results " +
+            "(and the bill) equals the number of input queries.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

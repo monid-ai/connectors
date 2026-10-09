@@ -1,6 +1,6 @@
 {
     "name": "synthetic-empty",
-    "description": "SYNTHETIC chain for fundable#deal/investors (v1 drill 2026-09-01: 'an empty investor array still costs one credit upstream'; replace via `deno task record`): both arrays empty, credits_used 1.",
+    "description": "SYNTHETIC chain for fundable#deals/{id}/investors (v1 drill 2026-09-01: 'an empty investor array still costs one credit upstream'; replace via `deno task record`): both arrays empty, credits_used 1.",
     "calls": [
         {
             "req": {

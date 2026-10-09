@@ -5,8 +5,8 @@ import { loadFixture, runEndpoint, testSealedUnit } from "@shared/testing";
 const fixturesDir = fromFileUrl(new URL("./fixtures/", import.meta.url));
 const DEAL_ID = "cca72384-d735-42f8-99d6-b3e14179c4c1";
 
-Deno.test("fundable#deal/investors happy (synthetic): {id} substituted into the url; flat 1 credit", async () => {
-    const unit = await testSealedUnit("fundable#deal/investors");
+Deno.test("fundable#deals/{id}/investors happy (synthetic): {id} substituted into the url; flat 1 credit", async () => {
+    const unit = await testSealedUnit("fundable#deals/{id}/investors");
     const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
     const result = await runEndpoint({
         unit,
@@ -26,8 +26,8 @@ Deno.test("fundable#deal/investors happy (synthetic): {id} substituted into the 
     assertEquals((data.angel_investors as unknown[]).length, 4);
 });
 
-Deno.test("fundable#deal/investors empty (synthetic): empty arrays still bill the one call (v1 drill)", async () => {
-    const unit = await testSealedUnit("fundable#deal/investors");
+Deno.test("fundable#deals/{id}/investors empty (synthetic): empty arrays still bill the one call (v1 drill)", async () => {
+    const unit = await testSealedUnit("fundable#deals/{id}/investors");
     const fixture = await loadFixture(`${fixturesDir}synthetic-empty.json`);
     const result = await runEndpoint({
         unit,
@@ -43,8 +43,8 @@ Deno.test("fundable#deal/investors empty (synthetic): empty arrays still bill th
     });
 });
 
-Deno.test("fundable#deal/investors: a non-UUID id is rejected before the wire", async () => {
-    const unit = await testSealedUnit("fundable#deal/investors");
+Deno.test("fundable#deals/{id}/investors: a non-UUID id is rejected before the wire", async () => {
+    const unit = await testSealedUnit("fundable#deals/{id}/investors");
     const fixture = await loadFixture(`${fixturesDir}synthetic-happy.json`);
     await assertRejects(
         () =>

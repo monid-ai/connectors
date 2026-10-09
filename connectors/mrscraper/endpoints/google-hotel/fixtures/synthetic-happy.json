@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the Google Hotels shape v1 documented (hotel, dates, booking options), tokenUsage 10; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/google/serp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "hotel_name": "Example Hotel Bangkok",
+                        "check_in": "2026-11-20",
+                        "check_out": "2026-11-21",
+                        "currency": "USD",
+                        "location": "Bangkok, Thailand",
+                        "booking_options": [
+                            {
+                                "provider": "Booking.com",
+                                "price": 120,
+                                "url": "https://www.booking.com/hotel/th/example.html"
+                            },
+                            {
+                                "provider": "Agoda",
+                                "price": 115,
+                                "url": "https://www.agoda.com/example-hotel/hotel/bangkok-th.html"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

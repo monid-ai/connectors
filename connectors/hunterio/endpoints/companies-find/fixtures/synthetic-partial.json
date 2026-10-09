@@ -1,0 +1,57 @@
+{
+    "name": "synthetic-partial",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the happy fixture with the company size blanked. Hunter charges the enrichment only when every core data point is returned (help.hunter.io/en/articles/1970956-hunter-api), so this 200 is free.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/companies/find?domain=hunter.io"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "id": "6d3b1f9a-0c4e-5b2a-9f1e-2a7c8d9e0f11",
+                        "name": "Hunter",
+                        "legalName": "Hunter Web Services",
+                        "domain": "hunter.io",
+                        "description": "Email intelligence.",
+                        "foundedYear": 2015,
+                        "category": {
+                            "sector": "Information Technology",
+                            "industry": "Internet Software & Services",
+                            "naics6Codes2022": [
+                                "519290"
+                            ],
+                            "sicCode": "7374"
+                        },
+                        "tags": [
+                            "SaaS",
+                            "B2B"
+                        ],
+                        "geo": {
+                            "city": "Paris",
+                            "country": "France",
+                            "countryCode": "FR"
+                        },
+                        "metrics": {
+                            "employees": null,
+                            "employeesCount": null,
+                            "alexaGlobalRank": 12345
+                        },
+                        "tech": [
+                            "google_analytics",
+                            "cloudflare"
+                        ],
+                        "indexedAt": "2025-08-30"
+                    },
+                    "meta": {
+                        "params": {
+                            "domain": "hunter.io"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

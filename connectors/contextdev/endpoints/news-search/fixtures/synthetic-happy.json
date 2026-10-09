@@ -1,0 +1,90 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Search Company News response schema (docs.context.dev/api-reference/news/search, 2026-09-17), three articles about a public company, credits_consumed 1; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/news/search"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "id": "NEWS1",
+                            "story_id": "STORY1",
+                            "url": "https://www.example-news.com/stripe-launches",
+                            "title": "Stripe launches a new payments product",
+                            "description": "Stripe announced a new product today.",
+                            "language": "en",
+                            "authors": [],
+                            "image_url": null,
+                            "published_at": "2026-09-10T12:00:00Z",
+                            "type": "press_release",
+                            "source": {
+                                "domain": "example-news.com",
+                                "name": "Example News",
+                                "country": "us"
+                            },
+                            "match": {
+                                "level": "primary",
+                                "confidence": "high"
+                            }
+                        },
+                        {
+                            "id": "NEWS2",
+                            "story_id": "STORY1",
+                            "url": "https://www.example-wire.com/stripe-launches",
+                            "title": "Stripe launches a new payments product",
+                            "description": null,
+                            "language": "en",
+                            "authors": ["Staff"],
+                            "image_url": null,
+                            "published_at": "2026-09-10T13:00:00Z",
+                            "type": "editorial",
+                            "source": {
+                                "domain": "example-wire.com",
+                                "name": "Example Wire",
+                                "country": "gb"
+                            },
+                            "match": {
+                                "level": "primary",
+                                "confidence": "high"
+                            }
+                        },
+                        {
+                            "id": "NEWS3",
+                            "story_id": "STORY2",
+                            "url": "https://www.example-news.com/stripe-hires",
+                            "title": "Stripe hires a new CFO",
+                            "description": "Leadership change at the payments company.",
+                            "language": "en",
+                            "authors": [],
+                            "image_url": null,
+                            "published_at": "2026-09-01T09:00:00Z",
+                            "type": "editorial",
+                            "source": {
+                                "domain": "example-news.com",
+                                "name": "Example News",
+                                "country": "us"
+                            },
+                            "match": {
+                                "level": "secondary",
+                                "confidence": "medium"
+                            }
+                        }
+                    ],
+                    "has_more": false,
+                    "next_cursor": null,
+                    "meta": { "count": 3 },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9969
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (organic_results, app_highlight, items_highlight, charts): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/play/apps?q=coffee"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "e5f6a7b8c9d0a1b2c3d4e5f6",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/play/apps?q=coffee",
+                        "raw_file": "https://api.litescrape.com/api/artifacts/google/play/apps/raw?id=e5f6a7b8c9d0a1b2c3d4e5f6&bucket=20260920"
+                    },
+                    "search_parameters": {
+                        "q": "coffee",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "title": "Example Apps One",
+                            "product_id": "com.example.one",
+                            "developer": "Example Studio",
+                            "rating": 4.6,
+                            "price": "Free",
+                            "icon": "https://images.example/icon-one.png",
+                            "litescrape_product_link": "https://api.litescrape.com/api/google/play/product?product_id=com.example.one&store=apps&hl=en&gl=us"
+                        }
+                    ],
+                    "litescrape_pagination": {
+                        "next": "https://api.litescrape.com/api/google/play/apps?hl=en&gl=us&next_page_token=CkEKP0NoUUlCRUVFUW9FUGQwOU1UdHBXUld4QzRmU0l4TXpDdz0"
+                    }
+                }
+            }
+        }
+    ]
+}

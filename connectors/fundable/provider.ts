@@ -8,23 +8,27 @@ import { defineProvider, presets } from "@shared/core";
  * `Authorization: Bearer <key>`, so both settle fns live HERE and all
  * seventeen endpoints inherit them (leaf-wise fallback):
  *
- *   - `usage.consolidate`: Fundable's NATIVE meter is CREDITS — every
- *     response reports its own draw in `meta.credits_used` (1 per row or
- *     lookup, 0.1 per fuzzy search, 0 on the resolvers — v1 drill,
- *     2026-09-01). The claim is plucked out of the payload in one motion
- *     (design D27); the three account-level fields that ride `meta` on
- *     non-API-tier keys (`credit_source`, `*_remaining`) are stripped
- *     beside it — billing facts never reach the user-facing output. v1
- *     lineage: providerFormatOutput (stripCreditMeta) + providerGetActualCost
- *     (extractCreditsUsed), one fn.
+ *   - `usage.consolidate`: Fundable's NATIVE meter is ONE credit system —
+ *     every response reports its own draw in `meta.credits_used`, priced
+ *     by the published rate card (1 per row or lookup, 0.1 per fuzzy
+ *     search, free utility resolvers). The claim is plucked out of the
+ *     payload in one motion (design D27); the three account-level fields
+ *     that ride `meta` on non-API-tier keys (`credit_source`,
+ *     `*_remaining`) are stripped beside it — billing facts never reach
+ *     the user-facing output. v1 lineage: providerFormatOutput
+ *     (stripCreditMeta) + providerGetActualCost (extractCreditsUsed),
+ *     one fn.
  *   - `usage.evidence`: the generic quantities default — a row-billed doc
  *     counts the ONE collection array under `data` (`deals`, `companies`,
  *     `investors`, `people`), flat and FREE docs count nothing. v1
  *     lineage: extractResultCount.
  *
- * The partner invoices in dollars from a contract price sheet, not from
- * the credit count; that conversion is the broker card's job, never the
+ * Dollar conversion of credits is the broker card's job, never the
  * doc's (owner rule 2026-09-15: pools are the vendor's own credits).
+ * Card-vs-measured note: the pricing page labels /deals/{id} and
+ * /deals/{id}/investors "1 credit/row", but the live stamp bills 1 per
+ * CALL (verified 2026-09-17: a 10-investor lineup stamped
+ * credits_used=1) — the PER_CALL models match the meter, not the label.
  */
 export default defineProvider({
     name: "fundable",
@@ -49,8 +53,14 @@ export default defineProvider({
     // request 60s, run 60s — sync provider, no poll loop
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
-        /** THE credit system (design D26) — Fundable's own meter, declared
-         *  ONCE for every endpoint (single pool ⇒ id `default`). */
+        /** THE credit system (design D26): ONE pool — Fundable's own
+         *  credit meter, exactly as the vendor's published rate card
+         *  prices it (rows and lookups 1, the fuzzy search resolvers 0.1
+         *  per call, person emails 5, the utility resolvers free).
+         *  The earlier separate `search` pool was a mistake carried from
+         *  a v1 broker-pricing constant (USD_PER_SEARCH) — searches are
+         *  simply CHEAPER in the same credit system, not a different
+         *  meter (owner correction 2026-09-17). */
         credits: { default: { label: "Fundable credits" } },
         /** The vendor's OWN claim (design D27): pluck `meta.credits_used`
          *  (read + strip, one motion). Entry OMITTED when the field is

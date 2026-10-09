@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-not-found",
+    "description": "SYNTHETIC — not recorded. The documented not_found arm (status not_found, score and person null) with credits_consumed 0, as v1's 2026-08-21 drill measured; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/people/enrich"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "match": {
+                        "status": "not_found",
+                        "score": null,
+                        "person": null
+                    },
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9970
+                    },
+                    "request_id": "REQ3"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+    "name": "synthetic-job-failed",
+    "description": "SYNTHETIC (a failed render cannot be triggered safely): body shapes are recorded-job-succeeded's, with status error and the documented error object. The receipt still reads 50 credits; the run must settle zero.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "project_1",
+                    "frame_cost": 50,
+                    "credits_charged": 50
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/image-projects/project_1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "project_1",
+                    "name": "Untitled ai gif",
+                    "status": "error",
+                    "image_count": 1,
+                    "type": "AI_GIF",
+                    "created_at": "2026-09-25T17:34:24.446Z",
+                    "enabled": true,
+                    "total_frame_cost": 50,
+                    "credits_charged": 50,
+                    "downloads": [],
+                    "error": {
+                        "message": "Generation failed",
+                        "code": "unknown_error"
+                    }
+                }
+            }
+        }
+    ]
+}

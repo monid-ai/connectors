@@ -28,6 +28,8 @@ export default defineEndpoint({
         method: "POST",
         path: "/v2/acts/trudax~reddit-scraper-lite/runs",
     },
+    // v1 parity (reconcile 2026-09-16): v1 ran this actor at 600 s.
+    timeouts: { runMs: 600_000 },
     input: {
         schema: {
             // maxItems is the PRIMARY limiting knob — required at the
@@ -53,8 +55,12 @@ export default defineEndpoint({
                 actor_start_gb: {
                     kind: UsageModelKind.PER_CALL,
                     label: "base fee",
-                    // survey-pinned Business-tier event price
-                    consumes: { credit: "default", amount: 0.02 },
+                    // $0.02 per GB × the actor's 2 GB default memory
+                    // (vendor rate card: the pricing tab on
+                    // https://apify.com/trudax/reddit-scraper-lite) —
+                    // live-confirmed 2026-09-16 (vendor claim $0.0468 =
+                    // 0.04 start + 2 × 0.0034); v1 modeled the same $0.04
+                    consumes: { credit: "default", amount: 0.04 },
                 },
                 result: {
                     kind: UsageModelKind.PER_UNIT,

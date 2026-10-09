@@ -1,0 +1,63 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Extract Products response schema (docs.context.dev/api-reference/web-extraction/products, 2026-09-17), two products, credits_consumed 10; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/brand/ai/products"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "products": [
+                        {
+                            "name": "Widget Pro",
+                            "description": "A professional widget.",
+                            "price": 49,
+                            "regular_price": null,
+                            "currency": "USD",
+                            "billing_frequency": "one_time",
+                            "pricing_model": "flat",
+                            "url": "https://shop.example.com/products/widget",
+                            "category": "Tools",
+                            "availability": "in_stock",
+                            "dimensions": [],
+                            "features": ["Durable"],
+                            "target_audience": ["Professionals"],
+                            "tags": ["widget"],
+                            "image_url": null,
+                            "images": [],
+                            "sku": "WID-PRO-1"
+                        },
+                        {
+                            "name": "Widget Lite",
+                            "description": "An entry-level widget.",
+                            "price": 19,
+                            "regular_price": null,
+                            "currency": "USD",
+                            "billing_frequency": "one_time",
+                            "pricing_model": "flat",
+                            "url": "https://shop.example.com/products/widget-lite",
+                            "category": "Tools",
+                            "availability": "in_stock",
+                            "dimensions": [],
+                            "features": ["Lightweight"],
+                            "target_audience": ["Hobbyists"],
+                            "tags": ["widget"],
+                            "image_url": null,
+                            "images": [],
+                            "sku": null
+                        }
+                    ],
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9913
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

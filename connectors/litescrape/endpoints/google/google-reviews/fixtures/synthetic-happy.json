@@ -1,0 +1,70 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/reviews?place_id=ChIJexampleplaceid000001&num=2"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "c3d4e5f6a7b8091a2b3c4d5e",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/reviews?place_id=ChIJexampleplaceid000001&num=2"
+                    },
+                    "search_parameters": {
+                        "place_id": "ChIJexampleplaceid000001",
+                        "num": "2",
+                        "sort_by": "qualityScore",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "place_info": {
+                        "title": "Example Coffee",
+                        "address": "100 Congress Ave, Austin, TX 78701",
+                        "rating": 4.8,
+                        "reviews": 312
+                    },
+                    "topics": [
+                        {
+                            "id": "CAESDGV4YW1wbGUtdG9waWM",
+                            "keyword": "espresso",
+                            "mentions": 41
+                        }
+                    ],
+                    "reviews": [
+                        {
+                            "position": 1,
+                            "rating": 5,
+                            "snippet": "Best flat white in town.",
+                            "date": "a month ago",
+                            "user": {
+                                "name": "A. Reviewer",
+                                "reviews": 12
+                            },
+                            "likes": 3
+                        },
+                        {
+                            "position": 2,
+                            "rating": 4,
+                            "snippet": "Great beans, small seating area.",
+                            "date": "2 months ago",
+                            "user": {
+                                "name": "B. Reviewer",
+                                "reviews": 5
+                            },
+                            "likes": 0
+                        }
+                    ],
+                    "pagination": {
+                        "next_page_token": "ls1.WyJDakVJQVJJcENuZXh0",
+                        "next": "https://api.litescrape.com/api/google/reviews?place_id=ChIJexampleplaceid000001&num=2&next_page_token=ls1.WyJDakVJQVJJcENuZXh0"
+                    }
+                }
+            }
+        }
+    ]
+}

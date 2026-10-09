@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 20 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/tiktok/search"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "total": 2,
+                        "products": [
+                            {
+                                "title": "Example Wireless Earbuds",
+                                "price": "19.99",
+                                "seller": "Example Audio Store",
+                                "url": "https://www.tiktok.com/shop/pdp/1731949430853767209"
+                            },
+                            {
+                                "title": "Example Earbuds Pro",
+                                "price": "39.99",
+                                "seller": "Example Audio Store",
+                                "url": "https://www.tiktok.com/shop/pdp/1731949430853767210"
+                            }
+                        ]
+                    },
+                    "tokenUsage": 20
+                }
+            }
+        }
+    ]
+}

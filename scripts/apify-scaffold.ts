@@ -18,6 +18,7 @@ import { Command } from "@cliffy/command";
 import { ensureDir } from "@std/fs";
 import { join } from "@std/path";
 import { findEndpointDir } from "./lib.ts";
+import { suiteEnvVars, suiteToken } from "./drift/contract.ts";
 
 const BASE = "https://api.apify.com";
 
@@ -155,8 +156,12 @@ await new Command()
         "write only schema/output.ts (leave the curated inputs untouched)",
     )
     .action(async ({ name, group, outputOnly }, actorId) => {
-        const token = Deno.env.get("APIFY_API_KEY");
-        if (!token) throw new Error("APIFY_API_KEY is required");
+        const token = suiteToken("apify");
+        if (!token) {
+            throw new Error(
+                `${suiteEnvVars("apify").join(" or ")} is required`,
+            );
+        }
         const pathId = actorId.replace("/", "~");
 
         const actor = await apiGet(`/v2/acts/${pathId}`, token) as {

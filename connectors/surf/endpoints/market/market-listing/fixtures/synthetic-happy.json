@@ -1,0 +1,48 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/market/listing?from=2024-01-01&product=all&type=listing&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "base_symbol": "base_symbol-1",
+                            "effective_at": 1,
+                            "event_type": "event_type-1",
+                            "exchange_name": "exchange_name-1",
+                            "product": "product-1",
+                            "published_at": 1,
+                            "quote_symbol": "quote_symbol-1",
+                            "trading_pair": "trading_pair-1"
+                        },
+                        {
+                            "base_symbol": "base_symbol-2",
+                            "effective_at": 2,
+                            "event_type": "event_type-2",
+                            "exchange_name": "exchange_name-2",
+                            "product": "product-2",
+                            "published_at": 2,
+                            "quote_symbol": "quote_symbol-2",
+                            "trading_pair": "trading_pair-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

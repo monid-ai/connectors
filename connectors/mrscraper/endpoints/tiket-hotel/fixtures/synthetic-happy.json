@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/tiket/hotel/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "hotel": {
+                            "id": "the-example-jakarta",
+                            "name": "The Example Jakarta",
+                            "location": {
+                                "city": "Jakarta",
+                                "address": "Jl. Example No. 1"
+                            },
+                            "facilities": [
+                                "Pool",
+                                "Gym"
+                            ],
+                            "review": {
+                                "score": 8.9,
+                                "count": 1450
+                            }
+                        },
+                        "rates": [
+                            {
+                                "room": "Superior",
+                                "price": 950000,
+                                "currency": "IDR",
+                                "breakfast": true
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

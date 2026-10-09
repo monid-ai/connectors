@@ -1,0 +1,123 @@
+{
+    "name": "synthetic-search-receipt-open",
+    "description": "A terminal status whose receipt still reads `open`. The run is financially terminal when the RECEIPT is, so the poll reads again rather than settling a partial figure; the next read carries the settled receipt (1). Synthetic, shaped on a live drill of v3 (2026-09-20).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 202,
+                "body": {
+                    "search_id": "SEARCH9",
+                    "request_id": "req-search9",
+                    "status": "running",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": false,
+                    "results": [],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH9"
+                    },
+                    "billing": {
+                        "id": "op-search-9",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 2,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH9",
+                    "request_id": "req-search9",
+                    "status": "completed",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH9"
+                    },
+                    "billing": {
+                        "id": "op-search-9",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 0,
+                        "releasedCredits": 0,
+                        "heldCredits": 2,
+                        "status": "open"
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.orbitsearch.com/v3/search/SEARCH9"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_id": "SEARCH9",
+                    "request_id": "req-search9",
+                    "status": "completed",
+                    "candidate_discovery": false,
+                    "profile_depth": "partial",
+                    "include_profile": false,
+                    "profile_upgrades_completed": true,
+                    "results": [
+                        {
+                            "profile_id": "PROF_INDEXED_1",
+                            "status": "ready",
+                            "generation_level": 2,
+                            "sources": [
+                                "search"
+                            ]
+                        }
+                    ],
+                    "created_at": "2026-09-20T12:00:00.000Z",
+                    "updated_at": "2026-09-20T12:01:00.000Z",
+                    "links": {
+                        "status": "/v3/search/SEARCH9"
+                    },
+                    "billing": {
+                        "id": "op-search-9",
+                        "pricingVersion": "2026-09-17",
+                        "reservedCredits": 2,
+                        "consumedCredits": 1,
+                        "releasedCredits": 1,
+                        "heldCredits": 0,
+                        "status": "settled"
+                    }
+                }
+            }
+        }
+    ]
+}

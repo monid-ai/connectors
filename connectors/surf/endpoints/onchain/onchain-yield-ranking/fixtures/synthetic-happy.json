@@ -1,0 +1,50 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/onchain/yield/ranking?sort_by=apy&order=desc&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "apy": 1,
+                            "apy_base": 1,
+                            "apy_reward": 1,
+                            "pool_address": "pool_address-1",
+                            "project": "project-1",
+                            "symbol": "symbol-1",
+                            "token_address": "token_address-1",
+                            "tvl_usd": 1,
+                            "version": "version-1"
+                        },
+                        {
+                            "apy": 2,
+                            "apy_base": 2,
+                            "apy_reward": 2,
+                            "pool_address": "pool_address-2",
+                            "project": "project-2",
+                            "symbol": "symbol-2",
+                            "token_address": "token_address-2",
+                            "tvl_usd": 2,
+                            "version": "version-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

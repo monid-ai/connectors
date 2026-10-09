@@ -1,0 +1,56 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/search/fundraising?lang=en&sort_by=recency&order=desc&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "event_at": 1,
+                            "id": "id-1",
+                            "importance": 1,
+                            "published_at": 1,
+                            "source": {
+                                "name": "name-1",
+                                "type": "social",
+                                "url": "url-1"
+                            },
+                            "source_count": 1,
+                            "summary": "summary-1",
+                            "title": "title-1"
+                        },
+                        {
+                            "event_at": 2,
+                            "id": "id-2",
+                            "importance": 2,
+                            "published_at": 2,
+                            "source": {
+                                "name": "name-2",
+                                "type": "social",
+                                "url": "url-2"
+                            },
+                            "source_count": 2,
+                            "summary": "summary-2",
+                            "title": "title-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

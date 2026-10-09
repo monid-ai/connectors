@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-update-patch",
+    "description": "The normal persona edit: the stored pointer resolves and PATCHes in place; a lean ack replaces the body (the internal connection id never reaches users).",
+    "calls": [
+        {
+            "req": {
+                "method": "PATCH",
+                "url": "{{request.origin}}/connections/conn-1",
+                "body": {
+                    "mode": "hosted",
+                    "instructions": "Be brief."
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "conn-1",
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful.",
+                    "language": "en",
+                    "tts": {
+                        "voiceId": "voice-1"
+                    },
+                    "llm": {
+                        "model": "openai/gpt-4o"
+                    },
+                    "complianceEnabled": true,
+                    "manualSecret": "sec-never-leaks"
+                }
+            }
+        }
+    ]
+}

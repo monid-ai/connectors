@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. Free.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/discover",
+                "body": {
+                    "organization": {
+                        "domain": [
+                            "hunter.io"
+                        ]
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "domain": "hunter.io",
+                            "organization": "Hunter",
+                            "emails_count": {
+                                "personal": 23,
+                                "generic": 5,
+                                "total": 28
+                            }
+                        }
+                    ],
+                    "meta": {
+                        "results": 1,
+                        "limit": 100,
+                        "offset": 0,
+                        "params": {
+                            "organization": {
+                                "domain": [
+                                    "hunter.io"
+                                ]
+                            }
+                        },
+                        "filters": {
+                            "organization": {
+                                "domain": [
+                                    "hunter.io"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

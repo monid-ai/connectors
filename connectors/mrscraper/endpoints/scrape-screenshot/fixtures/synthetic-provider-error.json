@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. A vendor 500 in the documented error envelope (hard failures are free).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&browserRendering=true&screenshot=full&saveResult=false"
+            },
+            "res": {
+                "status": 500,
+                "body": {
+                    "message": "Browser session failed",
+                    "error": "Internal Server Error"
+                }
+            }
+        }
+    ]
+}

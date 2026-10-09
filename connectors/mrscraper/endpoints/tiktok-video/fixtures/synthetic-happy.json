@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope with the TikTok Video Details shape v1 documented, tokenUsage 10; ids and URLs are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/sns/tiktok/video/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "id": "7670199761282075935",
+                        "desc": "Example video",
+                        "author": {
+                            "unique_id": "mrbeast",
+                            "nickname": "MrBeast"
+                        },
+                        "music": {
+                            "title": "original sound"
+                        },
+                        "hashtags": [
+                            "challenge"
+                        ],
+                        "stats": {
+                            "play_count": 15000000,
+                            "like_count": 2100000,
+                            "share_count": 88000,
+                            "comment_count": 41000
+                        }
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

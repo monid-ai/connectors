@@ -1,0 +1,446 @@
+{
+    "web/fetch": {
+        "queryParams": {
+            "url": "https://ethereum.org"
+        }
+    },
+    "search/airdrop": {},
+    "search/airdrop/activities": {},
+    "search/events": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "search/fund": {
+        "queryParams": {
+            "q": "a16z"
+        }
+    },
+    "search/fundraising": {},
+    "search/news": {
+        "queryParams": {
+            "q": "bitcoin ETF"
+        }
+    },
+    "search/prediction-market": {},
+    "search/project": {
+        "queryParams": {
+            "q": "bitcoin"
+        }
+    },
+    "search/token": {
+        "queryParams": {
+            "q": "USDC"
+        }
+    },
+    "search/web": {
+        "queryParams": {
+            "q": "bitcoin price prediction 2026"
+        }
+    },
+    "market/etf": {
+        "queryParams": {
+            "symbol": "BTC"
+        }
+    },
+    "market/exchange-flow/exchanges": {
+        "queryParams": {
+            "symbol": "BTC"
+        }
+    },
+    "market/fear-greed": {},
+    "market/futures": {},
+    "market/liquidation/chart": {
+        "queryParams": {
+            "symbol": "BTC"
+        }
+    },
+    "market/liquidation/exchange-list": {},
+    "market/liquidation/order": {},
+    "market/listing": {
+        "queryParams": {
+            "from": "2024-01-01"
+        }
+    },
+    "market/onchain-indicator": {
+        "queryParams": {
+            "symbol": "BTC",
+            "metric": "nupl"
+        }
+    },
+    "market/options": {
+        "queryParams": {
+            "symbol": "BTC"
+        }
+    },
+    "market/price": {
+        "queryParams": {
+            "symbol": "BTC"
+        }
+    },
+    "market/price-indicator": {
+        "queryParams": {
+            "indicator": "rsi",
+            "symbol": "BTC"
+        }
+    },
+    "market/public-sale": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "market/ranking": {},
+    "market/tge": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "news/detail": {
+        "queryParams": {
+            "id": "e54e0ac4-1ef8-44d2-928e-52df465e2c81"
+        }
+    },
+    "news/feed": {},
+    "fund/detail": {
+        "queryParams": {
+            "id": "ef3b6da9-283d-4080-b3c7-87b1b45924dc"
+        }
+    },
+    "fund/portfolio": {
+        "queryParams": {
+            "id": "ef3b6da9-283d-4080-b3c7-87b1b45924dc"
+        }
+    },
+    "fund/ranking": {
+        "queryParams": {
+            "metric": "tier"
+        }
+    },
+    "token/dex-trades": {
+        "queryParams": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+        }
+    },
+    "token/holders": {
+        "queryParams": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "chain": "ethereum"
+        }
+    },
+    "token/tokenomics": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "token/transfer-counterparties": {
+        "queryParams": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "chain": "ethereum",
+            "direction": "to"
+        }
+    },
+    "token/transfer-stats": {
+        "queryParams": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "chain": "ethereum"
+        }
+    },
+    "token/transfers": {
+        "queryParams": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "chain": "ethereum"
+        }
+    },
+    "exchange/candles": {
+        "queryParams": {
+            "exchange": "bithumb",
+            "pair": "BTC/KRW"
+        }
+    },
+    "exchange/coverage": {},
+    "exchange/depth": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "exchange/funding-history": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "exchange/klines": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "exchange/long-short-ratio": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "exchange/markets": {},
+    "exchange/perp": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "exchange/price": {
+        "queryParams": {
+            "pair": "BTC/USDT"
+        }
+    },
+    "search/wallet": {
+        "queryParams": {
+            "q": "vitalik.eth"
+        }
+    },
+    "wallet/detail": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "wallet/history": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "wallet/labels/batch": {
+        "queryParams": {
+            "addresses": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045,0xdead"
+        }
+    },
+    "wallet/net-worth": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "wallet/protocols": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "wallet/transfers": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "project/ai-news": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "project/defi/metrics": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "project/defi/ranking": {
+        "queryParams": {
+            "metric": "tvl"
+        }
+    },
+    "project/detail": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "onchain/bridge/ranking": {},
+    "onchain/dex/activity": {
+        "queryParams": {
+            "chain": "ethereum",
+            "project": "uniswap",
+            "group_by": "day"
+        }
+    },
+    "onchain/gas-price": {
+        "queryParams": {
+            "chain": "ethereum"
+        }
+    },
+    "onchain/tx": {
+        "queryParams": {
+            "hash": "0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060",
+            "chain": "ethereum"
+        }
+    },
+    "onchain/yield/ranking": {},
+    "onchain/schema": {},
+    "onchain/query": {
+        "body": {
+            "source": "agent.ethereum_dex_trades"
+        }
+    },
+    "onchain/sql": {
+        "body": {
+            "sql": "SELECT block_date, sum(amount_usd) AS volume FROM agent.ethereum_dex_trades WHERE block_date >= toDate('2026-09-01') GROUP BY block_date ORDER BY block_date"
+        }
+    },
+    "onchain/sql/preflight": {
+        "body": {
+            "sql": "SELECT block_date, sum(amount_usd) AS volume FROM agent.ethereum_dex_trades WHERE block_date >= toDate('2026-09-01') GROUP BY block_date ORDER BY block_date"
+        }
+    },
+    "onchain/sql/jobs": {
+        "body": {
+            "sql": "SELECT block_date, sum(amount_usd) AS volume FROM agent.ethereum_dex_trades WHERE block_date >= toDate('2026-09-01') GROUP BY block_date ORDER BY block_date"
+        }
+    },
+    "dex/token/price": {
+        "queryParams": {
+            "chain": "ethereum",
+            "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+        }
+    },
+    "prediction-market/analytics": {},
+    "prediction-market/correlations": {
+        "queryParams": {
+            "category": "crypto"
+        }
+    },
+    "prediction-market/kalshi/events": {},
+    "prediction-market/kalshi/markets": {},
+    "prediction-market/kalshi/open-interest": {
+        "queryParams": {
+            "ticker": "KXBTC2026250-27JAN01-250000"
+        }
+    },
+    "prediction-market/kalshi/orderbooks": {
+        "queryParams": {
+            "ticker": "KXCITRINI-28JUL01"
+        }
+    },
+    "prediction-market/kalshi/prices": {
+        "queryParams": {
+            "ticker": "KXBTC2026250-27JAN01-250000"
+        }
+    },
+    "prediction-market/kalshi/trades": {
+        "queryParams": {
+            "ticker": "KXBTC2026250-27JAN01-250000"
+        }
+    },
+    "prediction-market/kalshi/volumes": {
+        "queryParams": {
+            "ticker": "KXBTC2026250-27JAN01-250000"
+        }
+    },
+    "prediction-market/matching/daily": {
+        "queryParams": {
+            "polymarket_condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092",
+            "kalshi_market_ticker": "KXBTC2026250-27JAN01-250000"
+        }
+    },
+    "prediction-market/matching/pairs": {},
+    "prediction-market/polymarket/events": {
+        "queryParams": {
+            "event_slug": "what-price-will-bitcoin-hit-before-2027"
+        }
+    },
+    "prediction-market/polymarket/leaderboard": {},
+    "prediction-market/polymarket/markets": {
+        "queryParams": {
+            "market_slug": "will-bitcoin-dip-to-45000-by-december-31-2026-674-923-755-971-998-525-926-245-316-517-544-589-965-923-986-841-815-224"
+        }
+    },
+    "prediction-market/polymarket/open-interest": {
+        "queryParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "prediction-market/polymarket/orderbooks": {
+        "queryParams": {
+            "token_id": "73662070458561467734997715458900555626841827840002814944742182699282770895284"
+        }
+    },
+    "prediction-market/polymarket/positions": {
+        "queryParams": {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        }
+    },
+    "prediction-market/polymarket/price-ohlcv": {
+        "pathParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "prediction-market/polymarket/prices": {
+        "queryParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "prediction-market/polymarket/smart-money": {},
+    "prediction-market/polymarket/trades": {
+        "queryParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "prediction-market/polymarket/volume-split": {
+        "pathParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "prediction-market/polymarket/volumes": {
+        "queryParams": {
+            "condition_id": "0x6fefc0438c7598b23531457c8c60541990d0786bd4bd9dfc3eabc8d95c291092"
+        }
+    },
+    "hyperliquid/account": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/candles": {
+        "queryParams": {
+            "symbol": "SOL",
+            "from": "2026-05-16",
+            "to": "2026-05-19"
+        }
+    },
+    "hyperliquid/fills": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/leaderboard": {},
+    "hyperliquid/orders": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/performance": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/positions": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/trades": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/trades/aggregate": {
+        "queryParams": {
+            "address": "test"
+        }
+    },
+    "hyperliquid/trades/context": {
+        "queryParams": {
+            "address": "test",
+            "symbol": "BTC",
+            "direction": "long",
+            "open_time": 1,
+            "close_time": 1
+        }
+    },
+    "heatscore/detail": {
+        "queryParams": {
+            "id": "25c6612a-395c-4974-94eb-3b5f9f4b2ed7"
+        }
+    },
+    "heatscore/projects": {},
+    "heatscore/token-of-the-day": {},
+    "heatscore/token-of-week": {}
+}

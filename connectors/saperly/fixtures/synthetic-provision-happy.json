@@ -1,0 +1,92 @@
+{
+    "name": "synthetic-provision-happy",
+    "description": "The 4-call saga end to end: quote -> connection-first -> consent purchase -> bind. The seed persists num-1 with its connection pointer and the quoted $2 rent; the consolidate claim is the consented $2 quote (equal to the derived PER_CALL fold - no mismatch); the user output is stripped (no monthlyPriceCents/connectionId; the connection is the sanitized projection).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/pricing/quote?country=US&numberType=local"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "customerMonthlyCents": 200,
+                    "customerUpfrontCents": 200,
+                    "country": "US",
+                    "numberType": "local",
+                    "currency": "USD"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/connections",
+                "body": {
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful."
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "conn-1",
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful.",
+                    "language": "en",
+                    "tts": {
+                        "voiceId": "voice-1"
+                    },
+                    "llm": {
+                        "model": "openai/gpt-4o"
+                    },
+                    "complianceEnabled": true,
+                    "manualSecret": "sec-never-leaks"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "country": "US",
+                    "numberType": "local",
+                    "expectedMonthlyPriceCents": 200,
+                    "expectedUpfrontPriceCents": 200
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "num-1",
+                    "phoneNumber": "+14155559999",
+                    "connectionId": "conn-1",
+                    "country": "US",
+                    "numberType": "local",
+                    "monthlyPriceCents": 200,
+                    "currency": "USD",
+                    "nextChargeAt": "2026-10-16T00:00:00Z",
+                    "createdAt": "2026-09-16T00:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/numbers/num-1/connection",
+                "body": {
+                    "connectionId": "conn-1"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": true
+                }
+            }
+        }
+    ]
+}

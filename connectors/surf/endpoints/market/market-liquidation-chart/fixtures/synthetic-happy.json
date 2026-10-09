@@ -1,0 +1,45 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/market/liquidation/chart?symbol=BTC&interval=1h&exchange=Binance&limit=500"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "contributing_exchanges": [
+                                "contributing_exchanges-1"
+                            ],
+                            "excluded_exchanges": [
+                                "excluded_exchanges-1"
+                            ],
+                            "long_liquidation_usd": 1,
+                            "short_liquidation_usd": 1,
+                            "timestamp": 1
+                        },
+                        {
+                            "contributing_exchanges": [
+                                "contributing_exchanges-2"
+                            ],
+                            "excluded_exchanges": [
+                                "excluded_exchanges-2"
+                            ],
+                            "long_liquidation_usd": 2,
+                            "short_liquidation_usd": 2,
+                            "timestamp": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2
+                    }
+                }
+            }
+        }
+    ]
+}

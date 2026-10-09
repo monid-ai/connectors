@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 36 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/booking/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "hotel": "Admiral Suites Bangkok",
+                        "reviews": [
+                            {
+                                "reviewer": "A. Example",
+                                "country": "Singapore",
+                                "score": 9.0,
+                                "nights": 2,
+                                "traveler_type": "Couple",
+                                "positive": "Great location.",
+                                "negative": "Pool was small."
+                            }
+                        ]
+                    },
+                    "tokenUsage": 36
+                }
+            }
+        }
+    ]
+}

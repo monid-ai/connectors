@@ -5,3 +5,5 @@ export * from "./auth.ts";
 export * from "./request.ts";
 export * from "./timeouts.ts";
 export * from "./lifecycle.ts";
+export * from "./resource-binding.ts";
+export * from "./webhooks.ts";

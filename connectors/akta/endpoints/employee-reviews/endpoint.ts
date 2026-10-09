@@ -16,6 +16,11 @@ export default defineEndpoint({
         docsUrl:
             "https://docs.akta.pro/api-reference/alternative-data/employee-reviews",
         categories: ["company-reviews"],
+        notes: [
+            "Billed in whole 50-review increments (1.5 credits per " +
+            "started block of 50) regardless of how many reviews " +
+            "'limit' requests or the company has.",
+        ],
     },
     request: { method: "GET", path: "/v1/company/employee-reviews/" },
     // `limit` REQUIRED at the binding (design D25 — the mirror stays the

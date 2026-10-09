@@ -43,7 +43,11 @@ export default defineEndpoint({
             kind: UsageModelKind.PER_UNIT,
             unit: Unit.RESULT,
             label: "pages",
-            // $0.001 per crawled page — v1 vendor unit price
+            // $0.001 PER PAGE — a deliberate departure from v1's flat
+            // PER_CALL $0.001 (v1's own comment admitted "underlying Exa
+            // cost varies by number of URLs"; Exa's published card is
+            // per-page, and the vendor's costDollars claim settles the
+            // truth per run either way — reconcile 2026-09-16)
             consumes: { credit: "default", amount: 0.001 },
         },
         /** One result per requested URL — `urls` is required (min 1), so

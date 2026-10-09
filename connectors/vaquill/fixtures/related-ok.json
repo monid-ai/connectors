@@ -1,0 +1,229 @@
+{
+    "name": "related-ok",
+    "description": "Neighbouring sections either side in statutory order: flat 2 credits whatever the window.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/related?limit=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "USC_T42_C21_S1983",
+                        "citation": "42 U.S.C. \u00a7 1983 (2026)",
+                        "citationShort": "42 U.S.C. \u00a7 1983",
+                        "title": "Civil action for deprivation of rights",
+                        "corpusType": "USC",
+                        "state": "federal",
+                        "year": 2026,
+                        "excerpt": "Every person who, under color of any statute, ordinance, regulation, custom, or usage, of any State or Territory or the District of Columbia, subjects, or causes to be subjected, any citizen of the United States or other person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Constitution and laws, shall be liable to the party injured in an action at law, suit in equity, or other proper proceeding for redress, except that in any action...",
+                        "body": null,
+                        "titleNumber": "42",
+                        "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                        "chapter": "21",
+                        "chapterName": "CIVIL RIGHTS",
+                        "sectionNumber": "1983",
+                        "sectionTitle": "Civil action for deprivation of rights",
+                        "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1983: Civil action for deprivation of rights",
+                        "breadcrumb": [
+                            {
+                                "type": "title",
+                                "num": "42",
+                                "label": "Title 42",
+                                "name": "THE PUBLIC HEALTH AND WELFARE"
+                            },
+                            {
+                                "type": "chapter",
+                                "num": "21",
+                                "label": "Chapter 21",
+                                "name": "CIVIL RIGHTS"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "USC",
+                            "titleNumber": 42,
+                            "chapter": "21"
+                        },
+                        "subchapter": "I",
+                        "subchapterName": "GENERALLY",
+                        "popularName": "Public Health and Welfare",
+                        "actStatus": "in_force",
+                        "goodLawStatus": "good_law",
+                        "crossReferencesUsc": [
+                            "28:1343",
+                            "8:43"
+                        ],
+                        "sourceCredit": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)",
+                        "amendmentYears": [
+                            1996,
+                            1979
+                        ],
+                        "lastAmendedYear": 1996,
+                        "amendmentsCount": 2,
+                        "currentThrough": "2026-09-11",
+                        "effectiveDate": "1979-12-29",
+                        "history": "(R.S. \u00a7 1979; Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284; Pub. L. 104\u2013317, title III, \u00a7 309(c), Oct. 19, 1996, 110 Stat. 3853.)\n\nCodification\n\nR.S. \u00a7 1979 derived from act Apr. 20, 1871, ch. 22, \u00a7 1, 17 Stat. 13.\n\nSection was formerly classified to section 43 of Title 8, Aliens and Nationality.\n\nAmendments\n\n1996\u2014Pub. L. 104\u2013317 inserted before period at end of first sentence \u201c,\u2000except that in any action brought against a judicial officer for an act or omission taken in such officer\u2019s judi",
+                        "publicLaws": [
+                            "Pub. L. 104-317",
+                            "Pub. L. 96-170"
+                        ],
+                        "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1983.txt",
+                        "wordCount": 339,
+                        "originalEnactmentDate": "1979-12-29",
+                        "originalEnactmentDateRaw": "Dec. 29, 1979",
+                        "publisherKey": "420000000198300000000000000000000",
+                        "displayLabel": "42 U.S.C. \u00a7 1983",
+                        "publicLawCites": [
+                            {
+                                "type": "revised_statutes",
+                                "section": "1979",
+                                "display": "R.S. \u00a71979"
+                            },
+                            {
+                                "type": "public_law",
+                                "congress": 96,
+                                "law": 170,
+                                "displayId": "Pub. L. 96-170",
+                                "date": "1979-12-29",
+                                "statVolume": 93,
+                                "statPage": 1284,
+                                "statAtLarge": "93 Stat. 1284",
+                                "section": "1",
+                                "display": "Pub. L. 96\u2013170, \u00a7 1, Dec. 29, 1979, 93 Stat. 1284"
+                            }
+                        ],
+                        "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1983&num=0&edition=prelim"
+                    },
+                    "previous": [
+                        {
+                            "actId": "USC_T42_C21_S1982",
+                            "citation": "42 U.S.C. \u00a7 1982 (2026)",
+                            "citationShort": "42 U.S.C. \u00a7 1982",
+                            "title": "Property rights of citizens",
+                            "corpusType": "USC",
+                            "state": "federal",
+                            "year": 2026,
+                            "excerpt": "All citizens of the United States shall have the same right, in every State and Territory, as is enjoyed by white citizens thereof to inherit, purchase, lease, sell, hold, and convey real and personal property.\n\n(R.S. \u00a7 1978.)\n\nEditorial Notes\n\nCodification\n\nR.S. \u00a7 1978 derived from act Apr. 9, 1866, ch. 31, \u00a7 1, 14 Stat. 27.\n\nSection was formerly classified to section 42 of Title 8, Aliens and Nationality.\n\nExecutive Documents\n\nEx. Ord. No. 11063. Equal Opportunity in Housing\n\nEx. Ord. No...",
+                            "body": null,
+                            "titleNumber": "42",
+                            "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                            "chapter": "21",
+                            "chapterName": "CIVIL RIGHTS",
+                            "sectionNumber": "1982",
+                            "sectionTitle": "Property rights of citizens",
+                            "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1982: Property rights of citizens",
+                            "breadcrumb": [
+                                {
+                                    "type": "title",
+                                    "num": "42",
+                                    "label": "Title 42",
+                                    "name": "THE PUBLIC HEALTH AND WELFARE"
+                                },
+                                {
+                                    "type": "chapter",
+                                    "num": "21",
+                                    "label": "Chapter 21",
+                                    "name": "CIVIL RIGHTS"
+                                }
+                            ],
+                            "parent": {
+                                "corpusType": "USC",
+                                "titleNumber": 42,
+                                "chapter": "21"
+                            },
+                            "subchapter": "I",
+                            "subchapterName": "GENERALLY",
+                            "popularName": "Public Health and Welfare",
+                            "actStatus": "in_force",
+                            "goodLawStatus": "good_law",
+                            "crossReferencesUsc": [
+                                "42:1441",
+                                "42:3608"
+                            ],
+                            "sourceCredit": "(R.S. \u00a7 1978.)",
+                            "amendmentsCount": 0,
+                            "currentThrough": "2026-09-11",
+                            "history": "(R.S. \u00a7 1978.)\n\nCodification\n\nR.S. \u00a7 1978 derived from act Apr. 9, 1866, ch. 31, \u00a7 1, 14 Stat. 27.\n\nSection was formerly classified to section 42 of Title 8, Aliens and Nationality.",
+                            "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1982.txt",
+                            "wordCount": 1794,
+                            "publisherKey": "420000000198200000000000000000000",
+                            "displayLabel": "42 U.S.C. \u00a7 1982",
+                            "publicLawCites": [
+                                {
+                                    "type": "revised_statutes",
+                                    "section": "1978",
+                                    "display": "R.S. \u00a71978"
+                                }
+                            ],
+                            "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1982&num=0&edition=prelim"
+                        }
+                    ],
+                    "next": [
+                        {
+                            "actId": "USC_T42_C21_S1984",
+                            "citation": "42 U.S.C. \u00a7 1984 (2026)",
+                            "citationShort": "42 U.S.C. \u00a7 1984",
+                            "title": "Omitted",
+                            "corpusType": "USC",
+                            "state": "federal",
+                            "year": 2026,
+                            "excerpt": "Editorial Notes\n\nCodification\n\nSection, act Mar. 1, 1875, ch. 114, \u00a7 5, 18 Stat. 337, which was formerly classified to section 46 of Title 8, Aliens and Nationality, related to Supreme Court review of cases arising under act Mar. 1, 1875. Sections 1 and 2 of act Mar. 1, 1875 were declared unconstitutional in U.S. v. Singleton, 109 U.S. 3, and sections 3 and 4 of such act were repealed by act June 25, 1948, ch. 645, \u00a7 21, 62 Stat. 862.",
+                            "body": null,
+                            "titleNumber": "42",
+                            "titleName": "THE PUBLIC HEALTH AND WELFARE",
+                            "chapter": "21",
+                            "chapterName": "CIVIL RIGHTS",
+                            "sectionNumber": "1984",
+                            "sectionTitle": "Omitted",
+                            "displayPath": "Title 42: THE PUBLIC HEALTH AND WELFARE / Chapter 21: CIVIL RIGHTS / Subchapter I: GENERALLY / Section 1984: Omitted",
+                            "breadcrumb": [
+                                {
+                                    "type": "title",
+                                    "num": "42",
+                                    "label": "Title 42",
+                                    "name": "THE PUBLIC HEALTH AND WELFARE"
+                                },
+                                {
+                                    "type": "chapter",
+                                    "num": "21",
+                                    "label": "Chapter 21",
+                                    "name": "CIVIL RIGHTS"
+                                }
+                            ],
+                            "parent": {
+                                "corpusType": "USC",
+                                "titleNumber": 42,
+                                "chapter": "21"
+                            },
+                            "subchapter": "I",
+                            "subchapterName": "GENERALLY",
+                            "popularName": "Public Health and Welfare",
+                            "actStatus": "omitted",
+                            "goodLawStatus": "not_good_law",
+                            "crossReferencesUsc": [
+                                "8:46"
+                            ],
+                            "amendmentYears": [
+                                1875
+                            ],
+                            "lastAmendedYear": 1875,
+                            "amendmentsCount": 1,
+                            "currentThrough": "2026-09-11",
+                            "history": "Codification\n\nSection, act Mar. 1, 1875, ch. 114, \u00a7 5, 18 Stat. 337, which was formerly classified to section 46 of Title 8, Aliens and Nationality, related to Supreme Court review of cases arising under act Mar. 1, 1875. Sections 1 and 2 of act Mar. 1, 1875 were declared unconstitutional in U.S. v. Singleton, 109 U.S. 3, and sections 3 and 4 of such act were repealed by act June 25, 1948, ch. 645, \u00a7 21, 62 Stat. 862.",
+                            "textUrl": "https://statutes-us.vaquill.ai/usc/olrc/119-108/sections/USC_T42_C21_S1984.txt",
+                            "wordCount": 82,
+                            "publisherKey": "420000000198400000000000000000000",
+                            "displayLabel": "42 U.S.C. \u00a7 1984",
+                            "externalUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1984&num=0&edition=prelim"
+                        }
+                    ],
+                    "container": "CIVIL RIGHTS",
+                    "processingTimeMs": 2115.3,
+                    "creditsConsumed": 2
+                }
+            }
+        }
+    ]
+}

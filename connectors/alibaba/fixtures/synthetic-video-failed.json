@@ -1,0 +1,61 @@
+{
+    "name": "synthetic-video-failed",
+    "description": "SYNTHETIC (a DashScope task failure cannot be provoked on demand): the task reaches the terminal FAILED status with DashScope's error code and message on output, no usage. The poll GET itself returned 200, so the run settles with OUR synthesized 500 and providerHttpStatus 200 (design D12), zero-billed. CANCELED and UNKNOWN (expired) take the same branch.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_status": "PENDING",
+                        "task_id": "TASK1"
+                    },
+                    "request_id": "req-TASK1-submit"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "RUNNING",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000"
+                    },
+                    "request_id": "req-TASK1-running"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/api/v1/tasks/TASK1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "output": {
+                        "task_id": "TASK1",
+                        "task_status": "FAILED",
+                        "submit_time": "2026-09-16 10:00:00.000",
+                        "scheduled_time": "2026-09-16 10:00:01.000",
+                        "end_time": "2026-09-16 10:00:09.000",
+                        "code": "InvalidParameter",
+                        "message": "reference_xx and first_frame/last_frame are mutually exclusive"
+                    },
+                    "request_id": "req-TASK1-failed"
+                }
+            }
+        }
+    ]
+}

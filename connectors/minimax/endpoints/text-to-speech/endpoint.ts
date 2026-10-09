@@ -43,8 +43,15 @@ export default defineEndpoint({
             "character count. Returns a CDN URL that EXPIRES after 24 " +
             "hours.",
         docsUrl:
-            "https://platform.minimax.io/docs/api-reference/text-to-speech",
+            "https://platform.minimax.io/docs/api-reference/speech-t2a-http",
         categories: ["speech"],
+        notes: [
+            "Interjection tags such as (laughs) and (sighs) work only " +
+            "on the speech-2.8 models.",
+            "Streaming and the WebSocket surface are not exposed - each " +
+            "run returns one complete audio file.",
+            "A rejected or failed synthesis bills nothing.",
+        ],
     },
     request: { method: "POST", path: "/v1/t2a_v2" },
     input: {

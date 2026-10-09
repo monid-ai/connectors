@@ -1,0 +1,54 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (ads, local_ads, shopping_results, organic_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/ads?q=coffee+maker&location=Austin%2C+Texas%2C+United+States"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "5c3f2e1d0b9a8f7e6d5c4b3a",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/ads?q=coffee+maker&location=Austin%2C+Texas%2C+United+States",
+                        "total_time_taken": 52.1
+                    },
+                    "search_parameters": {
+                        "q": "coffee maker",
+                        "location": "Austin, Texas, United States",
+                        "hl": "en",
+                        "device": "desktop"
+                    },
+                    "ads": [
+                        {
+                            "position": 1,
+                            "block_position": "top",
+                            "title": "Coffee Makers on Sale",
+                            "link": "https://shop.example/coffee-makers",
+                            "displayed_link": "shop.example",
+                            "description": "Free shipping on orders over $50."
+                        }
+                    ],
+                    "shopping_results": [
+                        {
+                            "position": 1,
+                            "title": "Example 12-Cup Coffee Maker",
+                            "price": "$49.99",
+                            "source": "shop.example"
+                        }
+                    ],
+                    "organic_results": [
+                        {
+                            "position": 1,
+                            "title": "Best coffee makers of the year",
+                            "link": "https://guide.example/coffee-makers"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

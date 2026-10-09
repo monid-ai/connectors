@@ -1,0 +1,57 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/agoda/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "specs": {
+                            "hotelId": 3126,
+                            "checkIn": "2026-10-14",
+                            "checkOut": "2026-10-16",
+                            "rooms": 1,
+                            "adults": 2,
+                            "children": 0
+                        },
+                        "hotel": {
+                            "name": "Example Bangkok Hotel",
+                            "star_rating": 4,
+                            "address": "1 Example Road, Bangkok",
+                            "guest_rating": 8.6,
+                            "review_count": 4210,
+                            "image": "https://pix8.agoda.net/example.jpg"
+                        },
+                        "rooms": [
+                            {
+                                "platform": "agoda",
+                                "name": "Deluxe Room",
+                                "image": "https://pix8.agoda.net/room.jpg",
+                                "occupancy": 2,
+                                "breakfast": true,
+                                "refundable": true,
+                                "pricing": {
+                                    "total": 180.0,
+                                    "taxes": 25.2,
+                                    "fees": 0,
+                                    "discount": 20.0,
+                                    "cashback": 0,
+                                    "pay_at_hotel": false,
+                                    "currency": "USD"
+                                }
+                            }
+                        ]
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

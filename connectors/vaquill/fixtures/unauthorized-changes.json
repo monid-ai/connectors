@@ -1,0 +1,18 @@
+{
+    "name": "unauthorized-changes",
+    "description": "401 on a bad key (GET with a path param). The vendor's non-2xx is DATA: the run completes, usage is empty, and the `{detail}` body passes through untouched.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/changes"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "detail": "Invalid or expired API key"
+                }
+            }
+        }
+    ]
+}

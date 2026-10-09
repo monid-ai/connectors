@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 10 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/lazada/pdp/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "title": "Example Wireless Earbuds",
+                        "price": {
+                            "current": 29.9,
+                            "original": 49.9,
+                            "currency": "SGD"
+                        },
+                        "rating": 4.6,
+                        "review_count": 312,
+                        "in_stock": true,
+                        "delivery": {
+                            "eta": "2-4 days",
+                            "fee": 0
+                        },
+                        "seller": {
+                            "name": "Example Store",
+                            "positive_rating": "96%",
+                            "ship_on_time": "99%"
+                        }
+                    },
+                    "tokenUsage": 10
+                }
+            }
+        }
+    ]
+}

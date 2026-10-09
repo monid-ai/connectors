@@ -1,0 +1,48 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (search_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/tripadvisor/search?q=hotels+in+Lisbon&place_type=accommodation&num=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "0ad89afcbdaa996fe4e3b625",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/tripadvisor/search?q=hotels+in+Lisbon&place_type=accommodation&num=1"
+                    },
+                    "search_parameters": {
+                        "q": "hotels in Lisbon",
+                        "place_type": "accommodation",
+                        "num": "1",
+                        "locale": "en-US",
+                        "tripadvisor_domain": "www.tripadvisor.com"
+                    },
+                    "search_information": {
+                        "total_results": 1200
+                    },
+                    "search_results": [
+                        {
+                            "position": 1,
+                            "name": "Example Hotel Lisboa",
+                            "place_type": "accommodation",
+                            "rating": 4.5,
+                            "reviews": 2310,
+                            "location": "Lisbon, Portugal",
+                            "place_id": "1234567",
+                            "litescrape_place_link": "https://api.litescrape.com/api/tripadvisor/place?place_id=1234567&locale=en-US",
+                            "litescrape_reviews_link": "https://api.litescrape.com/api/tripadvisor/reviews?place_id=1234567&locale=en-US"
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/tripadvisor/search?q=hotels+in+Lisbon&place_type=accommodation&num=1&start=1"
+                    }
+                }
+            }
+        }
+    ]
+}

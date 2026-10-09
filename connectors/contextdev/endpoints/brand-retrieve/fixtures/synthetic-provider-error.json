@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The documented 422 error envelope (a free-provider email on by_email); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/brand/retrieve"
+            },
+            "res": {
+                "status": 422,
+                "body": {
+                    "message": "Free email providers are not supported",
+                    "error_code": "FREE_EMAIL_NOT_ALLOWED",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9990
+                    },
+                    "request_id": "REQ2"
+                }
+            }
+        }
+    ]
+}

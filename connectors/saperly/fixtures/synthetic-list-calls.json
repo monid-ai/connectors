@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-list-calls",
+    "description": "The pooled-tenancy boundary: upstream GET /calls returns EVERY tenant's calls; only the ownership-gated number's items may leave the fn.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "call-1",
+                        "numberId": "num-1",
+                        "status": "completed"
+                    },
+                    {
+                        "id": "call-9",
+                        "numberId": "num-FOREIGN",
+                        "status": "completed"
+                    }
+                ]
+            }
+        }
+    ]
+}

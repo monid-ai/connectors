@@ -1,0 +1,97 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Organization Enrichment reference example (docs.apollo.io/reference/organization-enrichment, 2026-09-16): Apollo.io's own record, keywords / funding events / technologies trimmed to two entries each; the id is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/organizations/enrich?domain=apollo.io"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "organization": {
+                        "id": "ORG1",
+                        "name": "Apollo.io",
+                        "website_url": "http://www.apollo.io",
+                        "blog_url": null,
+                        "angellist_url": null,
+                        "linkedin_url": "https://www.linkedin.com/company/apolloio",
+                        "twitter_url": "https://x.com/useapolloio",
+                        "facebook_url": null,
+                        "primary_phone": {},
+                        "languages": [],
+                        "num_languages": 0,
+                        "alexa_ranking": 3514,
+                        "phone": null,
+                        "linkedin_uid": "18511550",
+                        "founded_year": 2015,
+                        "publicly_traded_symbol": null,
+                        "publicly_traded_exchange": null,
+                        "logo_url": "https://zenprospect-production.s3.amazonaws.com/uploads/pictures/ORG1/picture",
+                        "crunchbase_url": null,
+                        "primary_domain": "apollo.io",
+                        "industry": "information technology & services",
+                        "keywords": ["sales engagement", "lead generation"],
+                        "estimated_num_employees": 1600,
+                        "industries": ["information technology & services"],
+                        "secondary_industries": [],
+                        "snippets_loaded": true,
+                        "industry_tag_id": "5567cd4773696439b10b0000",
+                        "industry_tag_hash": {
+                            "information technology & services": "5567cd4773696439b10b0000"
+                        },
+                        "retail_location_count": 0,
+                        "num_retail_locations": 0,
+                        "raw_address": "415 Mission St, Floor 37, San Francisco, California 94105, US",
+                        "street_address": "415 Mission St",
+                        "city": "San Francisco",
+                        "state": "California",
+                        "postal_code": "94105-2301",
+                        "country": "United States",
+                        "owned_by_organization_id": null,
+                        "seo_description": "Search, engage, and convert over 240 million contacts at over 30 million companies with Apollo's sales intelligence and engagement platform.",
+                        "short_description": "Apollo.io combines a buyer database of over 270M contacts and powerful sales engagement and automation tools in one, easy to use platform.",
+                        "suborganizations": [],
+                        "num_suborganizations": 0,
+                        "annual_revenue_printed": "100M",
+                        "annual_revenue": 100000000,
+                        "total_funding": 251200000,
+                        "total_funding_printed": "251.2M",
+                        "latest_funding_round_date": "2023-08-01T00:00:00.000+00:00",
+                        "latest_funding_stage": "Series D",
+                        "funding_events": [
+                            {
+                                "id": "FUND1",
+                                "date": "2023-08-01T00:00:00.000+00:00",
+                                "news_url": null,
+                                "type": "Series D",
+                                "investors": "Bain Capital Ventures, Sequoia Capital, Tribe Capital, Nexus Venture Partners",
+                                "amount": "100M",
+                                "currency": "$"
+                            },
+                            {
+                                "id": "FUND2",
+                                "date": "2022-03-01T00:00:00.000+00:00",
+                                "news_url": null,
+                                "type": "Series C",
+                                "investors": "Sequoia Capital, Tribe Capital, Nexus Venture Partners, NewView Capital",
+                                "amount": "110M",
+                                "currency": "$"
+                            }
+                        ],
+                        "technology_names": ["AI", "Android"],
+                        "current_technologies": [
+                            { "uid": "ai", "name": "AI", "category": "Other" },
+                            {
+                                "uid": "android",
+                                "name": "Android",
+                                "category": "Frameworks and Programming Languages"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

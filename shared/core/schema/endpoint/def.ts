@@ -7,6 +7,7 @@ import {
     zInputSection,
     zLifecycleSection,
     zOutputSection,
+    zResourcesSection,
     zTimeoutsSection,
     zUsageSection,
 } from "../sections/mod.ts";
@@ -31,7 +32,10 @@ export const zEndpointDef = z.strictObject({
      *  ABSENT ⇒ request.path with trailing slashes stripped (the default
      *  for plain HTTP providers). Declare it only when the native path is
      *  transport plumbing (apify: the actor slug path, mechanically
-     *  derived from /v2/acts/{owner}~{name}/runs) or empty (tinyfish). */
+     *  derived from /v2/acts/{owner}~{name}/runs) or empty (tinyfish).
+     *  Either way the resulting id is PUBLIC API — committed to
+     *  connectors/ids.lock.json, so a drift (e.g. a vendor moving a
+     *  route under a derived identity) fails `deno task ids:check`. */
     endpoint: zEndpointPath.optional(),
     request: zEndpointRequest,
     input: zInputSection.optional(),
@@ -43,6 +47,12 @@ export const zEndpointDef = z.strictObject({
      *  engine runs it INSTEAD of executing `request` itself; `request` stays
      *  required and travels into the fns as ctx.data.request. */
     lifecycle: zLifecycleSection.optional(),
+    /** Endpoint↔resource bindings (design D32/D43) — PURPOSE-KEYED,
+     *  ENDPOINT-ONLY, never provider-defaulted; presence unlocks
+     *  `utils.resources`, the engine's ownership gates (canonical order
+     *  uses→updates→releases→reads), the `data.resources[alias]`
+     *  instance injection, and the settle marks. */
+    resources: zResourcesSection.optional(),
 });
 
 export type EndpointDefSeed = z.input<typeof zEndpointDef>;

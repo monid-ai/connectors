@@ -36,6 +36,10 @@ export default defineProvider({
     // form to it, and the engine's transport is redirect: "manual" (auth
     // headers must never silently travel across redirects).
     request: { baseUrl: "https://api.akta.pro/api" },
+    // v1 parity (reconcile 2026-09-16): endpointExecution/config.yml gave
+    // akta a 60 s request budget (single sync GET) — without this the
+    // engine's 30 s default halves it.
+    timeouts: { requestMs: 60_000, runMs: 60_000 },
     input: {
         toRequest: ({ data }) => ({
             ...data.input,

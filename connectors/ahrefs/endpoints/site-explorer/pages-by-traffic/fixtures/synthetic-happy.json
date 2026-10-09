@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no AHREFS key held at port time, 2026-09-16): body shape from the v1 adaptor tests (`{ <collection>: [...] }` for rowed reports, `{ <name>: {...} }` for snapshots); field values are placeholders. Unverified against live traffic \u2014 replace via `deno task record`. 1 row(s) back \u2014 usage is max(50, 56 \u00d7 1) units, split into the rows line and the request-minimum top-up. Response field names/types checked against the official endpoint reference on 2026-09-16; values remain synthetic.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.ahrefs.com/v3/site-explorer/pages-by-traffic?target=ahrefs.com&mode=subdomains&protocol=both"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "pages": {
+                        "range0_pages": 42,
+                        "range100_pages": 42,
+                        "range100_traffic": 42,
+                        "range10k_pages": 42,
+                        "range10k_plus_pages": 42,
+                        "range10k_plus_traffic": 42,
+                        "range10k_traffic": 42,
+                        "range1k_pages": 42,
+                        "range1k_traffic": 42,
+                        "range5k_pages": 42,
+                        "range5k_traffic": 42
+                    }
+                }
+            }
+        }
+    ]
+}

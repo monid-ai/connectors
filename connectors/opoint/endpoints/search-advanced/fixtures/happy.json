@@ -1,0 +1,183 @@
+{
+    "name": "happy",
+    "description": "raw recording (opoint#search-advanced, scenario happy) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.opoint.com/search/",
+                "body": {
+                    "expressions": [
+                        {
+                            "linemode": "R",
+                            "searchline": {
+                                "searchterm": "spotify",
+                                "filters": [
+                                    {
+                                        "type": "lang",
+                                        "id": "en"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "params": {
+                        "requestedarticles": 1,
+                        "main": {
+                            "header": 1,
+                            "text": 1
+                        },
+                        "max_article_length": 256,
+                        "allsubject": "0",
+                        "readership": true
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchresult": {
+                        "documents": 1,
+                        "response_code": 200,
+                        "first_timestamp": 1789619410,
+                        "last_timestamp": 1789619410,
+                        "generated_timestamp": 1789619466,
+                        "cache": false,
+                        "search_start": 2147483647,
+                        "context": "357864237:1:0;TOTDOC=1",
+                        "count": 1,
+                        "range_count": 1300,
+                        "range_start": 1789576266,
+                        "range_end": 0,
+                        "range_id": "H-12",
+                        "cacheage": -1,
+                        "cputime": 53,
+                        "host": "abel1.opoint.com",
+                        "compiledate": "Sep 10 2026 00:00:00",
+                        "branch": "NOT ACTIVE",
+                        "notimeout": true,
+                        "currency": "NOK",
+                        "netsprintindextimer": 44,
+                        "document": [
+                            {
+                                "id_site": 351517,
+                                "id_article": 1421681,
+                                "hidden": false,
+                                "position": 1,
+                                "timezone": "Australia/Sydney",
+                                "countrycode": "AU",
+                                "countryname": "Australia",
+                                "similarweb": {
+                                    "domain": "inkl.com",
+                                    "readership": {
+                                        "P": 0.001381,
+                                        "value": 531
+                                    },
+                                    "article_readership": {
+                                        "P": 0.000001,
+                                        "value": 0
+                                    }
+                                },
+                                "site_rank": {
+                                    "rank_global": 9495,
+                                    "rank_country": 94
+                                },
+                                "unix_timestamp": 1789619410,
+                                "mediatype": {
+                                    "timemap": false,
+                                    "clip": false,
+                                    "hastext": true,
+                                    "haslogo": false,
+                                    "paywall": false,
+                                    "fulltext": true,
+                                    "text": "WEB"
+                                },
+                                "circulation": 10,
+                                "internal_search_reply": {
+                                    "id_site": 351517,
+                                    "id_article": 1421681,
+                                    "text": ""
+                                },
+                                "stimestamp": 357864237,
+                                "local_time": {
+                                    "GMT": 1,
+                                    "text": "20260917T06:30:10+0200"
+                                },
+                                "local_rcf822_time": {
+                                    "text": "Thu, 17 Sep 2026 06:30:10 +0200"
+                                },
+                                "distribute_conditions": "",
+                                "language": {
+                                    "encoding": "iso-639",
+                                    "text": "en"
+                                },
+                                "word_count": 583,
+                                "first_source": {
+                                    "id": 3827265,
+                                    "name": "Inkl",
+                                    "sitename": "Inkl",
+                                    "url": "https://www.inkl.com",
+                                    "siteurl": "https://www.inkl.com"
+                                },
+                                "header": {
+                                    "matches": false,
+                                    "text": "Drake's Fear of Missing Out Lives Up to Its Name After the Rapper Makes His Hour-Long Film Private"
+                                },
+                                "body": {
+                                    "matches": false,
+                                    "truncated": true,
+                                    "text": "<p> Drake set his new film Fear of Missing Out to private on YouTube shortly after its debut on Tuesday 15 September. A private video plays only for the account that owns it. The setting blocks anyone who missed the livestream. Those fans cannot watch the...</p>"
+                                },
+                                "articleimages": {
+                                    "count": 8,
+                                    "articleimage": [
+                                        {
+                                            "caption": {
+                                                "matches": false,
+                                                "text": "<p>‘Pretend I'm on the ticket': Trump hits campaign trail in bid to boost Republican hopes US lawmakers pass bill giving Trump more power to sanction Russia and its enablers</p><p> Siskiyou Sheriff Warns of Alleged Chinese-Linked Cannabis Network Amid Violence, Water Theft and $2bn Trade Claims </p><p> Exiled Nicaraguan journalist Luis Galeano detained by ICE in Florida </p><p> Veteran NBC anchor Robert Kovacik breaks down after colleagues die in Chatsworth helicopter crash </p><p> LA homelessne"
+                                            },
+                                            "url": "https://images.inkl.com/s3/article/lead_image/23839030/drake-fear-missing-out-drake-fomo-drake-fomo-film.jpg"
+                                        },
+                                        {
+                                            "caption": {
+                                                "matches": false,
+                                                "text": "<p>‘Pretend I'm on the ticket': Trump hits campaign trail in bid to boost Republican hopes US lawmakers pass bill giving Trump more power to sanction Russia and its enablers</p><p> Siskiyou Sheriff Warns of Alleged Chinese-Linked Cannabis Network Amid Violence, Water Theft and $2bn Trade Claims </p><p> Exiled Nicaraguan journalist Luis Galeano detained by ICE in Florida </p><p> Veteran NBC anchor Robert Kovacik breaks down after colleagues die in Chatsworth helicopter crash </p><p> LA homelessne"
+                                            },
+                                            "url": "https://d.ibtimes.co.uk/en/full/1831691/drake-fear-missing-out-drake-fomo-drake-fomo-film.jpg?w=736&f=5ceb55ba0ddf47aa574098df5f19fd00"
+                                        }
+                                    ]
+                                },
+                                "caption": {
+                                    "text": "<p>‘Pretend I'm on the ticket': Trump hits campaign trail in bid to boost Republican hopes US lawmakers pass bill giving Trump more power to sanction Russia and its enablers</p><p> Siskiyou Sheriff Warns of Alleged Chinese-Linked Cannabis Network Amid Violence, Water Theft and $2bn Trade Claims </p><p> Exiled Nicaraguan journalist Luis Galeano detained by ICE in Florida </p><p> Veteran NBC anchor Robert Kovacik breaks down after colleagues die in Chatsworth helicopter crash </p><p> LA homelessne"
+                                },
+                                "quotes": [],
+                                "url": "https://www.inkl.com/news/drakes-fear-of-missing-out-lives-up-to-its-name-after-the-rapper-makes-his-hour-long-film-private",
+                                "orig_url": "https://www.inkl.com/news/drakes-fear-of-missing-out-lives-up-to-its-name-after-the-rapper-makes-his-hour-long-film-private",
+                                "url_common": "inkl.com",
+                                "topics": [
+                                    {
+                                        "id": 14,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 2,
+                                        "metacat_level": 0,
+                                        "text": "Rank 4"
+                                    },
+                                    {
+                                        "id": 20,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 3,
+                                        "metacat_level": 0,
+                                        "text": "Open"
+                                    }
+                                ],
+                                "screenshots": []
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

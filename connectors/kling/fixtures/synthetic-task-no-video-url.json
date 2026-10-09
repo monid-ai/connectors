@@ -1,0 +1,82 @@
+{
+    "name": "synthetic-task-no-video-url",
+    "description": "SYNTHETIC: the task reports succeeded but outputs[] carries no video url. A success with nothing to hand back is a vendor contract violation, settled as OUR synthesized 502 with providerHttpStatus 200, zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-1",
+                    "data": {
+                        "id": "926151964131065926",
+                        "status": "submitted",
+                        "create_time": 1789540454000,
+                        "update_time": 1789540454000
+                    }
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-2",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "processing",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540470000,
+                            "outputs": [],
+                            "billing": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/tasks?task_ids=926151964131065926"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 0,
+                    "message": "SUCCEED",
+                    "request_id": "req-926151964131065926-3",
+                    "data": [
+                        {
+                            "id": "926151964131065926",
+                            "status": "succeeded",
+                            "message": "",
+                            "create_time": 1789540454000,
+                            "update_time": 1789540575000,
+                            "outputs": [],
+                            "billing": [
+                                {
+                                    "charge_type": "unit",
+                                    "amount": "3",
+                                    "package_type": "video"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

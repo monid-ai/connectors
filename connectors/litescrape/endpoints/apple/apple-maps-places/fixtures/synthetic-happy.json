@@ -1,0 +1,47 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (place_results): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/apple/maps/places?muid=4372355869446211302%2C4560078147072908047&locale=en-US"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "e1f2a3b4c5d6e7f8a9b0c1d2",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/apple/maps/places?muid=4372355869446211302%2C4560078147072908047&locale=en-US"
+                    },
+                    "search_parameters": {
+                        "muid": "4372355869446211302,4560078147072908047",
+                        "locale": "en-US"
+                    },
+                    "place_results": [
+                        {
+                            "muid": "4372355869446211302",
+                            "title": "Example Coffee",
+                            "address": "100 Congress Ave, Austin, TX 78701",
+                            "phone": "+1 512 555 0100",
+                            "website": "https://example-coffee.example",
+                            "rating": 4.6,
+                            "open_state": "open",
+                            "timezone": "America/Chicago",
+                            "litescrape_reviews_link": "https://api.litescrape.com/api/apple/maps/reviews?muid=4372355869446211302&locale=en-US"
+                        },
+                        {
+                            "muid": "4560078147072908047",
+                            "title": "Example Bakery",
+                            "address": "200 Congress Ave, Austin, TX 78701",
+                            "rating": 4.3,
+                            "open_state": "closed",
+                            "timezone": "America/Chicago"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

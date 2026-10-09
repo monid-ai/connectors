@@ -1,0 +1,62 @@
+{
+    "name": "synthetic-update-repair-ambiguous",
+    "description": "The repair path's paid-number containment: the stored connection is gone (PATCH 404), a fresh connection is created and its bind 500s (AMBIGUOUS) - the reconcile read shows the number attached to the FRESH connection, so it is treated as bound and NOT deleted.",
+    "calls": [
+        {
+            "req": {
+                "method": "PATCH",
+                "url": "{{request.origin}}/connections/conn-1"
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "not found"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/connections"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "conn-2",
+                    "name": "Monid connection"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/numbers/num-1/connection",
+                "body": {
+                    "connectionId": "conn-2"
+                }
+            },
+            "res": {
+                "status": 500,
+                "body": {
+                    "error": "bind exploded"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/numbers/num-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "num-1",
+                    "phoneNumber": "+14155559999",
+                    "connectionId": "conn-2",
+                    "country": "US",
+                    "numberType": "local"
+                }
+            }
+        }
+    ]
+}

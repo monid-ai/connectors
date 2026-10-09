@@ -1,5 +1,5 @@
 {
-    "seedance-2.0": {
+    "v1/video/seedance-2.0": {
         "content": [
             {
                 "type": "text",
@@ -9,7 +9,7 @@
         "resolution": "480p",
         "duration": 4
     },
-    "seedance-2.0-fast": {
+    "v1/video/seedance-2.0-fast": {
         "content": [
             {
                 "type": "text",
@@ -19,7 +19,7 @@
         "resolution": "480p",
         "duration": 4
     },
-    "seedance-2.0-mini": {
+    "v1/video/seedance-2.0-mini": {
         "content": [
             {
                 "type": "text",
@@ -29,7 +29,7 @@
         "resolution": "480p",
         "duration": 4
     },
-    "seedance-2.5": {
+    "v1/video/seedance-2.5": {
         "content": [
             {
                 "type": "text",

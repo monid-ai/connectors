@@ -1,0 +1,90 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders; opt-in enrichment fields the request does not ask for are left out. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/onchain/tx?hash=0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060&chain=ethereum"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "accessList": [
+                                {
+                                    "address": "address-1",
+                                    "storageKeys": []
+                                }
+                            ],
+                            "blobVersionedHashes": [
+                                "blobVersionedHashes-1"
+                            ],
+                            "blockHash": "blockHash-1",
+                            "blockNumber": "blockNumber-1",
+                            "chainId": "chainId-1",
+                            "from": "from-1",
+                            "gas": "gas-1",
+                            "gasPrice": "gasPrice-1",
+                            "hash": "hash-1",
+                            "input": "input-1",
+                            "maxFeePerBlobGas": "maxFeePerBlobGas-1",
+                            "maxFeePerGas": "maxFeePerGas-1",
+                            "maxPriorityFeePerGas": "maxPriorityFeePerGas-1",
+                            "nonce": "nonce-1",
+                            "r": "r-1",
+                            "s": "s-1",
+                            "to": "to-1",
+                            "transactionIndex": "transactionIndex-1",
+                            "type": "type-1",
+                            "v": "v-1",
+                            "value": "value-1",
+                            "yParity": "yParity-1"
+                        },
+                        {
+                            "accessList": [
+                                {
+                                    "address": "address-2",
+                                    "storageKeys": []
+                                }
+                            ],
+                            "blobVersionedHashes": [
+                                "blobVersionedHashes-2"
+                            ],
+                            "blockHash": "blockHash-2",
+                            "blockNumber": "blockNumber-2",
+                            "chainId": "chainId-2",
+                            "from": "from-2",
+                            "gas": "gas-2",
+                            "gasPrice": "gasPrice-2",
+                            "hash": "hash-2",
+                            "input": "input-2",
+                            "maxFeePerBlobGas": "maxFeePerBlobGas-2",
+                            "maxFeePerGas": "maxFeePerGas-2",
+                            "maxPriorityFeePerGas": "maxPriorityFeePerGas-2",
+                            "nonce": "nonce-2",
+                            "r": "r-2",
+                            "s": "s-2",
+                            "to": "to-2",
+                            "transactionIndex": "transactionIndex-2",
+                            "type": "type-2",
+                            "v": "v-2",
+                            "value": "value-2",
+                            "yParity": "yParity-2"
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

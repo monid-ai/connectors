@@ -1,0 +1,56 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/hyperliquid/candles?symbol=SOL&from=2026-05-16&to=2026-05-19&interval=4h"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "close": 1,
+                            "close_time": 1,
+                            "closed": false,
+                            "high": 1,
+                            "interval": "interval-1",
+                            "low": 1,
+                            "open": 1,
+                            "open_time": 1,
+                            "quote": 1,
+                            "symbol": "symbol-1",
+                            "trades": 1,
+                            "volume": 1
+                        },
+                        {
+                            "close": 2,
+                            "close_time": 2,
+                            "closed": false,
+                            "high": 2,
+                            "interval": "interval-2",
+                            "low": 2,
+                            "open": 2,
+                            "open_time": 2,
+                            "quote": 2,
+                            "symbol": "symbol-2",
+                            "trades": 2,
+                            "volume": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

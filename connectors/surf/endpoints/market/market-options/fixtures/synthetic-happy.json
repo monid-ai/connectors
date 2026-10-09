@@ -1,0 +1,43 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 2-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/market/options?symbol=BTC&sort_by=volume_24h&order=desc"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "exchange": "exchange-1",
+                            "max_pain_price": 1,
+                            "open_interest": 1,
+                            "project_id": "project_id-1",
+                            "put_call_ratio": 1,
+                            "symbol": "symbol-1",
+                            "updated_at": 1,
+                            "volume_24h": 1
+                        },
+                        {
+                            "exchange": "exchange-2",
+                            "max_pain_price": 2,
+                            "open_interest": 2,
+                            "project_id": "project_id-2",
+                            "put_call_ratio": 2,
+                            "symbol": "symbol-2",
+                            "updated_at": 2,
+                            "volume_24h": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2
+                    }
+                }
+            }
+        }
+    ]
+}

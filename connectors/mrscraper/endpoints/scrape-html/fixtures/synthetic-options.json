@@ -1,0 +1,24 @@
+{
+    "name": "synthetic-options",
+    "description": "SYNTHETIC — not recorded. The same body for a browser-rendered, resource-blocked scrape from Germany (token_usage 4); the URL pins where the lifted options land.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false&geoCode=de&browserRendering=true&blockResources=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "html": "<!doctype html><html><head><title>Example Domain</title></head><body><h1>Example Domain</h1></body></html>",
+                    "token_usage": 4,
+                    "residential_proxy_usage": 0.31,
+                    "data_path": "results/RES3/data.json",
+                    "html_path": "results/RES3/index.html"
+                }
+            }
+        }
+    ]
+}

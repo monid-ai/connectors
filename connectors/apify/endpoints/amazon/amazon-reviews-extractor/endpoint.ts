@@ -24,6 +24,11 @@ export default defineEndpoint({
             "ratings. Suited for market research and SEO.",
         docsUrl: "https://apify.com/web_wanderer/amazon-reviews-extractor",
         categories: ["amazon"],
+        notes: [
+            "The limit parameter counts result PAGES per product, not " +
+            "reviews - each page returns roughly 10 reviews, and every " +
+            "returned review is billed.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

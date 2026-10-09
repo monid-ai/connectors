@@ -1,0 +1,49 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 12 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/autozone/category/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "products": [
+                            {
+                                "name": "Duralast Gold Battery 24F-DLG",
+                                "price": 219.99,
+                                "url": "https://www.autozone.com/p/24F-DLG"
+                            },
+                            {
+                                "name": "Duralast Platinum AGM 24F-AGM",
+                                "price": 259.99,
+                                "url": "https://www.autozone.com/p/24F-AGM"
+                            }
+                        ],
+                        "pagination": {
+                            "page": 1,
+                            "total_pages": 4
+                        },
+                        "filters": [
+                            {
+                                "name": "Brand",
+                                "values": [
+                                    "Duralast",
+                                    "Odyssey"
+                                ]
+                            }
+                        ],
+                        "interchange_search": false,
+                        "redirect": false
+                    },
+                    "tokenUsage": 12
+                }
+            }
+        }
+    ]
+}

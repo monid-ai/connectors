@@ -1,0 +1,94 @@
+{
+    "name": "search-thin-bodies-ok",
+    "description": "Search asking for 10 rows with includeBody where the scope holds only 9. The estimate promises against `limit` and quotes 64; the vendor bills 58 = the flat 4 plus 9 x 6. The chain that proves the estimate is a ceiling while the settle counts rows that actually returned text. Every row is kept on purpose: trimming the array would leave the claim disagreeing with the fold.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "trade secret misappropriation remedies",
+                    "corpusType": "USC",
+                    "titleNumber": 18,
+                    "chapter": "90",
+                    "limit": 10,
+                    "includeBody": true,
+                    "fields": [
+                        "actId",
+                        "citation",
+                        "title",
+                        "body"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [
+                        {
+                            "actId": "USC_T18_C90_S1836",
+                            "citation": "18 U.S.C. \u00a7 1836 (2026)",
+                            "title": "Civil proceedings",
+                            "body": "(a) The Attorney General may, in a civil action, obtain appropriate injunctive relief against any violation of this chapter.\n\n(b) Private Civil Actions.\u2014\n\n(1) In general.\u2014 An owner of a trade secret that is misappropriated may bring a civil action under this subsection if the trade secret is related to a product or service used in, or intended for use in, interstate or foreign commerce.\n\n(2) Civil seizure.\u2014\n\n(A) In general.\u2014\n\n(i) Application.\u2014 Based on an affidavit or verified complaint satisfyi"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1838",
+                            "citation": "18 U.S.C. \u00a7 1838 (2026)",
+                            "title": "Construction with other laws",
+                            "body": "Except as provided in section 1833(b), this chapter shall not be construed to preempt or displace any other remedies, whether civil or criminal, provided by United States Federal, State, commonwealth, possession, or territory law for the misappropriation of a trade secret, or to affect the otherwise lawful disclosure of information by any Government employee under section 552 of title 5 (commonly known as the Freedom of Information Act).\n\n(Added Pub. L. 104\u2013294, title I, \u00a7 101(a), Oct. 11, 1996,"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1832",
+                            "citation": "18 U.S.C. \u00a7 1832 (2026)",
+                            "title": "Theft of trade secrets",
+                            "body": "(a) Whoever, with intent to convert a trade secret, that is related to a product or service used in or intended for use in interstate or foreign commerce, to the economic benefit of anyone other than the owner thereof, and intending or knowing that the offense will, injure any owner of that trade secret, knowingly\u2014\n\n(1) steals, or without authorization appropriates, takes, carries away, or conceals, or by fraud, artifice, or deception obtains such information;\n\n(2) without authorization copies, "
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1839",
+                            "citation": "18 U.S.C. \u00a7 1839 (2026)",
+                            "title": "Definitions",
+                            "body": "As used in this chapter\u2014\n\n(1) the term \u201cforeign instrumentality\u201d means any agency, bureau, ministry, component, institution, association, or any legal, commercial, or business organization, corporation, firm, or entity that is substantially owned, controlled, sponsored, commanded, managed, or dominated by a foreign government;\n\n(2) the term \u201cforeign agent\u201d means any officer, employee, proxy, servant, delegate, or representative of a foreign government;\n\n(3) the term \u201ctrade secret\u201d means all form"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1831",
+                            "citation": "18 U.S.C. \u00a7 1831 (2026)",
+                            "title": "Economic espionage",
+                            "body": "(a) In General.\u2014 Whoever, intending or knowing that the offense will benefit any foreign government, foreign instrumentality, or foreign agent, knowingly\u2014\n\n(1) steals, or without authorization appropriates, takes, carries away, or conceals, or by fraud, artifice, or deception obtains a trade secret;\n\n(2) without authorization copies, duplicates, sketches, draws, photographs, downloads, uploads, alters, destroys, photocopies, replicates, transmits, delivers, sends, mails, communicates, or conveys"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1835",
+                            "citation": "18 U.S.C. \u00a7 1835 (2026)",
+                            "title": "Orders to preserve confidentiality",
+                            "body": "(a) In General.\u2014 In any prosecution or other proceeding under this chapter, the court shall enter such orders and take such other action as may be necessary and appropriate to preserve the confidentiality of trade secrets, consistent with the requirements of the Federal Rules of Criminal and Civil Procedure, the Federal Rules of Evidence, and all other applicable laws. An interlocutory appeal by the United States shall lie from a decision or order of a district court authorizing or directing the"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1833",
+                            "citation": "18 U.S.C. \u00a7 1833 (2026)",
+                            "title": "Exceptions to prohibitions",
+                            "body": "(a) In General.\u2014 This chapter does not prohibit or create a private right of action for\u2014\n\n(1) any otherwise lawful activity conducted by a governmental entity of the United States, a State, or a political subdivision of a State; or\n\n(2) the disclosure of a trade secret in accordance with subsection (b).\n\n(b) Immunity From Liability for Confidential Disclosure of a Trade Secret to the Government or in a Court Filing.\u2014\n\n(1) Immunity.\u2014 An individual shall not be held criminally or civilly liable un"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1834",
+                            "citation": "18 U.S.C. \u00a7 1834 (2026)",
+                            "title": "Criminal forfeiture",
+                            "body": "Forfeiture, destruction, and restitution relating to this chapter shall be subject to section 2323, to the extent provided in that section, in addition to any other similar remedies provided by law.\n\n(Added Pub. L. 104\u2013294, title I, \u00a7 101(a), Oct. 11, 1996, 110 Stat. 3489; amended Pub. L. 110\u2013403, title II, \u00a7 207, Oct. 13, 2008, 122 Stat. 4263.)\n\nEditorial Notes\n\nAmendments\n\n2008\u2014Pub. L. 110\u2013403 amended section generally. Prior to amendment, section related to forfeiture of property either deriv"
+                        },
+                        {
+                            "actId": "USC_T18_C90_S1837",
+                            "citation": "18 U.S.C. \u00a7 1837 (2026)",
+                            "title": "Applicability to conduct outside the United States",
+                            "body": "This chapter also applies to conduct occurring outside the United States if\u2014\n\n(1) the offender is a natural person who is a citizen or permanent resident alien of the United States, or an organization organized under the laws of the United States or a State or political subdivision thereof; or\n\n(2) an act in furtherance of the offense was committed in the United States.\n\n(Added Pub. L. 104\u2013294, title I, \u00a7 101(a), Oct. 11, 1996, 110 Stat. 3490.)"
+                        }
+                    ],
+                    "count": 9,
+                    "total": 9,
+                    "offset": 0,
+                    "hasMore": false,
+                    "query": "trade secret misappropriation remedies",
+                    "processingTimeMs": 2415.4,
+                    "creditsConsumed": 58.0
+                }
+            }
+        }
+    ]
+}

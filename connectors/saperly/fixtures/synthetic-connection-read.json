@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-connection-read",
+    "description": "ONE live persona read serving BOTH surfaces (merged get-number-happy + resource-external-connection - by design the same reader): /get-numbers composes it onto the owned row, and the resource's 'connection' external serves it as the live detail. The raw response carries the internal id + manualSecret; every consumer projects it through the public allowlist.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/connections/conn-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "conn-1",
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful.",
+                    "language": "en",
+                    "tts": {
+                        "voiceId": "voice-1"
+                    },
+                    "llm": {
+                        "model": "openai/gpt-4o"
+                    },
+                    "complianceEnabled": true,
+                    "manualSecret": "sec-never-leaks"
+                }
+            }
+        }
+    ]
+}

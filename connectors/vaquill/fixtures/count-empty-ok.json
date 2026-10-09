@@ -1,0 +1,29 @@
+{
+    "name": "count-empty-ok",
+    "description": "A scope that holds nothing: `count: 0` and `creditsConsumed: 0`. Counting an empty scope is refunded.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "corpusType": "USC",
+                    "titleNumber": 99
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "count": 0,
+                    "isExact": true,
+                    "scope": {
+                        "corpusType": "USC",
+                        "titleNumber": 99
+                    },
+                    "processingTimeMs": 1738.2,
+                    "creditsConsumed": 0
+                }
+            }
+        }
+    ]
+}

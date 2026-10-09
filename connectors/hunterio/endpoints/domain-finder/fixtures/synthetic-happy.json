@@ -1,0 +1,33 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. Free.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.hunter.io/v2/domain-finder?company=stripe"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "domain": "stripe.com",
+                            "company_name": "Stripe",
+                            "logo": "https://logos.hunter.io/stripe.com",
+                            "email_count": 281
+                        }
+                    ],
+                    "meta": {
+                        "results": 1,
+                        "params": {
+                            "company": "stripe",
+                            "limit": 5,
+                            "perfect_match": false
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

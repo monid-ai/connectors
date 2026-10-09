@@ -26,6 +26,7 @@ const zContractSections = z.object({
         doc_format_since: zSemverRaw,
         fn_abi_since: zSemverRaw,
         async_since: zSemverRaw,
+        resources_since: zSemverRaw,
         state_max_bytes: z.number().int().positive(),
         logging: zIgnoredLogging,
     }).strict(),
@@ -67,6 +68,10 @@ export const contractConfig = Object.freeze({
         /** Engine release of the lifecycle (async) hook family — stamped as
          *  lifecycle fn entries' `api` (docs carrying a lifecycle floor here). */
         asyncSince: loaded.schema.async_since,
+        /** Engine release of the resource family (docs/ops/bindings/webhooks)
+         *  — resource docs' minEngineVersion floor; stamped as resource-op
+         *  fn entries' `api`. */
+        resourcesSince: loaded.schema.resources_since,
         /** Hard engine cap on serialized lifecycle state bytes. */
         stateMaxBytes: loaded.schema.state_max_bytes,
     }),

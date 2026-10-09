@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Scrape Images response schema (docs.context.dev/api-reference/web-scraping/images, 2026-09-17), two images; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/scrape/images?url=https%3A%2F%2Fexample.com&dedupe=true"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "images": [
+                        {
+                            "src": "https://example.com/logo.svg",
+                            "element": "img",
+                            "type": "url",
+                            "alt": "Example logo"
+                        },
+                        {
+                            "src": "https://example.com/hero.png",
+                            "element": "background",
+                            "type": "url",
+                            "alt": null
+                        }
+                    ],
+                    "url": "https://example.com",
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

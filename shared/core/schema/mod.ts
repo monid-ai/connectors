@@ -9,6 +9,7 @@ export * from "./hooks/mod.ts";
 export * from "./fn-table/mod.ts";
 export * from "./meta/mod.ts";
 export * from "./sections/mod.ts";
+export * from "./resource/mod.ts";
 export * from "./endpoint/mod.ts";
 export * from "./provider/mod.ts";
 export * from "./bundle/mod.ts";

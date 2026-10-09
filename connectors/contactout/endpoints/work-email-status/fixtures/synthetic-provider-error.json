@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "Synthetic (the vendor will not issue a 401 for a key we hold): the flat {status_code, message} envelope the provider's fromError digests. The request line matches this endpoint's happy fixture. 401 bad token \u2014 data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.contactout.com/v1/people/linkedin/work_email_status?profile=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fexample-person"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "status_code": 401,
+                    "message": "Unauthorized"
+                }
+            }
+        }
+    ]
+}

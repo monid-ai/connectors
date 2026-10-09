@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-send-message",
+    "description": "The declarative relay: the engine executes POST /messages itself after the USES ownership gate; flat $0.025 PER_CALL (segments ride as data only).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "fromNumberId": "num-1",
+                    "to": "+14155550123",
+                    "body": "hello"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "body": "hello",
+                    "segments": 1,
+                    "status": "queued"
+                }
+            }
+        }
+    ]
+}

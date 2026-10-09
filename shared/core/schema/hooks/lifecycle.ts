@@ -4,6 +4,11 @@ import { type Json, zJson } from "../json/type.ts";
 import { zRunInput } from "../run/input.ts";
 import { RunKind, zFnState, zRunState } from "../run/state.ts";
 import { fnCarrier, type FnUtils, type HookLogger } from "./ctx.ts";
+import {
+    type OwnedResource,
+    type ResourceQuery,
+    zOwnedResource,
+} from "../resource/row.ts";
 
 /**
  * THE LIFECYCLE HOOK FAMILY — `lifecycle.start` / `lifecycle.poll` /
@@ -96,6 +101,33 @@ export interface HttpResult {
 export type LifecycleHttpFn = (call: HttpCall) => Promise<HttpResult>;
 
 /**
+ * `utils.sleep(ms)` — a bounded in-phase wait (design D34): drain-polling
+ * inside ONE phase call (saperly's stop hangs up, then watches the call
+ * settle). Host-clock injectable (EngineCtx.sleep), so tests never wall-
+ * wait. Bounded twice, both → FN_CONTRACT (a doc-authoring bug, not a
+ * vendor fault): per call ≤ SLEEP_MAX_MS_PER_CALL, cumulative per phase
+ * invocation ≤ SLEEP_BUDGET_MS. Long waits belong to the POLL CADENCE
+ * (pollAfterMs), not to sleeping inside a phase.
+ */
+export type LifecycleSleepFn = (ms: number) => Promise<void>;
+
+export const SLEEP_MAX_MS_PER_CALL = 30_000;
+export const SLEEP_BUDGET_MS = 120_000;
+
+/**
+ * `utils.resources` — the run-scoped OWNERSHIP window (design D32): rows
+ * of the running workspace's resources, served by the HOST's
+ * ResourceReader port. STRUCTURALLY WITHHELD unless the doc declares a
+ * `resource` binding: undeclared docs get a stub that throws
+ * RESOURCES_UNDECLARED (capability follows declaration, like utils.http
+ * itself). Empty array = owns none — a fn-level decision follows (relay a
+ * vendor-shaped 404, provision, etc.), never an engine error.
+ */
+export interface LifecycleResources {
+    owned(query: ResourceQuery): Promise<OwnedResource[]>;
+}
+
+/**
  * Per-call overrides for `utils.request()` — the DEFAULT RELAY (v1's
  * "default HTTP relay" as a callable): it executes THE endpoint's compiled
  * request, initialized from `data.request` + the caller input —
@@ -128,18 +160,23 @@ export type LifecycleRequestFn = (
 ) => Promise<HttpResult>;
 
 /** The lifecycle hooks' utils: the pure ABI + the effect capabilities —
- *  `http` (raw, explicit) and `request` (the default relay). Logging is
- *  NOT here: `ctx.logger` is its own ctx member (every hook has it). */
+ *  `http` (raw, explicit), `request` (the default relay), `sleep`
+ *  (bounded in-phase waits) and `resources` (the ownership window —
+ *  a throwing stub unless the doc declares a binding). Logging is NOT
+ *  here: `ctx.logger` is its own ctx member (every hook has it). */
 export interface LifecycleUtils extends FnUtils {
     http: LifecycleHttpFn;
     request: LifecycleRequestFn;
+    sleep: LifecycleSleepFn;
+    resources: LifecycleResources;
 }
 
 export const zLifecycleUtils = z.custom<LifecycleUtils>(
     (value) =>
         typeof value === "object" && value !== null && "json" in value &&
-        "money" in value && "http" in value && "request" in value,
-    "expected LifecycleUtils ({ json, money, http, request })",
+        "money" in value && "http" in value && "request" in value &&
+        "sleep" in value && "resources" in value,
+    "expected LifecycleUtils ({ json, money, http, request, sleep, resources })",
 );
 
 // ---------------------------------------------------------------------------
@@ -156,11 +193,34 @@ export const zLifecycleRequestInfo = z.strictObject({
 });
 export type LifecycleRequestInfo = z.infer<typeof zLifecycleRequestInfo>;
 
+/** The run's own identity as ctx data (design D34): `runId` is the
+ *  HOST-STABLE run identifier (host-supplied; the engine mints a UUID
+ *  when absent) — the deterministic seed for vendor idempotency keys
+ *  (saperly's provision saga), stable across activity retries so retried
+ *  effects converge upstream. */
+export const zLifecycleRunInfo = z.strictObject({
+    runId: z.string().min(1),
+});
+export type LifecycleRunInfo = z.infer<typeof zLifecycleRunInfo>;
+
+/** The GATED INSTANCES (design D43): every keyed binding's owned
+ *  resource, by alias (`as` ?? the key path's last segment) — fetched
+ *  fresh each tick from the host's reader, already ownership-gated.
+ *  Absent when the doc declares no keyed bindings. */
+export const zGatedResources = z.record(
+    z.string().min(1),
+    zOwnedResource,
+);
+export type GatedResources = z.infer<typeof zGatedResources>;
+
 /** ctx.data for lifecycle.start — the validated (post-toRequest) input +
- *  the compiled request. */
+ *  the compiled request + the run identity (+ the gated instances when
+ *  the doc's bindings carry keys). */
 export const zLifecycleStartData = z.strictObject({
     input: zRunInput,
     request: zLifecycleRequestInfo,
+    run: zLifecycleRunInfo,
+    resources: zGatedResources.optional(),
 });
 export type LifecycleStartData = z.infer<typeof zLifecycleStartData>;
 
@@ -172,6 +232,8 @@ export type LifecycleStartData = z.infer<typeof zLifecycleStartData>;
 export const zLifecycleTickData = z.strictObject({
     input: zRunInput,
     request: zLifecycleRequestInfo,
+    run: zLifecycleRunInfo,
+    resources: zGatedResources.optional(),
     lifecycle: z.strictObject({ state: zRunState }),
 });
 export type LifecycleTickData = z.infer<typeof zLifecycleTickData>;
@@ -251,15 +313,55 @@ export const zLifecyclePollFn = fnCarrier<LifecyclePollFn>(
     "a lifecycle.poll fn",
 );
 
-/** Best-effort teardown: the return is ignored; the engine swallows every
- *  failure (cleanup never masks the run outcome — v1 stop posture). */
+/**
+ * Stop OUTCOMES (design D34) — stop grows a voice: the engine's stop
+ * verdict is one of
+ *   - COMPLETED          — the fn drained to a terminal vendor state and
+ *     returned a full `zLifecycleCompleted` envelope: the run SETTLES
+ *     through the one pipeline (metered work that already happened bills
+ *     at stop — saperly's hangup).
+ *   - UNRESOLVED         — the fn tore down but could NOT observe the
+ *     terminal state in its bounded budget: the host must reconcile
+ *     out-of-band before money settles.
+ *   - STOPPED_UNSETTLED  — the fn returned void (fire-and-forget teardown,
+ *     the pre-resource posture) or the doc has no stop fn / no state to
+ *     stop; nothing billed, nothing owed.
+ * Failures still never mask the stop: a THROW from the fn is swallowed
+ * and reported as UNRESOLVED when the doc bills metered work (someone
+ * must go look), STOPPED_UNSETTLED otherwise.
+ */
+export const StopKind = {
+    UNRESOLVED: "UNRESOLVED",
+    STOPPED_UNSETTLED: "STOPPED_UNSETTLED",
+} as const;
+export type StopKind = (typeof StopKind)[keyof typeof StopKind];
+
+export const zStopKind = z.enum(StopKind);
+
+export const zLifecycleUnresolved = z.strictObject({
+    kind: z.literal(StopKind.UNRESOLVED),
+    /** Operator-facing: what the fn last saw (logged + surfaced). */
+    reason: z.string().min(1).optional(),
+    state: zFnState.optional(),
+});
+export type LifecycleUnresolved = z.infer<typeof zLifecycleUnresolved>;
+
+export const zLifecycleStopOutcome = z.discriminatedUnion("kind", [
+    zLifecycleCompleted,
+    zLifecycleUnresolved,
+]);
+export type LifecycleStopOutcome = z.infer<typeof zLifecycleStopOutcome>;
+
+/** Teardown with a voice: return an outcome to settle/flag, or void for
+ *  the classic best-effort posture. The engine swallows every failure
+ *  (cleanup never masks the run outcome — v1 stop posture). */
 export type LifecycleStopFn = (
     ctx: {
         data: LifecycleTickData;
         utils: LifecycleUtils;
         logger: HookLogger;
     },
-) => Promise<void>;
+) => Promise<LifecycleStopOutcome | void>;
 export const zLifecycleStopFn = fnCarrier<LifecycleStopFn>(
     "a lifecycle.stop fn",
 );

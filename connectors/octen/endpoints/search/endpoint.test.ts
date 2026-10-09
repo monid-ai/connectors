@@ -27,10 +27,11 @@ Deno.test("octen#search happy (recorded): call + gated token tier, meter absorbe
     assertEquals(result.httpStatus, 200);
     // metered tokens + the engine-appended flat call (complete vector,
     // D24/D26), folded through the doc's own card: 1 credit flat +
-    // ceil(4112 / 1000) = 5 token credits. The vendor's meta.usage meter
-    // block stays in the RAW run record, never in usage.
+    // 4112 × 0.001 LINEAR token credits (reconcile 2026-09-16 — v1 billed
+    // fractionally; the old every:1000 block fold rounded up). The
+    // vendor's meta.usage meter block stays in the RAW run record.
     assertEquals(result.usage, {
-        credits: { default: 6 },
+        credits: { default: 1 + 4112 * 0.001 },
         evidence: { full_content_tokens: 4112, call: 1 },
     });
     // the meter block is billing info — absorbed out of the payload

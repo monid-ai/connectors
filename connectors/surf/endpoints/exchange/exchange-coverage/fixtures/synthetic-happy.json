@@ -1,0 +1,88 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/exchange/coverage?type=spot&sort_by=pair&order=asc&limit=20&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "active": false,
+                            "base": "base-1",
+                            "change_24h_abs": 1,
+                            "change_24h_pct": 1,
+                            "data_actionability": "data_actionability-1",
+                            "data_status": "data_status-1",
+                            "exchange": "exchange-1",
+                            "high_24h": 1,
+                            "latest_4h_candle_at": 1,
+                            "latest_5m_candle_at": 1,
+                            "latest_candle_at": 1,
+                            "latest_price": 1,
+                            "latest_ticker_at": 1,
+                            "latest_weekly_candle_at": 1,
+                            "listing_date": 1,
+                            "low_24h": 1,
+                            "open_24h": 1,
+                            "pair": "pair-1",
+                            "prev_close": 1,
+                            "quote": "quote-1",
+                            "region": "region-1",
+                            "status": "status-1",
+                            "technical_score": 1,
+                            "technical_score_at": 1,
+                            "technical_score_label": "technical_score_label-1",
+                            "type": "type-1",
+                            "volume_24h_base": 1,
+                            "volume_24h_quote": 1
+                        },
+                        {
+                            "active": false,
+                            "base": "base-2",
+                            "change_24h_abs": 2,
+                            "change_24h_pct": 2,
+                            "data_actionability": "data_actionability-2",
+                            "data_status": "data_status-2",
+                            "exchange": "exchange-2",
+                            "high_24h": 2,
+                            "latest_4h_candle_at": 2,
+                            "latest_5m_candle_at": 2,
+                            "latest_candle_at": 2,
+                            "latest_price": 2,
+                            "latest_ticker_at": 2,
+                            "latest_weekly_candle_at": 2,
+                            "listing_date": 2,
+                            "low_24h": 2,
+                            "open_24h": 2,
+                            "pair": "pair-2",
+                            "prev_close": 2,
+                            "quote": "quote-2",
+                            "region": "region-2",
+                            "status": "status-2",
+                            "technical_score": 2,
+                            "technical_score_at": 2,
+                            "technical_score_label": "technical_score_label-2",
+                            "type": "type-2",
+                            "volume_24h_base": 2,
+                            "volume_24h_quote": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

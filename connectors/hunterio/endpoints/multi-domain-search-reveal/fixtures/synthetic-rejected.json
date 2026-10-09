@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-rejected",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. The balance cannot cover the batch: 429 up front, nothing charged, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/multi-domain-search/reveal",
+                "body": {
+                    "handles": [
+                        "Qk1hQ2c9PS0tZW5jcnlwdGVkLW9wYXF1ZS1oYW5kbGU",
+                        "QWJjMTIzLS1hbHJlYWR5LXJldmVhbGVkLWhhbmRsZQ"
+                    ]
+                }
+            },
+            "res": {
+                "status": 429,
+                "body": {
+                    "errors": [
+                        {
+                            "id": "insufficient_credits",
+                            "code": 429,
+                            "details": "Your balance does not cover this batch."
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

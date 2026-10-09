@@ -159,10 +159,10 @@ Deno.test("suzanne#v1/uploads: one POST, completed inline, flat $0.01", async ()
     assert(output.upload_url.startsWith("https://"));
 });
 
-Deno.test("suzanne#v1/models/download: the 302 Location becomes download_url, free", async () => {
+Deno.test("suzanne#v1/models/{job_id}/download: the 302 Location becomes download_url, free", async () => {
     const result = await runEndpoint({
-        unit: await testSealedUnit("suzanne#v1/models/download"),
-        input: inputFor("suzanne#v1/models/download"),
+        unit: await testSealedUnit("suzanne#v1/models/{job_id}/download"),
+        input: inputFor("suzanne#v1/models/{job_id}/download"),
         mode: "replay",
         fixture: await fixture("synthetic-download-redirect"),
     });
@@ -187,10 +187,10 @@ Deno.test("suzanne#v1/models/download: the 302 Location becomes download_url, fr
     );
 });
 
-Deno.test("suzanne#v1/models/download: a 3xx without Location is a visible error, never a silent success", async () => {
+Deno.test("suzanne#v1/models/{job_id}/download: a 3xx without Location is a visible error, never a silent success", async () => {
     const result = await runEndpoint({
-        unit: await testSealedUnit("suzanne#v1/models/download"),
-        input: inputFor("suzanne#v1/models/download"),
+        unit: await testSealedUnit("suzanne#v1/models/{job_id}/download"),
+        input: inputFor("suzanne#v1/models/{job_id}/download"),
         mode: "replay",
         fixture: await fixture("synthetic-download-opaque-redirect"),
     });
@@ -200,10 +200,10 @@ Deno.test("suzanne#v1/models/download: a 3xx without Location is a visible error
     assertEquals(output.message, "Redirect missing Location header");
 });
 
-Deno.test("suzanne#v1/models/download: a non-3xx relays verbatim (409 job_not_done)", async () => {
+Deno.test("suzanne#v1/models/{job_id}/download: a non-3xx relays verbatim (409 job_not_done)", async () => {
     const result = await runEndpoint({
-        unit: await testSealedUnit("suzanne#v1/models/download"),
-        input: inputFor("suzanne#v1/models/download"),
+        unit: await testSealedUnit("suzanne#v1/models/{job_id}/download"),
+        input: inputFor("suzanne#v1/models/{job_id}/download"),
         mode: "replay",
         fixture: await fixture("synthetic-download-not-done"),
     });
@@ -241,7 +241,7 @@ Deno.test("suzanne: the two generations share the provider lifecycle; the utilit
     // provider's and from each other
     const overrides = [
         startKey("suzanne#v1/uploads"),
-        startKey("suzanne#v1/models/download"),
+        startKey("suzanne#v1/models/{job_id}/download"),
     ];
     assertEquals(new Set([...overrides, startKey(GENERATIONS[0])]).size, 3);
     // nobody declares stop: Suzanne's cancel endpoint is a documented
@@ -257,7 +257,7 @@ Deno.test("suzanne: compiled requests, identities and the flat rate card", async
 
     // the download doc keeps its placeholder on the wire while carrying a
     // brace-free public identity (design D5)
-    const download = doc("suzanne#v1/models/download");
+    const download = doc("suzanne#v1/models/{job_id}/download");
     assertEquals(
         download.request.url,
         "https://api.suzanne3d.com/v1/models/{job_id}/download",
@@ -346,13 +346,13 @@ Deno.test({
 
 Deno.test({
     name:
-        "suzanne#v1/models/download live: 404 for an unknown job (free, no mesh spent)",
+        "suzanne#v1/models/{job_id}/download live: 404 for an unknown job (free, no mesh spent)",
     ignore: liveSkip("suzanne"),
     fn: async () => {
         // the FREE endpoint's live probe: an unknown job id proves auth,
         // routing and the error digest without paying for a generation
         const result = await runEndpoint({
-            unit: await testSealedUnit("suzanne#v1/models/download"),
+            unit: await testSealedUnit("suzanne#v1/models/{job_id}/download"),
             input: {
                 pathParams: { job_id: "job_doesnotexist" },
                 queryParams: { format: "glb" },

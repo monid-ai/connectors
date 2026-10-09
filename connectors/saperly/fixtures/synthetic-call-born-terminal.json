@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-call-born-terminal",
+    "description": "Rare: the create response already carries a settled record (busy, costCents 0) - the run completes at once; zero seconds bill zero.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "fromNumberId": "num-1",
+                    "to": "+14155550123"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "busy",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z",
+                    "costCents": 0
+                }
+            }
+        }
+    ]
+}

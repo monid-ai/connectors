@@ -1,0 +1,50 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The marketplace envelope {success, message, data, tokenUsage} with the shape v1's summary documents for this scraper, tokenUsage 41 (the card); values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://sync.scraper.mrscraper.com/api/hotels/agoda/review/sync"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "message": "Successfully scraped",
+                    "data": {
+                        "url": "https://www.agoda.com/admiral-suites/hotel/bangkok-th.html",
+                        "total_reviews": 2,
+                        "reviews": [
+                            {
+                                "reviewer": "A. Example",
+                                "country": "Singapore",
+                                "score": 9.2,
+                                "stay": {
+                                    "room": "Deluxe Suite",
+                                    "date": "2026-08",
+                                    "traveler_type": "Couple"
+                                },
+                                "title": "Great stay",
+                                "text": "Clean rooms and helpful staff."
+                            },
+                            {
+                                "reviewer": "B. Example",
+                                "country": "Australia",
+                                "score": 7.6,
+                                "stay": {
+                                    "room": "Studio",
+                                    "date": "2026-07",
+                                    "traveler_type": "Solo"
+                                },
+                                "title": "Good value",
+                                "text": "Central location."
+                            }
+                        ]
+                    },
+                    "tokenUsage": 41
+                }
+            }
+        }
+    ]
+}

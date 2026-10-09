@@ -1,0 +1,45 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/exchange/funding-history?pair=BTC%2FUSDT&limit=100&exchange=binance"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "exchange": "exchange-1",
+                            "funding_interval_hours": 1,
+                            "funding_rate": 1,
+                            "funding_rate_1h": 1,
+                            "funding_rate_8h": 1,
+                            "funding_rate_annualized": 1,
+                            "funding_rate_raw": 1,
+                            "pair": "pair-1",
+                            "timestamp": 1
+                        },
+                        {
+                            "exchange": "exchange-2",
+                            "funding_interval_hours": 2,
+                            "funding_rate": 2,
+                            "funding_rate_1h": 2,
+                            "funding_rate_8h": 2,
+                            "funding_rate_annualized": 2,
+                            "funding_rate_raw": 2,
+                            "pair": "pair-2",
+                            "timestamp": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1
+                    }
+                }
+            }
+        }
+    ]
+}

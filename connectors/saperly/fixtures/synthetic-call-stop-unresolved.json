@@ -1,0 +1,239 @@
+{
+    "name": "synthetic-call-stop-unresolved",
+    "description": "STOP that cannot observe settlement: the hangup lands but every bounded re-read stays unsettled -> UNRESOLVED (the host reconciles out-of-band before money settles). 10 re-reads.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "fromNumberId": "num-1",
+                    "to": "+14155550123"
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "in-progress",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/calls/call-1/end",
+                "body": {}
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/calls/call-1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "call-1",
+                    "numberId": "num-1",
+                    "direction": "outbound",
+                    "to": "+14155550123",
+                    "from": "+14155559999",
+                    "status": "completed",
+                    "rateCentsPerMin": 26,
+                    "createdAt": "2026-09-16T01:00:00Z"
+                }
+            }
+        }
+    ]
+}

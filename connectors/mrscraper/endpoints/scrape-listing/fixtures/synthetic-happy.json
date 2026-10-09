@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground listing-agent body per the reference (results keyed by page index, each with page_num and the extracted items) with token_usage 45 and the internals v1 saw; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://books.toscrape.com/",
+                    "data": {
+                        "0": {
+                            "page_num": 1,
+                            "data": [
+                                {
+                                    "title": "A Light in the Attic",
+                                    "price": "£51.77"
+                                },
+                                {
+                                    "title": "Tipping the Velvet",
+                                    "price": "£53.74"
+                                }
+                            ]
+                        },
+                        "1": {
+                            "page_num": 2,
+                            "data": [
+                                { "title": "Soumission", "price": "£50.10" }
+                            ]
+                        }
+                    },
+                    "html": "<!doctype html><html><head><title>Books to Scrape</title></head><body></body></html>",
+                    "thread_id": "THREAD1",
+                    "token_usage": 45,
+                    "residential_proxy_usage": 0.8,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

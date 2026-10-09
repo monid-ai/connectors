@@ -10,16 +10,26 @@ import {
     JsonPathError,
     type JsonUtil,
     type LifecycleRequestInfo,
+    type LifecycleResources,
+    type LifecycleSleepFn,
     type LifecycleUtils,
     type MoneyUtil,
     PATH_PATTERN,
+    type ResourceOpUtils,
     type RunInput,
+    SLEEP_BUDGET_MS,
+    SLEEP_MAX_MS_PER_CALL,
     zHttpCall,
-    zRequestOverrides,
+    zResourceQuery,
 } from "@shared/core";
+import { zRequestOverrides } from "@shared/core";
 import type { Logger } from "@shared/logging";
 import { EngineError, EngineErrorCode } from "./errors.ts";
-import type { PreparedRequest, Transport } from "./interfaces/mod.ts";
+import type {
+    PreparedRequest,
+    ResourceReader,
+    Transport,
+} from "./interfaces/mod.ts";
 import { toWireQuery } from "./request.ts";
 import { sniffDecode } from "./transport.ts";
 
@@ -150,6 +160,33 @@ export const jsonUtil: JsonUtil = {
         }
         return found;
     },
+    str: (value, path) => {
+        const found = lookup(value, path);
+        if (found === undefined) {
+            throw new JsonPathError(
+                "PATH_NOT_FOUND",
+                `json.str: nothing at ${path} (use optionalStr if absence is expected)`,
+            );
+        }
+        if (typeof found !== "string" || found.length === 0) {
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
+                `json.str: value at ${path} is not a non-empty string`,
+            );
+        }
+        return found;
+    },
+    optionalStr: (value, path) => {
+        const found = lookup(value, path);
+        if (found === undefined) return undefined;
+        if (typeof found !== "string") {
+            throw new JsonPathError(
+                "TYPE_MISMATCH",
+                `json.optionalStr: value at ${path} is not a string`,
+            );
+        }
+        return found.length === 0 ? undefined : found;
+    },
     len: (value, path) => {
         const found = lookup(value, path);
         if (found === undefined) {
@@ -258,6 +295,14 @@ export function makeLifecycleUtils(opts: {
     requestInfo: LifecycleRequestInfo;
     /** This invocation's derived (validated + toRequest) input. */
     input: RunInput;
+    /** The host sleeper (EngineCtx.sleep ?? real setTimeout) — wrapped
+     *  here with the per-call cap + per-invocation budget (utils are
+     *  built per phase call, so the budget naturally scopes to ONE
+     *  start/poll/stop invocation). */
+    sleep: (ms: number) => Promise<void>;
+    /** The ownership window — the real reader window when the doc
+     *  declares a binding, else the RESOURCES_UNDECLARED stub. */
+    resources: LifecycleResources;
 }): LifecycleUtils {
     const { doc, injectEntry, transport, requestInfo, input } = opts;
     const origin = new URL(doc.request.url).origin;
@@ -307,6 +352,8 @@ export function makeLifecycleUtils(opts: {
     const utils: LifecycleUtils = {
         json: jsonUtil,
         money: moneyUtil,
+        sleep: makeBoundedSleep(doc.id, opts.sleep),
+        resources: opts.resources,
         http: (call) => {
             const parsed = zHttpCall.safeParse(call);
             if (!parsed.success) {
@@ -370,4 +417,162 @@ export function toHookLogger(logger: Logger): HookLogger {
         warn: (message, fields) => logger.warn(message, fields),
         error: (message, fields) => logger.error(message, fields),
     };
+}
+
+// ---------------------------------------------------------------------------
+// resource capabilities (design D32/D33/D34)
+// ---------------------------------------------------------------------------
+
+/**
+ * `utils.sleep` — the host sleeper bounded TWICE (design D34), both
+ * breaches FN_CONTRACT (an authoring bug, deterministic — retrying the
+ * activity replays it): per call ≤ SLEEP_MAX_MS_PER_CALL, cumulative per
+ * phase invocation ≤ SLEEP_BUDGET_MS. Long waits belong to the poll
+ * cadence, not to sleeping inside a phase.
+ */
+export function makeBoundedSleep(
+    label: string,
+    doSleep: (ms: number) => Promise<void>,
+): LifecycleSleepFn {
+    let slept = 0;
+    return (ms: number): Promise<void> => {
+        if (!Number.isFinite(ms) || ms < 0) {
+            throw new EngineError(
+                EngineErrorCode.FN_CONTRACT,
+                `${label}: utils.sleep(${ms}) — ms must be a nonnegative number`,
+            );
+        }
+        if (ms > SLEEP_MAX_MS_PER_CALL) {
+            throw new EngineError(
+                EngineErrorCode.FN_CONTRACT,
+                `${label}: utils.sleep(${ms}) exceeds the per-call cap ` +
+                    `${SLEEP_MAX_MS_PER_CALL} — long waits belong to the poll cadence`,
+            );
+        }
+        slept += ms;
+        if (slept > SLEEP_BUDGET_MS) {
+            throw new EngineError(
+                EngineErrorCode.FN_CONTRACT,
+                `${label}: cumulative utils.sleep ${slept}ms exceeds the ` +
+                    `per-phase budget ${SLEEP_BUDGET_MS}ms`,
+            );
+        }
+        return doSleep(ms);
+    };
+}
+
+/** The REAL ownership window: validates the fn's query shape
+ *  (FN_CONTRACT — the fn wrote it), delegates to the host reader
+ *  (failures → RESOURCE_OP_FAILED, retriable). */
+export function makeResourcesWindow(
+    label: string,
+    reader: ResourceReader,
+): LifecycleResources {
+    return {
+        owned: async (query) => {
+            const parsed = zResourceQuery.safeParse(query);
+            if (!parsed.success) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${label}: utils.resources.owned query invalid: ${
+                        formatZodError(parsed.error)
+                    }`,
+                );
+            }
+            try {
+                return await reader.owned(parsed.data);
+            } catch (error) {
+                // NORMALIZE host-reader failures to the retriable code —
+                // a foreign EngineError code from a reader (e.g. a host
+                // reusing INVALID_INPUT) must not mark a transient read
+                // non-retriable
+                if (
+                    error instanceof EngineError &&
+                    error.code === EngineErrorCode.RESOURCE_OP_FAILED
+                ) throw error;
+                throw new EngineError(
+                    EngineErrorCode.RESOURCE_OP_FAILED,
+                    `${label}: ResourceReader.owned failed: ${error}`,
+                    { cause: error },
+                );
+            }
+        },
+    };
+}
+
+/** The STRUCTURAL withholding (design D32): a doc without a `resource`
+ *  binding gets this stub — capability follows declaration. */
+export function undeclaredResources(label: string): LifecycleResources {
+    return {
+        owned: () => {
+            throw new EngineError(
+                EngineErrorCode.RESOURCES_UNDECLARED,
+                `${label}: utils.resources touched but the doc declares no ` +
+                    `resource binding — declare \`resource:\` on the endpoint def`,
+            );
+        },
+    };
+}
+
+/**
+ * `ctx.utils` for RESOURCE fns (lifecycle verify/release/refresh, the
+ * reconcileUsage meters, view reads): the pure ABI + `http` (raw calls
+ * against the RESOURCE doc's provider origin, same-origin credential
+ * rule identical to endpoints) + bounded `sleep`. No view dispatch
+ * (design D42): a meter performs its own reads.
+ */
+export function makeResourceOpUtils(opts: {
+    /** The resource doc (id/provider/request/timeouts) + its auth pair. */
+    doc: {
+        id: string;
+        provider: string;
+        request: { url: string };
+        timeouts: { requestMs: number };
+    };
+    auth: NonNullable<PreparedRequest["auth"]>;
+    transport: Transport;
+    sleep: (ms: number) => Promise<void>;
+}): ResourceOpUtils {
+    const { doc, transport } = opts;
+    const origin = new URL(doc.request.url).origin;
+    const utils: ResourceOpUtils = {
+        json: jsonUtil,
+        money: moneyUtil,
+        sleep: makeBoundedSleep(doc.id, opts.sleep),
+        http: async (call) => {
+            const parsed = zHttpCall.safeParse(call);
+            if (!parsed.success) {
+                throw new EngineError(
+                    EngineErrorCode.FN_CONTRACT,
+                    `${doc.id}: utils.http call invalid: ${
+                        formatZodError(parsed.error)
+                    }`,
+                );
+            }
+            const c = parsed.data;
+            const url = c.url ?? origin + c.path;
+            const sameOrigin = new URL(url).origin === origin;
+            const prepared: PreparedRequest = {
+                method: c.method,
+                url,
+                headers: { ...c.headers },
+                query: toWireQuery(doc.id, c.queryParams ?? {}),
+                body: c.body,
+                ...(sameOrigin ? { auth: opts.auth } : {}),
+                provider: doc.provider,
+                timeouts: {
+                    requestMs: c.requestMs ?? doc.timeouts.requestMs,
+                },
+            };
+            const response = await transport.execute(prepared);
+            return {
+                status: response.status,
+                // {} when the transport surfaces none — fns never branch
+                // on presence (the HttpResult contract)
+                headers: response.headers ?? {},
+                body: sniffDecode(response),
+            };
+        },
+    };
+    return Object.freeze(utils);
 }

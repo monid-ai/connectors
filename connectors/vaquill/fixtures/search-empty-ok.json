@@ -1,0 +1,36 @@
+{
+    "name": "search-empty-ok",
+    "description": "Search that matched nothing: 200 with `results: []` and `creditsConsumed: 4`. The vendor charges the ranked page whatever it returns; the broker absorbs an empty page, so this settles at nothing.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "zzqxv plorfgh wuxtrel",
+                    "matchType": "phrase",
+                    "corpusType": "CONSTITUTION",
+                    "limit": 1,
+                    "excludeRepealed": false,
+                    "offset": 0,
+                    "includeBody": false,
+                    "excerptChars": 500
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [],
+                    "count": 0,
+                    "total": 0,
+                    "offset": 0,
+                    "hasMore": false,
+                    "changedSectionCount": null,
+                    "query": "zzqxv plorfgh wuxtrel",
+                    "processingTimeMs": 2716.8,
+                    "creditsConsumed": 4
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the SIC response schema (docs.context.dev/api-reference/web-extraction/sic, 2026-09-17), the latest_sec dataset, credits_consumed 10; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/sic?input=stripe.com&type=latest_sec"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "status": "ok",
+                    "domain": "stripe.com",
+                    "type": "sic",
+                    "classification": "latest_sec",
+                    "codes": [
+                        {
+                            "code": "7389",
+                            "name": "Services-Business Services, NEC",
+                            "confidence": "high",
+                            "office": "Office of Trade & Services"
+                        }
+                    ],
+                    "key_metadata": {
+                        "credits_consumed": 10,
+                        "credits_remaining": 9949
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 403 body Apollo answers with a key not scoped to this endpoint (organization-enrichment reference example, path adjusted).",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/people/match?first_name=Jordan&last_name=Blake&domain=example.com"
+            },
+            "res": {
+                "status": 403,
+                "body": {
+                    "error": "This API key is not authorized to access api/v1/people/match. Request an API key from your administrator that includes this endpoint in its configured scope.",
+                    "error_code": "API_INACCESSIBLE"
+                }
+            }
+        }
+    ]
+}

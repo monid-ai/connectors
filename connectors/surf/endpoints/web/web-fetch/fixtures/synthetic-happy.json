@@ -1,0 +1,26 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1) — here 2, the value v1 measured on the wire against a 1-credit charge (the divergent case that proves the relay is verbatim).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/web/fetch?url=https%3A%2F%2Fethereum.org&timeout=30000"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "content": "content-1",
+                        "title": "title-1",
+                        "url": "url-1"
+                    },
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 2
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -36,8 +36,12 @@ export default defineEndpoint({
         /** MODEL-SELECTED rates (design D19/D26 mode-selection): each
          *  embedding model is its own metered line with its own credit
          *  draw — v1 EMBEDDING_MODELS rates ($0.01/$0.04/$0.07 per 1M
-         *  tokens at $0.001/credit = 10/40/70 credits per 1M). The fn
-         *  populates only the selected model's key. */
+         *  tokens at $0.001/credit = 10/40/70 credits per 1M). LINEAR
+         *  per-token amounts, no `every` block (reconcile 2026-09-16):
+         *  v1 billed fractionally (`amount × billedUnits / per`,
+         *  billing-calculator.ts) — an `every: 1M` block fold charged a
+         *  3-token call a full $0.04 block. The fn populates only the
+         *  selected model's key. */
         model: {
             kind: UsageModelKind.COMPOSITE,
             components: {
@@ -45,22 +49,22 @@ export default defineEndpoint({
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "tokens (0.6b)",
-                    every: 1_000_000,
-                    consumes: { credit: "default", amount: 10 },
+                    description: "$0.01 per 1M input tokens, linear",
+                    consumes: { credit: "default", amount: 0.00001 },
                 },
                 embedding_4b: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "tokens (4b)",
-                    every: 1_000_000,
-                    consumes: { credit: "default", amount: 40 },
+                    description: "$0.04 per 1M input tokens, linear",
+                    consumes: { credit: "default", amount: 0.00004 },
                 },
                 embedding_8b: {
                     kind: UsageModelKind.PER_UNIT,
                     unit: Unit.TOKEN,
                     label: "tokens (8b)",
-                    every: 1_000_000,
-                    consumes: { credit: "default", amount: 70 },
+                    description: "$0.07 per 1M input tokens, linear",
+                    consumes: { credit: "default", amount: 0.00007 },
                 },
             },
         },

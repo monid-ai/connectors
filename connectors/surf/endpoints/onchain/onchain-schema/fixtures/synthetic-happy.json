@@ -1,0 +1,86 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/onchain/schema"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "columns": [
+                                {
+                                    "comment": "comment-1",
+                                    "name": "name-1",
+                                    "type": "type-1"
+                                }
+                            ],
+                            "database": "database-1",
+                            "engine": "engine-1",
+                            "partition_key": "partition_key-1",
+                            "physical_sources": [
+                                {
+                                    "database": "database-1",
+                                    "engine": "engine-1",
+                                    "partition_key": "partition_key-1",
+                                    "primary_key": "primary_key-1",
+                                    "sorting_key": "sorting_key-1",
+                                    "table": "table-1",
+                                    "total_bytes": 1,
+                                    "total_rows": 1
+                                }
+                            ],
+                            "primary_key": "primary_key-1",
+                            "sorting_key": "sorting_key-1",
+                            "table": "table-1",
+                            "total_bytes": 1,
+                            "total_rows": 1
+                        },
+                        {
+                            "columns": [
+                                {
+                                    "comment": "comment-2",
+                                    "name": "name-2",
+                                    "type": "type-2"
+                                }
+                            ],
+                            "database": "database-2",
+                            "engine": "engine-2",
+                            "partition_key": "partition_key-2",
+                            "physical_sources": [
+                                {
+                                    "database": "database-2",
+                                    "engine": "engine-2",
+                                    "partition_key": "partition_key-2",
+                                    "primary_key": "primary_key-2",
+                                    "sorting_key": "sorting_key-2",
+                                    "table": "table-2",
+                                    "total_bytes": 2,
+                                    "total_rows": 2
+                                }
+                            ],
+                            "primary_key": "primary_key-2",
+                            "sorting_key": "sorting_key-2",
+                            "table": "table-2",
+                            "total_bytes": 2,
+                            "total_rows": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

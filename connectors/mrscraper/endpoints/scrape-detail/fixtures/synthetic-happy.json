@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground detail-agent body (a flat product record under `data`, the page html) with token_usage 32 (v1's Zillow measurement) and the internals v1 saw; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?html=true&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "data": {
+                        "title": "Example Widget",
+                        "price": "$49.00",
+                        "availability": "In stock"
+                    },
+                    "html": "<!doctype html><html><head><title>Example Widget</title></head><body><h1>Example Widget</h1></body></html>",
+                    "thread_id": "THREAD1",
+                    "token_usage": 32,
+                    "residential_proxy_usage": 0.3,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

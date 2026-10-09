@@ -1,0 +1,165 @@
+{
+    "name": "happy",
+    "description": "raw recording (opoint#search-by-ids, scenario happy) — hand-minimize into a shared chain before committing",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.opoint.com/search/",
+                "body": {
+                    "params": {
+                        "articles": [
+                            {
+                                "id_site": 455449,
+                                "id_article": 662
+                            }
+                        ],
+                        "select_by_ids": true,
+                        "requestedarticles": 1,
+                        "main": {
+                            "header": 1,
+                            "text": 1
+                        },
+                        "max_article_length": 256,
+                        "allsubject": "0",
+                        "readership": true
+                    }
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "searchresult": {
+                        "documents": 1,
+                        "response_code": 200,
+                        "first_timestamp": 1789606824,
+                        "last_timestamp": 1789606824,
+                        "generated_timestamp": 1789619484,
+                        "cache": false,
+                        "search_start": 2147483647,
+                        "context": ";TOTDOC=1",
+                        "count": 0,
+                        "range_count": 580,
+                        "range_start": 1782856800,
+                        "range_end": 0,
+                        "range_id": "Q",
+                        "cacheage": -1,
+                        "cputime": 12,
+                        "host": "abel4.opoint.com",
+                        "compiledate": "Sep 10 2026 00:00:00",
+                        "branch": "NOT ACTIVE",
+                        "notimeout": true,
+                        "currency": "NOK",
+                        "document": [
+                            {
+                                "id_site": 455449,
+                                "id_article": 662,
+                                "hidden": false,
+                                "position": 1,
+                                "timezone": "Australia/Darwin",
+                                "countrycode": "AU",
+                                "countryname": "Australia",
+                                "similarweb": {
+                                    "domain": "bttr.reviews",
+                                    "readership": {
+                                        "P": 0.224441,
+                                        "value": 553
+                                    },
+                                    "article_readership": {
+                                        "P": 0.002288,
+                                        "value": 6
+                                    }
+                                },
+                                "site_rank": {
+                                    "rank_global": 31240,
+                                    "rank_country": 451
+                                },
+                                "unix_timestamp": 1789606824,
+                                "mediatype": {
+                                    "timemap": false,
+                                    "clip": false,
+                                    "hastext": true,
+                                    "haslogo": false,
+                                    "paywall": false,
+                                    "fulltext": true,
+                                    "text": "WEB"
+                                },
+                                "circulation": 10,
+                                "internal_search_reply": {
+                                    "id_site": 455449,
+                                    "id_article": 662,
+                                    "text": "(and++) (and--)"
+                                },
+                                "stimestamp": 357876823,
+                                "local_time": {
+                                    "GMT": 1,
+                                    "text": "20260917T03:00:24+0200"
+                                },
+                                "local_rcf822_time": {
+                                    "text": "Thu, 17 Sep 2026 03:00:24 +0200"
+                                },
+                                "distribute_conditions": "",
+                                "language": {
+                                    "encoding": "iso-639",
+                                    "text": "en"
+                                },
+                                "word_count": 492,
+                                "first_source": {
+                                    "id": 4325845,
+                                    "name": "BTTR Reviews",
+                                    "sitename": "BTTR Reviews",
+                                    "url": "https://www.bttr.reviews",
+                                    "siteurl": "https://www.bttr.reviews"
+                                },
+                                "header": {
+                                    "matches": false,
+                                    "text": "Spotify's new toggle stops kids' music wrecking your Wrapped"
+                                },
+                                "body": {
+                                    "matches": false,
+                                    "truncated": true,
+                                    "text": "<p> Keen for more Aussie tech reviews and deals?</p> <p> I write independent Aussie tech reviews and round up the best deals I find each week. Join free and I'll send them straight to you.</p> <p> Oh man, this would have been useful 10 years ago when my...</p>"
+                                },
+                                "articleimages": {
+                                    "count": 1,
+                                    "articleimage": [
+                                        {
+                                            "url": "https://storage.ghost.io/c/52/4b/524b8094-ed7c-4daa-9782-6352e1892ade/content/images/size/w1200/2026/09/spotify-toggle.webp"
+                                        }
+                                    ]
+                                },
+                                "caption": {
+                                    "text": " "
+                                },
+                                "quotes": [],
+                                "url": "https://www.bttr.reviews/spotifys-new-toggle/",
+                                "orig_url": "https://www.bttr.reviews/spotifys-new-toggle/",
+                                "url_common": "bttr.reviews",
+                                "topics": [
+                                    {
+                                        "id": 11,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 2,
+                                        "metacat_level": 0,
+                                        "text": "Rank 1"
+                                    },
+                                    {
+                                        "id": 20,
+                                        "linktype_max": 1,
+                                        "linktype_now": 1,
+                                        "metacat": 3,
+                                        "metacat_level": 0,
+                                        "text": "Open"
+                                    }
+                                ],
+                                "screenshots": [],
+                                "author": "Jane Doe"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

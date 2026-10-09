@@ -1,0 +1,51 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (product_info): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/google/play/product?product_id=com.example.one"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "f6a7b8c9d0e1a2b3c4d5e6f7",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/google/play/product?product_id=com.example.one"
+                    },
+                    "search_parameters": {
+                        "product_id": "com.example.one",
+                        "store": "apps",
+                        "hl": "en",
+                        "gl": "us"
+                    },
+                    "product_info": {
+                        "title": "Example One",
+                        "developer": "Example Studio",
+                        "downloads": "10M+",
+                        "download_count": 10000000,
+                        "content_rating": "Everyone",
+                        "rating": 4.6,
+                        "reviews": 812000
+                    },
+                    "about_this_app": {
+                        "snippet": "An example productivity app."
+                    },
+                    "ratings": [
+                        {
+                            "stars": 5,
+                            "count": 600000
+                        },
+                        {
+                            "stars": 1,
+                            "count": 20000
+                        }
+                    ],
+                    "litescrape_reviews_link": "https://api.litescrape.com/api/google/play/reviews?product_id=com.example.one&store=apps&hl=en&gl=us"
+                }
+            }
+        }
+    ]
+}

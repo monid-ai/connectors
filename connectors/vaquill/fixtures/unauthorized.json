@@ -1,0 +1,27 @@
+{
+    "name": "unauthorized",
+    "description": "401 on a bad key. The vendor's non-2xx is DATA: the run completes, usage is empty, and `{detail}` passes through untouched.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "query": "anything",
+                    "excludeRepealed": false,
+                    "limit": 10,
+                    "offset": 0,
+                    "includeBody": false,
+                    "excerptChars": 500,
+                    "matchType": "any"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "detail": "Invalid or expired API key"
+                }
+            }
+        }
+    ]
+}

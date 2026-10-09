@@ -1,0 +1,50 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 carrying one of the endpoint's result groups (reviews): 1 Litescrape credit, RESULT 1. The api.litescrape.com follow-up links are relayed verbatim.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/tripadvisor/reviews?place_id=1234567&num=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "2cfabc0edfcc1b8ba605d847",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/tripadvisor/reviews?place_id=1234567&num=1"
+                    },
+                    "search_parameters": {
+                        "place_id": "1234567",
+                        "num": "1",
+                        "sort_by": "recent",
+                        "locale": "en-US",
+                        "tripadvisor_domain": "www.tripadvisor.com"
+                    },
+                    "sort": "recent",
+                    "search_information": {
+                        "total_results": 2310
+                    },
+                    "reviews": [
+                        {
+                            "position": 1,
+                            "title": "Lovely stay",
+                            "text": "Quiet rooms and a generous breakfast.",
+                            "rating": 5,
+                            "date": "2026-09-02",
+                            "trip_type": "Couples",
+                            "user": {
+                                "name": "A. Traveller",
+                                "location": "Porto, Portugal"
+                            }
+                        }
+                    ],
+                    "pagination": {
+                        "next": "https://api.litescrape.com/api/tripadvisor/reviews?place_id=1234567&num=1&start=1"
+                    }
+                }
+            }
+        }
+    ]
+}

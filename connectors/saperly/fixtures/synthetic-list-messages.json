@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-list-messages",
+    "description": "The declarative filtered relay: GET /messages?numberId= after the ownership gate.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?numberId=num-1"
+            },
+            "res": {
+                "status": 200,
+                "body": [
+                    {
+                        "id": "msg-1",
+                        "numberId": "num-1",
+                        "body": "hello"
+                    }
+                ]
+            }
+        }
+    ]
+}

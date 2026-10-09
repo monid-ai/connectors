@@ -25,7 +25,7 @@ export default defineEndpoint({
         categories: ["video-generation"],
     },
     /** PUBLIC identity: the friendly model name (design D1). */
-    endpoint: "/seedance-2.0-mini",
+    endpoint: "/v1/video/seedance-2.0-mini",
     request: { method: "POST", path: "/api/v3/contents/generations/tasks" },
     input: {
         schema: {

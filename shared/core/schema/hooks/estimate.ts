@@ -28,6 +28,16 @@ import { fnCarrier, zFnUtils, zHookLogger } from "./ctx.ts";
  */
 export const zEstimateData = z.strictObject({
     input: zRunInput,
+    /**
+     * Milliseconds since the run's admitted start (design D40 — the v1
+     * `paymentLifecycle.estimate({elapsedMs})` shape): ABSENT at
+     * admission (the fn's own floor prices the initial hold), SET when
+     * the host RE-RUNS the estimate on the doc's
+     * `usage.updateEstimateEveryMs` cadence while the run is RUNNING —
+     * "the price is an estimation, and it syncs once in a while". Docs
+     * without that cadence never see it.
+     */
+    elapsedMs: z.number().nonnegative().optional(),
     /** The doc's own usage section facts — `data.usage.model`. */
     usage: z.strictObject({ model: zUsageModel }),
 });

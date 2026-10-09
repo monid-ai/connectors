@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded (no Litescrape key held, 2026-09-20): the shape follows litescrape.com/docs/reference (\"Response structure\" / \"Stable error bodies\") and v1's 2026-09-18 drill bodies; names, ids, and links are placeholders. Unverified against live traffic — replace via `deno task record`. A 200 with an empty result group: the vendor deducted one credit, usage here records 0 (v1 posture, owner 2026-09-20) — credits {} and RESULT 0.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.litescrape.com/api/apple/app-store/reviews?product_id=570060128&page=1"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "search_metadata": {
+                        "id": "1c20c3f61bab55c83291155b",
+                        "status": "Success",
+                        "json_endpoint": "https://api.litescrape.com/api/apple/app-store/reviews?product_id=570060128&page=1",
+                        "raw_file": "https://api.litescrape.com/api/artifacts/apple/app-store/raw?id=1c20c3f61bab55c83291155b&bucket=20260920"
+                    },
+                    "search_parameters": {
+                        "product_id": "570060128",
+                        "page": "1",
+                        "country": "us",
+                        "sort": "mostrecent"
+                    },
+                    "search_information": {
+                        "total_page_count": 15706,
+                        "results_count": 0
+                    },
+                    "reviews": [],
+                    "litescrape_pagination": {
+                        "previous": "https://api.litescrape.com/api/apple/app-store/reviews?country=us&product_id=570060128&sort=mostrecent&page=99998"
+                    }
+                }
+            }
+        }
+    ]
+}

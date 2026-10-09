@@ -43,8 +43,14 @@ export default defineEndpoint({
             "768P/6s, $0.56 for 768P/10s, $0.49 for 1080P/6s. A failed " +
             "task costs nothing.",
         docsUrl:
-            "https://platform.minimax.io/docs/api-reference/video-generation",
+            "https://platform.minimax.io/docs/api-reference/video-generation-t2v",
         categories: ["video-generation"],
+        notes: [
+            "Generation takes minutes - this is an asynchronous run; " +
+            "poll it rather than blocking.",
+            "The result's download_url EXPIRES - download the video " +
+            "promptly.",
+        ],
     },
     /** PUBLIC identity (design D22): the model-named path v1 published —
      *  the wire path is a shared transport detail. */

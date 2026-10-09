@@ -23,6 +23,10 @@ export default defineEndpoint({
             "research on Snapchat.",
         docsUrl: "https://apify.com/tri_angle/snapchat-spotlight-scraper",
         categories: ["snapchat"],
+        notes: [
+            "Input is Spotlight video URLs only - the actor does not " +
+            "list a creator's Spotlights from a username.",
+        ],
     },
     /** PUBLIC identity: the actor's own slug path (design D22) —
      *  mechanically derived from request.path, pinned for readability. */

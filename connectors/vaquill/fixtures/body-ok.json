@@ -1,0 +1,24 @@
+{
+    "name": "body-ok",
+    "description": "Full text at `format=plain`: flat 6 credits, the source url and publisher credit alongside the text.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/USC_T42_C21_S1983/body?format=plain"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "actId": "USC_T42_C21_S1983",
+                    "plain": "Every person who, under color of any statute, ordinance, regulation, custom, or usage, of any State or Territory or the District of Columbia, subjects, or causes to be subjected, any citizen of the United States or other person within the jurisdiction thereof to the deprivation of any rights, privileges, or immunities secured by the Constitution and laws, shall be liable to the party injured in an action at law, suit in equity, or other proper proceeding for redress, except that in any action br",
+                    "source": "r2_text",
+                    "sourceUrl": "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title42-section1983&num=0&edition=prelim",
+                    "available": true,
+                    "processingTimeMs": 1142.9,
+                    "creditsConsumed": 6
+                }
+            }
+        }
+    ]
+}

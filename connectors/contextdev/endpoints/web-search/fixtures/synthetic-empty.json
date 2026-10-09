@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-empty",
+    "description": "SYNTHETIC — not recorded. The search envelope with no result and credits_consumed 0; the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.context.dev/v1/web/search"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "results": [],
+                    "query": "context dev api",
+                    "key_metadata": {
+                        "credits_consumed": 0,
+                        "credits_remaining": 9999
+                    },
+                    "request_id": "REQ3",
+                    "cache_metadata": { "status": "miss", "age_ms": 0 }
+                }
+            }
+        }
+    ]
+}

@@ -62,6 +62,12 @@ export interface JsonUtil {
     num(value: Json, path: string): number;
     /** Number at path, undefined if absent. Throws if present but not a finite number. */
     optionalNum(value: Json, path: string): number | undefined;
+    /** Non-empty string at path. Throws if absent, not a string, or "". */
+    str(value: Json, path: string): string;
+    /** String at path, undefined if absent OR "" (vendors spell "no
+     *  value" both ways; a read that must distinguish uses optionalGet).
+     *  Throws if present but not a string. */
+    optionalStr(value: Json, path: string): string | undefined;
     /** Array length at path. Throws if absent or not an array. */
     len(value: Json, path: string): number;
     /** Array length at path, undefined if absent. Throws if present but not an array. */

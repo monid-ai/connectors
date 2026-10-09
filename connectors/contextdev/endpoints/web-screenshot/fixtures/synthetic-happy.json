@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the Screenshot response schema (docs.context.dev/api-reference/web-scraping/screenshot, 2026-09-17), credits_consumed 1 (the current card); the balance is a placeholder.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.context.dev/v1/web/screenshot?domain=example.com&colorScheme=dark"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "finalDOMState": "loaded",
+                    "status": "ok",
+                    "domain": "example.com",
+                    "screenshot": "https://cdn.example/screenshots/SHOT1.png",
+                    "screenshotType": "viewport",
+                    "width": 1920,
+                    "height": 1080,
+                    "code": 200,
+                    "cache_metadata": { "status": "miss", "age_ms": 0 },
+                    "key_metadata": {
+                        "credits_consumed": 1,
+                        "credits_remaining": 9948
+                    },
+                    "request_id": "REQ1"
+                }
+            }
+        }
+    ]
+}

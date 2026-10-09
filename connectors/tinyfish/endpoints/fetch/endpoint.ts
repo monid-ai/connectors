@@ -36,6 +36,12 @@ export default defineEndpoint({
             "'bot_blocked'.",
         docsUrl: "https://docs.tinyfish.ai/fetch-api/reference",
         categories: ["web-scraping"],
+        notes: [
+            "Validators only come back on a live fetch: pair " +
+            "'include_etag_and_last_modified' with 'ttl' of 0. Which " +
+            "one you get is the origin's choice - replay whichever " +
+            "arrived.",
+        ],
     },
     /** PUBLIC identity (design D22): the per-endpoint baseUrl carries
      *  the real target and request.path is "/" — pinned explicitly

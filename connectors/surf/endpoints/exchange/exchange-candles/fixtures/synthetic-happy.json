@@ -1,0 +1,60 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 1-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/exchange/candles?exchange=bithumb&pair=BTC%2FKRW&interval=5m&include_synthetic=true&limit=100&offset=0"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "close": 1,
+                            "close_time": 1,
+                            "exchange": "exchange-1",
+                            "high": 1,
+                            "interval": "interval-1",
+                            "is_synthetic": false,
+                            "low": 1,
+                            "open": 1,
+                            "pair": "pair-1",
+                            "region": "region-1",
+                            "timestamp": 1,
+                            "trade_count": 1,
+                            "volume_base": 1,
+                            "volume_quote": 1
+                        },
+                        {
+                            "close": 2,
+                            "close_time": 2,
+                            "exchange": "exchange-2",
+                            "high": 2,
+                            "interval": "interval-2",
+                            "is_synthetic": false,
+                            "low": 2,
+                            "open": 2,
+                            "pair": "pair-2",
+                            "region": "region-2",
+                            "timestamp": 2,
+                            "trade_count": 2,
+                            "volume_base": 2,
+                            "volume_quote": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 1,
+                        "has_more": false,
+                        "limit": 2,
+                        "offset": 0,
+                        "total": 2,
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

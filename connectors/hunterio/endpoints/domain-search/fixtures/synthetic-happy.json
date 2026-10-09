@@ -1,0 +1,381 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded (no Hunter key held, 2026-09-17): the shape follows the live reference's own example (hunter.io/api-documentation/v2) and v1's 2026-08-20 ledger drill; values are placeholders. A 25-address page that found 12 addresses: ceil(12/10) = 2 credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.hunter.io/v2/domain-search",
+                "body": {
+                    "domain": "intercom.com",
+                    "limit": 25
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "domain": "intercom.com",
+                        "disposable": false,
+                        "webmail": false,
+                        "accept_all": true,
+                        "pattern": "{first}",
+                        "organization": "Intercom",
+                        "linked_domains": [],
+                        "emails": [
+                            {
+                                "value": "zoe@example.com",
+                                "type": "personal",
+                                "confidence": 90,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/zoe",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Zoe",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "alice@example.com",
+                                "type": "personal",
+                                "confidence": 89,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/alice",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Alice",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "bob@example.com",
+                                "type": "personal",
+                                "confidence": 88,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/bob",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Bob",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "carol@example.com",
+                                "type": "personal",
+                                "confidence": 87,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/carol",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Carol",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "dave@example.com",
+                                "type": "personal",
+                                "confidence": 86,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/dave",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Dave",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "erin@example.com",
+                                "type": "personal",
+                                "confidence": 85,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/erin",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Erin",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "frank@example.com",
+                                "type": "personal",
+                                "confidence": 84,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/frank",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Frank",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "grace@example.com",
+                                "type": "personal",
+                                "confidence": 83,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/grace",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Grace",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "heidi@example.com",
+                                "type": "personal",
+                                "confidence": 82,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/heidi",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Heidi",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "ivan@example.com",
+                                "type": "personal",
+                                "confidence": 81,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/ivan",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Ivan",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "judy@example.com",
+                                "type": "personal",
+                                "confidence": 80,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/judy",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Judy",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            },
+                            {
+                                "value": "mallory@example.com",
+                                "type": "personal",
+                                "confidence": 79,
+                                "sources": [
+                                    {
+                                        "domain": "example.com",
+                                        "uri": "https://example.com/mallory",
+                                        "extracted_on": "2015-07-29",
+                                        "last_seen_on": "2017-07-01",
+                                        "still_on_page": true
+                                    }
+                                ],
+                                "first_name": "Mallory",
+                                "last_name": "Example",
+                                "position": "Support Engineer",
+                                "position_raw": "Support Engineer",
+                                "seniority": "senior",
+                                "department": "it",
+                                "decision_maker": false,
+                                "linkedin": null,
+                                "twitter": null,
+                                "phone_number": null,
+                                "verification": {
+                                    "date": "2019-12-06",
+                                    "status": "valid"
+                                }
+                            }
+                        ]
+                    },
+                    "meta": {
+                        "results": 12,
+                        "results_approximate": false,
+                        "limit": 25,
+                        "offset": 0,
+                        "params": {
+                            "domain": "intercom.com",
+                            "company": null,
+                            "type": null,
+                            "seniority": null,
+                            "department": null
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

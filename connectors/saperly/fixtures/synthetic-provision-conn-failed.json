@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-provision-conn-failed",
+    "description": "Connection-FIRST ordering pays off: the persona create 422s BEFORE any money moves - error-as-data, no purchase call, no resource, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/pricing/quote?country=US&numberType=local"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "customerMonthlyCents": 200,
+                    "customerUpfrontCents": 200,
+                    "country": "US",
+                    "numberType": "local",
+                    "currency": "USD"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/connections",
+                "body": {
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful."
+                }
+            },
+            "res": {
+                "status": 422,
+                "body": {
+                    "error": "invalid persona"
+                }
+            }
+        }
+    ]
+}

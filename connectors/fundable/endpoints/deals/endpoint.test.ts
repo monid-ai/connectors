@@ -30,13 +30,26 @@ Deno.test("fundable: usage fn provenance — provider settle fns shared by all 1
     ).sort();
     assertEquals(ids.length, 17);
     const first = bundle.endpoints[ids[0]];
+    // the three fuzzy searches OWN a claimless consolidate (reconcile
+    // 2026-09-16): their flat $0.01 contract line lives in the `search`
+    // pool, and the vendor's 0.1-credit stamp is stripped, not claimed
+    const SEARCH_DOCS = new Set([
+        "fundable#company/search",
+        "fundable#investor/search",
+        "fundable#person/search",
+    ]);
+    const searchConsolidateKey = bundle.endpoints["fundable#company/search"]
+        .usage.consolidate?.$fn.key;
     for (const id of ids) {
         const doc = bundle.endpoints[id];
         // the vendor meter (meta.credits_used) and the collection count are
         // PROVIDER-wide facts — ONE consolidate, ONE evidence, ONE auth fn
+        // (searches intern their ONE claimless override)
         assertEquals(
             doc.usage.consolidate?.$fn.key,
-            first.usage.consolidate?.$fn.key,
+            SEARCH_DOCS.has(id)
+                ? searchConsolidateKey
+                : first.usage.consolidate?.$fn.key,
             id,
         );
         assertEquals(
@@ -88,11 +101,11 @@ Deno.test("fundable: usage fn provenance — provider settle fns shared by all 1
     // substitutes pathParams at run time) while the PUBLIC identity is
     // the brace-free singular form
     assertEquals(
-        bundle.endpoints["fundable#deal"].request.url,
+        bundle.endpoints["fundable#deals/{id}"].request.url,
         "https://www.tryfundable.ai/api/v1/deals/{id}",
     );
     assertEquals(
-        bundle.endpoints["fundable#deal/investors"].request.url,
+        bundle.endpoints["fundable#deals/{id}/investors"].request.url,
         "https://www.tryfundable.ai/api/v1/deals/{id}/investors",
     );
 });

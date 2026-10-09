@@ -1,0 +1,19 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "Synthetic (no CONTACTOUT key held at port time, 2026-09-16): shape from the v1 adaptor tests and the public API reference; field values are placeholders. Unverified against live traffic — replace via `deno task record`. 401 bad token (real behaviour per the v1 drills; the documented error table is swapped). Non-2xx is data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.contactout.com/v1/people/decision-makers?domain=contactout.com"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "status_code": 401,
+                    "message": "Unauthorized"
+                }
+            }
+        }
+    ]
+}

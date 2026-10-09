@@ -1,0 +1,118 @@
+{
+    "name": "definitions-empty-ok",
+    "description": "Defined terms on a section whose chapter carries none: 200 with an empty `terms` and `creditsConsumed: 0`. The refunded miss.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.vaquill.ai/api/v1/us/statutes/section/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7/definitions"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "section": {
+                        "actId": "STATE_CA_Cciv_D3_P4_T5_C2_S1950.7",
+                        "citation": "Cal. Civ. Code \u00a7 1950.7",
+                        "citationShort": "Cal. Civ. Code \u00a7 1950.7",
+                        "title": "Section 1950.7",
+                        "corpusType": "STATE",
+                        "state": "ca",
+                        "year": 2025,
+                        "excerpt": "(a) Any payment or deposit of money the primary function of which is to secure the performance of a rental agreement for other than residential property or any part of the agreement, other than a payment or deposit, including an advance payment of rent, made to secure the execution of a rental agreement, shall be governed by the provisions of this section. With respect to residential property, the provisions of Section 1950.5 shall prevail.\n\n(b) The payment or deposit of money shall be held by..",
+                        "body": null,
+                        "titleNumber": "5",
+                        "titleName": "Cal. Civ. Code",
+                        "chapter": "2",
+                        "sectionNumber": "1950.7",
+                        "sectionTitle": "Section 1950.7",
+                        "displayPath": "California Code / Code civ / Division 3 / Part 4 / Title 5 / Chapter 2 / Section 1950.7",
+                        "breadcrumb": [
+                            {
+                                "label": "Code civ",
+                                "type": "code",
+                                "num": "civ"
+                            },
+                            {
+                                "num": "3",
+                                "label": "Division 3",
+                                "type": "division"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "STATE",
+                            "state": "ca",
+                            "code": "ca_CIV",
+                            "chapter": "2"
+                        },
+                        "actStatus": "in_force",
+                        "goodLawStatus": "unknown",
+                        "amendmentYears": [
+                            2003
+                        ],
+                        "lastAmendedYear": 2003,
+                        "amendmentsCount": 1,
+                        "effectiveDate": "2004-01-01",
+                        "effectiveDateRaw": "January 1, 2004",
+                        "history": "Amended by Stats. 2003, Ch. 89, Sec. 1.   Effective January 1, 2004.",
+                        "textUrl": "https://statutes-us.vaquill.ai/state/ca/sections/STATE_CA_Cciv_D3_P4_T5_C2_S1950.7.txt",
+                        "wordCount": 666,
+                        "displayLabel": "Cal. CIV \u00a7 1950.7",
+                        "externalUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1950.7."
+                    },
+                    "definitionsSection": {
+                        "actId": "STATE_CA_Cciv_D3_P2_T5_C2_S1689.2",
+                        "citation": "Cal. Civ. Code \u00a7 1689.2",
+                        "citationShort": "Cal. Civ. Code \u00a7 1689.2",
+                        "title": "Section 1689.2",
+                        "corpusType": "STATE",
+                        "state": "ca",
+                        "year": 2025,
+                        "excerpt": "A participant in an endless chain scheme, as defined in Section 327 of the Penal Code, may rescind the contract upon which the scheme is based, and may recover all consideration paid pursuant to the scheme, less any amounts paid or consideration provided to the participant pursuant to the scheme. In addition, the court may, upon motion, award reasonable attorney\u2019s fees to a prevailing plaintiff.",
+                        "body": null,
+                        "titleNumber": "5",
+                        "titleName": "Cal. Civ. Code",
+                        "chapter": "2",
+                        "sectionNumber": "1689.2",
+                        "sectionTitle": "Section 1689.2",
+                        "displayPath": "California Code / Code civ / Division 3 / Part 2 / Title 5 / Chapter 2 / Section 1689.2",
+                        "breadcrumb": [
+                            {
+                                "type": "code",
+                                "label": "Code civ",
+                                "num": "civ"
+                            },
+                            {
+                                "label": "Division 3",
+                                "num": "3",
+                                "type": "division"
+                            }
+                        ],
+                        "parent": {
+                            "corpusType": "STATE",
+                            "state": "ca",
+                            "code": "ca_CIV",
+                            "chapter": "2"
+                        },
+                        "actStatus": "in_force",
+                        "goodLawStatus": "unknown",
+                        "amendmentYears": [
+                            1989
+                        ],
+                        "lastAmendedYear": 1989,
+                        "amendmentsCount": 1,
+                        "history": "Added by Stats. 1989, Ch. 436, Sec. 1.",
+                        "textUrl": "https://statutes-us.vaquill.ai/state/ca/sections/STATE_CA_Cciv_D3_P2_T5_C2_S1689.2.txt",
+                        "wordCount": 65,
+                        "displayLabel": "Cal. CIV \u00a7 1689.2",
+                        "externalUrl": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=CIV&sectionNum=1689.2."
+                    },
+                    "terms": [],
+                    "total": 0,
+                    "note": "The chapter's definitions section was located but does not list its terms in a form that can be parsed into a term table. This is most common outside the U.S. Code, where publishers format definitions differently. The call was not charged.",
+                    "processingTimeMs": 2234,
+                    "creditsConsumed": 0
+                }
+            }
+        }
+    ]
+}

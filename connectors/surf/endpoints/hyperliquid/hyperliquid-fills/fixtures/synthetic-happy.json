@@ -1,0 +1,63 @@
+{
+    "name": "synthetic-happy",
+    "description": "Synthetic (no SURF key held at port time, 2026-09-16): the `{ data, meta }` envelope and the `{ error: { code, message } }` error shape follow the v1 adaptor tests and the v1 design's live-verified upstream contract; the response body shape is the vendor OpenAPI 0.2.97 200 schema (`api.asksurf.ai/gateway/openapi.json`, fetched 2026-09-16); field values are placeholders. Unverified against live traffic — replace via `deno task record`. A 2xx with rows in `data` — the flat 4-credit line settles once; `meta.credits_used` stays in the body (design D1).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.asksurf.ai/gateway/v1/hyperliquid/fills?address=test&order=desc&limit=20"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": [
+                        {
+                            "closed_pnl": 1,
+                            "crossed": false,
+                            "direction": "direction-1",
+                            "fee": 1,
+                            "fee_token": "fee_token-1",
+                            "fill_id": "fill_id-1",
+                            "hash": "hash-1",
+                            "is_internal": false,
+                            "price": 1,
+                            "side": "side-1",
+                            "size": 1,
+                            "start_position": 1,
+                            "symbol": "symbol-1",
+                            "time": 1,
+                            "time_ms": 1,
+                            "tx_index": 1
+                        },
+                        {
+                            "closed_pnl": 2,
+                            "crossed": false,
+                            "direction": "direction-2",
+                            "fee": 2,
+                            "fee_token": "fee_token-2",
+                            "fill_id": "fill_id-2",
+                            "hash": "hash-2",
+                            "is_internal": false,
+                            "price": 2,
+                            "side": "side-2",
+                            "size": 2,
+                            "start_position": 2,
+                            "symbol": "symbol-2",
+                            "time": 2,
+                            "time_ms": 2,
+                            "tx_index": 2
+                        }
+                    ],
+                    "meta": {
+                        "cached": false,
+                        "credits_used": 4,
+                        "has_more": false,
+                        "limit": 2,
+                        "next_cursor": "next_cursor-1",
+                        "watermark": 1
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,66 @@
+{
+    "name": "synthetic-update-repair",
+    "description": "The STALE-pointer repair: PATCH 404s (upstream lost the connection) -> create + bind restore the one-connection invariant under deterministic keys.",
+    "calls": [
+        {
+            "req": {
+                "method": "PATCH",
+                "url": "{{request.origin}}/connections/conn-1",
+                "body": {
+                    "mode": "hosted",
+                    "instructions": "Be brief."
+                }
+            },
+            "res": {
+                "status": 404,
+                "body": {
+                    "error": "gone"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/connections",
+                "body": {
+                    "name": "Monid connection",
+                    "mode": "hosted",
+                    "instructions": "Be brief."
+                }
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "conn-2",
+                    "name": "Test persona",
+                    "mode": "hosted",
+                    "instructions": "Be helpful.",
+                    "language": "en",
+                    "tts": {
+                        "voiceId": "voice-1"
+                    },
+                    "llm": {
+                        "model": "openai/gpt-4o"
+                    },
+                    "complianceEnabled": true,
+                    "manualSecret": "sec-never-leaks"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/numbers/num-1/connection",
+                "body": {
+                    "connectionId": "conn-2"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": true
+                }
+            }
+        }
+    ]
+}

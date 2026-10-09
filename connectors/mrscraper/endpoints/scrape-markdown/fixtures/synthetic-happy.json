@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. The playground Markdown body per the reference (markdown text, an empty data object, token_usage) plus the internals v1 saw; values are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.mrscraper.com/?markdown=true&saveResult=false"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "url": "https://example.com",
+                    "markdown": "# Example Domain\n\nThis domain is for use in illustrative examples in documents.",
+                    "data": {},
+                    "token_usage": 2,
+                    "residential_proxy_usage": 0.05,
+                    "data_path": "results/RES1/data.json",
+                    "html_path": "results/RES1/index.html"
+                }
+            }
+        }
+    ]
+}

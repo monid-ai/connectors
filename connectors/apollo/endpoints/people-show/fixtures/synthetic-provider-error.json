@@ -1,0 +1,16 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "SYNTHETIC — not recorded. The 422 body from the Get Complete Person Info reference (an id Apollo does not know).",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.apollo.io/api/v1/people/NOBODY"
+            },
+            "res": {
+                "status": 422,
+                "body": { "error": "Person does not exist." }
+            }
+        }
+    ]
+}

@@ -1,0 +1,89 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC — not recorded. Shape from the People Enrichment reference example (docs.apollo.io/reference/people-enrichment, 2026-09-16): the doc's fictional person, employment history trimmed to two entries, the contact/account sub-objects and phone numbers dropped (they belong to the caller's own saved contacts); ids are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.apollo.io/api/v1/people/match?first_name=Jordan&last_name=Blake&domain=example.com"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "person": {
+                        "id": "PERSON1",
+                        "first_name": "Jordan",
+                        "last_name": "Blake",
+                        "name": "Jordan Blake",
+                        "linkedin_url": "http://www.linkedin.com/in/jordan-blake-4a7c21",
+                        "title": "Founder & CEO",
+                        "email_status": "verified",
+                        "photo_url": null,
+                        "twitter_url": null,
+                        "github_url": null,
+                        "facebook_url": null,
+                        "extrapolated_email_confidence": null,
+                        "headline": "Founder & CEO at Northstar Analytics",
+                        "email": "jordan.blake@example.com",
+                        "organization_id": "ORG1",
+                        "match_confidence": "high",
+                        "employment_history": [
+                            {
+                                "_id": "EMP1",
+                                "created_at": null,
+                                "current": true,
+                                "degree": null,
+                                "description": null,
+                                "emails": null,
+                                "end_date": null,
+                                "grade_level": null,
+                                "kind": null,
+                                "major": null,
+                                "organization_id": "ORG1",
+                                "organization_name": "Northstar Analytics",
+                                "raw_address": null,
+                                "start_date": "2016-01-01",
+                                "title": "Founder & CEO",
+                                "updated_at": null,
+                                "id": "EMP1",
+                                "key": "EMP1"
+                            },
+                            {
+                                "_id": "EMP2",
+                                "created_at": null,
+                                "current": false,
+                                "degree": null,
+                                "description": null,
+                                "emails": null,
+                                "end_date": "2015-01-01",
+                                "grade_level": null,
+                                "kind": null,
+                                "major": null,
+                                "organization_id": null,
+                                "organization_name": "BrightForge Labs",
+                                "raw_address": null,
+                                "start_date": "2011-01-01",
+                                "title": "Founder & CEO",
+                                "updated_at": null,
+                                "id": "EMP2",
+                                "key": "EMP2"
+                            }
+                        ],
+                        "state": "California",
+                        "city": "San Francisco",
+                        "country": "United States",
+                        "phone_numbers": null,
+                        "organization": {
+                            "id": "ORG1",
+                            "name": "Northstar Analytics",
+                            "website_url": "http://www.example.com",
+                            "primary_domain": "example.com",
+                            "industry": "information technology & services",
+                            "estimated_num_employees": 120
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
