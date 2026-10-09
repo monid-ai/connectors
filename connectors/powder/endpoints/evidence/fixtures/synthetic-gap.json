@@ -1,0 +1,40 @@
+{
+    "name": "synthetic-gap",
+    "description": "Synthetic contract-only fixture: no evidence records, no live Powder execution or payment.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://data.dubbleblack.com/api/agent/evidence/v2",
+                "body": {
+                    "query": "Is there evidence for this purchase decision?"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "schema_version": "2.0",
+                    "generated_at": "2026-09-30T00:00:00.000Z",
+                    "request": {
+                        "query": "Is there evidence for this purchase decision?"
+                    },
+                    "coverage": {
+                        "state": "gap",
+                        "gap_reason": "no_relevant_owned_evidence"
+                    },
+                    "evidence_available": false,
+                    "evidence": [],
+                    "evidence_score": {
+                        "score": null,
+                        "calibration_status": "uncalibrated"
+                    },
+                    "results_returned": 0,
+                    "limitations": [
+                        "No relevant owned evidence in this synthetic fixture."
+                    ],
+                    "errors": []
+                }
+            }
+        }
+    ]
+}

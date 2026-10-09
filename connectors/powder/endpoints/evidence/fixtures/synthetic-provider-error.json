@@ -1,0 +1,21 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "Synthetic contract-only upstream failure; no network request.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://data.dubbleblack.com/api/agent/evidence/v2",
+                "body": {
+                    "query": "Is there evidence for this purchase decision?"
+                }
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": "evidence_database_unavailable"
+                }
+            }
+        }
+    ]
+}
