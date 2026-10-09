@@ -1,0 +1,35 @@
+{
+    "name": "synthetic-task-failed",
+    "description": "A MuAPI prediction reaches failed after submission. The poll synthesizes a 500 and the run is zero-billed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_FAIL"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_FAIL/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_FAIL",
+                    "status": "failed",
+                    "error": {
+                        "code": "content_moderation",
+                        "message": "the prompt was rejected"
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-nested-cost-succeeded",
+    "description": "MuAPI may return the completed result and vendor USD cost under data.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_NANO_NESTED_1"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_NANO_NESTED_1/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_NANO_NESTED_1",
+                    "status": "completed",
+                    "data": {
+                        "outputs": [
+                            "https://cdn.muapi.ai/image/MUAPI_NANO_NESTED_1.jpg"
+                        ],
+                        "cost": {
+                            "amount_usd": 0.06
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+{
+    "name": "synthetic-nano-edit-succeeded",
+    "description": "Nano Banana 2 image editing: submit, process, then complete with one edited image and the vendor USD cost claim.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_NANO_EDIT_1"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_NANO_EDIT_1/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_NANO_EDIT_1",
+                    "status": "processing"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_NANO_EDIT_1/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_NANO_EDIT_1",
+                    "status": "completed",
+                    "outputs": [
+                        "https://cdn.muapi.ai/image/MUAPI_NANO_EDIT_1.png"
+                    ],
+                    "cost": {
+                        "amount_usd": 0.09
+                    }
+                }
+            }
+        }
+    ]
+}

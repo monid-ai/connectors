@@ -1,0 +1,50 @@
+{
+    "name": "synthetic-veo-video-succeeded",
+    "description": "Veo 3.1 video generation: submit, process, then complete with one video and the vendor USD cost claim.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_VEO_1"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_VEO_1/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_VEO_1",
+                    "status": "processing"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/predictions/MUAPI_VEO_1/result"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "MUAPI_VEO_1",
+                    "status": "completed",
+                    "outputs": [
+                        "https://cdn.muapi.ai/video/MUAPI_VEO_1.mp4"
+                    ],
+                    "cost": {
+                        "amount_usd": 2.5
+                    }
+                }
+            }
+        }
+    ]
+}
