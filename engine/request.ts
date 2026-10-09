@@ -25,14 +25,12 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     }
     const runInput = shape.data;
     const schemas = doc.input.schema;
-    // BODY: validated on a clone the engine owns, with schema DEFAULTS
-    // materialized into it (design D19 addendum — schema defaults mirror
-    // the vendor's own server defaults, so hooks read the same effective
-    // knobs the vendor applies). The caller's object is never mutated.
+    // zRunInput's recursive JSON/record schemas already deep-copy the
+    // caller's values. Materialize defaults into that owned parse result,
+    // without allocating and traversing a second copy of large inputs.
+    // The caller's object is never mutated (design D19 addendum).
     if (schemas.body) {
-        const body = runInput.body !== undefined
-            ? structuredClone(runInput.body)
-            : null;
+        const body = runInput.body !== undefined ? runInput.body : null;
         const result = validateInputAgainst(schemas.body, body);
         if (!result.ok) {
             throw new EngineError(
@@ -45,7 +43,7 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     // QUERY/PATH PARAMS: same defaults-materializing validation as the
     // body (design D24 — a queryParams-shaped endpoint's estimate must
     // read the SAME effective knobs the vendor applies, e.g. akta's
-    // limit default). Cloned — the caller's object is never mutated.
+    // limit default). The owned parse result keeps the caller untouched.
     const checks: [
         "queryParams" | "pathParams",
         JsonSchemaDoc | undefined,
@@ -55,7 +53,7 @@ export function validateInput(doc: EndpointDoc, rawInput: unknown): RunInput {
     ];
     for (const [label, schema] of checks) {
         if (!schema) continue;
-        const value = structuredClone(runInput[label] ?? {});
+        const value = runInput[label] ?? {};
         const result = validateInputAgainst(schema, value);
         if (!result.ok) {
             throw new EngineError(
