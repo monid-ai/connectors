@@ -1,0 +1,46 @@
+{
+    "name": "synthetic-out-of-credits",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. The account has no credits: the job is blocked and the message is final on the submit.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_c4e219",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "blocked",
+                    "reason": "out_of_credits",
+                    "question": null,
+                    "final": true,
+                    "reply": "You're out of credits, so I couldn't start that.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_8f2c1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_5b1e",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "blocked",
+                            "reason": "out_of_credits",
+                            "final": true,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_5b1e",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,138 @@
+{
+    "name": "synthetic-held-cancel-not-final",
+    "description": "SYNTHETIC \u2014 shaped from SuperCool's /v1 response renderer; not recorded live. The submit reports work held for credits, but by the cancel a top-up has started it (not cancellable, still processing). The run keeps polling and settles the finished work's receipt.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_77d0",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "blocked",
+                    "reason": "out_of_credits",
+                    "question": null,
+                    "final": false,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_5a1",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_77",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "blocked",
+                            "reason": "out_of_credits",
+                            "final": false,
+                            "queued": true,
+                            "resume_by": "2026-10-08T15:00:05Z",
+                            "link": "https://supercool.com/chat/w_77",
+                            "started_at": null,
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z",
+                    "resume": "add_credits",
+                    "resume_by": "2026-10-08T15:00:05Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/messages/msg_77d0/cancel"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_77d0",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_5a1",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_77",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "running",
+                            "reason": null,
+                            "final": false,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_77",
+                            "started_at": "2026-10-07T15:00:06Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z",
+                    "cancelled": [],
+                    "not_cancellable": [
+                        "exe_5a1"
+                    ]
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_77d0?wait=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_77d0",
+                    "object": "message",
+                    "credits_used": 9.25,
+                    "status": "completed",
+                    "reason": null,
+                    "question": null,
+                    "final": true,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_5a1",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_77",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "completed",
+                            "reason": null,
+                            "final": true,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_77",
+                            "started_at": "2026-10-07T15:00:06Z",
+                            "settled_at": "2026-10-07T15:02:00Z"
+                        }
+                    ],
+                    "files": [
+                        {
+                            "name": "mug.png",
+                            "url": "https://cdn.supercool.com/f/mug.png",
+                            "work_id": "w_77"
+                        }
+                    ],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z"
+                }
+            }
+        }
+    ]
+}

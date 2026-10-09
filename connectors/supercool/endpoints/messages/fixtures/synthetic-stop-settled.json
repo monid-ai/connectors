@@ -1,0 +1,130 @@
+{
+    "name": "synthetic-stop-settled",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and the cancel route; not recorded live. The run is stopped mid-video: cancel stops this message's own run and the next read finds the message final with the 6.5 credits the stopped run drew (it settles through its own result a moment after the cancel), which settle at stop.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_51ab07",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": "On it, making your video now.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_4c2e",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_31",
+                            "title": "Launch Video",
+                            "status": "running",
+                            "reason": null,
+                            "final": false,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_31",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:03:00Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/messages/msg_51ab07/cancel"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_51ab07",
+                    "object": "message",
+                    "credits_used": 5.0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": "On it, making your video now.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_4c2e",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_31",
+                            "title": "Launch Video",
+                            "status": "running",
+                            "reason": null,
+                            "final": false,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_31",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:03:00Z",
+                    "cancelled": [
+                        "exe_4c2e"
+                    ],
+                    "not_cancellable": []
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_51ab07?wait=20"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_51ab07",
+                    "object": "message",
+                    "credits_used": 6.5,
+                    "status": "failed",
+                    "reason": "cancelled",
+                    "question": null,
+                    "final": true,
+                    "reply": "On it, making your video now.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_4c2e",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_31",
+                            "title": "Launch Video",
+                            "status": "cancelled",
+                            "reason": "cancelled",
+                            "final": true,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_31",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": "2026-10-07T15:03:00Z"
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:03:00Z"
+                }
+            }
+        }
+    ]
+}

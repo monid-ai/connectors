@@ -519,6 +519,7 @@
         "saperly#send-messages",
         "saperly#sync-numbers",
         "saperly#update-numbers",
+        "supercool#v1/messages",
         "surf#dex/token/price",
         "surf#exchange/candles",
         "surf#exchange/coverage",

@@ -1,0 +1,122 @@
+{
+    "name": "synthetic-held-after-paid-work",
+    "description": "SYNTHETIC \u2014 shaped from SuperCool's /v1 response renderer; not recorded live. The submit already reports work held for credits after an earlier piece of the same message drew 3.5 credits. The run cancels the held piece and settles the 3.5-credit receipt (200), not a zero-billed 402.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_3c41",
+                    "object": "message",
+                    "credits_used": 3.5,
+                    "status": "blocked",
+                    "reason": "out_of_credits",
+                    "question": null,
+                    "final": false,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_80",
+                            "title": "Logo",
+                            "status": "completed",
+                            "reason": null,
+                            "final": true,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_80",
+                            "started_at": "2026-10-07T15:00:01Z",
+                            "settled_at": "2026-10-07T15:00:04Z"
+                        },
+                        {
+                            "job_id": "exe_1b",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_81",
+                            "title": "Product Photo",
+                            "status": "blocked",
+                            "reason": "out_of_credits",
+                            "final": false,
+                            "queued": true,
+                            "resume_by": "2026-10-08T15:00:05Z",
+                            "link": "https://supercool.com/chat/w_81",
+                            "started_at": null,
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z",
+                    "resume": "add_credits",
+                    "resume_by": "2026-10-08T15:00:05Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/messages/msg_3c41/cancel"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_3c41",
+                    "object": "message",
+                    "credits_used": 3.5,
+                    "status": "partial",
+                    "reason": "cancelled",
+                    "question": null,
+                    "final": true,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_80",
+                            "title": "Logo",
+                            "status": "completed",
+                            "reason": null,
+                            "final": true,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_80",
+                            "started_at": "2026-10-07T15:00:01Z",
+                            "settled_at": "2026-10-07T15:00:04Z"
+                        },
+                        {
+                            "job_id": "exe_1b",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_81",
+                            "title": "Product Photo",
+                            "status": "cancelled",
+                            "reason": "cancelled",
+                            "final": true,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_81",
+                            "started_at": null,
+                            "settled_at": "2026-10-07T15:00:06Z"
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z",
+                    "cancelled": [
+                        "exe_1b"
+                    ],
+                    "not_cancellable": []
+                }
+            }
+        }
+    ]
+}

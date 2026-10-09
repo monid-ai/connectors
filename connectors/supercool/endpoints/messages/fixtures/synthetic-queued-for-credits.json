@@ -1,0 +1,116 @@
+{
+    "name": "synthetic-queued-for-credits",
+    "description": "SYNTHETIC \u2014 shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. The account runs out of credits as the job starts: SuperCool queues it for a top-up (final false, resume add_credits, up to 24h). The run cancels the held work (so a later top-up can't run and bill it outside this run) and settles as a 402 once SuperCool reports the message final.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_9e20aa",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": "Starting your product photo.",
+                    "jobs": [],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_9e20aa?wait=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_9e20aa",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "blocked",
+                    "reason": "out_of_credits",
+                    "question": null,
+                    "final": false,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_5a1",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_77",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "blocked",
+                            "reason": "out_of_credits",
+                            "final": false,
+                            "queued": true,
+                            "resume_by": "2026-10-08T15:00:05Z",
+                            "link": "https://supercool.com/chat/w_77",
+                            "started_at": null,
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:05Z",
+                    "resume": "add_credits",
+                    "resume_by": "2026-10-08T15:00:05Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.origin}}/v1/messages/msg_9e20aa/cancel"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_9e20aa",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "failed",
+                    "reason": "cancelled",
+                    "question": null,
+                    "final": true,
+                    "reply": "Starting your product photo.",
+                    "jobs": [
+                        {
+                            "job_id": "exe_5a1",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_77",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "cancelled",
+                            "reason": "cancelled",
+                            "final": true,
+                            "queued": false,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_77",
+                            "started_at": null,
+                            "settled_at": "2026-10-07T15:00:06Z"
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:00:06Z",
+                    "cancelled": [
+                        "exe_5a1"
+                    ],
+                    "not_cancellable": []
+                }
+            }
+        }
+    ]
+}

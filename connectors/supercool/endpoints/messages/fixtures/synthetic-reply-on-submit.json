@@ -1,0 +1,30 @@
+{
+    "name": "synthetic-reply-on-submit",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. A plain question answered on the submit: final at once, no jobs, no credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_2b81c0",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "completed",
+                    "reason": null,
+                    "question": null,
+                    "final": true,
+                    "reply": "Yes: videos up to 60 seconds, in 9:16, 1:1 or 16:9.",
+                    "jobs": [],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        }
+    ]
+}

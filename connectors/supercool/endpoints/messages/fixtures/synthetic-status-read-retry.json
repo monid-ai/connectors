@@ -1,0 +1,112 @@
+{
+    "name": "synthetic-status-read-retry",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. A status read answers 503 (a failed lookup, not ended work); the run holds and the next read completes.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_7d3a91",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": null,
+                    "jobs": [
+                        {
+                            "job_id": "exe_8f2c1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_5b1e",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "running",
+                            "reason": null,
+                            "final": false,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_5b1e",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_7d3a91?wait=30"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": "unavailable",
+                    "message": "Try again shortly.",
+                    "request_id": "req_77b0"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_7d3a91?wait=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_7d3a91",
+                    "object": "message",
+                    "credits_used": 12.5,
+                    "status": "completed",
+                    "reason": null,
+                    "question": null,
+                    "final": true,
+                    "reply": null,
+                    "jobs": [
+                        {
+                            "job_id": "exe_8f2c1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_5b1e",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "completed",
+                            "reason": null,
+                            "final": true,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_5b1e",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": "2026-10-07T15:02:08Z"
+                        }
+                    ],
+                    "files": [
+                        {
+                            "file_id": "w_5b1e/mug.png",
+                            "name": "mug.png",
+                            "content_type": "image/png",
+                            "kind": "image",
+                            "size": 1048576,
+                            "url": "https://api.supercool.com/f/w_5b1e/mug.png?sig=REDACTED",
+                            "revision": 1,
+                            "work_id": "w_5b1e",
+                            "label": null
+                        }
+                    ],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        }
+    ]
+}

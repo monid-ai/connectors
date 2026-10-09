@@ -1,0 +1,86 @@
+{
+    "name": "synthetic-work-failed",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. The job fails after starting: final, status failed, under 502 with zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 201,
+                "body": {
+                    "id": "msg_e1d004",
+                    "object": "message",
+                    "credits_used": 0,
+                    "status": "processing",
+                    "reason": null,
+                    "question": null,
+                    "final": false,
+                    "reply": null,
+                    "jobs": [
+                        {
+                            "job_id": "exe_8f2c1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_5b1e",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "running",
+                            "reason": null,
+                            "final": false,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_5b1e",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        },
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.origin}}/v1/messages/msg_e1d004?wait=30"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "id": "msg_e1d004",
+                    "object": "message",
+                    "credits_used": 2.0,
+                    "status": "failed",
+                    "reason": "failed",
+                    "question": null,
+                    "final": true,
+                    "reply": null,
+                    "jobs": [
+                        {
+                            "job_id": "exe_8f2c1a",
+                            "kind": "execution",
+                            "role": "execution",
+                            "work_id": "w_5b1e",
+                            "title": "Coffee Mug Product Photo",
+                            "status": "failed",
+                            "reason": "failed",
+                            "final": true,
+                            "queued": null,
+                            "resume_by": null,
+                            "link": "https://supercool.com/chat/w_5b1e",
+                            "started_at": "2026-10-07T15:00:04Z",
+                            "settled_at": null
+                        }
+                    ],
+                    "files": [],
+                    "notes": [],
+                    "created_at": "2026-10-07T15:00:00Z",
+                    "updated_at": "2026-10-07T15:02:10Z"
+                }
+            }
+        }
+    ]
+}

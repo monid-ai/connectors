@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "SYNTHETIC — shaped from SuperCool's /v1 response renderer (render_public.message) and route handlers; not recorded live. A bad API key: 401 with SuperCool's error envelope, no poll.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "error": "unauthorized",
+                    "message": "Invalid API key. Send your API key as 'Authorization: Bearer sc_key_…'.",
+                    "request_id": "req_91af"
+                }
+            }
+        }
+    ]
+}
