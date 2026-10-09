@@ -19,6 +19,12 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Search the open web — keyword, neural, and hybrid retrieval.",
     },
     {
+        id: "commerce-evidence",
+        displayName: "Commerce Evidence",
+        description:
+            "Observed commerce behavior and outcomes for product and purchasing decisions.",
+    },
+    {
         id: "web-scraping",
         displayName: "Web Scraping",
         description: "Fetch and extract clean content from known URLs.",
