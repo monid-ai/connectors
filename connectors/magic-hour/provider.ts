@@ -6,16 +6,16 @@ export default defineProvider({
     meta: {
         displayName: "Magic Hour",
         summary:
-            "AI media generation for images, video, and audio, starting with prompt-to-GIF animation.",
-        description: "Magic Hour provides APIs for generating and editing " +
-            "images, videos, and audio. This connector starts with AI GIF " +
-            "generation: submit a prompt, poll the image project, and receive " +
-            "a temporary download URL for GIF, MP4, or WebM output.",
+            "AI image, video, and audio generation, editing, uploads and project management.",
+        description:
+            "Magic Hour provides APIs for generating and editing " +
+            "images, videos, and audio. Submit a generation, poll its project, and receive " +
+            "temporary download URLs for the generated media.",
         homepageUrl: "https://magichour.ai",
         docsUrl: "https://docs.magichour.ai",
         categories: ["image-generation", "video-generation"],
         notes: [
-            "Generation is asynchronous; Monid polls the image project until it completes.",
+            "Generation is asynchronous; Monid polls the corresponding project until it completes.",
             "Download URLs expire. Save completed output promptly.",
         ],
     },
@@ -23,9 +23,19 @@ export default defineProvider({
     request: { baseUrl: "https://api.magichour.ai" },
     timeouts: { requestMs: 30_000, runMs: 600_000, pollMs: 5_000 },
     lifecycle: {
-        start: async ({ utils }) => {
+        start: async ({ data, utils }) => {
             const res = await utils.request();
             if (res.status < 200 || res.status >= 300) {
+                return {
+                    kind: "COMPLETED",
+                    httpStatus: res.status,
+                    output: res.body,
+                };
+            }
+            if (
+                data.request.method !== "POST" ||
+                data.request.url.endsWith("/v1/files/upload-urls")
+            ) {
                 return {
                     kind: "COMPLETED",
                     httpStatus: res.status,
@@ -41,7 +51,38 @@ export default defineProvider({
             }
             return {
                 kind: "RUNNING",
-                state: { externalRunId: projectId },
+                state: {
+                    externalRunId: projectId,
+                    data: {
+                        collection: data.request.url.endsWith(
+                            "/v1/face-detection",
+                        )
+                            ? "face-detection"
+                            : data.request.url.endsWith(
+                                    "/v1/ai-voice-generator",
+                                ) ||
+                                data.request.url.endsWith("/v1/ai-voice-cloner")
+                              ? "audio-projects"
+                              : [
+                                      "ai-talking-photo",
+                                      "ai-video-editor",
+                                      "ai-video-translator",
+                                      "animation",
+                                      "audio-to-video",
+                                      "auto-subtitle-generator",
+                                      "character-replace",
+                                      "face-swap",
+                                      "image-to-video",
+                                      "lip-sync",
+                                      "text-to-video",
+                                      "video-to-video",
+                                  ].some((path) =>
+                                      data.request.url.endsWith("/v1/" + path),
+                                  )
+                                ? "video-projects"
+                                : "image-projects",
+                    },
+                },
             };
         },
         poll: async ({ data, utils, logger }) => {
@@ -54,23 +95,24 @@ export default defineProvider({
             }
             const res = await utils.http({
                 method: "GET",
-                path: `/v1/image-projects/${projectId}`,
+                path: `/v1/${data.lifecycle.state.data?.collection ?? "image-projects"}/${encodeURIComponent(projectId)}`,
             });
             if (res.status < 200 || res.status >= 300) {
                 throw new Error(
-                    "Magic Hour image project query returned " +
-                        String(res.status),
+                    "Magic Hour project query returned " + String(res.status),
                 );
             }
             const status = utils.json.optionalGet(res.body, "$.status");
             if (
-                status === "queued" || status === "rendering" ||
+                status === "queued" ||
+                status === "rendering" ||
                 status === "draft"
             ) {
                 return {
                     kind: "RUNNING",
                     state: {
                         externalRunId: projectId,
+                        data: data.lifecycle.state.data,
                         ...(typeof status === "string"
                             ? { stage: status }
                             : {}),
@@ -78,7 +120,7 @@ export default defineProvider({
                 };
             }
             if (status === "error" || status === "canceled") {
-                logger.warn("Magic Hour image project did not complete", {
+                logger.warn("Magic Hour project did not complete", {
                     projectId,
                     status,
                 });
@@ -91,19 +133,26 @@ export default defineProvider({
             }
             if (status !== "complete") {
                 logger.warn(
-                    "Magic Hour image project status unrecognized — treating as in flight",
+                    "Magic Hour project status unrecognized — treating as in flight",
                     { projectId, status: String(status) },
                 );
                 return { kind: "RUNNING" };
             }
             const downloads = utils.json.optionalGet(res.body, "$.downloads");
-            const hasDownload = Array.isArray(downloads) && downloads.some(
-                (item) =>
-                    item !== null && typeof item === "object" &&
-                    !Array.isArray(item) && typeof item.url === "string" &&
-                    item.url !== "",
-            );
-            if (!hasDownload) {
+            const hasDownload =
+                Array.isArray(downloads) &&
+                downloads.some(
+                    (item) =>
+                        item !== null &&
+                        typeof item === "object" &&
+                        !Array.isArray(item) &&
+                        typeof item.url === "string" &&
+                        item.url !== "",
+                );
+            if (
+                !hasDownload &&
+                data.lifecycle.state.data?.collection !== "face-detection"
+            ) {
                 return {
                     kind: "COMPLETED",
                     httpStatus: 502,
@@ -128,9 +177,10 @@ export default defineProvider({
         },
         consolidate: ({ data, utils }) => {
             const status = utils.json.optionalGet(data.output, "$.status");
-            const credits = status === "complete"
-                ? utils.json.optionalNum(data.output, "$.credits_charged")
-                : undefined;
+            const credits =
+                status === "complete"
+                    ? utils.json.optionalNum(data.output, "$.credits_charged")
+                    : undefined;
             return {
                 credits: {
                     ...(credits !== undefined ? { default: credits } : {}),

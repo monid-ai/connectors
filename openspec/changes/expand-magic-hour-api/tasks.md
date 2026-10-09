@@ -1,0 +1,6 @@
+- [x] Inventory live public OpenAPI and existing connector.
+- [x] Add native input schemas and distinct operation identities.
+- [x] Extend async polling across media collections without rebilling utility reads.
+- [x] Pin supported variable-rate settings and declare canonical credit estimates.
+- [ ] Pass existing typecheck, replay tests and catalog compilation in remote CI.
+- [ ] Monid review, merge and hosted catalog publication.
