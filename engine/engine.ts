@@ -915,7 +915,12 @@ export class LoadedEndpoint implements RunnableEndpoint {
                         });
                     }
                 }
-                output = consolidated.output ?? raw;
+                // absent (undefined) = unchanged; an explicit null is a
+                // legit Json value the consolidator chose — only absence
+                // falls back to the raw payload (D27)
+                output = consolidated.output === undefined
+                    ? raw
+                    : consolidated.output;
             } else {
                 output = raw;
             }

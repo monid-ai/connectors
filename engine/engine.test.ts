@@ -647,6 +647,47 @@ Deno.test("D27 settle: consolidate PLUCKS the vendor meter before fromResponse; 
     assertEquals(output.sawCost, false);
 });
 
+Deno.test("consolidate output: an explicit null IS the payload (issue #104); only absence keeps the raw", async () => {
+    // the hook contract says absent = unchanged; null is valid Json and a
+    // consolidator may return it deliberately (everything it touched was
+    // billing). The settle path used ?? so null clobbered back to raw and
+    // re-exposed exactly the fields the hook meant to strip.
+    const connectors = demoConnector();
+    connectors[0].endpoints[0].def = defineEndpoint({
+        meta: {
+            displayName: "Search",
+            summary: "Searches.",
+            categories: ["demo-search"],
+        },
+        request: { method: "POST", path: "/search" },
+        input: { schema: { body: z.object({ q: z.string().min(1) }) } },
+        usage: {
+            model: {
+                kind: "PER_UNIT",
+                unit: "RESULT",
+                consumes: { credit: "default", amount: 0.5 },
+            },
+            estimate: () => ({ counts: {} }), // metered docs must estimate (D24)
+            evidence: ({ data, utils }) => ({
+                counts: {
+                    "RESULT": utils.json.len(data.output, "$.results"),
+                },
+            }),
+            consolidate: () => ({ credits: {}, output: null }),
+        },
+    });
+    const bundle = await compileBundle(connectors, COMPILE_OPTS);
+    const engine = new Engine({
+        transport: jsonTransport(200, {
+            results: [{ id: "a" }],
+            vendorTotal: 0,
+        }),
+    });
+    const loaded = await engine.load(sealUnit(bundle, "demo#search"));
+    const result = await loaded.run({ body: { q: "x" } });
+    assertEquals(result.output, null);
+});
+
 Deno.test("no consolidate fn: raw payload passes through; the derived fold settles", async () => {
     // demoConnector links no vendor-meter fn — evidence counts, the
     // engine folds, and the raw body rides out untouched
