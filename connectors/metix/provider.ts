@@ -95,11 +95,25 @@ export default defineProvider({
         // alias).
     },
     request: { baseUrl: "https://mira-api.metix.ai" },
-    // Sync provider, no poll loop. Provisional at 60s, which is the budget
-    // the vendor's own documented rate-limit posture implies; the measured
-    // p95 of all seven endpoints is being drilled before submission, and
-    // any endpoint that lands consistently above 60s moves to the async
-    // lifecycle rather than keeping a sync doc with a longer budget.
+    // Sync provider, no poll loop. Every endpoint is comfortably inside a
+    // 60 s budget, measured against production on 2026-10-10, serial, n=10
+    // per endpoint (p50 / p95 / max, seconds):
+    //
+    //   people/query      size 100      1.64 / 1.95 / 1.95
+    //   jobs/query        size 100      1.43 / 1.80 / 1.80
+    //   companies/query   size 100      1.39 / 1.88 / 1.88
+    //   people-search     size 100      4.86 / 6.80 / 6.80
+    //   profiles/detail   100 ids       2.18 / 4.16 / 4.16
+    //   jobs/detail       100 ids       7.89 / 11.31 / 11.31
+    //   companies/detail  100 ids       2.34 / 4.59 / 4.59
+    //   people/query      size 10000    4.68 / 11.64 / 11.64  (n=3)
+    //
+    // The slowest observed call of the drill was 11.64 s, so 60 s is a 5x
+    // margin over the worst case rather than a guess. jobs/detail is the
+    // slow read because a job record carries the full description text,
+    // and 100 of them is the largest payload this connector can ask for.
+    // Nothing here is near the 60 s line where an async lifecycle would be
+    // the right shape instead.
     timeouts: { requestMs: 60_000, runMs: 60_000 },
     usage: {
         /** The one pool the account meters (design D26). */

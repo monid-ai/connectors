@@ -119,7 +119,7 @@ Deno.test({
             unit: searchUnit,
             input: {
                 body: {
-                    where: { all: [{ field: "name", exists: true }] } as Json,
+                    where: { all: [{ field: "title", exists: true }] } as Json,
                     size: 2,
                 },
             },

@@ -23,10 +23,13 @@
       an array, so the settle reads it as a number
 - [x] 1.7 Note the banded `total`: an exact integer below 100000, the string
       `"100000+"` at or above it
-- [ ] 1.8 Drill measured latency, p50 and p95, on all seven endpoints
-      including `size: 10000` and the model-backed search; move anything
-      consistently above 60 s to the async lifecycle and set `timeouts` from
-      the measured ceiling
+- [x] 1.8 Drill measured latency against production, 2026-10-10, serial,
+      n=10 per endpoint plus n=3 at `size: 10000`. Slowest call of the whole
+      drill was 11.64 s, so every endpoint stays sync and 60 s is a 5x
+      margin rather than a guess. The numbers are in the provider comment
+- [x] 1.9 Reconcile the rate card against production: predicted 2022 credits
+      against a measured `key_quota` delta of 2022 over 76 calls, so the
+      transcription is confirmed per call, not just per formula
 
 ## 2. Provider
 
@@ -98,8 +101,11 @@
 - [x] 6.3 `deno fmt --check` clean
 - [x] 6.4 `deno task test` green with no network, live tests ignored
 - [x] 6.5 `deno task ids:check` lock updated with the seven new ids only
-- [ ] 6.6 `deno task version:check` clean and double compile byte-identical
-- [ ] 6.7 `deno task test:live` green against a real key
+- [x] 6.6 `deno task version:check` clean and double compile byte-identical
+- [x] 6.7 `deno task test:live` green against a real production key: 33 tests
+      pass, 26 replay and 7 live. The jobs read's live test had searched on
+      `name`, which is a company field the jobs dataset does not have, and
+      the live run is what caught it
 
 ## 7. Follow-ups, out of scope here
 

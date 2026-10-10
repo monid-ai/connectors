@@ -12,13 +12,17 @@ search surface beside its people and company datasets.
 Two things make it a clean fit for the connector standard rather than a new
 engine capability.
 
-**The rate card is already machine-readable.** Every route in Metix's own
-`GET /contract` carries a `quota` block stating `dynamicCost.formula` (the
-settle), `preflightMaxCost.formula` (the estimate), `resultPath` (what to
-count) and a `priceVersion`. The models in this connector are a transcription
-of that block at `usage-pricing-v2026-09-20`, not an interpretation of prose,
-and the same surface is what a drift suite would poll. That makes Metix the
-second provider after apify with a published surface a pricing guard can read.
+**The rate card is already machine-readable, and it reconciles.** Every route
+in Metix's own `GET /contract` carries a `quota` block stating
+`dynamicCost.formula` (the settle), `preflightMaxCost.formula` (the estimate),
+`resultPath` (what to count) and a `priceVersion`. The models in this
+connector are a transcription of that block at `usage-pricing-v2026-09-20`,
+not an interpretation of prose. It was checked rather than assumed: a
+76-call drill against production on 2026-10-10 predicted 2022 credits and the
+measured `key_quota` delta was 2022, so the transcription is confirmed per
+call and not just per formula. The same surface is what a drift suite would
+poll, which makes Metix the second provider after apify with a published
+surface a pricing guard can read.
 
 **It is the clearest case yet of a two-call vendor.** Every search returns
 encrypted string IDs and no record data; a second call turns up to 100 IDs
@@ -91,11 +95,12 @@ the seven endpoints are free when they find nothing, and the seventh is not.
 
 ## Open items, stated rather than hidden
 
-- **Timeouts are provisional at 60 s.** The measured p50 and p95 of all seven
-  endpoints is being drilled, including `size: 10000` and the model-backed
-  natural-language search. Any endpoint that lands consistently above 60 s
-  will move to the async lifecycle before this merges rather than keep a sync
-  doc with a longer budget.
+- **Timeouts are measured, not guessed.** Drilled against production on
+  2026-10-10, serial, n=10 per endpoint plus n=3 at `size: 10000`. The
+  slowest call of the whole drill was 11.64 s, so every endpoint stays sync
+  and 60 s is a 5x margin over the worst case. The per-endpoint p50/p95 are
+  in the provider comment. Nothing is near the line where an async lifecycle
+  would be the right shape instead.
 - **Fixtures are synthetic.** Shapes come from the live contract and one real
   2026-10-09 call; IDs and records are invented placeholders, because the
   records are real people and this repo is public. They will be re-recorded
