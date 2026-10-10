@@ -1,0 +1,28 @@
+{
+    "name": "synthetic-people-search-empty",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders and this stays deliberately synthetic: the people records are real individuals and this repository is public, so the jobs and companies fixtures were recorded live while the people ones were not. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Natural-language search answering with no IDs. The AI-search base is STILL charged: this route's quota block is chargeOn 2xx, not 2xx_with_non_empty_result, which is the one place a Metix search is not free when it matches nothing.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "text": "zzqxv no such person anywhere",
+                    "size": 25
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "profile_ids": [],
+                        "total": 0,
+                        "next": null
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-profiles-detail-none-found",
+    "description": "SYNTHETIC, and it has to be: an ID this API did not issue answers 400 `invalid_id` (see recorded-invalid-id.json), so a 200 carrying `not_found` cannot be produced on demand with a fabricated ID. The contract declares the field (`not_found: array<string>`), which is the case of an ID the API DID issue whose record no longer resolves, and this chain models that: found 0 settles zero credits rather than rounding one empty block up to a credit. The IDs are shaped like real ones but are placeholders.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "profile_ids": [
+                        "SyNtHeTiCmIsSiNg00001",
+                        "SyNtHeTiCmIsSiNg00002"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "total": 2,
+                        "found": 0,
+                        "not_found": [
+                            "SyNtHeTiCmIsSiNg00001",
+                            "SyNtHeTiCmIsSiNg00002"
+                        ],
+                        "results": []
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "name": "recorded-companies-query-ok",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. A narrow filter (30M+ LinkedIn followers) that matches only three companies: an EXACT integer total and a null cursor, which is how a caller knows to stop. The third ID is restored from the same live response, which the recorder's array cap had dropped, so the payload is internally consistent at total 3.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "where": {
+                        "all": [
+                            {
+                                "field": "linkedin_followers",
+                                "gte": 30000000
+                            }
+                        ]
+                    },
+                    "size": 5
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "company_ids": [
+                            "tlWb9-XH_HCHzeOUicnn0w",
+                            "NS8uGwIEo9Lf-UmJOv3L8w",
+                            "dnXavU9tdDV9JJWLOdDRzA"
+                        ],
+                        "total": 3,
+                        "next": null
+                    }
+                }
+            }
+        }
+    ]
+}

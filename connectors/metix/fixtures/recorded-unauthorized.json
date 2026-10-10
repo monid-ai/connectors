@@ -1,0 +1,23 @@
+{
+    "name": "recorded-unauthorized",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. Trace id zeroed. A real 401, produced by recording with a deliberately invalid key. The refusal keeps `error_code` and `docs_url`, which is how an agent recovers: fetch docs_url with .md added ahead of the fragment. The url binds, so this one chain serves every endpoint, all seven being POST, and the engine zero-bills it.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "code": 401,
+                    "msg": "Invalid API key",
+                    "data": null,
+                    "error_code": "invalid_api_key",
+                    "docs_url": "https://platform.metix.ai/docs/quickstart#run",
+                    "trace_id": "mira-api-00000000000000000000000000000000"
+                }
+            }
+        }
+    ]
+}

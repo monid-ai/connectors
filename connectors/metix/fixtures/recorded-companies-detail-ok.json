@@ -1,0 +1,80 @@
+{
+    "name": "recorded-companies-detail-ok",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. Two real company records, both public companies with entirely public firmographics. `found` is an INTEGER count and the vendor's quota.resultPath; the live call requested three IDs and the recorder kept two records, so the request and `total` were hand-reduced to the two that remain. Logo URLs are truncated.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "company_ids": [
+                        "tlWb9-XH_HCHzeOUicnn0w",
+                        "NS8uGwIEo9Lf-UmJOv3L8w"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "total": 2,
+                        "found": 2,
+                        "not_found": [],
+                        "results": [
+                            {
+                                "id": "tlWb9-XH_HCHzeOUicnn0w",
+                                "name": "Google",
+                                "type": "Public Company",
+                                "industry": "Software Development",
+                                "keywords": [
+                                    "technology/software",
+                                    "url shortener"
+                                ],
+                                "founded_year": null,
+                                "is_b2b": null,
+                                "website": "https://www.google.com",
+                                "linkedin_url": "https://www.linkedin.com/company/google",
+                                "logo_url": "https://media.licdn.com/dms/image/v2/D4E0BAQGv3cqOuUMY7g/company-logo_100_100/B4EZmhegXHGcAU-/0/1759350753990/google_logo?e=2147483647&v=beta&t=zYekdwB_mnXarr4wa4kw8w3Jikm8YaakM5aiDyAyvP0",
+                                "size": "10,001+",
+                                "headcount": 341814,
+                                "linkedin_followers": 41468785,
+                                "headquarters": {
+                                    "city": "Mountain View",
+                                    "state": "California",
+                                    "country": "United States"
+                                },
+                                "updated_at": "2026-04-25"
+                            },
+                            {
+                                "id": "NS8uGwIEo9Lf-UmJOv3L8w",
+                                "name": "LinkedIn",
+                                "type": "Public Company",
+                                "industry": "Software Development",
+                                "keywords": [
+                                    "online professional network",
+                                    "jobs"
+                                ],
+                                "founded_year": null,
+                                "is_b2b": null,
+                                "website": "https://www.linkedin.com",
+                                "linkedin_url": "https://www.linkedin.com/company/linkedin",
+                                "logo_url": "https://media.licdn.com/dms/image/v2/C560BAQHaVYd13rRz3A/company-logo_100_100/company-logo_100_100/0/1638831590218/linkedin_logo?e=2147483647&v=beta&t=_PvUQac1LcQjfzQ33gtxFqjvIxBbtsM9ZqIxLs5QcFI",
+                                "size": "10,001+",
+                                "headcount": 23781,
+                                "linkedin_followers": 33573599,
+                                "headquarters": {
+                                    "city": "Sunnyvale",
+                                    "state": "California",
+                                    "country": "United States"
+                                },
+                                "updated_at": "2026-04-25"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

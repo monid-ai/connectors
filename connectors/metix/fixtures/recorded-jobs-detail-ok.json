@@ -1,0 +1,104 @@
+{
+    "name": "recorded-jobs-detail-ok",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. Two real job postings. `found` is an INTEGER count and is the vendor's own quota.resultPath for this route, so the settle reads it as a number rather than counting `results`. Both are set to 2 here: the live call requested five IDs and the recorder's array cap kept two records, so the request and `total` were hand-reduced to the two that remain rather than leaving `found` disagreeing with `results`. Descriptions and URLs are truncated.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "job_ids": [
+                        "etG0t8D21nSG3hdZQ7Pr6A",
+                        "yNClo07hcPrSWC6FU4dzag"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "total": 2,
+                        "found": 2,
+                        "not_found": [],
+                        "results": [
+                            {
+                                "id": "etG0t8D21nSG3hdZQ7Pr6A",
+                                "title": "Associate Engineer/ Engineer/ Senior Engineer/ Staff Engineer",
+                                "description": "Dominion Energy is committed to providing reliable, affordable, and increasingly clean energy that powers our customers every day. If you want to work for a purpose-driven company that values safety and collaboration, we [truncated]",
+                                "url": "https://www.linkedin.com/jobs/view/associate-engineer-engineer-senior-engineer-staff-engineer-at-dominion-energy-4467079769",
+                                "apply_url": null,
+                                "employment_type": "Full-time",
+                                "seniority": "Entry level",
+                                "functions": [],
+                                "industries": [
+                                    "Utilities"
+                                ],
+                                "min_experience_months": 96,
+                                "is_open": true,
+                                "posted_date": "2026-09-17",
+                                "posted_date_is_estimated": true,
+                                "applicants_count": 33,
+                                "updated_at": "2026-10-08T09:02:00.987711",
+                                "company": {
+                                    "name": "Dominion Energy",
+                                    "linkedin_url": "https://www.linkedin.com/company/dominionenergy",
+                                    "logo_url": "https://media.licdn.com/dms/image/v2/C4D0BAQE2vsTkcvvEtw/company-logo_100_100/company-logo_100_100/0/1630533474280/domin [truncated]"
+                                },
+                                "location": {
+                                    "city": "Glen Allen",
+                                    "state": "Virginia",
+                                    "country": "United States",
+                                    "display": "Glen Allen, Virginia, United States"
+                                },
+                                "salary": {
+                                    "min": null,
+                                    "max": null,
+                                    "currency": null,
+                                    "period": null
+                                }
+                            },
+                            {
+                                "id": "yNClo07hcPrSWC6FU4dzag",
+                                "title": "Associate Engineer, Engineer, Senior Engineer, Staff Engineer",
+                                "description": "Dominion Energy is committed to providing reliable, affordable, and increasingly clean energy that powers our customers every day. If you want to work for a purpose-driven company that values safety and collaboration, we [truncated]",
+                                "url": "https://www.linkedin.com/jobs/view/associate-engineer-engineer-senior-engineer-staff-engineer-at-dominion-energy-4473257820",
+                                "apply_url": null,
+                                "employment_type": "Full-time",
+                                "seniority": "Entry level",
+                                "functions": [],
+                                "industries": [
+                                    "Utilities"
+                                ],
+                                "min_experience_months": 96,
+                                "is_open": true,
+                                "posted_date": "2026-10-06",
+                                "posted_date_is_estimated": true,
+                                "applicants_count": 32,
+                                "updated_at": "2026-10-08T11:09:14.628809",
+                                "company": {
+                                    "name": "Dominion Energy",
+                                    "linkedin_url": "https://www.linkedin.com/company/dominionenergy",
+                                    "logo_url": "https://media.licdn.com/dms/image/v2/C4D0BAQE2vsTkcvvEtw/company-logo_100_100/company-logo_100_100/0/1630533474280/domin [truncated]"
+                                },
+                                "location": {
+                                    "city": "West Columbia",
+                                    "state": "South Carolina",
+                                    "country": "United States",
+                                    "display": "West Columbia, South Carolina, United States"
+                                },
+                                "salary": {
+                                    "min": null,
+                                    "max": null,
+                                    "currency": null,
+                                    "period": null
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

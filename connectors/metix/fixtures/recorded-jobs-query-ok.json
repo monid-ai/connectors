@@ -1,0 +1,38 @@
+{
+    "name": "recorded-jobs-query-ok",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. Two job IDs and the BANDED total: the contract declares `total` as integer-or-string and returns the string \"100000+\" at or above 100000, so a caller assuming integer breaks here. The `size` in the request is 2 to match the two IDs the recorder's array cap kept.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "where": {
+                        "all": [
+                            {
+                                "field": "title",
+                                "match": "engineer"
+                            }
+                        ]
+                    },
+                    "size": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "job_ids": [
+                            "etG0t8D21nSG3hdZQ7Pr6A",
+                            "yNClo07hcPrSWC6FU4dzag"
+                        ],
+                        "total": "100000+",
+                        "next": "eyJhZnRlciI6WzQuMTUwMzU3MiwiZmRQQVY5X3A2OFZ3c0RVQ3B5ZWVzZyJdLCJzZWFyY2giOiI5OFF2eXo1SGlvSnB1YmpyT2tKalhqVE15OXpwWUJPTFBWV3dscEVDQVRkWmVnQWdmNFZMdl9qSFZ0R2tlVGpIIn0"
+                    }
+                }
+            }
+        }
+    ]
+}
