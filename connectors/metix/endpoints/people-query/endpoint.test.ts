@@ -164,13 +164,15 @@ Deno.test("metix#v1/people/query: the schema gate — size required, strict, bou
         { where, size: 2, after: null },
         { where, size: 2, after: "eyJhZnRlciI6Mn0" },
         // The tree is opaque by design: the live vocabulary is GET
-        // /contract and the vendor refuses an unknown field with a 400,
-        // so the connector does not pre-judge field names.
+        // /contract and the vendor refuses an unknown field, or an empty
+        // tree, with a 400 before anything is charged, so the connector
+        // forwards the tree rather than pre-judging it. An empty `where`
+        // therefore passes HERE and is refused upstream, which is the
+        // division of labour, not a gap — see the 400 test above.
         {
             where: { any: [{ field: "skills", match: "spark" }] } as Json,
             size: 2,
         },
-        { where: {} as Json, size: 2 },
     ];
     for (const body of passing) {
         const ok = await runEndpoint({

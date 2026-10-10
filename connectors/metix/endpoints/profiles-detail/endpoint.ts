@@ -43,7 +43,11 @@ export default defineEndpoint({
         },
         /** The vendor's own `preflightMaxCost`:
          *  ceil(requested_record_count / 5) — every requested ID priced
-         *  as though it resolves, which is the honest worst case. */
+         *  as though it resolves, which is the honest worst case. The
+         *  vendor counts that AFTER de-duplicating, so a caller repeating
+         *  an ID is estimated high and settled low: the fold reads
+         *  `found`, which counts each record once. High is the safe
+         *  direction for a pre-run hold, so the count stays literal. */
         estimate: ({ data }) => ({
             counts: { "RESULT": data.input.body.profile_ids.length },
         }),

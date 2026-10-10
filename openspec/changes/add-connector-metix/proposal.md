@@ -4,10 +4,15 @@
 
 Metix AI is people, job and company data at a scale the catalog does not yet
 cover from one vendor with one grammar: 900M profiles, 90M job postings and
-30M companies, all searched with the same boolean query tree. The catalog has
-people enrichment (pdl, apollo, contactout, clay, orbit, hunterio) and it has
-company data, but it has no provider whose jobs dataset is a first-class
-search surface beside its people and company datasets.
+30M companies, all searched with the same boolean query tree. People
+enrichment is well covered (pdl, apollo, contactout, clay, orbit, hunterio)
+and so is company data. Job data exists but in a different shape: the four
+endpoints carrying the `jobs` leaf today are two company-scoped enrichments
+(`apollo#organizations/job_postings`, `clay#enrichment/company-job-openings`,
+both "postings at THIS company") and two scrapes of someone else's surface
+(`apify#harvestapi/linkedin-job-search`, `dataforseo#serp/google-jobs`). None
+is an owned job index searched with the same structured field grammar as the
+provider's people and company data, which is what this connector adds.
 
 Two things make it a clean fit for the connector standard rather than a new
 engine capability.
@@ -21,8 +26,10 @@ not an interpretation of prose. It was checked rather than assumed: a
 76-call drill against production on 2026-10-10 predicted 2022 credits and the
 measured `key_quota` delta was 2022, so the transcription is confirmed per
 call and not just per formula. The same surface is what a drift suite would
-poll, which makes Metix the second provider after apify with a published
-surface a pricing guard can read.
+poll. Several providers report a receipt per response (exa's `costDollars`,
+orbit's `billing`), which says what a run was charged; a published rate card
+that can be polled BEFORE a run is rarer, and beside apify's `pricingInfo`
+this is the second one in the catalog.
 
 **It is the clearest case yet of a two-call vendor.** Every search returns
 encrypted string IDs and no record data; a second call turns up to 100 IDs
