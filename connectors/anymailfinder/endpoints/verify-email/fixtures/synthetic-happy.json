@@ -1,0 +1,27 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC - shape taken from live v5.1 responses recorded by the vendor on 2026-10-01 (api.anymailfinder.com/openapi.json); values are placeholders. A valid verdict: credits_charged 0.2.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.anymailfinder.com/v5.1/verify-email",
+                "body": {
+                    "email": "jane.doe@example.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "input": {
+                        "email": "jane.doe@example.com"
+                    },
+                    "credits_charged": 0.2,
+                    "email_status": "valid",
+                    "mx_domain": "google.com",
+                    "mx_host": "aspmx.l.google.com"
+                }
+            }
+        }
+    ]
+}

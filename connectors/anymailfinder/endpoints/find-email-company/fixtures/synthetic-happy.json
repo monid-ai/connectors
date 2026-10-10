@@ -1,0 +1,37 @@
+{
+    "name": "synthetic-happy",
+    "description": "SYNTHETIC - shape taken from live v5.1 responses recorded by the vendor on 2026-10-01 (api.anymailfinder.com/openapi.json); values are placeholders. Three verified addresses: credits_charged 1 for the whole list.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.anymailfinder.com/v5.1/find-email/company",
+                "body": {
+                    "domain": "example.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "input": {
+                        "domain": "example.com"
+                    },
+                    "credits_charged": 1,
+                    "email_status": "valid",
+                    "emails": [
+                        "a.example@example.com",
+                        "b.example@example.com",
+                        "info@example.com"
+                    ],
+                    "mx_domain": "google.com",
+                    "mx_host": "aspmx.l.google.com",
+                    "valid_emails": [
+                        "a.example@example.com",
+                        "b.example@example.com",
+                        "info@example.com"
+                    ]
+                }
+            }
+        }
+    ]
+}

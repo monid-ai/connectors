@@ -1,0 +1,29 @@
+{
+    "name": "synthetic-miss",
+    "description": "SYNTHETIC - shape taken from live v5.1 responses recorded by the vendor on 2026-10-01 (api.anymailfinder.com/openapi.json); values are placeholders. Nothing found: 200 with empty lists, credits_charged 0, free.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.anymailfinder.com/v5.1/find-email/company",
+                "body": {
+                    "domain": "example.com"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "input": {
+                        "domain": "example.com"
+                    },
+                    "credits_charged": 0,
+                    "email_status": "not_found",
+                    "emails": [],
+                    "mx_domain": null,
+                    "mx_host": null,
+                    "valid_emails": []
+                }
+            }
+        }
+    ]
+}

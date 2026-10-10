@@ -1,0 +1,41 @@
+{
+    "name": "synthetic-miss",
+    "description": "SYNTHETIC - shape taken from live v5.1 responses recorded by the vendor on 2026-10-01 (api.anymailfinder.com/openapi.json); values are placeholders. A miss: 200 with email_status not_found, credits_charged 0, free.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://api.anymailfinder.com/v5.1/find-email/decision-maker",
+                "body": {
+                    "domain": "example.com",
+                    "decision_maker_category": [
+                        "ceo"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "input": {
+                        "domain": "example.com",
+                        "decision_maker_category": [
+                            "ceo"
+                        ]
+                    },
+                    "credits_charged": 0,
+                    "decision_maker_category": null,
+                    "email": null,
+                    "email_status": "not_found",
+                    "mx_domain": null,
+                    "mx_host": null,
+                    "person_first_name": null,
+                    "person_full_name": null,
+                    "person_job_title": null,
+                    "person_last_name": null,
+                    "person_linkedin_url": null,
+                    "valid_email": null
+                }
+            }
+        }
+    ]
+}
