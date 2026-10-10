@@ -13,7 +13,8 @@ export default defineEndpoint({
             "carries identity, headline, current title, seniority and " +
             "function, location, the full work history with company " +
             "firmographics and tenure, education, skills, languages, " +
-            "certifications and publications. `_source` narrows the " +
+            "awards, certifications, courses, publications and patents. " +
+            "`_source` narrows the " +
             "record by field path: naming an object such as " +
             "experience.company returns everything under it, and false " +
             "returns the ID alone. An ID that resolves to nothing is " +

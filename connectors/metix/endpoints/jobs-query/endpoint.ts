@@ -8,10 +8,13 @@ export default defineEndpoint({
         displayName: "Find Jobs",
         summary: "Search 90M job postings with a structured boolean query.",
         description: "Search 90M job postings with a boolean query tree " +
-            "over the documented field list: title, seniority, function, " +
-            "hiring company and its headcount and industry, location, " +
-            "posting and closing dates, salary and employment type. " +
-            "Composers are all, any and not. Returns encrypted string job " +
+            "over the documented field list: title, seniority, functions, " +
+            "industries, hiring company name, location, posted date, " +
+            "employment type, salary bounds, minimum experience, " +
+            "applicant count, whether the posting is still open, and the " +
+            "description text. Composers are all, any and not; this " +
+            "dataset declares no same-record scopes. Returns encrypted " +
+            "string job " +
             "IDs and a `total`, never record data: read the postings with " +
             "metix#entity/v1/jobs/detail-by-id, 100 IDs at a time. `total` " +
             "is free to look at, so a filter can be narrowed before paying " +

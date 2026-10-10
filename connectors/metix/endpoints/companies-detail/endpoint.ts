@@ -9,12 +9,15 @@ export default defineEndpoint({
         summary: "Turn company IDs from a search into full firmographics.",
         description: "Read full company records for encrypted string " +
             "company IDs returned by metix#v1/companies/query, up to 100 " +
-            "IDs per request. A record carries the name and domain, " +
-            "industry, headcount and size band, company type, " +
-            "headquarters location and founding year. `_source` narrows " +
-            "the record by field path; false returns the ID alone. An ID " +
-            "that resolves to nothing is reported as not found and costs " +
-            "nothing. Charged per five records found.",
+            "IDs per request. A record carries the name, website and " +
+            "social URLs, industry and keywords, company type, whether it " +
+            "sells B2B, headcount with its year-on-year growth, size " +
+            "band, LinkedIn follower count, founding year, the full " +
+            "headquarters address, the last funding round amount and " +
+            "date, and any stock listing. `_source` narrows the record by " +
+            "field path; false returns the ID alone. An ID that resolves " +
+            "to nothing is reported as not found and costs nothing. " +
+            "Charged per five records found.",
         docsUrl: "https://platform.metix.ai/docs/api/companies",
         categories: ["company-enrichment"],
     },

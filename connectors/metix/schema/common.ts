@@ -40,10 +40,12 @@ export const zWhere = z.record(z.string(), z.any()).describe(
         "<value>}. The eight operators are eq, in, match, gte, gt, lte, lt " +
         "and exists, and a leaf carries exactly ONE of them, so a bounded " +
         "range is an `all` of two leaves rather than gte and lte in the " +
-        "same leaf. Same-record scopes (has_experience, has_education, " +
-        "has_language) require every condition inside one scope to match " +
-        "the same sub-record: one job that is both Director AND at Google, " +
-        "rather than two different jobs. A field name is the path the " +
+        "same leaf. The people dataset adds same-record scopes " +
+        "(has_experience, has_education, has_language), which require " +
+        "every condition inside one scope to match the same sub-record: " +
+        "one job that is both Director AND at Google, rather than two " +
+        "different jobs. The jobs and companies datasets declare no " +
+        "scopes. A field name is the path the " +
         "record returns that value under; GET /contract " +
         "(querySpecByEntity) lists the names and the operators each one " +
         "takes for this dataset, and a name outside that list is refused " +

@@ -9,13 +9,16 @@ export default defineEndpoint({
         summary: "Turn job IDs from a search into full postings.",
         description: "Read full job postings for encrypted string job IDs " +
             "returned by metix#v1/jobs/query, up to 100 IDs per request. A " +
-            "record carries the title, seniority and function, the hiring " +
-            "company with its firmographics, location and remote posture, " +
-            "posting and closing dates, employment type, salary where " +
-            "published, and the description. `_source` narrows the record " +
-            "by field path; false returns the ID alone. An ID that " +
-            "resolves to nothing is reported as not found and costs " +
-            "nothing. Charged per five records found.",
+            "record carries the title, seniority, functions and " +
+            "industries, the hiring company's name and LinkedIn, the " +
+            "location, the posting date and whether it is estimated, " +
+            "whether the posting is still open, the applicant count, " +
+            "minimum experience, employment type, the salary bounds and " +
+            "period where published with their annualized form, the " +
+            "description, and both the posting URL and the apply URL. " +
+            "`_source` narrows the record by field path; false returns the " +
+            "ID alone. An ID that resolves to nothing is reported as not " +
+            "found and costs nothing. Charged per five records found.",
         docsUrl: "https://platform.metix.ai/docs/api/jobs",
         categories: ["jobs"],
     },

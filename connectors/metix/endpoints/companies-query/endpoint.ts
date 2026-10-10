@@ -8,9 +8,13 @@ export default defineEndpoint({
         displayName: "Find Companies",
         summary: "Search 30M companies with a structured boolean query.",
         description: "Search 30M companies with a boolean query tree over " +
-            "the documented field list: name, industry, headcount, size " +
-            "band, company type, location and founding year. Composers are " +
-            "all, any and not. Returns encrypted string company IDs and a " +
+            "the documented field list: name, industry, keywords, " +
+            "headcount, year-on-year headcount growth, size band, company " +
+            "type, whether it sells B2B, headquarters location, founding " +
+            "year, last funding round amount and date, LinkedIn follower " +
+            "count, website and stock listing. Composers are all, any and " +
+            "not; this dataset declares no same-record scopes. Returns " +
+            "encrypted string company IDs and a " +
             "`total`, never record data: read the firmographics with " +
             "metix#entity/v1/companies/detail-by-id, 100 IDs at a time. " +
             "`total` is free to look at, so a filter can be narrowed " +
