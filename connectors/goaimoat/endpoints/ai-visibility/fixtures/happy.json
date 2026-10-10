@@ -1,0 +1,26 @@
+{
+    "name": "happy",
+    "description": "recorded response for goaimoat#ai-visibility, scenario 'happy'",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://mcp.goaimoat.com/api/audit",
+                "body": {
+                    "brand_name": "GoAI Moat"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "brand_name": "GoAI Moat",
+                    "core_thesis": "Being good is no longer enough — you have to be *sayable by AI*.",
+                    "access": "paywall",
+                    "paywall_reason": "valid email required for the free audit",
+                    "buy_url": "https://goaimoat.gumroad.com/l/njpksu",
+                    "hint": "Free tier = 1 full audit per email (retry with a valid email), or buy a $29/year license for unlimited audits."
+                }
+            }
+        }
+    ]
+}

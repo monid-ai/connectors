@@ -1,0 +1,21 @@
+{
+    "name": "provider-error",
+    "description": "recorded response for goaimoat#ai-visibility, scenario 'provider-error' (upstream 500, synthetic)",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://mcp.goaimoat.com/api/audit",
+                "body": {
+                    "brand_name": "GoAI Moat"
+                }
+            },
+            "res": {
+                "status": 500,
+                "body": {
+                    "error": "internal server error"
+                }
+            }
+        }
+    ]
+}
