@@ -85,6 +85,13 @@
         "searchType": "hashtag",
         "searchLimit": 2
     },
+    "apimint/google-ads-transparency-scraper": {
+        "domains": [
+            "hubspot.com"
+        ],
+        "region": "US",
+        "maxAds": 3
+    },
     "automation-lab/snapchat-scraper": {
         "usernames": [
             "snapchat"
