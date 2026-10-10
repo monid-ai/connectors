@@ -1,0 +1,63 @@
+{
+    "name": "strategy-detail-ok",
+    "description": "recorded from the live public API on 2026-09-30 (bodies trimmed: arrays capped at 2 rows, long strings truncated). Exercises the FREE settle path: a 2xx completes as data and settles at zero credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?hash=0x20691ea20452e7b0b7311428ae9be4cf8ffefc890aa09a2c3bcc298198606d72"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "chain": "ethereum",
+                    "chain_name": "Ethereum",
+                    "pair": "1INCH/USDC",
+                    "strategy_hash": "0x20691ea20452e7b0b7311428ae9be4cf8ffefc890aa09a2c3bcc298198606d72",
+                    "app": "0x111111338c5091e8440b67b168bae16a668ac0de",
+                    "tokens": [
+                        {
+                            "token": "0x111111111117dc0aa78b770fa6a738034120c302"
+                        },
+                        {
+                            "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                        }
+                    ],
+                    "status": "active",
+                    "volume_1d_usd": 0,
+                    "volume_30d_usd": 22431223.769803,
+                    "last_activity": "2026-09-29T00:00:00+00:00",
+                    "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                    "logo_b": "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+                    "requestId": "e5707a682b255b024438a6d7892bee58",
+                    "data": {
+                        "chain": "ethereum",
+                        "chain_name": "Ethereum",
+                        "pair": "1INCH/USDC",
+                        "strategy_hash": "0x20691ea20452e7b0b7311428ae9be4cf8ffefc890aa09a2c3bcc298198606d72",
+                        "app": "0x111111338c5091e8440b67b168bae16a668ac0de",
+                        "tokens": [
+                            {
+                                "token": "0x111111111117dc0aa78b770fa6a738034120c302"
+                            },
+                            {
+                                "token": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                            }
+                        ],
+                        "status": "active",
+                        "volume_1d_usd": 0,
+                        "volume_30d_usd": 22431223.769803,
+                        "last_activity": "2026-09-29T00:00:00+00:00",
+                        "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                        "logo_b": "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                    },
+                    "meta": {
+                        "requestId": "e5707a682b255b024438a6d7892bee58",
+                        "generatedAt": "2026-09-30T23:25:59.200Z",
+                        "apiVersion": "v1"
+                    }
+                }
+            }
+        }
+    ]
+}

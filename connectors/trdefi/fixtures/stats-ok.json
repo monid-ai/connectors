@@ -1,0 +1,103 @@
+{
+    "name": "stats-ok",
+    "description": "recorded from the live public API on 2026-09-30 (bodies trimmed: arrays capped at 2 rows, long strings truncated). Exercises the FREE settle path: a 2xx completes as data and settles at zero credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "data": {
+                        "source": "open liquidity strategies (normalized by TRDEFI)",
+                        "totals": {
+                            "strategies": 5061,
+                            "makers": 769,
+                            "pairs": 1426,
+                            "chains": 17,
+                            "volume_1d_usd": 133168963.151581,
+                            "volume_7d_usd": 273323047.966678,
+                            "volume_30d_usd": 355679240.579154,
+                            "last_activity": "2026-09-30T00:00:00+00:00",
+                            "rollup_updated_at": "2026-09-30T18:08:46.031+00:00"
+                        },
+                        "chains": [
+                            {
+                                "chain": "Ethereum",
+                                "count": 3633,
+                                "volume_30d_usd": 353351555.359677,
+                                "last_activity": "2026-09-30T00:00:00+00:00"
+                            },
+                            {
+                                "chain": "Robinhood Chain",
+                                "count": 562,
+                                "volume_30d_usd": 2002832.322655,
+                                "last_activity": "2026-09-30T00:00:00+00:00"
+                            }
+                        ],
+                        "top_pairs_by_volume": [
+                            {
+                                "pair": "1INCH/wstETH",
+                                "chain": "Ethereum",
+                                "count": 118,
+                                "maker_count": 55,
+                                "volume_30d_usd": 109437185.270425,
+                                "last_activity": "2026-09-29T00:00:00+00:00",
+                                "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                                "logo_b": "https://tokens.1inch.io/0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0.png"
+                            },
+                            {
+                                "pair": "1INCH/USDC",
+                                "chain": "Ethereum",
+                                "count": 217,
+                                "maker_count": 121,
+                                "volume_30d_usd": 74083900.11138,
+                                "last_activity": "2026-09-29T00:00:00+00:00",
+                                "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                                "logo_b": "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                            }
+                        ],
+                        "top_pairs_by_positions": [
+                            {
+                                "pair": "1INCH/WETH",
+                                "chain": "Ethereum",
+                                "count": 261,
+                                "maker_count": 135,
+                                "volume_30d_usd": 63795546.533065,
+                                "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                                "logo_b": "https://tokens.1inch.io/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                            },
+                            {
+                                "pair": "1INCH/USDC",
+                                "chain": "Ethereum",
+                                "count": 217,
+                                "maker_count": 121,
+                                "volume_30d_usd": 74083900.11138,
+                                "logo_a": "https://tokens-data.1inch.io/images/1/0x111111111117dc0aa78b770fa6a738034120c302_0x2b2c127f11a6604d4319c936334506b86c339a3773b6f2731db0ed4a4fb7fb72.webp",
+                                "logo_b": "https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                            }
+                        ],
+                        "funnel": {
+                            "read_clients": 92,
+                            "agents_mcp": 39,
+                            "probed": 32,
+                            "prepared": 6,
+                            "x402_payers": 6,
+                            "read_to_probe_pct": 6.5,
+                            "probe_to_paid_pct": 9.4
+                        }
+                    },
+                    "meta": {
+                        "requestId": "66aeee239db565090957e0e70b8b83f5",
+                        "generatedAt": "2026-09-30T23:25:50.577Z",
+                        "apiVersion": "v1",
+                        "freshnessSeconds": 19025,
+                        "cached": false
+                    }
+                }
+            }
+        }
+    ]
+}

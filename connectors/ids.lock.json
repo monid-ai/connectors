@@ -629,7 +629,13 @@
         "suzanne#v1/models/download",
         "suzanne#v1/uploads",
         "tinyfish#fetch",
-        "tinyfish#search"
+        "tinyfish#search",
+        "trdefi#api/badge",
+        "trdefi#api/chains",
+        "trdefi#api/quote",
+        "trdefi#api/stats",
+        "trdefi#api/strategies",
+        "trdefi#api/strategy-detail"
     ],
     "resources": [
         "saperly/phone-number"

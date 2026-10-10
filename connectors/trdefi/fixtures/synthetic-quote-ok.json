@@ -1,0 +1,47 @@
+{
+    "name": "synthetic-quote-ok",
+    "description": "Synthetic (2026-09-30: no live recording possible — every public USDC/USDT strategy answers 422 today, gated or non-simulatable). The body follows the /api/quote 200 contract (strategies.js handleQuote success return plus the {data, meta} wrapper); field values are placeholders. Unverified against live traffic — replace via `deno task record` once one strategy is publicly quotable.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?hash=0x0000000000000000000000000000000000000000000000000000000000000001&chain=ethereum&amount=1000000&direction=aToB"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "chain": "ethereum",
+                    "strategy_hash": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                    "direction": "aToB",
+                    "token_in": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                    "token_out": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+                    "amount_in": "1000000",
+                    "amount_out": "998500",
+                    "order_hash": "0x0000000000000000000000000000000000000000000000000000000000000002",
+                    "mode": "eth_call",
+                    "gas_required": false,
+                    "token_transfer": false,
+                    "requestId": "fixture",
+                    "data": {
+                        "chain": "ethereum",
+                        "strategy_hash": "0x0000000000000000000000000000000000000000000000000000000000000001",
+                        "direction": "aToB",
+                        "token_in": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                        "token_out": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+                        "amount_in": "1000000",
+                        "amount_out": "998500",
+                        "order_hash": "0x0000000000000000000000000000000000000000000000000000000000000002",
+                        "mode": "eth_call",
+                        "gas_required": false,
+                        "token_transfer": false
+                    },
+                    "meta": {
+                        "requestId": "fixture",
+                        "generatedAt": "2026-09-30T00:00:00.000Z",
+                        "apiVersion": "v1"
+                    }
+                }
+            }
+        }
+    ]
+}

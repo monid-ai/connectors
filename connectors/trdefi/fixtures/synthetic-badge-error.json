@@ -1,0 +1,22 @@
+{
+    "name": "synthetic-badge-error",
+    "description": "Synthetic upstream-unavailable envelope (503): exercises the provider-error path - a non-2xx completes as data and settles at zero credits.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "{{request.url}}?metric=volume30"
+            },
+            "res": {
+                "status": 503,
+                "body": {
+                    "error": "The liquidity roll-up is temporarily unavailable. Retry shortly.",
+                    "code": "UPSTREAM_UNAVAILABLE",
+                    "requestId": "fixture",
+                    "retryable": true,
+                    "documentation": "https://yield.trdefi.com/docs/api#upstream_unavailable"
+                }
+            }
+        }
+    ]
+}
