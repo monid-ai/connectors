@@ -65,6 +65,7 @@
         "apify#apify/instagram-post-scraper",
         "apify#apify/instagram-profile-scraper",
         "apify#apify/instagram-search-scraper",
+        "apify#apimint/google-ads-transparency-scraper",
         "apify#automation-lab/snapchat-scraper",
         "apify#axesso_data/amazon-reviews-scraper",
         "apify#axesso_data/amazon-search-scraper",

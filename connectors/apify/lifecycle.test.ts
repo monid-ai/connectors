@@ -7,6 +7,7 @@ import {
     type UsageModel,
 } from "@shared/core";
 import {
+    type Fixture,
     loadFixture,
     runEndpoint,
     testBundle,
@@ -307,6 +308,49 @@ Deno.test("apify#harvestapi/linkedin-profile-search-by-services: mode-selected s
     });
 });
 
+Deno.test("apify#apimint/google-ads-transparency-scraper: free rows are not evidenced", async () => {
+    const id = "apify#apimint/google-ads-transparency-scraper";
+    const chain = await loadFixture(`${HERE}fixtures/run-succeeded.json`);
+    // the actor pushes local-ad placeholders and, while screenshot
+    // reading is on, text ads with no readable copy WITHOUT charging
+    // the `ad` event — only the image ad and the OCR'd text ad bill
+    const rows: Record<string, string | boolean>[] = [
+        { adId: "CR1", format: "image", copySource: "none" },
+        { adId: "CR2", format: "text", copySource: "ocr" },
+        { adId: "CR3", format: "text", copySource: "none" },
+        { adId: "CR4", format: "text", emptyTemplate: true },
+    ];
+    const fixture: Fixture = {
+        ...chain,
+        calls: chain.calls.map((call, index) =>
+            index === chain.calls.length - 1
+                ? { ...call, res: { ...call.res, body: rows } }
+                : call
+        ),
+    };
+    const settle = async (body: RunInput["body"]) =>
+        (await runEndpoint({
+            unit: await testSealedUnit(id),
+            input: { body },
+            mode: "replay",
+            fixture,
+        })).usage;
+    assertEquals(await settle(inputFor(id).body), {
+        credits: { default: 0.00005 + 2 * 0.00085 },
+        evidence: { ad: 2, actor_start: 1 },
+    });
+    // with screenshot reading off the actor charges the copy-less text
+    // ad too; the placeholder stays free
+    assertEquals(
+        (await settle({
+            domains: ["hubspot.com"],
+            maxAds: 3,
+            extractTextFromScreenshots: false,
+        })).evidence,
+        { ad: 3, actor_start: 1 },
+    );
+});
+
 Deno.test("apify: PAY_PER_EVENT chain — the derived fold settles; usageTotalUsd is ignored", async () => {
     const fixture = await loadFixture(`${HERE}fixtures/pay-per-event.json`);
     const id = "apify#apify/instagram-profile-scraper";
@@ -595,6 +639,20 @@ Deno.test("apify estimates: label spot checks (v1 parity)", async () => {
         {
             credits: { default: 0.066 },
             evidence: { search_page: 1, full_profile_with_email: 2 },
+        },
+    );
+    // google-ads-transparency-scraper: maxAds (required ≥ 1) IS the
+    // count: 7 × the $0.00085 `ad` event plus the $0.00005 actor_start
+    // flat (written as the same left-to-right arithmetic creditsOf
+    // performs)
+    assertEquals(
+        await estimateFor("apify#apimint/google-ads-transparency-scraper", {
+            domains: ["hubspot.com"],
+            maxAds: 7,
+        }),
+        {
+            credits: { default: 0.00005 + 7 * 0.00085 },
+            evidence: { ad: 7, actor_start: 1 },
         },
     );
 });
