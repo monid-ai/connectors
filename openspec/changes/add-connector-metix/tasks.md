@@ -71,10 +71,19 @@
       company read (1 found)
 - [x] 4.2 One shared 401 and one shared 400: all seven endpoints are POST and
       the url binds, so one chain each serves them all
-- [ ] 4.3 Re-record with `deno task record` once
-      `METIX_CREDENTIALS_API_KEY` exists, then hand-check for PII on top of
-      what the recorder scrubs. The records are real people and this repo is
-      public
+- [x] 4.3 Recorded the jobs and companies chains live on 2026-10-10 and
+      hand-minimized them; the people chains stay synthetic on purpose,
+      because a people record is a real individual and this repository is
+      public. Every recorded payload was read before committing: the
+      companies are Google and LinkedIn with public firmographics, the jobs
+      are public postings with no recruiter or contact fields
+- [x] 4.4 Recorded the 401 and the 400 query refusal through the recorder
+      too, so the only synthetic chains left are the six people ones
+- [x] 4.5 Recorded the `invalid_id` 400, which the synthetic guesses had
+      wrong: an ID this API did not issue is REFUSED, not reported as
+      `not_found`, and one dataset's ID sent to another dataset's read is
+      the same refusal. One shared chain, a test on each read, a provider
+      note
 
 ## 5. Tests
 
@@ -85,9 +94,9 @@
 - [x] 5.2 Per endpoint: happy with the settle asserted and billing fields
       asserted ABSENT from the output
 - [x] 5.3 Empty and not-found cases asserting `credits: {}`
-- [x] 5.4 Provider error (401) and query refusal (400) asserting
-      `{credits: {}, evidence: {}}` and that `error_code` and `docs_url`
-      survive
+- [x] 5.4 Provider error (401), query refusal (400) and invalid ID (400)
+      asserting `{credits: {}, evidence: {}}` and that `error_code` and
+      `docs_url` survive
 - [x] 5.5 A schema gate per endpoint: `size` required, strictness where the
       vendor declares it and absent where it does not, bounds, type refusals,
       and the `source` alias passing on the reads

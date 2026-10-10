@@ -83,6 +83,14 @@ the seven endpoints are free when they find nothing, and the seventh is not.
     fields the vendor designs for an agent to recover from a 4xx by fetching
     the named page as markdown, or else make the output shape depend on the
     status.
+- **Two vendor behaviours the descriptions and notes now carry**, both found
+  by recording rather than reading. An ID this API did not issue is refused
+  with 400 `invalid_id` naming the offending index, NOT reported as
+  `not_found`, and one dataset's ID sent to another dataset's read is the
+  same refusal, so IDs are not interchangeable. And `total` really is banded:
+  a broad jobs search returns the string `"100000+"` while a narrow company
+  filter returns the exact integer 3, so the contract's integer-or-string
+  union is both arms in practice and the recorded chains carry one each.
 - **No new capability.** No schema change, no engine change, no new hook, no
   taxonomy change: `people-enrichment`, `company-enrichment` and `jobs` all
   already exist in `connectors/categories.ts`. Hence no `design.md`.
@@ -101,11 +109,14 @@ the seven endpoints are free when they find nothing, and the seventh is not.
   and 60 s is a 5x margin over the worst case. The per-endpoint p50/p95 are
   in the provider comment. Nothing is near the line where an async lifecycle
   would be the right shape instead.
-- **Fixtures are synthetic.** Shapes come from the live contract and one real
-  2026-10-09 call; IDs and records are invented placeholders, because the
-  records are real people and this repo is public. They will be re-recorded
-  with `deno task record` once a key is in the environment, and the recorded
-  set will be hand-checked for PII on top of what the recorder scrubs.
+- **Fixtures: jobs and companies recorded, people synthetic on purpose.** The
+  jobs and companies chains are real recordings from 2026-10-10, read in full
+  before committing (the companies are Google and LinkedIn with public
+  firmographics; the jobs are public postings carrying no recruiter or contact
+  fields). The six people chains stay synthetic, because a people record is a
+  real individual and this repository is public. Happy to record those too if
+  you would rather have them, but the asymmetry is deliberate rather than
+  unfinished.
 - **A drift suite is offered but NOT included here.** `GET /contract` is the
   surface a `metixSuite` in `scripts/drift/` would poll, which would make a
   Metix repricing fail in CI before it bills a buyer wrong. It is left out of
