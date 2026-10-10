@@ -1,0 +1,34 @@
+{
+    "name": "unauthorized-run",
+    "description": "Recorded 2026-10-10 against POST https://api.bowmark.ai/v1/monid/run with an invalid API key. Bowmark answers 401 with a run-shaped envelope (status needs_user) that tells the caller how to get a key. Data, zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "script": "return 1"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "ok": false,
+                    "status": "needs_user",
+                    "result": null,
+                    "logs": [],
+                    "error": "The Bowmark API key this call presented is no longer valid, so nothing ran. It was not recognised — the key may have been revoked, or deleted from the account that held it.\n\nRetrying will not help, and the key cannot be reinstated. Show your user these steps:\n1. Sign in at https://bowmark.ai/sign-up and open https://bowmark.ai/dashboard/keys.\n2. Check whether the key is still listed there. If it is not, it is gone.\n3. Create a new key and replace the old one where Bowmark is configured:\n   - MCP",
+                    "ms": 0,
+                    "meta": {
+                        "accountRequired": {
+                            "signUpUrl": "https://bowmark.ai/sign-up",
+                            "keysUrl": "https://bowmark.ai/dashboard/keys",
+                            "keyRejected": true
+                        },
+                        "wwwAuthenticate": "Bearer resource_metadata=\"https://api.bowmark.ai/oauth/protected-resource/mcp\", error=\"invalid_token\", error_description=\"A Bowmark account is required.\""
+                    }
+                }
+            }
+        }
+    ]
+}

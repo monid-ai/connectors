@@ -1,0 +1,22 @@
+{
+    "name": "library-flights",
+    "description": "Recorded 2026-10-10 against GET https://api.bowmark.ai/v1/monid/library?query=flights with Accept: application/json. The Markdown `library` string is trimmed by the recorder. Free: zero usage.",
+    "calls": [
+        {
+            "req": {
+                "method": "GET",
+                "url": "https://api.bowmark.ai/v1/monid/library?query=flights"
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "library": "**Found:** `bowmark.flights`.\n\nAlways in scope, no import: `log(...args)` — progress lines; `URL` and `URLSearchParams`; `bowmark.files` — keep a file the run produces and get a link.\n\n# Capability: Flights  (call as `bowmark.flights`)\n\nSearch flights with one call and get back normalized, price-sorted results (the same physical flight appears once). Each result carries the site it came from (`site`) and every site it was found on (`sites`). Returns `{ flights, warnings }` — `warnings` names any",
+                    "query": "flights",
+                    "queries": [
+                        "flights"
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -318,6 +318,13 @@ export const LEAF_CATEGORIES = defineLeafCategories([
             "Tools to extract page content, including clean markdown from any URL, and more.",
     },
     {
+        id: "web-automation",
+        displayName: "Web Automation",
+        description:
+            "Operate live websites from code: search, filter, fill forms, " +
+            "and read prices, stock, quotes and availability.",
+    },
+    {
         id: "seo",
         displayName: "SEO",
         description:
