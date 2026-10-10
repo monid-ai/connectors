@@ -1,0 +1,23 @@
+{
+    "name": "recorded-query-refused",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. Trace id zeroed. A real 400, produced by sending an operator the field does not accept. A query is translated before anything is charged, so a refusal costs nothing. The message names the eight operators and points at GET /contract for the ones each field takes.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "code": 400,
+                    "msg": "Field 'current_title' is free text. It takes match, eq, in or exists. gte, gt, lte and lt compare numbers and dates only.",
+                    "data": null,
+                    "error_code": "query_spec",
+                    "docs_url": "https://platform.metix.ai/docs/reference/errors#query-refusals",
+                    "trace_id": "mira-api-00000000000000000000000000000000"
+                }
+            }
+        }
+    ]
+}

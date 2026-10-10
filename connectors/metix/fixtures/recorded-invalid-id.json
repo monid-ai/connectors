@@ -1,0 +1,23 @@
+{
+    "name": "recorded-invalid-id",
+    "description": "RECORDED against production 2026-10-10 with `deno task record`, then hand-minimized per fixture strategy v2. Headers are never captured, so no credential can be in here. An ID this API did not issue is refused with HTTP 400 `invalid_id` naming the offending index, NOT reported as not found, and it costs nothing. This is the shape an agent hits by hallucinating an ID or by sending one dataset's ID to another dataset's read, which was verified separately: a company ID sent to the jobs read answers the same 400 and settles zero. The url binds, so this one chain serves all three reads. Trace id zeroed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}"
+            },
+            "res": {
+                "status": 400,
+                "body": {
+                    "code": 400,
+                    "msg": "job_ids[5] is not a job ID from this API. Send an ID that POST /v1/jobs/query returned, unchanged.",
+                    "data": null,
+                    "error_code": "invalid_id",
+                    "docs_url": "https://platform.metix.ai/docs/reference/errors#invalid-ids",
+                    "trace_id": "mira-api-00000000000000000000000000000000"
+                }
+            }
+        }
+    ]
+}

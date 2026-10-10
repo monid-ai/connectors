@@ -9,30 +9,36 @@ import {
 } from "@shared/testing";
 
 const fixturesDir = fromFileUrl(new URL("../../fixtures/", import.meta.url));
-const where = { all: [{ field: "industry", match: "biotechnology" }] } as Json;
+const where = {
+    all: [{ field: "linkedin_followers", gte: 30000000 }],
+} as Json;
 
-Deno.test("metix#v1/companies/query happy (synthetic): 1 ID, last page", async () => {
+Deno.test("metix#v1/companies/query happy (recorded): 3 IDs, EXACT total, last page", async () => {
     const unit = await testSealedUnit("metix#v1/companies/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-companies-query-ok.json`,
+        `${fixturesDir}recorded-companies-query-ok.json`,
     );
     const result = await runEndpoint({
         unit,
-        input: { body: { where, size: 1 } },
+        input: { body: { where, size: 5 } },
         mode: "replay",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
+    // ceil(3 / 25) = 1
     assertEquals(result.usage, {
         credits: { default: 1 },
-        evidence: { RESULT: 1 },
+        evidence: { RESULT: 3 },
     });
     const data = (result.output as Record<string, Json>).data as Record<
         string,
         Json
     >;
-    assertEquals((data.company_ids as Json[]).length, 1);
+    assertEquals((data.company_ids as Json[]).length, 3);
+    // An EXACT integer total, in contrast with the jobs search's banded
+    // "100000+": the contract declares the union because both occur.
+    assertEquals(data.total, 3);
     // A null cursor is how a caller knows to stop.
     assertEquals(data.next, null);
 });
@@ -40,11 +46,11 @@ Deno.test("metix#v1/companies/query happy (synthetic): 1 ID, last page", async (
 Deno.test("metix#v1/companies/query provider error (401): zero usage", async () => {
     const unit = await testSealedUnit("metix#v1/companies/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,
-        input: { body: { where, size: 1 } },
+        input: { body: { where, size: 5 } },
         mode: "replay",
         fixture,
     });
@@ -56,7 +62,7 @@ Deno.test("metix#v1/companies/query provider error (401): zero usage", async () 
 Deno.test("metix#v1/companies/query: the schema gate", async () => {
     const unit = await testSealedUnit("metix#v1/companies/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-companies-query-ok.json`,
+        `${fixturesDir}recorded-companies-query-ok.json`,
     );
     const rejected: Json[] = [
         {},
@@ -77,7 +83,7 @@ Deno.test("metix#v1/companies/query: the schema gate", async () => {
     }
     const ok = await runEndpoint({
         unit,
-        input: { body: { where, size: 1 } },
+        input: { body: { where, size: 5 } },
         mode: "replay",
         fixture,
     });
@@ -91,7 +97,7 @@ Deno.test({
         const unit = await testSealedUnit("metix#v1/companies/query");
         const result = await runEndpoint({
             unit,
-            input: { body: { where, size: 1 } },
+            input: { body: { where, size: 5 } },
             mode: "live",
         });
         assertEquals(

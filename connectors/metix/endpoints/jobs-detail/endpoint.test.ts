@@ -18,10 +18,10 @@ const ids = [
     "SyNtHeTiCmIsSiNg00003",
 ];
 
-Deno.test("metix#entity/v1/jobs/detail-by-id happy (synthetic): found is a COUNT", async () => {
+Deno.test("metix#entity/v1/jobs/detail-by-id happy (recorded): found is a COUNT", async () => {
     const unit = await testSealedUnit("metix#entity/v1/jobs/detail-by-id");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-jobs-detail-ok.json`,
+        `${fixturesDir}recorded-jobs-detail-ok.json`,
     );
     const result = await runEndpoint({
         unit,
@@ -35,21 +35,21 @@ Deno.test("metix#entity/v1/jobs/detail-by-id happy (synthetic): found is a COUNT
     // free. Not-found results never count.
     assertEquals(result.usage, {
         credits: { default: 1 },
-        evidence: { RESULT: 5 },
+        evidence: { RESULT: 2 },
     });
     const data = (result.output as Record<string, Json>).data as Record<
         string,
         Json
     >;
-    assertEquals(data.found, 5);
-    assertEquals((data.not_found as Json[]).length, 1);
-    assertEquals((data.results as Json[]).length, 5);
+    assertEquals(data.found, 2);
+    assertEquals((data.not_found as Json[]).length, 0);
+    assertEquals((data.results as Json[]).length, 2);
 });
 
 Deno.test("metix#entity/v1/jobs/detail-by-id provider error (401): zero usage", async () => {
     const unit = await testSealedUnit("metix#entity/v1/jobs/detail-by-id");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,
@@ -65,7 +65,7 @@ Deno.test("metix#entity/v1/jobs/detail-by-id provider error (401): zero usage", 
 Deno.test("metix#entity/v1/jobs/detail-by-id: the schema gate — 1 to 100 IDs", async () => {
     const unit = await testSealedUnit("metix#entity/v1/jobs/detail-by-id");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-jobs-detail-ok.json`,
+        `${fixturesDir}recorded-jobs-detail-ok.json`,
     );
     const rejected: Json[] = [
         {},
@@ -106,6 +106,31 @@ Deno.test("metix#entity/v1/jobs/detail-by-id: the schema gate — 1 to 100 IDs",
             JSON.stringify(body).slice(0, 80),
         );
     }
+});
+
+Deno.test("metix#entity/v1/jobs/detail-by-id invalid id (recorded 400): zero usage", async () => {
+    const unit = await testSealedUnit("metix#entity/v1/jobs/detail-by-id");
+    const fixture = await loadFixture(
+        `${fixturesDir}recorded-invalid-id.json`,
+    );
+    const result = await runEndpoint({
+        unit,
+        input: { body: { job_ids: ["aNiDtHiSaPiNeVeRiSsUeD"] } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 400);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    // An ID this API did not issue is REFUSED, not reported as not found,
+    // and the message names the offending index. Verified live: a company
+    // ID sent to the jobs read answers the same 400 and settles zero.
+    const output = result.output as Record<string, Json>;
+    assertEquals(output.error_code, "invalid_id");
+    assertEquals(
+        output.docs_url,
+        "https://platform.metix.ai/docs/reference/errors#invalid-ids",
+    );
 });
 
 Deno.test({

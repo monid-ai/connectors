@@ -79,7 +79,7 @@ Deno.test("metix#v1/people/query empty (synthetic): no matches bills 0", async (
 Deno.test("metix#v1/people/query provider error (401): data, zero usage", async () => {
     const unit = await testSealedUnit("metix#v1/people/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,
@@ -103,7 +103,7 @@ Deno.test("metix#v1/people/query provider error (401): data, zero usage", async 
 Deno.test("metix#v1/people/query refused query (400): translated before billing", async () => {
     const unit = await testSealedUnit("metix#v1/people/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-query-refused.json`,
+        `${fixturesDir}recorded-query-refused.json`,
     );
     const result = await runEndpoint({
         unit,

@@ -1,6 +1,6 @@
 {
     "name": "synthetic-people-query-ok",
-    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512) and one real 2026-10-09 call to POST /v1/people/query. IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Two profile IDs, an exact integer total, a forward cursor.",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512) and one real 2026-10-09 call to POST /v1/people/query. IDs and records are invented placeholders and this stays deliberately synthetic: the people records are real individuals and this repository is public, so the jobs and companies fixtures were recorded live while the people ones were not. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Two profile IDs, an exact integer total, a forward cursor.",
     "calls": [
         {
             "req": {

@@ -82,7 +82,16 @@ export default defineProvider({
             "field accepts. A field name outside that list is refused with " +
             "HTTP 400 error_code query_spec, before anything is charged.",
             "Read `total` before paging. It says whether a filter is narrow " +
-            "enough to be worth walking, and looking at it costs nothing.",
+            "enough to be worth walking, and looking at it costs nothing. " +
+            'It is an exact integer below 100000 and the string "100000+" ' +
+            "at or above it, so code that assumes a number breaks on the " +
+            "banded form.",
+            "An ID this API did not issue is refused with HTTP 400 " +
+            "error_code invalid_id naming the offending index, NOT " +
+            "reported as not found, and it costs nothing. Sending one " +
+            "dataset's ID to another dataset's read is the same refusal, " +
+            "so IDs are not interchangeable between people, jobs and " +
+            "companies.",
             "Rate limits are 60 requests per minute per key and 120 per " +
             "client address, answered past either with HTTP 429 and a " +
             "Retry-After header in seconds.",

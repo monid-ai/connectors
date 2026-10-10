@@ -64,7 +64,7 @@ Deno.test("metix#v1/people-search empty (synthetic): the base is STILL charged",
 Deno.test("metix#v1/people-search provider error (401): zero usage, base not drawn", async () => {
     const unit = await testSealedUnit("metix#v1/people-search");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,

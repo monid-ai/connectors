@@ -74,7 +74,7 @@ Deno.test("metix#entity/v1/profiles/detail-by-id none found (synthetic): bills 0
 Deno.test("metix#entity/v1/profiles/detail-by-id provider error (401): zero usage", async () => {
     const unit = await testSealedUnit("metix#entity/v1/profiles/detail-by-id");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,
@@ -129,6 +129,31 @@ Deno.test("metix#entity/v1/profiles/detail-by-id: the schema gate — 1 to 100 I
         });
         assertEquals(ok.isProviderError, false, JSON.stringify(body));
     }
+});
+
+Deno.test("metix#entity/v1/profiles/detail-by-id invalid id (recorded 400): zero usage", async () => {
+    const unit = await testSealedUnit("metix#entity/v1/profiles/detail-by-id");
+    const fixture = await loadFixture(
+        `${fixturesDir}recorded-invalid-id.json`,
+    );
+    const result = await runEndpoint({
+        unit,
+        input: { body: { profile_ids: ["aNiDtHiSaPiNeVeRiSsUeD"] } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(result.httpStatus, 400);
+    assertEquals(result.isProviderError, true);
+    assertEquals(result.usage, { credits: {}, evidence: {} });
+    // An ID this API did not issue is REFUSED, not reported as not found,
+    // and the message names the offending index. Verified live: a company
+    // ID sent to the jobs read answers the same 400 and settles zero.
+    const output = result.output as Record<string, Json>;
+    assertEquals(output.error_code, "invalid_id");
+    assertEquals(
+        output.docs_url,
+        "https://platform.metix.ai/docs/reference/errors#invalid-ids",
+    );
 });
 
 Deno.test({

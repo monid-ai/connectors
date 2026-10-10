@@ -1,6 +1,6 @@
 {
     "name": "synthetic-profiles-detail-none-found",
-    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Two IDs requested, neither resolves. found 0, so the run settles zero credits: not-found results are free.",
+    "description": "SYNTHETIC, and it has to be: an ID this API did not issue answers 400 `invalid_id` (see recorded-invalid-id.json), so a 200 carrying `not_found` cannot be produced on demand with a fabricated ID. The contract declares the field (`not_found: array<string>`), which is the case of an ID the API DID issue whose record no longer resolves, and this chain models that: found 0 settles zero credits rather than rounding one empty block up to a credit. The IDs are shaped like real ones but are placeholders.",
     "calls": [
         {
             "req": {

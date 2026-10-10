@@ -11,28 +11,29 @@ import {
 const fixturesDir = fromFileUrl(new URL("../../fixtures/", import.meta.url));
 const where = { all: [{ field: "title", match: "data engineer" }] } as Json;
 
-Deno.test("metix#v1/jobs/query happy (synthetic): 3 IDs, BANDED total", async () => {
+Deno.test("metix#v1/jobs/query happy (recorded): 2 IDs, BANDED total", async () => {
     const unit = await testSealedUnit("metix#v1/jobs/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-jobs-query-ok.json`,
+        `${fixturesDir}recorded-jobs-query-ok.json`,
     );
     const result = await runEndpoint({
         unit,
-        input: { body: { where, size: 3 } },
+        input: { body: { where, size: 2 } },
         mode: "replay",
         fixture,
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
+    // ceil(2 / 25) = 1
     assertEquals(result.usage, {
         credits: { default: 1 },
-        evidence: { RESULT: 3 },
+        evidence: { RESULT: 2 },
     });
     const data = (result.output as Record<string, Json>).data as Record<
         string,
         Json
     >;
-    assertEquals((data.job_ids as Json[]).length, 3);
+    assertEquals((data.job_ids as Json[]).length, 2);
     // `total` is integer-or-string: at or above 100000 it is the banded
     // string. A caller that assumes integer breaks here, which is why the
     // contract declares the union and the connector passes it through.
@@ -42,7 +43,7 @@ Deno.test("metix#v1/jobs/query happy (synthetic): 3 IDs, BANDED total", async ()
 Deno.test("metix#v1/jobs/query provider error (401): zero usage", async () => {
     const unit = await testSealedUnit("metix#v1/jobs/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-unauthorized.json`,
+        `${fixturesDir}recorded-unauthorized.json`,
     );
     const result = await runEndpoint({
         unit,
@@ -58,7 +59,7 @@ Deno.test("metix#v1/jobs/query provider error (401): zero usage", async () => {
 Deno.test("metix#v1/jobs/query: the schema gate", async () => {
     const unit = await testSealedUnit("metix#v1/jobs/query");
     const fixture = await loadFixture(
-        `${fixturesDir}synthetic-jobs-query-ok.json`,
+        `${fixturesDir}recorded-jobs-query-ok.json`,
     );
     const rejected: Json[] = [
         {},
