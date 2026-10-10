@@ -1,0 +1,20 @@
+{
+    "name": "synthetic-unauthorized",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Recorded shape of a real 401 (2026-10-09, a deliberately invalid key), body verbatim apart from the trace id. The url binds, so this one chain serves every endpoint: all seven are POST. A refusal is a real HTTP status and the engine zero-bills it.",
+    "calls": [
+        {
+            "req": { "method": "POST", "url": "{{request.url}}" },
+            "res": {
+                "status": 401,
+                "body": {
+                    "code": 401,
+                    "msg": "Invalid API key",
+                    "data": null,
+                    "error_code": "invalid_api_key",
+                    "docs_url": "https://platform.metix.ai/docs/quickstart#run",
+                    "trace_id": "mira-api-00000000000000000000000000000000"
+                }
+            }
+        }
+    ]
+}

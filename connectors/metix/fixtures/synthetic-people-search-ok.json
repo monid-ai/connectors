@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-people-search-ok",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Natural-language search returning two profile IDs. Settles the flat AI-search base plus one block of IDs.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "text": "python backend engineer with 5 years experience in shanghai",
+                    "size": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "profile_ids": [
+                            "SyNtHeTiCpRoFiLe0000C3",
+                            "SyNtHeTiCpRoFiLe0000D4"
+                        ],
+                        "total": 812,
+                        "next": null
+                    }
+                }
+            }
+        }
+    ]
+}

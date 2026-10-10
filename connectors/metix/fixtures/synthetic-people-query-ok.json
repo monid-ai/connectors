@@ -1,0 +1,38 @@
+{
+    "name": "synthetic-people-query-ok",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512) and one real 2026-10-09 call to POST /v1/people/query. IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Two profile IDs, an exact integer total, a forward cursor.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "where": {
+                        "all": [
+                            {
+                                "field": "current_title",
+                                "match": "data engineer"
+                            }
+                        ]
+                    },
+                    "size": 2
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "profile_ids": [
+                            "SyNtHeTiCpRoFiLe0000A1",
+                            "SyNtHeTiCpRoFiLe0000B2"
+                        ],
+                        "total": 5456,
+                        "next": "eyJzeW50aGV0aWMiOiJjdXJzb3IiLCJhZnRlciI6Mn0"
+                    }
+                }
+            }
+        }
+    ]
+}

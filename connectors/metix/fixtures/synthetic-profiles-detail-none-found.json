@@ -1,0 +1,34 @@
+{
+    "name": "synthetic-profiles-detail-none-found",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. Two IDs requested, neither resolves. found 0, so the run settles zero credits: not-found results are free.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "profile_ids": [
+                        "SyNtHeTiCmIsSiNg00001",
+                        "SyNtHeTiCmIsSiNg00002"
+                    ]
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "total": 2,
+                        "found": 0,
+                        "not_found": [
+                            "SyNtHeTiCmIsSiNg00001",
+                            "SyNtHeTiCmIsSiNg00002"
+                        ],
+                        "results": []
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-companies-detail-ok",
+    "description": "SYNTHETIC. Shape taken from the live contract (GET /contract, apiVersion 2.1.2, contract_hash 08f0406173520512). IDs and records are invented placeholders, not real people. Replace via `deno task record` once METIX_CREDENTIALS_API_KEY exists. One ID requested and found: found 1 rounds up to one block of five, which is the published block rate.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": { "company_ids": ["SyNtHeTiCcOmPaNy0001A"] }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                        "total": 1,
+                        "found": 1,
+                        "not_found": [],
+                        "results": [
+                            {
+                                "company_id": "SyNtHeTiCcOmPaNy0001A",
+                                "name": "Example Biotech",
+                                "industry": "Biotechnology",
+                                "headcount": 420,
+                                "location": {
+                                    "city": "Boston",
+                                    "state": "MA",
+                                    "country": "United States"
+                                },
+                                "founded_year": 2014
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
