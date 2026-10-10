@@ -64,11 +64,12 @@
 
 ## 4. Fixtures
 
-- [x] 4.1 Twelve provider-level chains: happy and empty for the people
-      search, happy for jobs and companies search (with the banded total),
-      happy and empty for the natural-language search, happy and none-found
-      for the profile read, happy for the job read (5 of 6 found) and the
-      company read (1 found)
+- [x] 4.1 Thirteen provider-level chains: happy and empty for the people
+      search, happy for the jobs search (the banded total) and the companies
+      search (an exact total and a null cursor), happy and empty for the
+      natural-language search, happy and none-found for the profile read,
+      and happy for the job and company reads, each requesting two IDs and
+      finding both after the recordings were hand-minimized
 - [x] 4.2 One shared 401 and one shared 400: all seven endpoints are POST and
       the url binds, so one chain each serves them all
 - [x] 4.3 Recorded the jobs and companies chains live on 2026-10-10 and
@@ -111,8 +112,8 @@
 - [x] 6.4 `deno task test` green with no network, live tests ignored
 - [x] 6.5 `deno task ids:check` lock updated with the seven new ids only
 - [x] 6.6 `deno task version:check` clean and double compile byte-identical
-- [x] 6.7 `deno task test:live` green against a real production key: 33 tests
-      pass, 26 replay and 7 live. The jobs read's live test had searched on
+- [x] 6.7 `deno task test:live` green against a real production key: 36 tests
+      pass, 29 replay and 7 live. The jobs read's live test had searched on
       `name`, which is a company field the jobs dataset does not have, and
       the live run is what caught it
 

@@ -9,14 +9,7 @@ import {
 } from "@shared/testing";
 
 const fixturesDir = fromFileUrl(new URL("../../fixtures/", import.meta.url));
-const ids = [
-    "SyNtHeTiCjOb00000001A",
-    "SyNtHeTiCjOb00000002B",
-    "SyNtHeTiCjOb00000003C",
-    "SyNtHeTiCjOb00000004D",
-    "SyNtHeTiCjOb00000005E",
-    "SyNtHeTiCmIsSiNg00003",
-];
+const ids = ["etG0t8D21nSG3hdZQ7Pr6A", "yNClo07hcPrSWC6FU4dzag"];
 
 Deno.test("metix#entity/v1/jobs/detail-by-id happy (recorded): found is a COUNT", async () => {
     const unit = await testSealedUnit("metix#entity/v1/jobs/detail-by-id");
@@ -31,12 +24,22 @@ Deno.test("metix#entity/v1/jobs/detail-by-id happy (recorded): found is a COUNT"
     });
     assertEquals(result.httpStatus, 200);
     assertEquals(result.isProviderError, false);
-    // Six requested, five found: ceil(5 / 5) = 1, and the missing ID is
-    // free. Not-found results never count.
+    // Two IDs requested and both found, which is what the recorded
+    // fixture carries: ceil(2 / 5) = 1, a whole block for a partial
+    // one, which is the published block rate.
     assertEquals(result.usage, {
         credits: { default: 1 },
         evidence: { RESULT: 2 },
     });
+    // The envelope rides through untouched and carries no billing field:
+    // `usage.consolidate` is absent because there is no vendor meter to
+    // lift, so nothing can be left behind in the output either.
+    const output = result.output as Record<string, Json>;
+    assertEquals(output.code, 200);
+    assertEquals(output.msg, "ok");
+    assertEquals("usage" in output, false);
+    assertEquals("credits" in output, false);
+    assertEquals("charged_credits" in output, false);
     const data = (result.output as Record<string, Json>).data as Record<
         string,
         Json

@@ -54,6 +54,15 @@ Deno.test("metix#v1/people-search empty (synthetic): the base is STILL charged",
         credits: { default: 5 },
         evidence: { ai_search_base: 1, profile_ids: 0 },
     });
+    // The envelope rides through untouched and carries no billing field:
+    // `usage.consolidate` is absent because there is no vendor meter to
+    // lift, so nothing can be left behind in the output either.
+    const output = result.output as Record<string, Json>;
+    assertEquals(output.code, 200);
+    assertEquals(output.msg, "ok");
+    assertEquals("usage" in output, false);
+    assertEquals("credits" in output, false);
+    assertEquals("charged_credits" in output, false);
     const data = (result.output as Record<string, Json>).data as Record<
         string,
         Json
