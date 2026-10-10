@@ -1,0 +1,27 @@
+{
+    "name": "run-error",
+    "description": "Recorded 2026-10-10 against POST https://api.bowmark.ai/v1/monid/run with a script that throws. HTTP 200 with status error: the call succeeded and the RUN failed, so it bills 0. The account-specific `notice` field was removed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "script": "throw new Error(\"no such flight\")"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": false,
+                    "status": "error",
+                    "result": null,
+                    "logs": [],
+                    "error": "Error: no such flight",
+                    "ms": 702,
+                    "runId": "82ff2169-7126-4453-ac35-4c8053633f40"
+                }
+            }
+        }
+    ]
+}

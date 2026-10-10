@@ -1,0 +1,30 @@
+{
+    "name": "run-ok",
+    "description": "Recorded 2026-10-10 against POST https://api.bowmark.ai/v1/monid/run: a one-call script reading example.com. status ok, so one billable run. The account-specific `notice` field (a terms-acceptance reminder on the recording account) was removed. Bowmark's per-call `notes` (route narration about how the page was reached) were removed as noise; the replay asserts nothing on them.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "script": "const page = await bowmark.read.page(\"https://example.com\"); return { title: page.title, url: page.url };"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "ok": true,
+                    "status": "ok",
+                    "result": {
+                        "url": "https://example.com/",
+                        "title": "Example Domain"
+                    },
+                    "logs": [],
+                    "error": null,
+                    "ms": 1698,
+                    "runId": "7ad71481-3f46-4c52-8230-2353a632d016"
+                }
+            }
+        }
+    ]
+}
