@@ -1,0 +1,26 @@
+{
+    "name": "unauthorized",
+    "description": "Recorded 2026-09-22 from one unauthenticated POST to the public API. No API key was sent and no paid scrape ran; only the request/response body is retained.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "url": "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "success": false,
+                    "requestId": "8c6feb7b-13e9-4e5f-9988-7d36985ceb30",
+                    "error": {
+                        "category": "unauthorized",
+                        "message": "Missing or invalid API key."
+                    }
+                }
+            }
+        }
+    ]
+}

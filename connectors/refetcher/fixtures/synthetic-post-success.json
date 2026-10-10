@@ -1,0 +1,42 @@
+{
+    "name": "synthetic-post-success",
+    "description": "Synthetic single successful public post response based on Refetcher's published envelope; preserves null metrics and expiring media links. Not a live recording.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 200,
+            "body": {
+                "success": true,
+                "requestId": "synthetic-request",
+                "summary": {
+                    "total": 1,
+                    "succeeded": 1,
+                    "failed": 0,
+                    "errors": {}
+                },
+                "results": [{
+                    "success": true,
+                    "metrics": {
+                        "views": null,
+                        "likes": 120,
+                        "comments": 3,
+                        "shares": null
+                    },
+                    "metricAvailability": {
+                        "views": "not_applicable",
+                        "shares": "unavailable"
+                    },
+                    "post": {
+                        "caption": "Synthetic public post",
+                        "type": "image"
+                    },
+                    "author": { "handle": "sample_creator" },
+                    "media": {
+                        "thumbnailUrl": "https://example.com/temporary-image.jpg"
+                    }
+                }],
+                "totalMs": 1500
+            }
+        }
+    }]
+}

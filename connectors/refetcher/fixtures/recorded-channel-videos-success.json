@@ -1,0 +1,74 @@
+{
+    "name": "recorded-channel-videos-success",
+    "description": "Recorded from an authenticated public-target call on 2026-09-22. TED YouTube channel videos; nested results/videos aliases trimmed to the same one metric-bearing upload. Long text and contact/media-profile fields omitted; response URL query values and continuation cursors redacted. Request headers were never recorded. Trimming does not change observed metrics or pagination totals.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "channelUrl": "https://www.youtube.com/@ted",
+                    "platform": "youtube",
+                    "type": "channelVideos",
+                    "recentVideosLimit": 12
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "requestId": "12ced275-056a-4dce-9559-75032d035e8d",
+                    "summary": {
+                        "total": 1,
+                        "succeeded": 1,
+                        "failed": 0,
+                        "errors": {}
+                    },
+                    "results": [
+                        {
+                            "url": "https://www.youtube.com/@ted",
+                            "platform": "youtube",
+                            "type": "channelVideos",
+                            "success": true,
+                            "channel": {
+                                "id": "UCAuUUnT6oDeKwE6v1NGQxug",
+                                "handle": "ted",
+                                "name": "TED",
+                                "subscribers": 27800000,
+                                "hiddenSubscriberCount": false,
+                                "totalViews": 3237174117,
+                                "totalVideos": 5817
+                            },
+                            "results": [
+                                {
+                                    "id": "PRmIrFhce04",
+                                    "url": "https://www.youtube.com/watch?v=REDACTED",
+                                    "handle": "TED",
+                                    "views": 50938,
+                                    "likes": 192,
+                                    "comments": 10,
+                                    "publishedAt": "2026-09-21T15:00:23Z",
+                                    "thumbnailUrl": "https://i.ytimg.com/vi/PRmIrFhce04/maxresdefault.jpg"
+                                }
+                            ],
+                            "videos": [
+                                {
+                                    "id": "PRmIrFhce04",
+                                    "url": "https://www.youtube.com/watch?v=REDACTED",
+                                    "handle": "TED",
+                                    "views": 50938,
+                                    "likes": 192,
+                                    "comments": 10,
+                                    "publishedAt": "2026-09-21T15:00:23Z",
+                                    "thumbnailUrl": "https://i.ytimg.com/vi/PRmIrFhce04/maxresdefault.jpg"
+                                }
+                            ],
+                            "scrapedAt": "2026-09-22T05:15:42.944Z"
+                        }
+                    ],
+                    "totalMs": 5118
+                }
+            }
+        }
+    ]
+}

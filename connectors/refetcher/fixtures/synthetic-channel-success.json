@@ -1,0 +1,25 @@
+{
+    "name": "synthetic-channel-success",
+    "description": "Synthetic successful YouTube channel metadata with zero uploads; one target costs one unit. Not a live recording.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 200,
+            "body": {
+                "success": true,
+                "summary": { "total": 1, "succeeded": 1, "failed": 0 },
+                "results": [{
+                    "success": true,
+                    "platform": "youtube",
+                    "type": "channel",
+                    "channel": {
+                        "handle": "samplecreator",
+                        "subscribers": null,
+                        "hiddenSubscriberCount": true
+                    },
+                    "recentVideos": []
+                }]
+            }
+        }
+    }]
+}

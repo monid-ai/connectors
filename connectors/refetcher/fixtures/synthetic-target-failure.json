@@ -1,0 +1,23 @@
+{
+    "name": "synthetic-target-failure",
+    "description": "Defensive synthetic HTTP 200 with top-level success but a failed target; only per-target success determines usage. Not a live recording or claimed normal vendor status.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 200,
+            "body": {
+                "success": true,
+                "summary": { "total": 1, "succeeded": 0, "failed": 1 },
+                "results": [
+                    {
+                        "success": false,
+                        "error": {
+                            "category": "private_or_removed",
+                            "message": "Target unavailable"
+                        }
+                    }
+                ]
+            }
+        }
+    }]
+}

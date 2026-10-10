@@ -1,0 +1,31 @@
+{
+    "name": "synthetic-profile-success",
+    "description": "Synthetic successful profile metadata with no recent posts; metadata success still costs one unit. Not a live recording.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 200,
+            "body": {
+                "success": true,
+                "summary": { "total": 1, "succeeded": 1, "failed": 0 },
+                "results": [{
+                    "success": true,
+                    "type": "profile",
+                    "profile": {
+                        "handle": "sample_creator",
+                        "followers": 120,
+                        "isPrivate": false
+                    },
+                    "recentPosts": [],
+                    "pageInfo": {
+                        "recentPosts": {
+                            "hasNextPage": false,
+                            "endCursor": null,
+                            "returnedCount": 0
+                        }
+                    }
+                }]
+            }
+        }
+    }]
+}

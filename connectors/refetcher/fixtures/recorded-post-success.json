@@ -1,0 +1,58 @@
+{
+    "name": "recorded-post-success",
+    "description": "Recorded from an authenticated public-target call on 2026-09-22. YouTube video; exact public metrics, nullable shares/saves, and stable thumbnail/embed media. Long text and contact/media-profile fields omitted; response URL query values and continuation cursors redacted. Request headers were never recorded. Trimming does not change observed metrics or pagination totals.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "url": "https://www.youtube.com/watch?v=8jPQjjsBbIc"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "requestId": "a635cdfe-16e4-4c19-9461-df699fa5ad2d",
+                    "summary": {
+                        "total": 1,
+                        "succeeded": 1,
+                        "failed": 0,
+                        "errors": {}
+                    },
+                    "results": [
+                        {
+                            "url": "https://www.youtube.com/watch?v=REDACTED",
+                            "platform": "youtube",
+                            "success": true,
+                            "metrics": {
+                                "views": 19905217,
+                                "likes": 268055,
+                                "comments": 4071,
+                                "shares": null,
+                                "saves": null
+                            },
+                            "post": {
+                                "id": "8jPQjjsBbIc",
+                                "normalizedUrl": "https://www.youtube.com/watch?v=REDACTED",
+                                "publishedAt": "2015-11-23T16:58:55Z"
+                            },
+                            "author": {
+                                "handle": "UCAuUUnT6oDeKwE6v1NGQxug",
+                                "name": "TED",
+                                "followers": null
+                            },
+                            "media": {
+                                "thumbnailUrl": "https://i.ytimg.com/vi/8jPQjjsBbIc/hqdefault.jpg",
+                                "embedUrl": "https://www.youtube.com/embed/8jPQjjsBbIc"
+                            },
+                            "scrapedAt": "2026-09-22T05:15:32.639Z"
+                        }
+                    ],
+                    "totalMs": 1609
+                }
+            }
+        }
+    ]
+}

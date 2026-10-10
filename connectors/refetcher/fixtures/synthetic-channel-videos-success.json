@@ -1,0 +1,39 @@
+{
+    "name": "synthetic-channel-videos-success",
+    "description": "Synthetic YouTube channel-video result with a nested results array; nested videos remain data and are not counted as separate targets. Not a live recording.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 200,
+            "body": {
+                "success": true,
+                "summary": { "total": 1, "succeeded": 1, "failed": 0 },
+                "results": [{
+                    "success": true,
+                    "platform": "youtube",
+                    "type": "channelVideos",
+                    "channel": { "handle": "samplecreator" },
+                    "results": [
+                        {
+                            "success": true,
+                            "metrics": {
+                                "views": 100,
+                                "likes": 10,
+                                "comments": 1
+                            }
+                        },
+                        {
+                            "success": true,
+                            "metrics": {
+                                "views": 200,
+                                "likes": 20,
+                                "comments": 2
+                            }
+                        }
+                    ],
+                    "videos": [{ "id": "abcdefghijk" }, { "id": "bcdefghijkl" }]
+                }]
+            }
+        }
+    }]
+}

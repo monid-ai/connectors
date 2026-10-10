@@ -1,0 +1,121 @@
+{
+    "name": "recorded-profile-success",
+    "description": "Recorded from an authenticated public-target call on 2026-09-22. NASA Instagram profile; recent media arrays trimmed to one item each while original pagination counters remain unchanged. Long text and contact/media-profile fields omitted; response URL query values and continuation cursors redacted. Request headers were never recorded. Trimming does not change observed metrics or pagination totals.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "username": "nasa",
+                    "includeRecentPosts": true,
+                    "platform": "instagram",
+                    "pages": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "success": true,
+                    "requestId": "e7071fbc-3637-4016-99f9-68a10ac54f7f",
+                    "summary": {
+                        "total": 1,
+                        "succeeded": 1,
+                        "failed": 0,
+                        "errors": {}
+                    },
+                    "results": [
+                        {
+                            "url": "https://www.instagram.com/nasa/",
+                            "platform": "instagram",
+                            "type": "profile",
+                            "success": true,
+                            "profile": {
+                                "id": "528817151",
+                                "handle": "nasa",
+                                "name": "NASA",
+                                "followers": 104346172,
+                                "following": 91,
+                                "totalPosts": 4929,
+                                "totalVideos": 171,
+                                "totalLikes": null,
+                                "talkingAbout": null,
+                                "wereHere": null,
+                                "highlightReelCount": 6,
+                                "isPrivate": false,
+                                "isVerified": true,
+                                "isBusinessAccount": true,
+                                "isProfessionalAccount": true,
+                                "categoryName": "Government Agencies"
+                            },
+                            "recentPosts": [
+                                {
+                                    "id": "3983374110243288826",
+                                    "shortcode": "DdHyaYAifb6",
+                                    "url": "https://www.instagram.com/p/DdHyaYAifb6/",
+                                    "type": "carousel",
+                                    "isVideo": false,
+                                    "views": null,
+                                    "playCount": null,
+                                    "viewCount": null,
+                                    "likes": 108230,
+                                    "comments": 602,
+                                    "shares": null,
+                                    "saves": null,
+                                    "publishedAt": "2026-09-10T21:20:24.000Z",
+                                    "dimensions": {
+                                        "width": 1080,
+                                        "height": 1350
+                                    }
+                                }
+                            ],
+                            "recentVideos": [
+                                {
+                                    "id": "3990495229280545049",
+                                    "shortcode": "DdhFkS7KGkZ",
+                                    "url": "https://www.instagram.com/reel/DdhFkS7KGkZ/",
+                                    "type": "video",
+                                    "isVideo": true,
+                                    "views": null,
+                                    "playCount": null,
+                                    "viewCount": 1496536,
+                                    "likes": 38541,
+                                    "comments": 487,
+                                    "shares": null,
+                                    "saves": null,
+                                    "publishedAt": "2026-09-20T17:20:00.000Z",
+                                    "dimensions": {
+                                        "width": 750,
+                                        "height": 1333
+                                    }
+                                }
+                            ],
+                            "pageInfo": {
+                                "recentPosts": {
+                                    "hasNextPage": true,
+                                    "endCursor": "REDACTED_CURSOR",
+                                    "requestedLimit": 12,
+                                    "returnedCount": 12,
+                                    "pagesRequested": null,
+                                    "pagesFetched": null,
+                                    "incomplete": false
+                                },
+                                "recentVideos": {
+                                    "hasNextPage": true,
+                                    "endCursor": "REDACTED_CURSOR",
+                                    "requestedLimit": 12,
+                                    "returnedCount": 4,
+                                    "pagesRequested": null,
+                                    "pagesFetched": null,
+                                    "incomplete": false
+                                }
+                            },
+                            "scrapedAt": "2026-09-22T05:15:16.869Z"
+                        }
+                    ],
+                    "totalMs": 14165
+                }
+            }
+        }
+    ]
+}

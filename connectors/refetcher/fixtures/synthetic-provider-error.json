@@ -1,0 +1,17 @@
+{
+    "name": "synthetic-provider-error",
+    "description": "Synthetic non-2xx provider failure, used with varied HTTP statuses to prove zero billing. Not a live recording.",
+    "calls": [{
+        "req": { "method": "POST", "url": "{{request.url}}" },
+        "res": {
+            "status": 502,
+            "body": {
+                "success": false,
+                "error": {
+                    "category": "upstream_failure",
+                    "message": "Synthetic provider failure"
+                }
+            }
+        }
+    }]
+}
