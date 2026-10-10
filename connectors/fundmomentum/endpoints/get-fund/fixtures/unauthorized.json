@@ -1,0 +1,41 @@
+{
+    "name": "unauthorized",
+    "description": "Recorded 2026-10-10 with a deliberately invalid key: a real HTTP 401 (not a body-level JSON-RPC error), so the provider's lifecycle.start relays it untouched — verbatim, no trimming needed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "get_fund",
+                        "arguments": {
+                            "slug": "alstin-iii"
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 401,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "error": {
+                        "code": -32001,
+                        "message": "The API key you sent was not recognised. Check for whitespace or a truncated value. Get a new key at https://fundmomentum.vc/account-settings, or self-register as an agent by POSTing {\"agent_name\":\"...\"} to https://fundmomentum.vc/_api/agent/register.",
+                        "data": {
+                            "error_reason": "invalid_key",
+                            "required_header": "X-API-Key",
+                            "get_key_human": "https://fundmomentum.vc/account-settings",
+                            "get_key_agent": "https://fundmomentum.vc/_api/agent/register",
+                            "docs": "https://fundmomentum.vc/mcp"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

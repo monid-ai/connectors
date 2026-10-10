@@ -1,0 +1,45 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-10-10 against a real agent key (25 free credits, `POST /_api/agent/register`), `since` omitted so the vendor defaulted to its 7-day agent-tier window. Trimmed to one changed row (the real window returned 198) for internal consistency (`returned`/`total_changed`/`has_more` adjusted to match) and to stay inside the fixture-size budget; field names and values are otherwise as returned.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "get_changes",
+                        "arguments": {
+                            "limit": 5
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "{\"since\":\"2026-10-03T14:00:00.000Z\",\"since_defaulted\":true,\"next_since\":\"2026-10-03T22:00:44.399Z\",\"returned\":1,\"total_changed\":1,\"has_more\":false,\"etag\":\"\\\"40b9e36a323eff53b7173ba7b7f83a62\\\"\",\"changes\":[{\"slug\":\"cogenuity-partners\",\"name\":\"Cogenuity Partners\",\"country\":\"United States\",\"fundingStage\":\"series_a\",\"fundSize\":\"$425M\",\"change_type\":\"signal_updated\",\"changed_at\":\"2026-10-03T22:00:31.872Z\"}]}"
+                            }
+                        ],
+                        "_meta": {
+                            "auth": "api_key",
+                            "billing": "credits",
+                            "cost": "€0.01",
+                            "credits_remaining": 22,
+                            "buy_more": "https://fundmomentum.vc/for-agents"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

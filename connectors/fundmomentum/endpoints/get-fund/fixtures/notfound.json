@@ -1,0 +1,42 @@
+{
+    "name": "notfound",
+    "description": "Recorded 2026-10-10 against a real agent key: an unknown slug answers JSON-RPC error -32000 on HTTP 200, error_reason 'not_found'. The provider's lifecycle.start synthesizes httpStatus 404 over this (verified live: isProviderError true, zero usage) — verbatim, no trimming needed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "get_fund",
+                        "arguments": {
+                            "slug": "no-such-fund-at-all-zzz"
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "error": {
+                        "code": -32000,
+                        "message": "Fund Momentum does not carry \"no-such-fund-at-all-zzz\". We track 1073 actively deploying funds and this is not one of them, under any slug. Searching will not find it. If it should be here, tell us at https://fundmomentum.vc/submit-your-fund.",
+                        "data": {
+                            "tool": "get_fund",
+                            "error_reason": "not_found",
+                            "in_dataset": false,
+                            "searching_will_not_help": true,
+                            "name_search_performed": "such all zzz",
+                            "docs": "https://fundmomentum.vc/mcp"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

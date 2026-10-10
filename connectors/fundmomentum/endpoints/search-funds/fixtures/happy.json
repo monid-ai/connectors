@@ -1,0 +1,47 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-10-10 against a real agent key (25 free credits, `POST /_api/agent/register`). Response trimmed to one fund and `description` fields omitted to stay inside the fixture-size budget; field names and values are otherwise as returned.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "search_funds",
+                        "arguments": {
+                            "stage": "seed",
+                            "country": "Germany",
+                            "limit": 5
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "[{\"name\":\"Alstin III\",\"slug\":\"alstin-iii\",\"country\":\"Germany\",\"fundingStage\":\"seed\",\"fundSize\":\"€175M\",\"website\":\"https://alstin.capital/\",\"industries\":[\"saas\"],\"url\":\"https://fundmomentum.vc/funds/alstin-iii\"}]"
+                            }
+                        ],
+                        "_meta": {
+                            "auth": "api_key",
+                            "billing": "credits",
+                            "cost": "€0.01",
+                            "credits_remaining": 24,
+                            "buy_more": "https://fundmomentum.vc/for-agents"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-10-10 against a real agent key (25 free credits, `POST /_api/agent/register`) — verbatim, no trimming needed.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "check_lp_coverage",
+                        "arguments": {
+                            "country": "Germany",
+                            "lp_type": "Family office / Holding"
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "{\n  \"matched\": \"<5\",\n  \"of_total_disclosed\": 720,\n  \"backs_emerging_managers\": \"<5\",\n  \"filters_applied\": {\n    \"country\": \"Germany\",\n    \"lp_type\": \"Family office / Holding\"\n  },\n  \"undisclosed_hq_count\": \"<5\",\n  \"coverage_note\": \"Counts only. LP names, websites and commitment history require LP Radar. Counts below 5 are shown as \\\"<5\\\" and zero as \\\"none\\\".\",\n  \"next_step\": \"https://fundmomentum.vc/lp-radar\"\n}"
+                            }
+                        ],
+                        "_meta": {
+                            "auth": "api_key",
+                            "billing": "free",
+                            "metered": false,
+                            "note": "check_lp_coverage is never billed to credits and never counted against a monthly quota."
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

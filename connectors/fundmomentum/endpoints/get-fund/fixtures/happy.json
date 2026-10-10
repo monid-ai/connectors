@@ -1,0 +1,45 @@
+{
+    "name": "happy",
+    "description": "Recorded 2026-10-10 against a real agent key (25 free credits, `POST /_api/agent/register`). `description` shortened to stay inside the fixture-size budget; field names and values are otherwise as returned.",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "{{request.url}}",
+                "body": {
+                    "jsonrpc": "2.0",
+                    "method": "tools/call",
+                    "params": {
+                        "name": "get_fund",
+                        "arguments": {
+                            "slug": "alstin-iii"
+                        }
+                    },
+                    "id": 1
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "jsonrpc": "2.0",
+                    "id": 1,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "{\"name\":\"Alstin III\",\"slug\":\"alstin-iii\",\"country\":\"Germany\",\"fundingStage\":\"seed\",\"fundSize\":\"€175M\",\"website\":\"https://alstin.capital/\",\"linkedin\":\"https://www.linkedin.com/company/alstincapital/\",\"fundManager\":\"Carsten Maschmeyer\",\"description\":\"Alstin III is a venture capital firm based in Germany, focusing on Seed stage investments.\"}"
+                            }
+                        ],
+                        "_meta": {
+                            "auth": "api_key",
+                            "billing": "credits",
+                            "cost": "€0.01",
+                            "credits_remaining": 23,
+                            "buy_more": "https://fundmomentum.vc/for-agents"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
