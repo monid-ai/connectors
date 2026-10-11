@@ -1,0 +1,35 @@
+{
+    "name": "happy",
+    "description": "recorded chain for unsavedai#speak, scenario 'happy': an 85-character English sentence in the af_heart voice; 85 billed characters, audio returned as a one-hour private link",
+    "calls": [
+        {
+            "req": {
+                "method": "POST",
+                "url": "https://tools.unsavedai.com/v1/speak",
+                "body": {
+                    "text": "Hello from UnsavedAI. This short sentence is read aloud by the Kokoro voice af_heart.",
+                    "voice": "af_heart"
+                }
+            },
+            "res": {
+                "status": 200,
+                "body": {
+                    "request_id": "88778d99305b40c5",
+                    "audio_url": "https://tools.unsavedai.com/v1/speak/audio/2zdcTb72_OG3Vb45vv-OBQTr8mtovz9G.mp3",
+                    "expires_at": "2026-10-08T05:11:43+00:00",
+                    "format": "mp3",
+                    "content_type": "audio/mpeg",
+                    "sample_rate": 24000,
+                    "duration_seconds": 5.92,
+                    "characters": 85,
+                    "voice": "af_heart",
+                    "usage": {
+                        "billed_characters": 85,
+                        "price_per_1k_characters_usd": 0.01,
+                        "cost_usd": 0.00085
+                    }
+                }
+            }
+        }
+    ]
+}
