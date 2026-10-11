@@ -15,7 +15,7 @@ export default defineProvider({
             "transcripts and input text are never stored or logged, and " +
             "generated audio is deleted an hour after it is made.",
         homepageUrl: "https://unsavedai.com",
-        docsUrl: "https://unsavedai.com",
+        docsUrl: "https://tools.unsavedai.com/docs",
         categories: ["speech"],
     },
     auth: { inject: presets.auth.bearer() },

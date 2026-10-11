@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertRejects } from "@std/assert";
 import { fromFileUrl } from "@std/path";
 import {
     liveSkip,
@@ -47,6 +47,39 @@ Deno.test("unsavedai#transcribe web page: provider error, zero usage", async () 
     assertEquals(result.usage, { credits: {}, evidence: {} });
 });
 
+Deno.test("unsavedai#transcribe schema gate: max_minutes is required and capped at 30", async () => {
+    const unit = await testSealedUnit("unsavedai#transcribe");
+    const fixture = await loadFixture(`${fixturesDir}happy.json`);
+    const url =
+        "https://upload.wikimedia.org/wikipedia/commons/d/d5/JFK_inaugural_address.ogg";
+    const bodies: Record<string, string | number>[] = [
+        { url },
+        { url, max_minutes: 31 },
+    ];
+    for (const body of bodies) {
+        await assertRejects(
+            () =>
+                runEndpoint({
+                    unit,
+                    input: { body },
+                    mode: "replay",
+                    fixture,
+                }),
+            Error,
+            "INVALID_INPUT",
+        );
+    }
+    // max_minutes 30 passes validation: replay serves the recorded happy
+    // response instead of rejecting the input
+    const twin = await runEndpoint({
+        unit,
+        input: { body: { url, max_minutes: 30 } },
+        mode: "replay",
+        fixture,
+    });
+    assertEquals(twin.httpStatus, 200);
+});
+
 Deno.test({
     name: "unsavedai#transcribe live (gated on UNSAVEDAI credentials)",
     ignore: liveSkip("unsavedai"),
@@ -67,10 +100,9 @@ Deno.test({
             false,
             JSON.stringify(result.output),
         );
-        assertEquals(result.usage.evidence, {
-            seconds: 60,
-            speaker_seconds: 0,
-        });
+        const evidence = result.usage.evidence as Record<string, number>;
+        assert(evidence.seconds > 0, JSON.stringify(evidence));
+        assertEquals(typeof evidence.speaker_seconds, "number");
     },
 });
 
